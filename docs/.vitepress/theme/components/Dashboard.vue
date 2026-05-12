@@ -53,15 +53,37 @@
         <div class="ddia-stat-card">
           <div class="ddia-stat-label">
             <Icon name="track_changes" :size="16" />
-            測驗平均正確率
+            首次答對率 <span class="ddia-stat-tag" title="首次作答得分／總題數，重做不沖洗">誠實版</span>
           </div>
-          <!-- 沒做過測驗時顯示 — 而非 0%，避免誤判為「全錯」 -->
-          <!-- empty class 讓 `—` 字級對齊其他三格（不會視覺塌空一格） -->
           <div class="ddia-stat-value numeric" :class="{ 'is-empty': quizCount === 0 }">
-            {{ quizCount === 0 ? '—' : `${accuracy}%` }}
+            {{ quizCount === 0 ? '—' : `${firstAttemptAccuracy}%` }}
+          </div>
+          <div v-if="quizCount > 0 && accuracy !== firstAttemptAccuracy" class="ddia-stat-sub">
+            目前 {{ accuracy }}%（含重做）
           </div>
         </div>
       </div>
+
+      <!-- 錯題本：列出首次未滿分的章節；無錯題時整個 details 隱藏 -->
+      <details v-if="incorrectChapters.length > 0" class="ddia-incorrect-book">
+        <summary class="ddia-incorrect-summary">
+          <Icon name="rule" :size="16" filled />
+          錯題本（{{ incorrectChapters.length }} 章首次未滿分）
+          <span class="ddia-incorrect-hint">點開看清單、回去重做能拉高當前分數（首次分數不會被沖洗）</span>
+        </summary>
+        <ul class="ddia-incorrect-list">
+          <li v-for="ic in incorrectChapters" :key="ic.chapterId" class="ddia-incorrect-item">
+            <a :href="chapterLinkOf(ic.chapterId)" class="ddia-incorrect-link">
+              <strong>{{ chapterTitleOf(ic.chapterId) }}</strong>
+              <span class="ddia-incorrect-meta">
+                首次 {{ ic.firstAttemptScore }} / {{ ic.total }}
+                · 當前 {{ ic.currentScore }} / {{ ic.total }}
+                · {{ ic.attemptCount }} 次作答
+              </span>
+            </a>
+          </li>
+        </ul>
+      </details>
 
       <div v-if="lastRead" style="text-align: center; margin: 24px 0;">
         <a :href="withBase(lastRead.link)" class="ddia-cta primary">
@@ -78,12 +100,27 @@ import { computed } from 'vue'
 import { withBase } from 'vitepress'
 import Icon from './Icon.vue'
 import { useProgress } from '../../composables/useProgress'
-import { CHAPTERS, TOTAL_CHAPTERS } from '../../data/chapters'
+import { CHAPTERS, PREREQUISITES, TOTAL_CHAPTERS } from '../../data/chapters'
 
-const { doneCount, progressPct, quizCount, accuracy, isDone } = useProgress()
+const {
+  doneCount, progressPct, quizCount, accuracy, firstAttemptAccuracy,
+  incorrectChapters, isDone
+} = useProgress()
 const totalChapters = TOTAL_CHAPTERS
 
-// 全新訪客：「4 個零」是負向回饋。改顯示歡迎卡 + 兩個入口
 const isFresh = computed(() => doneCount.value === 0 && quizCount.value === 0)
 const lastRead = computed(() => CHAPTERS.find(c => !isDone(c.id)) ?? null)
+
+// 錯題本：依 chapterId 查 chapter 元資料（連結 / 短標題）
+const allChaptersById = computed(() => {
+  const m = new Map<string, { link: string; shortTitle: string }>()
+  for (const c of [...PREREQUISITES, ...CHAPTERS]) m.set(c.id, { link: c.link, shortTitle: c.shortTitle })
+  return m
+})
+function chapterLinkOf(chapterId: string): string {
+  return withBase(allChaptersById.value.get(chapterId)?.link ?? '/')
+}
+function chapterTitleOf(chapterId: string): string {
+  return allChaptersById.value.get(chapterId)?.shortTitle ?? chapterId
+}
 </script>

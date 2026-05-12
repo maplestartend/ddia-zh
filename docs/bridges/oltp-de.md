@@ -11,6 +11,10 @@ DDIA 大量內容用 **OLTP / DB 內部** 視角寫，對 5 年 ETL / Stream pro
 
 答案是：**OLTP 章節的核心概念，在 DE 的世界裡都有對應、只是名字不同**。這頁把映射列清楚——讀任何一章前先掃這頁、知道「在我的工作中這對應什麼」、後面整章吸收效率倍增。
 
+::: warning 這頁是隱喻 / 對應、不是定義等價
+**對應幫你建立直覺、但 OLTP 概念有精確定義、DE 場景有獨立 trade-off**。例如「Quorum ↔ Kafka ISR」抓住核心精神但不是完全等價（ISR 還有 leader epoch / unclean leader election 等獨立議題）。讀完這頁後對應章節仍要讀——隱喻是地圖、地形得自己走。
+:::
+
 ---
 
 ## 完整對應表
@@ -22,11 +26,11 @@ DDIA 大量內容用 **OLTP / DB 內部** 視角寫，對 5 年 ETL / Stream pro
 | **Phantom**（Ch7） | **滑動視窗的邊界事件** | 範圍查詢內出現本不存在的列；視窗 join 邊界跨 watermark 後仍有 late event 改變結果 |
 | **Linearizability**（Ch9） | **Kafka 內 partition 全序保證** | linearizable 是「對外觀察像單一副本」；Kafka 單一 partition 內訊息有 total order、但跨 partition 無此保證 |
 | **Quorum（W + R > N）**（Ch5） | **Kafka ISR + `min.insync.replicas`** | quorum 是「寫多數 + 讀多數 = 必碰新值」；Kafka 的 ISR 集合 + `acks=all` + `min.insync.replicas=2` 是同一個機制（多數確認才回 ack） |
-| **2PC**（Ch9） | **Kafka transactional producer + 2PC sink** | 跨節點的 atomic commit；Kafka EOS（transactional.id）+ Flink TwoPhaseCommitSinkFunction 是 2PC 在 stream 場景的化身 |
+| **2PC**（Ch9） | **Flink `TwoPhaseCommitSinkFunction`**（Kafka transactional producer 是相關但不同的機制） | Flink 2PC sink 才是 2PC 在 stream 場景的真實化身；Kafka transactional producer 內部用 single transaction coordinator + `__transaction_state` topic、**不是 2PC** —— 兩者常被混為一談 |
 | **Sloppy quorum**（Ch5） | **Kafka under-replicated partition** | 寫到非 ISR 節點 = 寫到「替補」；之後背景修復同步回 home replica = anti-entropy |
 | **Leader epoch**（Ch5 / Ch9 隱含） | **Kafka producer 的 `leader_epoch`** | Raft term 在 Kafka 的化身；擋住 zombie leader 的寫入 |
 | **Causal order**（Ch9.3） | **Kafka partition key 設計** | 因果相關的事件放同 partition、用 key 保證 partition 內順序；跨 partition 用 Lamport / vector clock |
-| **Read-your-writes**（Ch5） | **Kafka consumer 的 isolation level** | 後端：寫後讀自己的寫；Kafka：`read_committed` 確保你看到自己的 transactional write、跳過未 commit 的 |
+| **Read-your-writes**（Ch5） | **CDC pipeline 的「寫後立刻 GET」場景**（見下方場景 3） | 後端：寫後讀自己的寫；CDC：source DB 寫入後、下游 ES / cache 因 lag 看不到、要 sticky to source 或記 LSN 等同步到才回。`read_committed` 是另一回事（防讀到未 commit transactional record） |
 | **Fencing token**（Ch8） | **Kafka leader epoch / Zookeeper ephemeral node** | 過期持有者帶舊 token 寫入會被擋；Kafka broker 的 leader_epoch 就是這作用 |
 | **Eventual consistency**（Ch5） | **CDC 下游延遲** | Multi-leader / leaderless 的最終一致；CDC pipeline 從 source DB 到下游 sink 永遠有 lag、但最終會收斂 |
 

@@ -299,6 +299,17 @@
   cursor: not-allowed;
 }
 
+/* Wave 21.1：destructive 動作 ghost 變體（如 Quiz「徹底清空」） */
+.ddia-btn-ghost-danger {
+  color: var(--error-fg);
+  border-color: color-mix(in srgb, var(--error-fg) 30%, transparent);
+}
+.ddia-btn-ghost-danger:hover:not(:disabled) {
+  background: var(--error-bg);
+  border-color: var(--error-fg);
+  color: var(--error-fg);
+}
+
 /* ---------- Hero disclaimer：首頁版權聲明 ----------
    視覺降階：中性灰底 + brand 左邊框、字級縮小、位置在 CTA 列「下方」（不再緊貼書名） */
 .ddia-hero-disclaimer {
@@ -499,6 +510,89 @@
 
 .dark .ddia-stat-value.brand {
   color: var(--brand-300);
+}
+
+/* Wave 21.1：誠實版標籤 + sub 行（顯示「目前 X%（含重做）」） */
+.ddia-stat-tag {
+  display: inline-block;
+  margin-left: 4px;
+  padding: 1px 6px;
+  background: color-mix(in srgb, var(--success-fg) 16%, transparent);
+  color: var(--success-fg);
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  vertical-align: 2px;
+  cursor: help;
+}
+.ddia-stat-sub {
+  margin-top: 4px;
+  font-size: 11.5px;
+  color: var(--text-tertiary);
+}
+
+/* 錯題本（Dashboard 下方） */
+.ddia-incorrect-book {
+  margin: 16px 0 28px;
+  padding: 14px 18px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-left: 3px solid var(--warning-fg);
+  border-radius: 10px;
+}
+.ddia-incorrect-summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14.5px;
+  color: var(--text-primary);
+  list-style: none;
+}
+.ddia-incorrect-summary::-webkit-details-marker { display: none; }
+.ddia-incorrect-summary::after {
+  content: '▾';
+  margin-left: auto;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  transition: transform 0.15s;
+}
+.ddia-incorrect-book[open] .ddia-incorrect-summary::after {
+  transform: rotate(180deg);
+}
+.ddia-incorrect-hint {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  font-weight: 400;
+}
+.ddia-incorrect-list {
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.ddia-incorrect-item {
+  padding: 8px 0;
+  border-top: 1px solid var(--border-default);
+}
+.ddia-incorrect-item:first-child { border-top: none; }
+.ddia-incorrect-link {
+  display: block;
+  text-decoration: none;
+  color: var(--text-primary);
+}
+.ddia-incorrect-link:hover strong {
+  color: var(--brand-500);
+}
+:global(.dark) .ddia-incorrect-link:hover strong {
+  color: var(--brand-300);
+}
+.ddia-incorrect-meta {
+  display: block;
+  margin-top: 2px;
+  font-size: 12px;
+  color: var(--text-tertiary);
 }
 
 /* ---------- Chapter cards 列表（首頁 grid + Part 區）---------- */

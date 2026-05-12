@@ -71,10 +71,16 @@
         <Icon name="send" :size="16" />
         交卷
       </button>
-      <button v-else class="ddia-btn" @click="reset">
-        <Icon name="restart_alt" :size="16" />
-        重新作答
-      </button>
+      <template v-else>
+        <button class="ddia-btn" @click="retry" title="重新作答、保留首次答對率紀錄">
+          <Icon name="replay" :size="16" />
+          重新作答（保留首次紀錄）
+        </button>
+        <button class="ddia-btn ddia-btn-ghost-danger" @click="reset" title="徹底清空、首次答對率也歸零">
+          <Icon name="delete_outline" :size="16" />
+          徹底清空
+        </button>
+      </template>
     </div>
   </div>
 </template>
@@ -167,12 +173,19 @@ function submit() {
   }
 }
 
-function reset() {
+/** 重新作答、保留首次答對率紀錄（適合複習場景） */
+function retry() {
   answers.value = props.questions.map(() => null)
   submitted.value = false
-  // 注意：clearQuiz 會把首次答對率一併清掉。新版改為「保留 firstAttempt 紀錄、只清當前作答」
-  // 但目前 clearQuiz 設計是徹底重置——如果想保留紀錄、改成手動 unsubmit 才合理。
-  // 此版本維持「重新作答 = 徹底重置」的語意，使用者要保留首次紀錄就不要按「重新作答」
+  // 不呼叫 clearQuiz——讓 useStorage 的 firstAttemptScore / attemptCount 保留
+  // 下次 submit 時 saveQuiz 邏輯會自動 attemptCount += 1、firstAttemptScore 不沖洗
+}
+
+/** 徹底清空（含首次紀錄）—— 「我要從零開始假裝沒做過這章」場景 */
+function reset() {
+  if (!confirm('確定徹底清空？首次答對率與所有作答紀錄都會被刪除、無法復原。')) return
+  answers.value = props.questions.map(() => null)
+  submitted.value = false
   clearQuiz(props.chapterId)
   attemptCount.value = 1
   firstAttemptScore.value = null

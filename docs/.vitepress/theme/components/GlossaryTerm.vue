@@ -129,7 +129,9 @@ onUnmounted(() => {
   color: var(--vp-c-text-1, #213547);
   text-align: left;
   white-space: normal;
-  pointer-events: none;
+  /* 允許 tooltip 內可點：chip 看起來像按鈕、實際靠 anchor 冒泡跳轉。
+     pointer-events: auto 也讓 cursor 移到 tooltip 上時 hover 狀態維持 */
+  pointer-events: auto;
 }
 
 .ddia-g-tooltip-head {

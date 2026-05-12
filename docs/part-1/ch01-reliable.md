@@ -229,6 +229,12 @@ DDIA 全書其實就是在教你：**面對特定情境，如何做這些權衡*
   }
 ]' />
 
+<InterviewBlock chapter-id="ch01" :questions='[
+  { "tag": "系統設計", "question": "請說明你如何衡量一個 News Feed 系統的 reliability / scalability / maintainability？三個維度分別舉一個可量化指標。" },
+  { "tag": "觀測性", "question": "P50 = 100ms、P99 = 2s 的服務，第 P99 個使用者比平均使用者體驗差多少？為什麼 P99 比平均值更值得監控？" },
+  { "tag": "容量規劃", "question": "你公司現有後端要擴展到 10× QPS。請說明你會怎麼做容量規劃、哪些指標必須先量化、可能會撞到什麼瓶頸？" }
+]' />
+
 <ChapterNote chapter-id="ch01" />
 
 <Progress chapter-id="ch01" />

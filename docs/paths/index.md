@@ -52,6 +52,10 @@ Ch1 → Ch2 → Ch3 → Ch7 → Ch5 → Ch6 → Ch4 → Ch8 → Ch9 → Ch11
 
 **目標**：能設計現代資料平台（DWH、CDC pipeline、即時分析）。
 
+::: tip 第 0 步：先讀 [OLTP↔DE 視角橋](/bridges/oltp-de)
+**還沒看過這頁的 DE 強烈建議先讀**——用 4 小時建立 OLTP 概念到 DE 場景的對應（lost update ↔ idempotent consumer、quorum ↔ Kafka ISR 等 11 條），後續每章節省 30% 卡關時間。
+:::
+
 ```
 Ch1 → Ch3 → Ch4 → Ch10 → Ch11 → Ch5 → Ch6 → Ch2 → Ch12
 ```

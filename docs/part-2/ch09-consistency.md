@@ -262,7 +262,7 @@ DDIA 寫於 2017、聚焦在 2PC 的學術 / DB 視角。但 fintech / 電商實
 
 <SectionDivider icon="hub" label="核心機制" />
 
-## 9.5 <G term="consensus">共識（Consensus）</G>
+## 9.5 <G term="consensus">共識（Consensus）</G> {#consensus-section}
 
 ### 共識問題
 N 個節點，每個提出一個值，要達成（依 DDIA p.365 / "Consensus Algorithms and Total Order Broadcast"）：
@@ -410,7 +410,8 @@ T2 開始讀 @ TT = [108, 115] → 必定大於 T1 的 latest
       "Partition Tolerance 是可以選擇放棄的"
     ],
     answer: 1,
-    explanation: "P 不是選項，是現實。CAP 真正講的是「分區發生時的選擇」。許多人錯把「正常時無 P」當成可以選 CA，但實際上正常時根本不需要選 —— 你都拿得到。"
+    explanation: "P 不是選項，是現實。CAP 真正講的是「分區發生時的選擇」。許多人錯把「正常時無 P」當成可以選 CA，但實際上正常時根本不需要選 —— 你都拿得到。",
+    sectionAnchor: "_9-2-cap-重新詮釋"
   },
   {
     question: "FLP 不可能性結果告訴我們什麼？",
@@ -443,8 +444,16 @@ T2 開始讀 @ TT = [108, 115] → 必定大於 T1 的 latest
       "MapReduce"
     ],
     answer: 1,
-    explanation: "DDIA 的精華洞見之一：這幾個看似不同的問題在計算複雜度上等價。能解共識就能做線性一致儲存與全序廣播，反之亦然 —— 都需要 FLP 級別的協作能力。"
+    explanation: "DDIA 的精華洞見之一：這幾個看似不同的問題在計算複雜度上等價。能解共識就能做線性一致儲存與全序廣播，反之亦然 —— 都需要 FLP 級別的協作能力。",
+    sectionAnchor: "consensus-section"
   }
+]' />
+
+<InterviewBlock chapter-id="ch09" :questions='[
+  { "tag": "Raft", "question": "Raft 怎麼處理 split-brain？term 在過程中扮演什麼角色？vote 規則為什麼是真正擋住少數派 commit 的關鍵？" },
+  { "tag": "名詞 disambiguation", "question": "「CAP 的 C」「ACID 的 C」「Consistent hashing 的 C」差別是什麼？哪一個跟線性一致有關？" },
+  { "tag": "分散式交易", "question": "你的微服務系統需要跨服務的原子交易（訂單 → 庫存 → 付款）。請評估 2PC vs Saga vs Outbox vs TCC 的取捨、給出選型建議。" },
+  { "tag": "TrueTime / HLC", "question": "Spanner 的 commit-wait 是什麼？為什麼能達成 external consistency？CockroachDB 的 HLC max_offset 預設值是多少、超出會怎樣？" }
 ]' />
 
 <ChapterNote chapter-id="ch09" />
