@@ -27,7 +27,7 @@ jobs:
           fetch-depth: 0  # 完整歷史讓 VitePress lastUpdated 抓得到 commit 時間
 
       - name: Setup Node
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v6
         with:
           node-version: 22
           cache: npm
