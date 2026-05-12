@@ -75,6 +75,59 @@ T=2  C 讀 x → 0   ✗ ← C 看到回退，違反線性一致
 
 只做「讀階段 write-back」**不夠**——寫如果不先讀 timestamp、單純塞新值，會與並發寫破壞順序仍然非線性一致。
 
+### ABD 讀的具體時序（為什麼讀也要寫）
+
+設 `N=3`，副本 R1 / R2 / R3。Alice 先寫 `x=1`（已到 R1、R2、ts=10），Bob 讀，Carol 接著讀：
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Alice as Alice (writer)
+    participant R1 as Replica R1
+    participant R2 as Replica R2
+    participant R3 as Replica R3
+    participant Bob as Bob (reader 1)
+    participant Carol as Carol (reader 2)
+
+    Note over Alice,R3: Alice 寫 x=1（已寫到 R1, R2；ts=10）
+    Alice->>R1: write(x=1, ts=10)
+    Alice->>R2: write(x=1, ts=10)
+    R1-->>Alice: ack
+    R2-->>Alice: ack
+    Alice->>R3: write(x=1, ts=10) (慢、in-flight)
+
+    rect rgba(255,200,100,0.18)
+    Note over Bob,R3: Bob 讀（沒做 ABD write-back）→ 後面 Carol 可能讀到舊值
+    Bob->>R1: read x
+    Bob->>R3: read x
+    R1-->>Bob: (x=1, ts=10)
+    R3-->>Bob: (x=null, ts=0)
+    Note over Bob: 取 max(ts)=10 → 回 client x=1 ✓
+    Bob->>Bob: 沒 write-back R3
+
+    Carol->>R2: read x
+    Carol->>R3: read x
+    R2-->>Carol: (x=1, ts=10)
+    R3-->>Carol: (x=null, ts=0)
+    Note over Carol: 取 max(ts)=10 → 回 x=1 ✓
+    Note over Bob,Carol: 看起來沒事？但若 R2 也 lag、Carol 改讀 R1 又會看到舊值<br/>關鍵：R3 永遠是舊的、其他 reader 撞到它就看到舊
+    end
+
+    rect rgba(100,200,150,0.18)
+    Note over Bob,R3: 正確的 ABD：Bob 讀完做 write-back
+    Bob->>R3: write(x=1, ts=10) (write-back)
+    R3-->>Bob: ack
+    Note over Bob: ✓ 現在 R3 也有最新值
+    Carol->>R3: read x
+    Carol->>R2: read x
+    R3-->>Carol: (x=1, ts=10) ← R3 已被 write-back
+    R2-->>Carol: (x=1, ts=10)
+    Note over Carol: 無論讀哪兩個副本、都看到 x=1 ✓
+    end
+```
+
+**重點**：純 quorum read（橘色區）會放任「舊副本永遠舊」、後續 reader 可能讀到不同結果——違反線性一致。ABD 的 write-back（綠色區）強制讓**讀到的最新值散布回去**、保證後續 reader 必看到至少同樣新的值。
+
 ::: tip ABD 的適用範圍
 原始 ABD 是 **single-register** 演算法（一個暫存器、single-writer multi-reader）。Lynch-Shvartsman 1997 擴成 multi-writer；要對「多個 key / multi-object linearizability」還要更多協定（leader-based 共識通常比較實際）。Cassandra 等 Dynamo 風格系統並未實作這層 —— 它們只提供最終一致性。
 :::

@@ -225,7 +225,8 @@ COMMIT;  -- ← 兩筆都成功，雙重預訂！
 | Dirty Read | ✗ 仍會發生 | ✓ 防止 | ✓ | ✓ |
 | Dirty Write | ✗ | ✓ | ✓ | ✓ |
 | Read Skew（non-repeatable read） | ✗ | ✗ | ✓ | ✓ |
-| Lost Update | ✗ | ✗（PG/MySQL **預設不偵測**） | ⚠️ PG / Oracle 在 **SI / REPEATABLE READ** 偵測同一列並發 UPDATE → 以 `40001` abort（MySQL InnoDB 的 RR **仍不偵測**；跨列邏輯依賴的 lost update 不偵測、需應用 retry） | ✓ |
+| **Lost Update（同列「先讀再寫」）** | ✗ | ✗（PG/MySQL 預設不偵測） | ⚠️ PG/Oracle 在 SI/RR 偵測 → `40001` abort（MySQL InnoDB RR **仍不偵測**） | ✓ |
+| **Lost Update（跨列邏輯依賴）** | ✗ | ✗ | ✗ 不偵測、需應用 retry | ✓（SSI 才偵測為 write skew 變體） |
 | Write Skew | ✗ | ✗ | ✗ **仍會發生** | ✓ |
 | Phantom Read（**讀**走快照看不到新插入） | ✗ | ✗ | ✓ | ✓ |
 | Phantom-based Write Skew（**基於不存在性寫入決策**被打破） | ✗ | ✗ | ✗ | ✓（SSI / 2PL with predicate lock） |

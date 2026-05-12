@@ -20,8 +20,14 @@
           <span class="ddia-g-tooltip-zh">{{ entry.chinese }}</span>
         </span>
         <span class="ddia-g-tooltip-def">{{ entry.shortDef }}</span>
-        <span class="ddia-g-tooltip-cta">
-          {{ isTouch ? '再點一次跳詞彙表' : '點擊看完整定義' }}<span v-if="entry.chapter"> · 詳見對應章節</span>
+        <span class="ddia-g-tooltip-cta-row">
+          <span class="ddia-g-tooltip-cta-btn">
+            <span class="ddia-g-arrow">→</span>
+            {{ isTouch ? '再點一次跳詞彙表' : '看完整定義' }}
+          </span>
+          <span v-if="entry.chapter" class="ddia-g-tooltip-chapter">
+            ↗ 對應章節
+          </span>
         </span>
       </span>
     </Transition>
@@ -148,13 +154,37 @@ onUnmounted(() => {
   display: block;
   font-size: 13px;
 }
-.ddia-g-tooltip-cta {
-  display: block;
-  margin-top: 6px;
-  padding-top: 6px;
+.ddia-g-tooltip-cta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 8px;
+  padding-top: 8px;
   border-top: 1px dashed var(--vp-c-divider, #e2e2e3);
-  font-size: 11px;
+}
+.ddia-g-tooltip-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  background: color-mix(in srgb, var(--brand-500, #2F4A80) 12%, transparent);
+  border-radius: 4px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--brand-500, #2F4A80);
+}
+.ddia-g-arrow {
+  font-weight: 700;
+}
+.ddia-g-tooltip-chapter {
+  font-size: 10.5px;
   color: var(--vp-c-text-3, #999);
+  white-space: nowrap;
+}
+:global(.dark) .ddia-g-tooltip-cta-btn {
+  background: color-mix(in srgb, var(--brand-300, #7E93BE) 18%, transparent);
+  color: var(--brand-300, #7E93BE);
 }
 
 .ddia-g-fade-enter-active, .ddia-g-fade-leave-active {

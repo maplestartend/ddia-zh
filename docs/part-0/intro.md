@@ -23,43 +23,80 @@ Kleppmann 在 DDIA 序言定義得很清楚：
 
 絕大多數網路公司的後端都是前者。Netflix 推薦、Twitter timeline、Uber 派單、Shopify 結帳——CPU 都不是瓶頸，**資料怎麼存、怎麼讀、怎麼跨機器一致**才是。
 
-## 2) 典型現代後端的架構
+## 2) 典型現代後端的架構（分階段揭露）
+
+第一次看完整架構圖會頭暈。我們**分三階段**蓋這張圖、每階段只加幾個元件。
+
+### 階段 1：最簡單的後端 — 一個資料庫就夠
 
 ```
-                         Client（瀏覽器 / App）
-                              │
-                              ▼
-                       API Gateway / LB
-                              │
-                              ▼
-         ┌────────────────────┴────────────────────┐
-         │          應用服務（Stateless）            │
-         └───┬─────────┬─────────┬─────────┬───────┘
-             │         │         │         │
-             ▼         ▼         ▼         ▼
-        Database    Cache    Search   Message Queue
-        (OLTP)     (Redis) (ES/Solr)   (Kafka)
-             │                            │
-             │      ┌──────────────┐      │
-             └─────▶│ Stream/Batch │◀─────┘
-                    │  Processor   │
-                    └──────┬───────┘
-                           ▼
-                       Data Warehouse
-                          (OLAP)
+Client（瀏覽器 / App）
+      │
+      ▼
+ 應用服務（Stateless）
+      │
+      ▼
+   Database
+   (PostgreSQL)
 ```
 
-::: tip 怎麼讀這張圖
-1. **使用者請求從上往下進來**：瀏覽器/App → 入口（API Gateway = 大門口、LB = Load Balancer 負載平衡器）→ 應用服務
-2. **應用服務本身不存資料**——所有狀態都丟給下方那五種元件
-3. **下方五種元件**：
-   - **Database（OLTP）**：即時交易資料庫（PostgreSQL、MySQL）—— 處理單筆增刪改查
-   - **Cache**：把熱資料放在記憶體裡的快取（Redis、Memcached）
-   - **Search**：全文搜尋專用引擎（ES = Elasticsearch、Solr）
-   - **Message Queue**：訊息隊列（Kafka）—— 非同步任務、解耦上下游
-   - **Data Warehouse（OLAP）**：分析型資料倉儲（BigQuery、Snowflake、Redshift）—— 跑大型報表用
-4. **本書就是教你**：選擇與組合這五種元件、知道每個的取捨在哪
+最小可行版本。所有讀寫都打 DB、應用服務不存任何狀態。**問題**：使用者多了、DB 撐不住每次都 query 同一張熱門商品。
+
+### 階段 2：加 Cache 與 Message Queue（為什麼需要）
+
+```
+Client → API Gateway / LB → 應用服務（多台）
+                                  │
+                ┌─────────────────┼─────────────────┐
+                ▼                 ▼                 ▼
+            Database          Cache         Message Queue
+            (OLTP)            (Redis)         (Kafka)
+```
+
+- **加 Cache（Redis）**：熱門商品的查詢命中 cache、減 DB 負擔 90%
+- **加 Message Queue（Kafka）**：寄信、產生報表這種「不必馬上回」的任務丟進 queue、非同步處理
+- **加 LB**：應用服務變多台、需要把請求平均分配
+
+**問題**：報表系統現在要跑「上週各商品銷量」要掃 DB 1000 萬筆、會把 OLTP DB 跑垮。
+
+### 階段 3：加 Search、Stream/Batch、Data Warehouse（完整圖）
+
+```
+Client → API Gateway / LB → 應用服務（多台、Stateless）
+                                  │
+       ┌──────────┬───────────────┼───────────────┐
+       ▼          ▼               ▼               ▼
+   Database    Cache          Search        Message Queue
+   (OLTP)     (Redis)        (ES/Solr)       (Kafka)
+       │                                          │
+       │       ┌──────────────────────────────────┘
+       │       ▼
+       │   Stream/Batch Processor
+       │       │
+       ▼       ▼
+   Data Warehouse (OLAP)
+```
+
+- **加 Search（Elasticsearch）**：全文搜尋從 OLTP DB 抽出來、用倒排索引引擎
+- **加 Stream/Batch Processor**：從 Kafka / OLTP 抓資料、彙整、寫進 Data Warehouse
+- **加 Data Warehouse（OLAP）**：跑「上週各商品銷量」的地方、跟交易 DB 完全分離
+
+**本書就是教你**：選擇與組合這些元件、知道每個的取捨在哪。
+
+::: tip 為什麼這樣演進
+階段 1 → 2 → 3 是真實公司成長的順序：流量大才需要 Cache、跨服務通訊才需要 MQ、報表跑垮 DB 才拉 OLAP。**不是一次設計完整圖**——是隨著痛點演進。
 :::
+
+### 五種元件的快速字典
+
+| 元件 | 中文 | 一句話 | 例子 | 對應 DDIA |
+|---|---|---|---|---|
+| **Database (OLTP)** | 交易資料庫 | 即時的小操作（下訂、改密碼） | PostgreSQL、MySQL | Ch2, Ch3, Ch7 |
+| **Cache** | 快取 | 把熱資料放記憶體 | Redis、Memcached | Ch1 |
+| **Search** | 搜尋引擎 | 全文搜尋專用 | Elasticsearch、Solr | Ch3 |
+| **Message Queue** | 訊息隊列 | 非同步任務、解耦 | Kafka、RabbitMQ | Ch11 |
+| **Stream/Batch Processor** | 串流 / 批次處理器 | 把資料從 A 轉到 B | Flink、Spark、Airflow | Ch10, Ch11 |
+| **Data Warehouse (OLAP)** | 資料倉儲 | 跑大型分析報表 | BigQuery、Snowflake、Redshift | Ch3, Ch10 |
 
 ::: info OLTP vs OLAP 是什麼？
 - **OLTP（Online Transaction Processing）**：每秒大量小操作（下訂單、改密碼）—— 你 app 後端的 main DB
