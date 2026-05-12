@@ -1,6 +1,11 @@
 import DefaultTheme from 'vitepress/theme'
 import type { Theme } from 'vitepress'
-import './custom.css'
+// CSS 拆 4 檔避免單檔失控（原本 custom.css 接近 1000 行）
+// 順序重要：tokens 先（定義 CSS 變數）→ base（消費變數）→ components → layout
+import './styles/tokens.css'
+import './styles/base.css'
+import './styles/components.css'
+import './styles/layout.css'
 
 import Icon from './components/Icon.vue'
 import TLDR from './components/TLDR.vue'

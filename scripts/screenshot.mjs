@@ -4,14 +4,28 @@
 //   node scripts/screenshot.mjs [tag] --scroll=600 進頁後捲到 600px 再拍（驗 sticky 元件）
 import { chromium } from "playwright";
 import { mkdir } from "node:fs/promises";
-import { resolve } from "node:path";
+import { resolve, dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 
 const args = process.argv.slice(2);
 const tag = (args.find(a => !a.startsWith("--")) || "snapshot");
 const scrollArg = args.find(a => a.startsWith("--scroll="));
 const scrollPx = scrollArg ? Number(scrollArg.split("=")[1]) : 0;
-const OUT = resolve("scripts/screenshots");
+// 用腳本所在位置推導 ROOT、不靠 process.cwd()——讓從任何目錄跑都能工作
+const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+const OUT = join(ROOT, "scripts", "screenshots");
 await mkdir(OUT, { recursive: true });
+
+// 預檢 dev server 是否在線；不在線就早早給友善訊息退出，避免 Playwright 亂噴 stack trace
+const DEV_URL = "http://localhost:5173";
+try {
+  const res = await fetch(DEV_URL, { signal: AbortSignal.timeout(2000) });
+  if (!res.ok) throw new Error(`status ${res.status}`);
+} catch (err) {
+  console.error(`✗ dev server 沒在 ${DEV_URL} 回應（${err.message}）`);
+  console.error(`  請先在另一個終端跑 npm run dev、確認 Local 顯示 ${DEV_URL} 後再跑此腳本`);
+  process.exit(2);
+}
 
 const setTheme = async (page, theme) => {
   await page.evaluate((t) => {

@@ -105,6 +105,7 @@ function optionClass(qIdx: number, oIdx: number) {
     return { selected: answers.value[qIdx] === oIdx }
   }
   const q = props.questions[qIdx]
+  if (!q) return {}  // noUncheckedIndexedAccess 提示：questions[qIdx] 可能 undefined（理論上不會發生）
   if (oIdx === q.answer) return { correct: true }
   if (answers.value[qIdx] === oIdx) return { wrong: true }
   return {}

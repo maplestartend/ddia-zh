@@ -44,7 +44,7 @@ git push main
 │  │                             │                             │
 │  │  theme/                    │                              │
 │  │   ├─ index.ts (註冊元件)   │                              │
-│  │   ├─ custom.css (token)    │                              │
+│  │   ├─ styles/*.css (4 檔)   │  ◀── tokens/base/comps/layout
 │  │   └─ components/           │                              │
 │  │       ├─ Icon.vue          │                              │
 │  │       ├─ TLDR.vue          │                              │
@@ -134,7 +134,7 @@ DDIA 中文網站的所有資料都靠三個檔案維護，**禁止散落**：
 
 ## 4. 樣式系統
 
-[docs/.vitepress/theme/custom.css](docs/.vitepress/theme/custom.css) 採兩層 token：
+CSS 拆 4 檔放在 [docs/.vitepress/theme/styles/](docs/.vitepress/theme/styles/)，採兩層 token：
 
 ```
 Primitive tokens（色階、間距、字級）
@@ -146,7 +146,7 @@ Component CSS（.ddia-card, .ddia-quiz, .ddia-stat-card）
 
 明 / 暗模式：VitePress 預設 `.dark` class on `<html>`。**不要用 `[data-theme]`**（與 stock 專案不同——那是 Next.js 自管）。
 
-CSS 拆分上限：單檔 ~500 行。`custom.css` 已超過此上限（以 `wc -l` 為準），未來拆成 `tokens.css` + `base.css` + `components.css` + `layout.css`，在 `theme/index.ts` 多檔 import。
+CSS 拆分上限：單檔 ~500 行。已拆為 `tokens.css` / `base.css` / `components.css` / `layout.css`，由 `theme/index.ts` 按序 import；`components.css` 約 668 行（接近單檔上限），下次再長可再拆 hero / dashboard / quiz / chapter-card 子檔。
 
 ---
 
@@ -203,7 +203,7 @@ node scripts/screenshot.mjs after
 依優先度排序：
 
 1. **config.mts sidebar 硬編碼**：未來如果章節清單頻繁變動，要改成從 `chapters.ts` 動態產（已預留 `chaptersByPart()` helper）
-2. **custom.css 已超過 500 行上限**：拆成 `tokens.css` / `base.css` / `components.css` / `layout.css` 是下一個 refactor 點
+2. **CSS 拆 4 檔已完成**：`tokens` / `base` / `components` / `layout`；`components.css` 接近 500 行上限，未來再拆 hero / dashboard / quiz 子檔
 3. **`vitepress build` chunk size warning**：>500KB chunk，可考慮 dynamic import + manualChunks 切分（影響首屏 FCP，但 CDN cache 後實際影響不大，目前不急）
 4. **沒有 CI**：依賴開發者自跑 type-check / build；可考慮加 GitHub Actions
 

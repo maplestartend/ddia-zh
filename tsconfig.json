@@ -8,6 +8,8 @@
     "noUnusedParameters": true,
     "noImplicitAny": true,
     "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "resolveJsonModule": true,
@@ -21,7 +23,6 @@
   "include": [
     "docs/.vitepress/**/*.ts",
     "docs/.vitepress/**/*.vue",
-    "scripts/**/*.mjs",
     "docs/.vitepress/types.d.ts"
   ],
   "exclude": ["node_modules", "docs/.vitepress/cache", "docs/.vitepress/dist"]

@@ -74,7 +74,7 @@ npm run preview
 | 改章節清單（新增、刪、改順序） | [docs/.vitepress/data/chapters.ts](docs/.vitepress/data/chapters.ts) — **唯一 SSOT** |
 | 加詞彙、改 hover 定義 | [docs/.vitepress/data/glossary.ts](docs/.vitepress/data/glossary.ts) + [docs/glossary/index.md](docs/glossary/index.md) |
 | 改 sidebar / nav | [docs/.vitepress/config.mts](docs/.vitepress/config.mts) |
-| 改全站樣式 token | [docs/.vitepress/theme/custom.css](docs/.vitepress/theme/custom.css) |
+| 改全站樣式 token | [docs/.vitepress/theme/styles/tokens.css](docs/.vitepress/theme/styles/tokens.css)（另有 base / components / layout 三檔） |
 | 在內文連結詞彙 | `<G term="quorum">法定人數</G>` |
 | 加章首 TL;DR | `<TLDR :points='["...","..."]' />` （每檔僅一個）|
 | 加章末測驗 | `<Quiz chapter-id="ch07" :questions='[...]' />` |

@@ -1,0 +1,168 @@
+/* ==========================================================================
+   Base — 全域基礎、prose typography、Material Symbols FOUT 處理
+   依賴 tokens.css 的 semantic 變數
+   ========================================================================== */
+
+html {
+  font-size: 16px;
+}
+
+body {
+  background-color: var(--bg-canvas);
+  color: var(--text-primary);
+  font-family: var(--vp-font-family-base);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* 中文 typography：
+     - text-wrap: pretty 讓末行平衡、避免孤行字（Chrome 114+ / Safari 17.5+）
+     - line-break: strict 啟用中文標點避頭尾（標點符號不出現在行首 / 行尾） */
+  text-wrap: pretty;
+  line-break: strict;
+}
+
+/* 中文段落的 wrap 策略：
+   - word-break: normal 預設行為（中文每字皆可斷、英文按詞斷）
+   - overflow-wrap: break-word 英文超長 token 才強制斷、不溢出容器
+   主要用於正文段落、卡片描述、TLDR 點、disclaimer、quiz 等中文密度高的區塊 */
+.vp-doc p, .vp-doc li, .vp-doc td, .vp-doc dd, .vp-doc blockquote,
+.ddia-hero-subtitle, .ddia-hero-meta, .ddia-hero-disclaimer,
+.ddia-card-summary, .ddia-bridge-text, .ddia-tldr-item,
+.ddia-stat-label, .ddia-dashboard-welcome-text,
+.ddia-secondary-nav-label, .ddia-quiz-question, .ddia-quiz-option,
+.ddia-quiz-explanation, .ddia-part-header-title p {
+  word-break: normal;
+  overflow-wrap: break-word;
+}
+
+.numeric,
+[data-numeric] {
+  font-variant-numeric: tabular-nums lining-nums slashed-zero;
+  font-feature-settings: "tnum" 1, "lnum" 1;
+  font-family: var(--vp-font-family-mono);
+}
+
+:focus-visible {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  box-shadow: var(--focus-ring);
+}
+
+/* Material Symbols Rounded：FOUT 防護（字型載入前用 color: transparent 隱藏 ligature 字面 fallback） */
+.material-symbols-rounded {
+  font-family: "Material Symbols Rounded";
+  font-weight: normal;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  font-feature-settings: "liga";
+  -webkit-font-feature-settings: "liga";
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  user-select: none;
+  overflow: hidden;
+  color: transparent;
+}
+
+.fonts-loaded .material-symbols-rounded {
+  color: inherit;
+}
+
+/* ---------- Prose typography（VitePress .vp-doc 內的文章） ---------- */
+.vp-doc {
+  font-size: 16px;
+  line-height: 1.85;
+  letter-spacing: 0.005em;
+}
+
+.vp-doc h1 {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin-bottom: 16px;
+}
+
+.vp-doc h2 {
+  font-weight: 700;
+  font-size: 22px;
+  border-top: 1px solid var(--border-default);
+  padding-top: 28px;
+  margin-top: 48px;
+  letter-spacing: -0.005em;
+}
+
+/* H2 icon 注入：用 CSS ::before + markdown-it-attrs 的 class（避免 Vue 元件嵌 H2 的 SSG 陷阱） */
+.vp-doc h2.role-h2::before {
+  content: attr(data-icon);
+  font-family: "Material Symbols Rounded";
+  font-weight: normal;
+  font-feature-settings: "liga";
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  font-size: 26px;
+  color: var(--brand-500);
+  margin-right: 10px;
+  vertical-align: middle;
+  display: inline-block;
+  transform: translateY(-2px);
+}
+
+.dark .vp-doc h2.role-h2::before {
+  color: var(--brand-300);
+}
+
+.fonts-loaded .vp-doc h2.role-h2::before {
+  color: var(--brand-500);
+}
+.dark.fonts-loaded .vp-doc h2.role-h2::before {
+  color: var(--brand-300);
+}
+.vp-doc h2.role-h2:not(.fonts-loaded *)::before {
+  color: transparent;
+}
+.vp-doc h2.icon-code::before          { content: "code"; }
+.vp-doc h2.icon-analytics::before     { content: "analytics"; }
+.vp-doc h2.icon-account_tree::before  { content: "account_tree"; }
+.vp-doc h2.icon-bolt::before          { content: "bolt"; }
+.vp-doc h2.icon-library_books::before { content: "library_books"; }
+.vp-doc h2.icon-menu_book::before     { content: "menu_book"; }
+.vp-doc h2.icon-rocket_launch::before { content: "rocket_launch"; }
+
+.vp-doc h3 {
+  font-weight: 600;
+  font-size: 18px;
+  margin-top: 32px;
+}
+
+.vp-doc p { margin: 16px 0; }
+
+.vp-doc div[class*='language-'] {
+  border-radius: 10px;
+  font-size: 14px;
+}
+
+.vp-doc blockquote {
+  border-left: 3px solid var(--brand-500);
+  background: var(--info-bg);
+  padding: 14px 18px;
+  border-radius: 0 8px 8px 0;
+  margin: 22px 0;
+  color: var(--text-secondary);
+}
+
+.vp-doc blockquote > p { margin: 6px 0; }
+
+.vp-doc table {
+  font-size: 14.5px;
+}
+
+.vp-doc thead {
+  background: var(--bg-subtle);
+}
+
+.vp-doc th, .vp-doc td {
+  border-color: var(--border-default);
+}
