@@ -1,14 +1,26 @@
 # DDIA 中文學習網站
 
-> ⚠️ **非官方學習筆記** — 本網站**非** Martin Kleppmann 或 O'Reilly Media 官方授權產品，亦未受其背書或審閱。
-> 原書著作權完全屬於 **Martin Kleppmann 與 O'Reilly Media**。請至 [dataintensive.net](https://dataintensive.net/) 或實體書店支持原作。
+> ⚠️ **非官方學習筆記**
+>
+> 本網站**非** Martin Kleppmann 或 O'Reilly Media 官方授權產品，亦未受其背書或審閱。原書著作權完全屬於 **Martin Kleppmann 與 O'Reilly Media**。
+>
+> 請至 [dataintensive.net](https://dataintensive.net/) 或實體書店支持原作。
 
-🌐 **線上版**：https://maplestartend.github.io/ddia-zh/（push 到 `main` 後 GitHub Actions 自動部署）
-📦 **原始碼**：https://github.com/maplestartend/ddia-zh
+🌐 **線上版**：<https://maplestartend.github.io/ddia-zh/>
+📦 **原始碼**：<https://github.com/maplestartend/ddia-zh>（push 到 `main` 後 GitHub Actions 自動部署）
 
-把《Designing Data-Intensive Applications》(Martin Kleppmann, O'Reilly Media, 2017) 整理成 12 章 + Part 0 前置知識 + 詞彙表 + 學習路徑的繁體中文教材，配 TL;DR / 章末測驗 / 進度追蹤等主動學習元件。
+把《Designing Data-Intensive Applications》(Martin Kleppmann, O'Reilly Media, 2017) 整理成繁體中文教材。
 
-**性質**：個人非商業學習筆記，重新整理、改寫、補充原創評論與 Part 0 銜接內容；不複製原書內文。詳細版權說明見 [LICENSE](LICENSE) 與 [NOTICE.md](NOTICE.md)。
+**教材組成**
+
+- **12 章主課程** — Part I 資料系統基礎 / Part II 分散式資料 / Part III 衍生資料
+- **Part 0 前置知識**（選讀）— 作業系統、網路、SQL、資料結構、並行控制
+- **詞彙表** — 70+ 名詞，內文 hover tooltip + 完整定義頁
+- **學習路徑** — 依角色推薦的閱讀順序
+
+**主動學習元件**：TL;DR 章首摘要 / 章末測驗 / 已讀進度追蹤（localStorage，無後端帳號）。
+
+**性質**：個人非商業學習筆記。重新整理、改寫、補充原創評論與 Part 0 銜接內容；**不複製原書內文**。詳細版權說明見 [LICENSE](LICENSE) 與 [NOTICE.md](NOTICE.md)。
 
 ---
 
@@ -21,7 +33,7 @@
 | **[GitHub Issues](https://github.com/maplestartend/ddia-zh/issues/new/choose)** | 內容錯誤、翻譯建議、版權 takedown、一般學習建議（四種模板）|
 | **電子郵件 `asercv14632@gmail.com`** | 私下溝通（商業合作、版權細節、敏感建議）|
 
-**目前不接受外部 PR**——若你有想法，請走 Issue 或寫信給我，由我決定如何納入。
+**目前不接受外部 PR**。若有想法，請走 Issue 或寫信給我，由我決定如何納入。
 
 ## 快速開始
 
@@ -107,15 +119,25 @@ docs/
 
 ## 部署
 
-`main` 分支 push 後，GitHub Actions ([.github/workflows/deploy.yml](.github/workflows/deploy.yml)) 自動：
+`main` 分支 push 後，GitHub Actions（[deploy.yml](.github/workflows/deploy.yml)）自動：
 
 1. `npm ci` 安裝依賴
-2. `npm run type-check`（嚴格）
-3. `npm run lint:glossary` + `npm run lint:tldr`（non-blocking）
+2. `npm run type-check`（嚴格、阻擋 build）
+3. `npm run lint:glossary` + `npm run lint:tldr`（non-blocking、輸出印到 Actions step summary）
 4. `GITHUB_PAGES=true npm run build`（觸發 base = `/ddia-zh/`）
 5. 部署到 GitHub Pages
 
-**重要**：因為 base 是 `/ddia-zh/` 而非 `/`，內部連結必須走 markdown `[...](/...)` 語法或 `<BaseLink to="/...">` Vue 元件——**不要 hard-code `<a href="/...">`**，那樣在 Pages 上會 404。
+另有 [ci.yml](.github/workflows/ci.yml) 在 PR 觸發時跑相同驗證（例：dependabot 的依賴升級 PR）。
+
+**內部連結注意事項**
+
+因為部署 base 是 `/ddia-zh/` 而非 `/`，必須用**會自動處理 base** 的連結寫法：
+
+- markdown `[文字](/path)` — VitePress 自動加 base ✓
+- `<BaseLink to="/path">` 元件 — 包 `withBase()` ✓
+- 絕對 URL `https://...` — 不受 base 影響 ✓
+
+**禁止**：hard-code `<a href="/path">`，在 Pages 上會 404。
 
 ## 已知限制
 
@@ -125,7 +147,10 @@ docs/
 
 ## License
 
-- **程式碼**（Vue 元件、composable、build script、CSS）：[MIT License](LICENSE)
-- **學習內容**（markdown 章節、詞彙表、測驗、學習路徑）：[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) —— 非商業、需署名、衍生需相同條款分享
+雙授權：
 
-原書 *Designing Data-Intensive Applications* 著作權屬 **Martin Kleppmann 與 O'Reilly Media**，本網站僅作個人學習筆記的重新整理。完整版權與免責聲明見 [LICENSE](LICENSE)。
+- **程式碼**（Vue 元件、composable、build script、CSS）：[MIT License](LICENSE)
+- **學習內容**（markdown 章節、詞彙表、測驗、學習路徑）：[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+  非商業 · 需署名 · 衍生作需相同條款分享
+
+原書 *Designing Data-Intensive Applications* 著作權屬 **Martin Kleppmann 與 O'Reilly Media**。本網站僅作個人學習筆記的重新整理。完整版權與免責聲明見 [LICENSE](LICENSE)。
