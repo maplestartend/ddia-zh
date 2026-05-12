@@ -100,6 +100,22 @@ def reduce(word, counts):
 | **Broadcast Hash Join** | 小表（< RAM）vs 大表 | 小表廣播到所有 mapper，記憶體 hash 查 |
 | **Partitioned Hash Join** | 兩邊都按相同 key 分區 | 同分區內 local join |
 
+::: tip 實務細節：Spark 場景下三件每個 DE 都會踩的事
+**(1) Broadcast 閾值與 driver OOM**
+- Spark 預設 `spark.sql.autoBroadcastJoinThreshold = 10MB`，小表 ≤ 10MB 自動 broadcast、超過 fallback 到 sort-merge
+- **driver OOM 警報**：broadcast 階段小表會先 collect 回 driver 再廣播 → 一張 200MB 的「小表」設 broadcast 會炸 driver。實務上閾值不要拉太大、寧可走 sort-merge
+- 強制 broadcast：`SELECT /*+ BROADCAST(small_table) */ ...` hint
+
+**(2) Skew join（熱 key）—— 日常痛點**
+- 場景：99% 的 user 各有 < 100 event，但 top 1% user 有 100k+ event → 對 `user_id` 做 join 時、熱 user 的 reducer 跑很久、其他 reducer 早就完成在等
+- **Spark 3 的 AQE（Adaptive Query Execution）skew join**：執行時偵測 skew partition、自動拆成多個小 partition + 對另一邊 replicate；啟用方式 `spark.sql.adaptive.enabled=true` + `spark.sql.adaptive.skewJoin.enabled=true`
+- **手動 salting**：對熱 key 加 `_0` ~ `_N` 後綴拆成 N 份、另一邊 explode 對應 N 份；可控但難維護
+
+**(3) Partitioned hash join 的前提：bucketing**
+- 「兩邊都按相同 key 分區」不是天生有、要先 bucket 過。Hive `CLUSTERED BY` / Spark `bucketBy` 都是這個用途
+- 一旦 bucket 對齊，後續 join 不必 shuffle → 大表 join 變得便宜很多。但 bucket 數要規劃好、改 schema 成本高
+:::
+
 ---
 
 ## 10.5 Dataflow 引擎（Spark, Flink, Tez）

@@ -185,6 +185,26 @@ sequenceDiagram
 - 當 transaction manager (TM) 嵌入應用程式 process 時，coordinator 的決策 log 寫在應用記憶體 → 應用掛了交易也卡住
 - 與「at-least-once delivery」搭配時更脆弱
 
+### 書外延伸：現代微服務的分散式交易 pattern
+
+DDIA 寫於 2017、聚焦在 2PC 的學術 / DB 視角。但 fintech / 電商實作上 **2PC 太昂貴、跨服務也不適用**（每個服務各自管自己的 DB），業界改用以下 pattern：
+
+| Pattern | 核心想法 | 適用場景 | 主要痛點 |
+|---|---|---|---|
+| **Saga**（orchestration） | 把長交易拆成多個本地交易、用 orchestrator 協調順序、失敗時跑 compensating action 回復 | 訂單 → 庫存 → 付款 → 出貨這類**有序**多步驟 | 沒有原子性、只有最終一致；compensating action 要寫對 |
+| **Saga**（choreography） | 同上、但用事件驅動（每步驟發事件、下游服務監聽），無中央 orchestrator | 服務數量少、流程簡單 | 事件依賴變複雜後難 trace |
+| **Outbox pattern** | 業務 DB 寫入 + 訊息發送**包進同一個本地交易**（訊息寫到 outbox 表），背景 worker 把 outbox 內容轉發到 MQ | 「DB 寫入要可靠地觸發訊息」場景（最常見） | 需要 CDC 或 polling worker、有延遲 |
+| **TCC**（Try-Confirm-Cancel） | 三階段：Try 預留資源、Confirm 真執行、Cancel 釋放 | 高一致性需求、能控制所有參與服務 | 業務邏輯侵入性大、每個操作要實作三個方法 |
+
+::: tip 三個 pattern 怎麼選
+- **「我只是 DB 寫完要發訊息給 MQ」**→ Outbox（最簡單、最可靠）
+- **「跨多服務的長流程」**→ Saga（接受最終一致性 + 寫好 compensating action）
+- **「跨服務的強一致性、能改所有服務」**→ TCC（很少場景值得這成本，多半是金融核心）
+- **「跨 DB（同公司）」**→ XA / 2PC（如果服務在同一 process 內、且 DB 都支援）
+
+**參考**：[microservices.io patterns](https://microservices.io/patterns/data/saga.html)（Chris Richardson 整理）。Saga compensating action 不是 rollback——是「**邏輯上**的取消」（例：訂單成立失敗、要發退款而不是 `DELETE` 已 commit 的記錄）。
+:::
+
 ---
 
 <SectionDivider icon="hub" label="核心機制" />
@@ -265,6 +285,45 @@ ZooKeeper（Apache）= 給其他系統用的共識服務。提供：
 - Ephemeral nodes（client 斷線就消失，用於 leader election、heartbeat）
 
 許多 DB（HBase、Kafka 舊版、ClickHouse）依賴 ZooKeeper 做元資料管理。新一代用 etcd（基於 Raft）。
+
+### Kafka KRaft：從 ZooKeeper 到自管 Raft
+
+Kafka 從 2.8（2021）引入 **KRaft** mode（Kafka Raft），3.3（2022）production-ready，**4.0（2025）完全移除 ZooKeeper 依賴**。
+
+| 維度 | Kafka + ZooKeeper（傳統） | KRaft（現代） |
+|---|---|---|
+| 控制平面 | ZK ensemble（3-5 節點獨立部署） | Kafka 自己跑 Raft 在 controller 節點上 |
+| Metadata 一致性 | ZK 的 ZAB | Raft（自管） |
+| Leader epoch | 對應 controller epoch | **同樣是 Raft term** |
+| 維運 | 要管兩套系統（Kafka + ZK） | 單一系統 |
+| Cluster 啟動 | 等 ZK ready 才啟動 broker | broker / controller 同一進程 |
+
+::: tip Kafka leader epoch ≈ Raft term
+Kafka producer 帶的 `leader_epoch` 與 Raft 的 `term` 角色相同：擋住 zombie leader 的寫入。當 broker 看到比自己 `leader_epoch` 大的訊息來自前任 leader、會拒絕該寫入——這就是 [§9.5 的 vote 規則 + Log Matching](#9-5-共識-consensus) 在 Kafka 的化身。
+
+對升級到 KRaft 的維運影響：**只改了 metadata 怎麼共識、producer / consumer API 完全不變**；transactional producer / EOS 機制是另一個獨立子系統（[詳見 Ch11 §11.5](/part-3/ch11-streams)）、跟 ZK / KRaft 都無關。
+:::
+
+### Spanner TrueTime 與 commit-wait
+
+Spanner（Google 2012）做到 **external consistency**（= strict serializability）的關鍵是 **TrueTime API**：
+
+- **核心抽象**：`TT.now()` 不回傳單一時間戳，而是回傳區間 `[earliest, latest]`，保證真實時間在這區間內
+- **ε 邊界**：Google 透過 GPS + 原子鐘把 ε 控制在 ~7ms 以內（2012 OSDI paper 數值；現代資料中心 ε 已降至 ms / sub-ms 級）
+- **commit-wait**：交易 commit 時，Spanner 會**主動 sleep 直到 `latest` 過去**，確保「我 commit 後、任何下次的 TT.now() 都比我大」→ 線性一致時序就成立
+
+```
+T1 commit @ TT = [100, 107]
+  ↓ 強制 sleep 7ms (commit-wait)
+T2 開始讀 @ TT = [108, 115] → 必定大於 T1 的 latest
+```
+
+**對比 HLC**（CockroachDB / YugabyteDB 用的）：
+- HLC（Hybrid Logical Clock）只**緩解**時鐘漂移、不消除——當實體時鐘誤差超過 max_offset（CRDB 預設 500ms）會直接 panic
+- TrueTime 用**主動 wait** 把不確定性「等過去」、付出延遲代價買到嚴格一致性
+- 沒 Google 級基礎設施（GPS + 原子鐘）的公司通常選 HLC + max_offset 容忍機制
+
+> Spanner 也提供 **stale read**（指定一個過去時間點讀）讓延遲敏感應用避開 commit-wait——但這就不是線性一致了，是「明確標示的歷史讀」。
 
 ---
 
