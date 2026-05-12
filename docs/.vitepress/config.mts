@@ -8,12 +8,29 @@ import { chaptersByPart, PARTS, type Chapter } from './data/chapters'
 const base = process.env.GITHUB_PAGES === 'true' ? '/ddia-zh/' : '/'
 
 // sidebar 從 chapters.ts SSOT 動態產出：新增 / 改章節順序只動 chapters.ts 一處
-function sidebarGroup(part: 0 | 1 | 2 | 3, indexLink: string, textOverride?: string) {
-  return [{
-    text: textOverride ?? PARTS[part].title,
-    link: indexLink,
+const PART_INDEX_LINK: Record<0 | 1 | 2 | 3, string> = {
+  0: '/part-0/',
+  1: '/part-1/',
+  2: '/part-2/',
+  3: '/part-3/'
+}
+const PART_SIDEBAR_TEXT: Partial<Record<0 | 1 | 2 | 3, string>> = {
+  0: 'Part 0 前置知識（選讀）'
+}
+
+function partGroup(part: 0 | 1 | 2 | 3, opts: { collapsed: boolean }) {
+  return {
+    text: PART_SIDEBAR_TEXT[part] ?? PARTS[part].title,
+    link: PART_INDEX_LINK[part],
+    collapsed: opts.collapsed,
     items: chaptersByPart(part).map((c: Chapter) => ({ text: c.shortTitle, link: c.link }))
-  }]
+  }
+}
+
+// 全 Part sidebar：當前 part expanded、其他 collapsed
+// 讓讀者在章節頁也能看到全書地圖（跨 part 跳轉不必先回首頁）
+function fullSidebar(activePart: 0 | 1 | 2 | 3) {
+  return ([0, 1, 2, 3] as const).map(p => partGroup(p, { collapsed: p !== activePart }))
 }
 
 export default withMermaid(defineConfig({
@@ -62,10 +79,10 @@ export default withMermaid(defineConfig({
     ],
 
     sidebar: {
-      '/part-0/': sidebarGroup(0, '/part-0/', 'Part 0 前置知識（選讀）'),
-      '/part-1/': sidebarGroup(1, '/part-1/'),
-      '/part-2/': sidebarGroup(2, '/part-2/'),
-      '/part-3/': sidebarGroup(3, '/part-3/')
+      '/part-0/': fullSidebar(0),
+      '/part-1/': fullSidebar(1),
+      '/part-2/': fullSidebar(2),
+      '/part-3/': fullSidebar(3)
     },
 
     search: {

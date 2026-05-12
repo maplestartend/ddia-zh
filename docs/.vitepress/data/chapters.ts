@@ -124,3 +124,17 @@ export function chaptersByPart(part: 0 | 1 | 2 | 3): readonly Chapter[] {
   if (part === 0) return PREREQUISITES
   return CHAPTERS.filter(c => c.part === part)
 }
+
+// 給「學習循環」block 用：依當前章節 id 推算下一章。
+// Part 0 章節（'p0-xx'）在 PREREQUISITES 內依序往下；
+// 主課程章節（'chXX'）在 CHAPTERS 內依序往下；
+// 沒有下一章（Part 0 的最後一章、Ch12）回傳 null。
+//
+// 注意：Part 0 結束「不會」自動接到 Ch1——前置知識是選讀補強、
+// 讀者可能在任何時點離開 Part 0 跳去主課程；硬接會誤導學習路徑。
+export function nextChapter(currentId: string): Chapter | null {
+  const list = currentId.startsWith('p0-') ? PREREQUISITES : CHAPTERS
+  const idx = list.findIndex(c => c.id === currentId)
+  if (idx < 0 || idx >= list.length - 1) return null
+  return list[idx + 1] ?? null
+}
