@@ -90,62 +90,69 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-/* 章末「學習循環」block：把分散在頁尾的標已讀 / 跳測驗 / 下一章三件事合在同一卡片
-   讓 TLDR → 讀 → Quiz → Progress → 下一章 的學習循環視覺上閉環 */
+/* Editorial 章末學習循環：書末頁腳列（髮絲線分隔 + 連體按鈕格） */
 .ddia-chapter-loop {
-  margin: 40px 0 24px;
-  padding: 18px 20px;
-  background: var(--bg-surface);
-  border: 1px solid var(--border-default);
-  border-left: 3px solid var(--brand-500);
-  border-radius: 12px;
+  margin: 56px 0 32px;
+  padding: 24px 0;
+  background: transparent;
+  border: 0;
+  border-top: 1px solid var(--rule-hairline);
+  border-bottom: 1px solid var(--rule-hairline);
+  border-radius: 0;
 }
 
 .ddia-chapter-loop-eyebrow {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  font-size: 11px;
-  font-weight: 700;
+  gap: 6px;
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 24, "SOFT" 60, "wght" 500;
+  font-style: italic;
+  font-size: 12px;
+  font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--brand-500);
-  margin-bottom: 12px;
+  letter-spacing: 0.22em;
+  color: var(--text-tertiary);
+  margin-bottom: 16px;
 }
-:global(.dark) .ddia-chapter-loop-eyebrow {
-  color: var(--brand-300);
+.ddia-chapter-loop-eyebrow :deep(.material-symbols-rounded) {
+  display: none;
 }
 
 .ddia-chapter-loop-actions {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0;
+  border-top: 1px solid var(--rule-hairline);
+  border-left: 1px solid var(--rule-hairline);
 }
 
 .ddia-loop-btn {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  padding: 12px 14px;
-  background: var(--bg-canvas);
-  border: 1px solid var(--border-default);
-  border-radius: 10px;
-  font-family: inherit;
+  padding: 16px 18px;
+  background: transparent;
+  border: 0;
+  border-right: 1px solid var(--rule-hairline);
+  border-bottom: 1px solid var(--rule-hairline);
+  border-radius: 0;
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 500;
   font-size: 14px;
   color: var(--text-primary);
   text-decoration: none;
   text-align: left;
   cursor: pointer;
-  transition: background 0.15s ease, border-color 0.15s ease, transform 0.05s ease;
+  transition: background 0.15s, color 0.15s;
+}
+.ddia-loop-btn :deep(.material-symbols-rounded) {
+  display: none;
 }
 .ddia-loop-btn:hover,
 .ddia-loop-btn:focus-visible {
   background: var(--bg-surface);
-  border-color: var(--brand-300);
   outline: none;
-}
-.ddia-loop-btn:active {
-  transform: translateY(1px);
 }
 
 .ddia-loop-btn-text {
@@ -156,47 +163,76 @@ onUnmounted(() => {
   min-width: 0;
 }
 .ddia-loop-btn-label {
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 600;
   font-weight: 600;
+  font-size: 15px;
   line-height: 1.3;
+  letter-spacing: 0.01em;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 .ddia-loop-btn-sub {
-  font-size: 11px;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-variation-settings: "opsz" 24, "SOFT" 60, "wght" 400;
+  font-size: 12px;
   color: var(--text-tertiary);
-  font-weight: 400;
+  letter-spacing: 0.04em;
 }
 
-/* 已讀狀態：用 brand 邊 + 淡 brand 底，與「未讀」明確區分 */
+/* 已讀狀態：左邊 3px brand 印記 */
 .ddia-loop-btn.is-done {
-  background: var(--info-bg);
-  border-color: var(--brand-300);
+  background: var(--brand-tint-soft);
   color: var(--brand-500);
+  position: relative;
+}
+.ddia-loop-btn.is-done::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--brand-500);
 }
 .ddia-loop-btn.is-done .ddia-loop-btn-sub {
   color: var(--brand-500);
   opacity: 0.75;
 }
 :global(.dark) .ddia-loop-btn.is-done {
-  color: var(--brand-300);
+  color: var(--info-fg);
+}
+:global(.dark) .ddia-loop-btn.is-done::before {
+  background: var(--info-fg);
 }
 :global(.dark) .ddia-loop-btn.is-done .ddia-loop-btn-sub {
-  color: var(--brand-300);
+  color: var(--info-fg);
 }
 
-/* 下一章：primary CTA 視覺，引導讀者繼續 */
+/* 下一章 primary CTA */
 .ddia-loop-btn.is-next {
   background: var(--brand-500);
-  border-color: var(--brand-500);
   color: var(--text-inverse);
 }
 .ddia-loop-btn.is-next .ddia-loop-btn-sub {
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255, 255, 255, 0.75);
 }
 .ddia-loop-btn.is-next:hover,
 .ddia-loop-btn.is-next:focus-visible {
-  background: var(--brand-600);
-  border-color: var(--brand-600);
+  background: var(--brand-700);
+}
+.ddia-loop-btn.is-next::after {
+  content: "→";
+  margin-left: auto;
+  font-size: 18px;
+}
+:global(.dark) .ddia-loop-btn.is-next {
+  background: var(--info-fg);
+  color: var(--bg-canvas);
+}
+:global(.dark) .ddia-loop-btn.is-next:hover {
+  background: var(--accent-200);
 }
 </style>

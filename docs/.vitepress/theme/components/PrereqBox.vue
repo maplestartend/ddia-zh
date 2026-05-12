@@ -37,43 +37,56 @@ defineProps<{
 </script>
 
 <style scoped>
+/* Editorial 讀前須知：書頁譯註欄樣式 */
 .ddia-prereq {
-  margin: 16px 0 28px;
-  padding: 14px 18px;
-  background: var(--bg-subtle);
-  border: 1px solid var(--border-default);
-  border-left: 3px solid var(--accent-500);
-  border-radius: 10px;
+  margin: 24px 0 36px;
+  padding: 18px 0;
+  background: transparent;
+  border: 0;
+  border-top: 1px solid var(--rule-hairline);
+  border-bottom: 1px solid var(--rule-hairline);
+  border-radius: 0;
 }
 .ddia-prereq-eyebrow {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  font-size: 11px;
-  font-weight: 700;
+  gap: 6px;
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 24, "SOFT" 60, "wght" 500;
+  font-style: italic;
+  font-size: 12px;
+  font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--accent-500);
-  margin-bottom: 10px;
+  letter-spacing: 0.22em;
+  color: var(--text-tertiary);
+  margin-bottom: 12px;
 }
-:global(.dark) .ddia-prereq-eyebrow {
-  color: var(--brand-300);
+.ddia-prereq-eyebrow :deep(.material-symbols-rounded) {
+  display: none;
 }
 .ddia-prereq-list {
   margin: 0;
   display: grid;
-  grid-template-columns: minmax(140px, auto) 1fr;
-  gap: 6px 16px;
-  font-size: 13.5px;
-  line-height: 1.6;
+  grid-template-columns: minmax(160px, auto) 1fr;
+  gap: 10px 24px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.7;
 }
 .ddia-prereq-list dt {
   display: inline-flex;
-  align-items: center;
+  align-items: baseline;
   gap: 5px;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-variation-settings: "opsz" 24, "SOFT" 50, "wght" 500;
   color: var(--text-secondary);
-  font-weight: 600;
+  font-weight: 500;
   white-space: nowrap;
+  letter-spacing: 0.04em;
+}
+.ddia-prereq-list dt :deep(.material-symbols-rounded) {
+  display: none;
 }
 .ddia-prereq-list dd {
   margin: 0;
@@ -81,19 +94,31 @@ defineProps<{
 }
 .ddia-prereq-list dd ul {
   margin: 0;
-  padding-left: 18px;
+  padding-left: 1.2em;
+  list-style: none;
 }
 .ddia-prereq-list dd ul li {
-  margin: 2px 0;
+  margin: 4px 0;
+  position: relative;
+}
+.ddia-prereq-list dd ul li::before {
+  content: "·";
+  position: absolute;
+  left: -0.9em;
+  font-family: var(--font-display);
+  color: var(--text-tertiary);
+  font-size: 18px;
+  line-height: 1;
 }
 .ddia-prereq-item {
   display: inline-block;
-  padding: 1px 8px;
-  margin: 0 4px 4px 0;
-  background: var(--bg-surface);
-  border: 1px solid var(--border-default);
-  border-radius: 999px;
-  font-size: 12.5px;
+  padding: 1px 0;
+  margin: 0 14px 4px 0;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px dotted var(--border-default);
+  border-radius: 0;
+  font-size: 13.5px;
   color: var(--text-secondary);
 }
 @media (max-width: 640px) {
@@ -102,7 +127,7 @@ defineProps<{
     gap: 4px 0;
   }
   .ddia-prereq-list dt {
-    margin-top: 8px;
+    margin-top: 10px;
   }
 }
 </style>

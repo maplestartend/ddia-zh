@@ -1,117 +1,161 @@
 /* ==========================================================================
-   Design Tokens — Primitive 色階 + Semantic（Light / Dark）+ VitePress 對應
+   Design Tokens — Editorial Manuscript（O'Reilly 紙本書感 / 學習筆記隱喻）
    ==========================================================================
    兩層 token 架構：
-     Primitive（brand / neutral 色階）→ Semantic（bg-* / text-* / border-*）
+     Primitive（ink/oxblood/cream 色階 + 字型 stack）→ Semantic（bg-* / text-* / border-*）
      → 各元件 CSS 用 Semantic、不直接吃 Primitive
    Dark 模式：用 .dark class（VitePress 預設），不要用 [data-theme]
+   配色靈感：O'Reilly 紙本封面 + 1930s 印刷品 + 暖白米紙
    ========================================================================== */
 
 :root {
-  --brand-50:  #EEF2F8;
-  --brand-100: #D6DEEB;
-  --brand-200: #B0BFDA;
-  --brand-300: #7E93BE;
-  --brand-400: #51699E;
-  --brand-500: #2F4A80;
-  --brand-600: #243A68;
-  --brand-700: #1B2D51;
-  --brand-800: #131F3A;
-  --brand-900: #0A1325;
+  /* ---------- Primitive · Brand（mahogany clay 紅木陶土 — 比 pure oxblood 暖、含黃）---------- */
+  --brand-50:  #F6ECE7;
+  --brand-100: #ECD4C9;
+  --brand-200: #DBAE9C;
+  --brand-300: #BC826A;
+  --brand-400: #A05A45;
+  --brand-500: #8C3A2A;   /* 主色 · mahogany clay，比 oxblood (#6B1D1D) 暖 12% / 亮 18% */
+  --brand-600: #6F2A1E;
+  --brand-700: #531D14;
+  --brand-800: #38130C;
+  --brand-900: #200A06;
 
-  /* ---------- Primitive · Neutral ---------- */
-  --neutral-50:  #F8FAFC;
-  --neutral-100: #F1F4F8;
-  --neutral-200: #E3E8EF;
-  --neutral-300: #CBD2DC;
-  --neutral-400: #9AA4B2;
-  --neutral-500: #697586;
-  --neutral-600: #4A5566;
-  --neutral-700: #364152;
-  --neutral-800: #202939;
-  --neutral-900: #121926;
-  --neutral-950: #0A0E17;
-  --accent-500: #51699E;
-  --info-500:   #0E7AB8;
-  --success-500: #16A34A;
-  --warning-500: #D98A00;
-  --error-500:   #B3261E;
+  /* manuscript orange · 連結色 / sharp accent */
+  --accent-50:  #FBEFE3;
+  --accent-100: #F4D8B8;
+  --accent-200: #EBB87F;
+  --accent-300: #DC9148;
+  --accent-400: #C45A1B;
+  --accent-500: #C45A1B;
+  --accent-600: #A24612;
+
+  /* ---------- Primitive · Neutral（暖灰偏米色，不是冷藍灰）---------- */
+  --neutral-50:  #F8F4EA;
+  --neutral-100: #F1EBDA;
+  --neutral-200: #E5DCC4;
+  --neutral-300: #D8CFBE;
+  --neutral-400: #B5AC97;
+  --neutral-500: #7A7368;
+  --neutral-600: #4A4640;
+  --neutral-700: #2E2A24;
+  --neutral-800: #1F1C17;
+  --neutral-900: #14110D;
+  --neutral-950: #0A0806;
+
+  --info-500:   var(--brand-500);
+  --success-500: #4E7F3A;  /* 苔綠：與米黃紙協調，避免螢光綠 */
+  --warning-500: #B07410;  /* 焦糖橙：與 oxblood 同色溫 */
+  --error-500:   var(--brand-500);
+
+  /* ---------- 字型 stack ---------- */
+  /* 顯示字（標題 / hero / 章節編號 / pull-quote）：Fraunces + Noto Serif TC */
+  --font-display:
+    "Fraunces", "Source Serif 4",
+    "Noto Serif TC", "Source Han Serif TC",
+    "PingFang TC", "Microsoft JhengHei",
+    "Iowan Old Style", "Apple Garamond",
+    Georgia, serif;
+
+  /* Body（內文段落）：保留 Noto Sans TC — 中文長文螢幕閱讀 sans 仍最舒服 */
+  --font-body:
+    "Noto Sans TC", "PingFang TC", "Microsoft JhengHei",
+    -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Helvetica Neue", Arial, sans-serif;
+
+  /* Mono：JetBrains Mono（保留） */
+  --font-mono:
+    "JetBrains Mono", "SF Mono", "Consolas",
+    ui-monospace, "Noto Sans Mono CJK TC", monospace;
 }
 
-/* ---------- Semantic · Light ---------- */
+/* ---------- Semantic · Light（cream 紙本） ---------- */
 :root {
   color-scheme: light;
 
-  --bg-canvas:    var(--neutral-50);
-  --bg-surface:   #FFFFFF;
-  --bg-subtle:    var(--neutral-100);
-  --bg-muted:     var(--neutral-200);
-  --border-default: var(--neutral-200);
-  --border-strong:  var(--neutral-300);
+  --bg-canvas:    #F4EFE6;   /* 米黃紙 */
+  --bg-surface:   #FBF7EF;   /* 卡片 / hero 內襯 · 比 canvas 略亮 */
+  --bg-subtle:    #ECE6D6;   /* 較深米色 · TLDR 書腰 / inset 背景 */
+  --bg-muted:     #E2DAC4;
+  --bg-secondary: #ECE6D6;   /* 補上原本沒定義的 token */
+  --bg-elevated:  #FBF7EF;
 
-  --text-primary:   var(--neutral-900);
-  --text-secondary: var(--neutral-700);
-  --text-tertiary:  var(--neutral-500);
-  --text-disabled:  var(--neutral-400);
-  --text-inverse:   #FFFFFF;
+  --border-default: #D8CFBE; /* 鉛筆灰邊 */
+  --border-strong:  #1C1A17; /* 全黑髮絲線 · section rule */
+  --rule-hairline:  #1C1A17;
+  --rule-soft:      #B5AC97;
 
-  --info-bg:      var(--brand-50);
+  --text-primary:   #1C1A17; /* near-black ink */
+  --text-secondary: #4A4640;
+  --text-tertiary:  #7A7368;
+  --text-disabled:  #B4ADA0;
+  --text-inverse:   #FBF7EF;
+
+  --info-bg:      #F6ECE7;   /* 淡 mahogany */
   --info-fg:      var(--brand-700);
-  --info-border:  var(--brand-200);
-  --success-bg:   #E3F3E8;
-  --success-fg:   #1E6E35;
-  --warning-bg:   #FFF3DC;
-  --warning-fg:   var(--warning-500);
-  --error-bg:     #FBE8E6;
-  --error-fg:     var(--error-500);
-  --status-done-fg: var(--success-500);
-  --status-doing-fg: var(--accent-500);
-  --status-todo-fg: var(--text-tertiary);
+  --info-border:  #DBAE9C;
+  --success-bg:   #E8EDDD;
+  --success-fg:   #3F6630;
+  --warning-bg:   #FAEBC8;
+  --warning-fg:   #8A5808;
+  --error-bg:     #F4DCDC;
+  --error-fg:     var(--brand-500);
 
-  --focus-ring: 0 0 0 3px rgb(47 74 128 / 0.35);
-  --brand-tint-soft: var(--brand-50);
-  --brand-tint:      var(--brand-50);
-  --brand-tint-strong: var(--brand-50);
-  --brand-tint-border: var(--brand-200);
+  --status-done-fg:  #4E7F3A;
+  --status-doing-fg: var(--accent-500);
+  --status-todo-fg:  var(--text-tertiary);
+
+  --focus-ring: 0 0 0 3px rgb(107 29 29 / 0.25);
+
+  --brand-tint-soft:   rgba(107, 29, 29, 0.04);
+  --brand-tint:        rgba(107, 29, 29, 0.08);
+  --brand-tint-strong: rgba(107, 29, 29, 0.14);
+  --brand-tint-border: rgba(107, 29, 29, 0.25);
 }
+
+/* ---------- Semantic · Dark（暖炭 + 米白）---------- */
 .dark {
   color-scheme: dark;
 
-  --bg-canvas:    #0B0D11;
-  --bg-surface:   #1A1F2B;
-  --bg-subtle:    #232938;   /* 卡片內次層（比 surface 亮 ~9%） */
-  --bg-muted:     #2D3445;
-  --bg-elevated:  #1A1F2B;
-  --border-default: #2D3445;
-  --border-strong:  #424A5C;
+  --bg-canvas:    #171311;   /* 暖炭墨 · 不是純黑、不是冷藍黑 */
+  --bg-surface:   #1F1A17;
+  --bg-subtle:    #261F1A;
+  --bg-muted:     #2E2620;
+  --bg-secondary: #261F1A;
+  --bg-elevated:  #1F1A17;
 
-  --text-primary:   #E5E9F0;
-  --text-secondary: #B8C0CC;
-  --text-tertiary:  #9CA5B5;
-  --text-disabled:  #6C7585;
-  --text-inverse:   #0A0E17;
+  --border-default: #3A332C;
+  --border-strong:  #E3D9BF; /* dark 模式：髮絲線轉米白 */
+  --rule-hairline:  #E3D9BF;
+  --rule-soft:      #5A5147;
 
-  /* dark callout 四色平衡：visual weight 由低到高 info < success < warning < error
-     之前 info 提到 0.22 後比 warning 還搶眼，三色一起上抬保持優先序 */
-  --info-bg:      rgba(126, 147, 190, 0.18);   /* info 略降回 0.18 */
-  --info-fg:      var(--brand-300);
-  --info-border:  rgba(126, 147, 190, 0.42);
-  --success-bg:   rgba(22, 163, 74, 0.20);     /* success 提到 0.20 */
-  --success-fg:   #6FCB8A;
-  --warning-bg:   rgba(217, 138, 0, 0.22);     /* warning 提到 0.22 比 info 更顯眼 */
-  --warning-fg:   #F2B24C;
-  --error-bg:     rgba(179, 38, 30, 0.26);     /* error 提到 0.26 最搶眼 */
-  --error-fg:     #F2615A;
+  --text-primary:   #EDE3CE; /* 蠟燭光下的米白 */
+  --text-secondary: #C9BFA8;
+  --text-tertiary:  #9C9382;
+  --text-disabled:  #6F6759;
+  --text-inverse:   #1C1A17;
 
-  --status-done-fg: #6FCB8A;
-  --status-doing-fg: #F2B24C;
-  --status-todo-fg: var(--text-tertiary);
+  /* dark 模式：oxblood 在暗底會顯髒，主 accent 轉成暖橙 */
+  --info-bg:      rgba(199, 122, 58, 0.16);
+  --info-fg:      #E3A06A;
+  --info-border:  rgba(199, 122, 58, 0.40);
+  --success-bg:   rgba(126, 175, 95, 0.18);
+  --success-fg:   #9EC97F;
+  --warning-bg:   rgba(217, 138, 0, 0.22);
+  --warning-fg:   #E8B656;
+  --error-bg:     rgba(199, 90, 58, 0.22);
+  --error-fg:     #E0856B;
 
-  --focus-ring: 0 0 0 3px rgb(126 157 213 / 0.45);
-  --brand-tint-soft:   rgba(126, 147, 190, 0.08);
-  --brand-tint:        rgba(126, 147, 190, 0.12);
-  --brand-tint-strong: rgba(126, 147, 190, 0.18);
-  --brand-tint-border: rgba(126, 147, 190, 0.35);
+  --status-done-fg:  #9EC97F;
+  --status-doing-fg: #E3A06A;
+  --status-todo-fg:  var(--text-tertiary);
+
+  --focus-ring: 0 0 0 3px rgb(227 160 106 / 0.45);
+
+  --brand-tint-soft:   rgba(227, 160, 106, 0.06);
+  --brand-tint:        rgba(227, 160, 106, 0.10);
+  --brand-tint-strong: rgba(227, 160, 106, 0.18);
+  --brand-tint-border: rgba(227, 160, 106, 0.35);
 }
 
 /* ---------- VitePress 對應：把 semantic token 餵給 VP 預設變數 ---------- */
@@ -132,10 +176,12 @@
   --vp-c-divider: var(--border-default);
   --vp-c-gutter:  var(--border-default);
 
-  --vp-font-family-base:
-    "Noto Sans TC", "PingFang TC", "Microsoft JhengHei",
-    -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
-  --vp-font-family-mono:
-    "JetBrains Mono", "SF Mono", "Consolas",
-    ui-monospace, "Noto Sans Mono CJK TC", monospace;
+  --vp-font-family-base: var(--font-body);
+  --vp-font-family-mono: var(--font-mono);
+}
+
+.dark {
+  --vp-c-brand-1: #E3A06A; /* dark 連結色：暖橙 */
+  --vp-c-brand-2: #DC9148;
+  --vp-c-brand-3: #C45A1B;
 }

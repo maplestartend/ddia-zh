@@ -47,9 +47,13 @@ export default withMermaid(defineConfig({
     // Material Symbols Rounded：縮窄 axis 範圍降低字型 payload（過去全範圍 ~7 個字重 × 全 FILL × 全 GRAD）
     // 實際只用：opsz=20、wght=400 / 500、FILL=0 / 1、GRAD=0；axis range 縮到剛好覆蓋
     ['link', { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..24,400..500,0..1,0&display=swap' }],
-    // 字型：Noto Sans TC（中文）+ JetBrains Mono（數字/程式碼）
-    ['link', { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap' }],
-    ['meta', { name: 'theme-color', content: '#2F4A80' }]
+    // 字型分三層：
+    //   Display（標題 / hero / 章節編號）：Fraunces + Noto Serif TC
+    //   Body（內文）：Noto Sans TC（保留 — 中文長文螢幕閱讀仍以 sans 最舒服）
+    //   Mono（數字 / 程式碼）：JetBrains Mono
+    // Fraunces 軸：opsz 9-144、wght 300-900、SOFT 0-100。打開 SOFT 100 取得最印刷味的字形
+    ['link', { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,300..900,0..100&family=Noto+Serif+TC:wght@500;600;700&family=Noto+Sans+TC:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap' }],
+    ['meta', { name: 'theme-color', content: '#6B1D1D' }]
   ],
 
   themeConfig: {
@@ -141,7 +145,36 @@ export default withMermaid(defineConfig({
   },
 
   mermaid: {
-    // 對齊深鋼藍 brand
-    theme: 'default'
+    // Editorial：對齊 mahogany clay + 米黃紙底（取代 mermaid 預設藍 / 紫色票）
+    theme: 'base',
+    themeVariables: {
+      // Primary（節點背景）：淡 mahogany tint
+      primaryColor: '#F6ECE7',
+      primaryTextColor: '#1C1A17',
+      primaryBorderColor: '#8C3A2A',
+      // Lines（流程線 / arrow）：深 ink 灰
+      lineColor: '#4A4640',
+      // Secondary（次要節點）：米黃紙
+      secondaryColor: '#FBF7EF',
+      secondaryTextColor: '#1C1A17',
+      secondaryBorderColor: '#D8CFBE',
+      // Tertiary（特殊強調）：手稿橙
+      tertiaryColor: '#FBEFE3',
+      tertiaryTextColor: '#1C1A17',
+      tertiaryBorderColor: '#C45A1B',
+      // Background
+      background: '#F4EFE6',
+      mainBkg: '#FBF7EF',
+      // Sequence diagram actor
+      actorBkg: '#FBF7EF',
+      actorBorder: '#8C3A2A',
+      actorTextColor: '#1C1A17',
+      noteBkgColor: '#FBEFE3',
+      noteTextColor: '#1C1A17',
+      noteBorderColor: '#C45A1B',
+      // 字型對齊 Editorial（mermaid 用 SVG text，可以指定 fontFamily）
+      fontFamily: '"Fraunces", "Noto Serif TC", Georgia, serif',
+      fontSize: '14px'
+    }
   }
 }))

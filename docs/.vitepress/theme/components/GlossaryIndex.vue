@@ -57,67 +57,81 @@ function scrollToLetter(letter: string, e: MouseEvent) {
 </script>
 
 <style scoped>
+/* Editorial 詞彙表索引條：書邊頁碼樣式 sticky bar */
 .ddia-glossary-index {
   position: sticky;
   top: calc(var(--vp-nav-height, 64px) + 8px);
   z-index: 10;
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
-  gap: 4px;
-  padding: 10px 14px;
-  margin: 16px 0 24px;
-  background: var(--bg-surface);
-  border: 1px solid var(--border-default);
-  border-radius: 10px;
-  box-shadow: 0 2px 8px -4px rgba(0, 0, 0, 0.08);
+  align-items: baseline;
+  gap: 6px;
+  padding: 12px 0;
+  margin: 16px 0 32px;
+  background: var(--bg-canvas);
+  border: 0;
+  border-top: 1px solid var(--rule-hairline);
+  border-bottom: 1px solid var(--rule-hairline);
+  border-radius: 0;
+  box-shadow: 0 4px 8px -4px var(--bg-canvas);
 }
 
-/* Dark 模式 sticky 索引條浮起感：用 bg-elevated 比 surface 再亮一層 + 強化邊界 */
 :global(.dark) .ddia-glossary-index {
-  background: var(--bg-elevated, var(--bg-surface));
-  border-color: var(--border-strong);
-  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.02);
+  background: var(--bg-canvas);
+  box-shadow: 0 4px 8px -4px var(--bg-canvas);
 }
 
 .ddia-glossary-index-label {
   display: inline-flex;
-  align-items: center;
+  align-items: baseline;
   gap: 4px;
-  margin-right: 6px;
-  padding-right: 8px;
+  margin-right: 14px;
+  padding-right: 14px;
   border-right: 1px solid var(--border-default);
+  font-family: var(--font-display);
+  font-style: italic;
+  font-variation-settings: "opsz" 24, "SOFT" 60, "wght" 500;
   color: var(--text-tertiary);
   font-size: 12px;
   font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.ddia-glossary-index-label :deep(.material-symbols-rounded) {
+  display: none;
 }
 
 .ddia-glossary-index-link {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 26px;
-  height: 26px;
-  padding: 0 6px;
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: 12px;
-  font-weight: 600;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 2px;
+  font-family: var(--font-display);
+  font-feature-settings: "onum" 1;
+  font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 500;
+  font-size: 14px;
+  font-weight: 500;
   color: var(--text-secondary);
   text-decoration: none;
-  border-radius: 6px;
-  transition: background 0.15s ease, color 0.15s ease;
+  border-radius: 0;
+  border-bottom: 1px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
 }
 
 .ddia-glossary-index-link:hover,
 .ddia-glossary-index-link:focus-visible {
-  background: var(--brand-tint);
+  background: transparent;
   color: var(--brand-500);
+  border-bottom-color: var(--brand-500);
   outline: none;
 }
 
 :global(.dark) .ddia-glossary-index-link:hover,
 :global(.dark) .ddia-glossary-index-link:focus-visible {
-  color: var(--brand-300);
+  color: var(--info-fg);
+  border-bottom-color: var(--info-fg);
 }
 
 @media (max-width: 600px) {

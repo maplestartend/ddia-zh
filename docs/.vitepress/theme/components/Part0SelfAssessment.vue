@@ -90,60 +90,88 @@ const recommendations = computed(() => items.filter(i => !checked.value[i.id]))
 </script>
 
 <style scoped>
+/* Editorial Part 0 自評：書末讀者測驗樣式 */
 .ddia-self-assess {
-  margin: 28px 0;
-  padding: 22px 26px;
-  background: var(--bg-surface);
-  border: 1px solid var(--border-default);
-  border-left: 4px solid var(--brand-500);
-  border-radius: 12px;
+  margin: 32px 0;
+  padding: 24px 0;
+  background: transparent;
+  border: 0;
+  border-top: 1px solid var(--rule-hairline);
+  border-bottom: 1px solid var(--rule-hairline);
+  border-radius: 0;
 }
 .ddia-self-assess-header {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   gap: 10px;
   color: var(--brand-500);
-  margin-bottom: 8px;
+  margin-bottom: 10px;
+}
+.ddia-self-assess-header :deep(.material-symbols-rounded) {
+  display: none;
+}
+.ddia-self-assess-header::before {
+  content: "§";
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 20px;
+  color: var(--brand-500);
 }
 :global(.dark) .ddia-self-assess-header {
-  color: var(--brand-300);
+  color: var(--info-fg);
+}
+:global(.dark) .ddia-self-assess-header::before {
+  color: var(--info-fg);
 }
 .ddia-self-assess-header h3 {
   margin: 0;
-  font-size: 18px;
-  font-weight: 700;
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 48, "SOFT" 30, "wght" 600;
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
 }
 .ddia-self-assess-desc {
-  margin: 0 0 16px;
-  font-size: 14px;
+  margin: 0 0 20px;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-variation-settings: "opsz" 24, "SOFT" 50, "wght" 400;
+  font-size: 14.5px;
   color: var(--text-secondary);
-  line-height: 1.7;
+  line-height: 1.75;
 }
 .ddia-self-assess-list {
-  margin: 0 0 18px;
+  margin: 0 0 22px;
   padding-left: 0;
   list-style: none;
 }
 .ddia-self-assess-item {
-  margin: 8px 0;
+  margin: 6px 0;
   padding: 10px 14px;
-  background: var(--bg-canvas);
-  border: 1px solid var(--border-default);
-  border-radius: 8px;
-  transition: background 0.15s, border-color 0.15s;
+  background: transparent;
+  border: 0;
+  border-left: 2px solid transparent;
+  border-radius: 0;
+  transition: background 0.15s, border-left-color 0.15s;
+}
+.ddia-self-assess-item:hover {
+  background: var(--brand-tint-soft);
+  border-left-color: var(--brand-500);
 }
 .ddia-self-assess-item:has(input:checked) {
   background: var(--success-bg);
-  border-color: color-mix(in srgb, var(--success-fg) 30%, transparent);
+  border-left-color: var(--success-fg);
   opacity: 0.75;
 }
 .ddia-self-assess-item label {
   display: flex;
   align-items: flex-start;
-  gap: 10px;
+  gap: 12px;
   cursor: pointer;
+  font-family: var(--font-body);
   font-size: 14.5px;
-  line-height: 1.65;
+  line-height: 1.7;
+  letter-spacing: 0.01em;
 }
 .ddia-self-assess-item input[type='checkbox'] {
   margin-top: 5px;
@@ -151,64 +179,104 @@ const recommendations = computed(() => items.filter(i => !checked.value[i.id]))
   cursor: pointer;
 }
 .ddia-self-assess-q :deep(code) {
-  font-size: 12.5px;
-  padding: 1px 4px;
-  background: var(--bg-subtle);
-  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  padding: 0 4px;
+  background: var(--brand-tint-soft);
+  border: 1px solid var(--brand-tint-border);
+  color: var(--brand-500);
+  border-radius: 3px;
 }
 
 .ddia-self-assess-result {
-  margin-top: 18px;
-  padding: 16px 18px;
-  border-radius: 10px;
+  margin-top: 22px;
 }
 .ddia-self-assess-pass {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   gap: 10px;
-  background: var(--success-bg);
+  background: transparent;
+  border-left: 3px solid var(--success-fg);
   color: var(--success-fg);
-  padding: 14px 18px;
-  border-radius: 10px;
-  font-size: 14.5px;
-  line-height: 1.7;
+  padding: 12px 0 12px 20px;
+  border-radius: 0;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-variation-settings: "opsz" 24, "SOFT" 50, "wght" 500;
+  font-size: 15px;
+  line-height: 1.75;
+}
+.ddia-self-assess-pass :deep(.material-symbols-rounded) {
+  display: none;
+}
+.ddia-self-assess-pass::before {
+  content: "·";
+  font-size: 20px;
+  font-weight: 700;
+  margin-right: 2px;
 }
 .ddia-self-assess-pass a {
   color: inherit;
   text-decoration: underline;
+  text-underline-offset: 0.2em;
   font-weight: 600;
+  font-style: normal;
 }
 
 .ddia-self-assess-todo {
-  background: var(--info-bg);
-  border: 1px solid var(--info-border);
-  border-radius: 10px;
-  padding: 14px 18px;
+  background: transparent;
+  border: 0;
+  border-left: 3px solid var(--accent-500);
+  border-radius: 0;
+  padding: 6px 0 6px 20px;
 }
 .ddia-self-assess-todo-head {
   display: inline-flex;
-  align-items: center;
+  align-items: baseline;
   gap: 6px;
-  color: var(--brand-500);
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 600;
+  color: var(--accent-500);
   margin-bottom: 10px;
+  letter-spacing: 0.04em;
+}
+.ddia-self-assess-todo-head :deep(.material-symbols-rounded) {
+  display: none;
 }
 :global(.dark) .ddia-self-assess-todo-head {
-  color: var(--brand-300);
+  color: var(--accent-200);
+}
+:global(.dark) .ddia-self-assess-todo {
+  border-left-color: var(--accent-200);
 }
 .ddia-self-assess-todo ul {
   margin: 0 0 10px;
-  padding-left: 22px;
+  padding-left: 1.2em;
+  list-style: none;
 }
 .ddia-self-assess-todo li {
-  margin: 6px 0;
-  line-height: 1.7;
+  margin: 8px 0;
+  line-height: 1.75;
+  position: relative;
+}
+.ddia-self-assess-todo li::before {
+  content: "·";
+  position: absolute;
+  left: -0.9em;
+  font-family: var(--font-display);
+  font-size: 18px;
+  color: var(--accent-500);
 }
 .ddia-self-assess-reason {
   color: var(--text-tertiary);
+  font-family: var(--font-display);
+  font-style: italic;
   font-size: 13px;
 }
 .ddia-self-assess-hint {
   margin: 6px 0 0;
+  font-family: var(--font-display);
+  font-style: italic;
   font-size: 12.5px;
   color: var(--text-tertiary);
 }

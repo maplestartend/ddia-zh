@@ -62,40 +62,59 @@ function onForgotten(chapterId: string) {
 </script>
 
 <style scoped>
+/* Editorial 複習清單：書末錯題本 errata 樣式 */
 .ddia-review {
-  margin: 24px 0;
-  padding: 18px 22px;
-  background: var(--bg-surface);
-  border: 1px solid var(--border-default);
-  border-left: 3px solid var(--accent-500);
-  border-radius: 12px;
+  margin: 28px 0;
+  padding: 20px 0;
+  background: transparent;
+  border: 0;
+  border-top: 1px solid var(--rule-hairline);
+  border-bottom: 1px solid var(--rule-hairline);
+  border-radius: 0;
 }
 .ddia-review-eyebrow {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  font-size: 11px;
-  font-weight: 700;
+  gap: 6px;
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 24, "SOFT" 60, "wght" 500;
+  font-style: italic;
+  font-size: 12px;
+  font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--accent-500);
-  margin-bottom: 12px;
+  letter-spacing: 0.22em;
+  color: var(--text-tertiary);
+  margin-bottom: 14px;
 }
-:global(.dark) .ddia-review-eyebrow {
-  color: var(--brand-300);
+.ddia-review-eyebrow :deep(.material-symbols-rounded) {
+  display: none;
 }
 .ddia-review-empty {
   display: flex;
-  align-items: center;
-  gap: 8px;
+  align-items: baseline;
+  gap: 10px;
   flex-wrap: wrap;
-  color: var(--text-tertiary);
-  font-size: 13.5px;
+  color: var(--text-secondary);
+  font-family: var(--font-display);
+  font-style: italic;
+  font-variation-settings: "opsz" 24, "SOFT" 50, "wght" 400;
+  font-size: 14.5px;
+}
+.ddia-review-empty :deep(.material-symbols-rounded) {
+  display: none;
+}
+.ddia-review-empty::before {
+  content: "·";
+  font-family: var(--font-display);
+  font-size: 18px;
+  color: var(--success-fg);
+  font-weight: 700;
 }
 .ddia-review-empty-hint {
-  font-size: 12px;
+  font-size: 12.5px;
   margin-left: auto;
   color: var(--text-tertiary);
+  font-style: italic;
 }
 .ddia-review-list {
   margin: 0;
@@ -106,8 +125,8 @@ function onForgotten(chapterId: string) {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  padding: 10px 0;
+  gap: 14px;
+  padding: 12px 0;
   border-top: 1px solid var(--border-default);
   flex-wrap: wrap;
 }
@@ -119,40 +138,53 @@ function onForgotten(chapterId: string) {
   min-width: 0;
 }
 .ddia-review-item-title {
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 600;
   font-weight: 600;
-  font-size: 14.5px;
+  font-size: 15.5px;
   color: var(--text-primary);
   text-decoration: none;
 }
 .ddia-review-item-title:hover {
   color: var(--brand-500);
+  border-bottom: 1px solid var(--brand-500);
 }
 .ddia-review-item-meta {
   display: block;
-  font-size: 12px;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-variation-settings: "opsz" 24, "SOFT" 60, "wght" 400;
+  font-size: 12.5px;
   color: var(--text-tertiary);
-  margin-top: 2px;
+  margin-top: 4px;
+  letter-spacing: 0.01em;
 }
 .ddia-review-item-actions {
   display: inline-flex;
-  gap: 6px;
+  gap: 14px;
 }
 .ddia-review-btn {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  padding: 5px 10px;
-  background: var(--bg-canvas);
-  border: 1px solid var(--border-default);
-  border-radius: 6px;
+  padding: 6px 12px;
+  background: transparent;
+  border: 1px solid var(--text-primary);
+  border-radius: 0;
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 600;
   font-size: 12.5px;
+  letter-spacing: 0.04em;
   color: var(--text-primary);
   cursor: pointer;
-  font-family: inherit;
-  transition: border-color 0.15s, background 0.15s;
+  transition: background 0.15s, color 0.15s;
+}
+.ddia-review-btn :deep(.material-symbols-rounded) {
+  display: none;
 }
 .ddia-review-btn:hover {
-  border-color: var(--brand-300);
+  background: var(--text-primary);
+  color: var(--bg-canvas);
 }
 .ddia-review-btn.primary {
   background: var(--brand-500);
@@ -160,7 +192,7 @@ function onForgotten(chapterId: string) {
   color: var(--text-inverse);
 }
 .ddia-review-btn.primary:hover {
-  background: var(--brand-600);
-  border-color: var(--brand-600);
+  background: var(--brand-700);
+  border-color: var(--brand-700);
 }
 </style>

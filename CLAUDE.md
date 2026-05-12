@@ -9,7 +9,7 @@ VitePress 個人學習網站，將《Designing Data-Intensive Applications》(Ma
 **已公開於 GitHub**：<https://github.com/maplestartend/ddia-zh>（public, MIT + CC BY-NC-SA 4.0）
 **線上版**：<https://maplestartend.github.io/ddia-zh/>（push 到 `main` 後 GitHub Actions 自動部署）
 
-設計語言從 [stock 專案](C:\Users\User\Desktop\stock\stock\web) 移植：深鋼藍 brand + Material Symbols Rounded + Primitive→Semantic token 兩層架構。
+**設計方向**：Editorial Manuscript（O'Reilly 紙本書感 / 學習筆記隱喻）— mahogany clay 紅木陶土 + 米黃紙底 + Fraunces 襯線顯示字 + Noto Sans TC 內文。已脫離原本「stock 專案深鋼藍 SaaS」風格，往「書本而非文檔」的氣質拉。Primitive→Semantic token 兩層架構保留。
 
 ## ⚠️ 公開 repo 重要守則
 
@@ -176,17 +176,85 @@ push 到 `main` 觸發 [.github/workflows/deploy.yml](.github/workflows/deploy.y
 
 **改 deploy.yml 前**要先在本地驗證 `GITHUB_PAGES=true npm run build` 通過、且 `<BaseLink>` / markdown link 都用對。
 
+### 15. Editorial 美學守則（**重要：不要回頭走 SaaS 路線**）
+
+整站視覺已從深鋼藍 SaaS 改造成 Editorial Manuscript（O'Reilly 紙本書感）。新增 / 改任何元件時：
+
+- **新元件預設無圓角** — `border-radius: 0`；要 framing 用 `border-top/bottom: 1px solid var(--rule-hairline)` 把區塊夾起來，而不是 1px 全包邊 + 12px radius 卡片
+- **標題 / eyebrow / CTA 用 `var(--font-display)`**（Fraunces + Noto Serif TC），內文用 `var(--font-body)`（Noto Sans TC）
+- **大數字用 Fraunces oldstyle figures**（`font-feature-settings: "onum" 1`），不要 mono 大字
+- **eyebrow 慣例**：italic + uppercase + letter-spacing `0.22em` + 12px + `text-tertiary` 色，例：`學習循環` `下一步` `章末測驗 · 5 題`
+- **避免 Material Symbols 圖示**：新元件若用了 Icon，請在 scoped style 加 `:deep(.material-symbols-rounded) { display: none; }`，並用 `::before` 注入 typographic mark（`§` / `·` / `◆` / `→`）替代
+- **callout / admonition** 用左 3px 髮絲線 + italic eyebrow，**不要**用淡黃淡藍 4 色 docusaurus 風 box
+- **不要硬加 box-shadow** —— 書頁是平的、不浮起。hover 用「左 3px 印記 + 微淡背景」回饋
+- **配色限制**：dominant 色用 mahogany clay `--brand-500`、sharp accent 用 manuscript orange `--accent-500`、語意色（success/warning/error）已調成同色溫和諧色（苔綠 / 焦糖 / 棗紅）；新增色彩請從 semantic token 取，**禁止**新增冷藍 / 紫 / 螢光綠
+
+**參考具體實作**：[Hero](docs/.vitepress/theme/styles/components.css)、[ChapterCard 連體網格](docs/.vitepress/theme/styles/components.css)、[TLDR 書腰](docs/.vitepress/theme/styles/components.css)、[Quiz Editorial](docs/.vitepress/theme/styles/components.css)、[NextChapterBridge](docs/.vitepress/theme/components/NextChapterBridge.vue)、[Progress 連體按鈕](docs/.vitepress/theme/components/Progress.vue)、[Part0SelfAssessment](docs/.vitepress/theme/components/Part0SelfAssessment.vue)。
+
 ---
 
-## 設計慣例（與 stock 專案對齊）
+## 設計慣例（Editorial Manuscript — O'Reilly 紙本書感）
 
-- **Brand**：深鋼藍 `#2F4A80`（brand-500）
-- **字型**：Noto Sans TC（中文）+ JetBrains Mono（數字 / 程式碼）
-- **圖示**：Material Symbols Rounded，預設 `weight=400`、`filled=false`；active state 才 `filled=true`
-- **元件慣例**：`bg-surface` 卡片 + `border 1px var(--border-default)` + `border-radius: 12px`
-- **間距**：卡片 padding `18px 20px`、grid gap `16px`
-- **數字欄位**：套 `.numeric` class 或 `class="numeric"` + 等寬字
-- **暗色模式**：VitePress 預設 `.dark` class on `<html>`，**不要**用 `[data-theme="dark"]`（stock 是 Next.js 自管所以用 data-theme，這裡跟著 VitePress 走）
+### 核心氣質
+
+- **像書、不像 docs**：DDIA 是 O'Reilly 出版的書，這個網站要散發「正在被讀者親手做筆記的技術書」氣質。**避免**走 Stripe Docs / MDN / Notion 路線（規範化、商業、SaaS 罐頭感）
+- **節制色彩 + 一個記憶 accent**：mahogany clay 紅木陶土當主色、manuscript orange 當連結 accent；不撒繽紛色票
+- **印刷感優先**：襯線標題 + sans 內文 + oldstyle figures + 髮絲線分隔 + ◆ dinkus 取代 `<hr>`
+
+### Brand 配色（兩層 token，semantic 變數見 [tokens.css](docs/.vitepress/theme/styles/tokens.css)）
+
+| Token | Light | Dark | 用途 |
+|-------|-------|------|------|
+| `--brand-500` | `#8C3A2A` mahogany clay | `#E3A06A` warm orange | 主色（CTA、章號、active state） |
+| `--accent-500` | `#C45A1B` manuscript orange | `#E3A06A` | 連結色、sharp accent |
+| `--bg-canvas` | `#F4EFE6` 米黃紙 | `#171311` 暖炭墨 | 頁面底色 |
+| `--bg-surface` | `#FBF7EF` 略亮米色 | `#1F1A17` | 卡片 / inset 表面 |
+| `--text-primary` | `#1C1A17` near-black ink | `#EDE3CE` 米白 | 主文字 |
+| `--rule-hairline` | `#1C1A17` | `#E3D9BF` | 髮絲線 / section rule |
+
+### 字型 stack
+
+- **顯示字**（標題 / hero / 章節編號 / pull-quote）：`var(--font-display)` = Fraunces（可變字型，opsz + SOFT + wght 三軸）+ Noto Serif TC fallback。**所有 h1/h2/h3/eyebrow/CTA 都用這套**
+- **Body**（內文段落）：`var(--font-body)` = Noto Sans TC（保留 — 中文長文螢幕閱讀 sans 仍最舒服，serif 留給標題）
+- **Mono**（程式碼 / 行內 code）：`var(--font-mono)` = JetBrains Mono
+- **數字**：標題大數字用 Fraunces oldstyle figures（`font-feature-settings: "onum" 1`、`font-feature-settings: "tnum" 1`）；行內統計用 `.numeric` class
+
+### 元件外觀慣例（**重要：撕掉 SaaS 卡片化**）
+
+- **無圓角**：`border-radius: 0`（Material Symbols 圖示與按鈕除外，全站元件無圓角）
+- **髮絲線優先於卡片**：用上下 1px `var(--rule-hairline)` 把區塊「夾」起來，**不要**用 1px 全包邊 + 12px radius 卡片
+- **連體網格**：grid 卡片用「外框 top+left + 每張卡 right+bottom」拼成報紙網格（看 [.ddia-chapter-grid](docs/.vitepress/theme/styles/components.css)）
+- **hover 用 3px 左印記** + 微淡背景，不要 lift shadow
+- **間距**：垂直節奏拉開（h2 上方 `margin-top: 56px`、區塊 padding `22-28px`）
+- **letter-spacing**：中文 `0.01-0.015em` 微撐、英文 small caps eyebrow `0.18-0.28em`
+
+### 圖示 / 視覺資產
+
+- **避免 Material Symbols 圖示前綴**：章節 h2、Quiz 標題、eyebrow、按鈕 — 圖示一律改用 typographic mark（`§` section sign / `·` dot / `◆` dinkus / `→` arrow）。Material Symbols 機制保留（Icon.vue 仍可用），但在 Editorial 預設「視覺隱藏」(`display: none`)
+- **章末橋接 / Part 區段 / 各種卡的 eyebrow**：統一 italic 小寫小字 + 0.22em letter-spacing + uppercase
+- **章節編號**：Fraunces SemiBold + uppercase + 寬字距（例：`CH·01`、`PART I`、`CHAPTER §`）
+
+### 分隔元素
+
+- **`<hr>` 自動變 ◆ ◆ ◆ dinkus**（見 base.css），不要用細灰線
+- **`<SectionDivider>`** 元件已對齊 dinkus 風格
+- **章節區塊** 用上下髮絲線 + italic eyebrow 框住，不用背景填色
+
+### 暗色模式
+
+- VitePress 預設 `.dark` class on `<html>`，**不要**用 `[data-theme="dark"]`
+- **暗色不是 light 反色** — 暗色用獨立美學決定：暖炭墨 + 蠟燭光米白 + 暖橙 accent（主色從 mahogany clay 轉成更亮的 `--info-fg: #E3A06A`），避免「冷藍黑反色 + 同樣藍」的 AI-slop 指紋
+
+### 不要做的事（AI-slop 反指紋清單）
+
+1. **不要圓角 12px 卡片網格**（任何 SaaS 模板都長這樣）
+2. **不要置中 hero + 圓 pill eyebrow + 雙 CTA 對稱**（Vercel/Linear/Stripe 標配）
+3. **不要白底 + 鋼藍/紫漸層**（ChatGPT 寫前端最愛吐這個）
+4. **不要單一字重撐全頁**（要有 serif display / italic / mono 對比）
+5. **不要 docusaurus / mkdocs material 四色 callout**（黃藍綠紅 admonition box）
+6. **不要 Material Symbols icon 前綴所有區塊標題**（已替換成 typographic marks）
+7. **不要 dark = light 反色**（要獨立美學）
+8. **不要為元件硬加 box-shadow 浮起感**（書頁是平的、不浮起）
 
 ---
 

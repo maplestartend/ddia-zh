@@ -112,37 +112,45 @@ function resetAll() {
 </script>
 
 <style scoped>
+/* Editorial CheatSheet 匯出區：書末附錄樣式 */
 .ddia-export {
-  margin: 24px 0;
-  padding: 18px 22px;
-  background: var(--info-bg);
-  border: 1px solid var(--info-border);
-  border-left: 3px solid var(--brand-500);
-  border-radius: 12px;
+  margin: 32px 0;
+  padding: 22px 0;
+  background: transparent;
+  border: 0;
+  border-top: 1px solid var(--rule-hairline);
+  border-bottom: 1px solid var(--rule-hairline);
+  border-radius: 0;
 }
 .ddia-export-eyebrow {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  font-size: 11px;
-  font-weight: 700;
+  gap: 6px;
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 24, "SOFT" 60, "wght" 500;
+  font-style: italic;
+  font-size: 12px;
+  font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--brand-500);
-  margin-bottom: 10px;
+  letter-spacing: 0.22em;
+  color: var(--text-tertiary);
+  margin-bottom: 12px;
 }
-:global(.dark) .ddia-export-eyebrow {
-  color: var(--brand-300);
+.ddia-export-eyebrow :deep(.material-symbols-rounded) {
+  display: none;
 }
 .ddia-export-text {
-  margin: 0 0 14px;
-  font-size: 14px;
-  line-height: 1.7;
+  margin: 0 0 18px;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-variation-settings: "opsz" 24, "SOFT" 50, "wght" 400;
+  font-size: 15px;
+  line-height: 1.75;
   color: var(--text-secondary);
 }
 .ddia-export-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 16px;
 }
 </style>

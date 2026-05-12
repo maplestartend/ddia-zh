@@ -23,41 +23,53 @@ const isCjk = computed(() => /[一-鿿]/.test(props.label ?? ''))
 </script>
 
 <style scoped>
+/* Editorial section divider：置中 ◆◆◆ dinkus 取代左邊條 + small caps label 在 dinkus 下方 */
 .ddia-section-divider {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 10px;
-  margin: 36px 0 24px;
-  padding-left: 10px;
-  border-left: 3px solid var(--brand-500);
-  color: var(--text-secondary);
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
+  gap: 6px;
+  margin: 48px 0 32px;
+  text-align: center;
+  border: 0;
+  padding: 0;
+  color: var(--text-tertiary);
+}
+
+.ddia-section-divider::before {
+  content: "◆ ◆ ◆";
+  font-family: var(--font-display);
+  font-size: 12px;
+  color: var(--rule-soft);
+  letter-spacing: 0.8em;
+  padding-left: 0.8em;
+  line-height: 1;
 }
 
 :global(.dark) .ddia-section-divider {
-  border-left-color: var(--brand-300);
+  color: var(--text-tertiary);
 }
 
 .ddia-section-divider-icon {
-  color: var(--brand-500);
-  display: inline-flex;
-}
-
-:global(.dark) .ddia-section-divider-icon {
-  color: var(--brand-300);
+  display: none; /* dinkus 取代圖示 */
 }
 
 .ddia-section-divider-label {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-variation-settings: "opsz" 24, "SOFT" 60, "wght" 500;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  color: var(--text-tertiary);
 }
 
-/* 中文 label 不套 uppercase —— 中文沒大小寫概念，uppercase 會被當英文字距處理，反而字字疏開 */
+/* 中文 label 不套 uppercase */
 .ddia-section-divider.is-cjk .ddia-section-divider-label {
   text-transform: none;
-  letter-spacing: 0.02em;
-  font-size: 14px;
+  letter-spacing: 0.08em;
+  font-size: 13px;
+  font-style: normal;
 }
 </style>

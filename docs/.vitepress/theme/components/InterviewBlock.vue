@@ -66,71 +66,107 @@ watch(answers, (v) => {
 </script>
 
 <style scoped>
+/* Editorial 面試題：書末練習題排版 + 手稿質感答題格 */
 .ddia-interview {
-  margin: 28px 0;
-  padding: 18px 22px;
-  background: var(--warning-bg);
-  border: 1px solid color-mix(in srgb, var(--warning-fg) 30%, transparent);
-  border-left: 3px solid var(--warning-fg);
-  border-radius: 12px;
+  margin: 36px 0;
+  padding: 22px 0;
+  background: transparent;
+  border: 0;
+  border-top: 1px solid var(--rule-hairline);
+  border-bottom: 1px solid var(--rule-hairline);
+  border-radius: 0;
 }
 .ddia-interview-eyebrow {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  font-size: 11px;
-  font-weight: 700;
+  gap: 6px;
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 24, "SOFT" 60, "wght" 500;
+  font-style: italic;
+  font-size: 12px;
+  font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.22em;
   color: var(--warning-fg);
-  margin-bottom: 10px;
+  margin-bottom: 12px;
+}
+.ddia-interview-eyebrow :deep(.material-symbols-rounded) {
+  display: none;
 }
 .ddia-interview-intro {
-  margin: 0 0 14px;
-  font-size: 13.5px;
+  margin: 0 0 18px;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-variation-settings: "opsz" 24, "SOFT" 50, "wght" 400;
+  font-size: 14.5px;
   color: var(--text-secondary);
-  line-height: 1.7;
+  line-height: 1.75;
 }
 .ddia-interview-list {
   margin: 0;
-  padding-left: 22px;
-  list-style: decimal;
+  padding-left: 1.5em;
+  list-style: none;
+  counter-reset: q;
 }
 .ddia-interview-q {
-  margin: 14px 0;
+  margin: 20px 0;
+  counter-increment: q;
+  position: relative;
+}
+.ddia-interview-q::before {
+  content: "Q" counter(q);
+  position: absolute;
+  left: -2em;
+  top: 1px;
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 24, "wght" 600;
+  font-feature-settings: "onum" 1;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  color: var(--warning-fg);
 }
 .ddia-interview-q-head {
-  margin-bottom: 6px;
+  margin-bottom: 8px;
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 600;
   font-weight: 600;
-  font-size: 14px;
-  line-height: 1.65;
+  font-size: 15.5px;
+  line-height: 1.6;
   color: var(--text-primary);
 }
 .ddia-interview-q-tag {
   display: inline-block;
-  margin-right: 4px;
-  padding: 1px 6px;
-  background: var(--bg-surface);
-  border: 1px solid color-mix(in srgb, var(--warning-fg) 30%, transparent);
-  border-radius: 4px;
-  font-size: 11px;
-  font-weight: 700;
+  margin-right: 8px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px dotted var(--warning-fg);
+  border-radius: 0;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-variation-settings: "opsz" 24, "SOFT" 60, "wght" 500;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
   color: var(--warning-fg);
 }
 .ddia-interview-textarea {
   width: 100%;
-  padding: 10px 12px;
-  background: var(--bg-canvas);
-  border: 1px solid var(--border-default);
-  border-radius: 8px;
-  font-family: var(--vp-font-family-base);
-  font-size: 13.5px;
-  line-height: 1.65;
+  padding: 10px 14px;
+  background: var(--bg-surface);
+  border: 0;
+  border-bottom: 1px solid var(--rule-hairline);
+  border-radius: 0;
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.75;
   color: var(--text-primary);
   resize: vertical;
   outline: none;
+  letter-spacing: 0.01em;
 }
 .ddia-interview-textarea:focus {
-  border-color: var(--warning-fg);
+  border-bottom-color: var(--warning-fg);
+  background: var(--bg-subtle);
 }
 </style>

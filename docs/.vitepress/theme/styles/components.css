@@ -6,150 +6,240 @@
    樣式在元件 .vue 檔內，這裡只放跨元件 / global selector 的部分
    ========================================================================== */
 
-/* ---------- TLDR：章首重點卡片 ---------- */
+/* ---------- TLDR：章首重點卡片（Editorial：書腰樣式 — 上下髮絲線、無背景、§ section sign）---------- */
 .ddia-tldr {
-  background: var(--info-bg);
-  border: 1px solid var(--info-border);
-  border-left: 3px solid var(--brand-500);
-  border-radius: 12px;
-  padding: 18px 22px;
-  margin: 24px 0;
+  background: transparent;
+  border: 0;
+  border-top: 1px solid var(--rule-hairline);
+  border-bottom: 1px solid var(--rule-hairline);
+  border-radius: 0;
+  padding: 22px 0 26px;
+  margin: 28px 0 36px;
+  position: relative;
 }
 
 .ddia-tldr-title {
-  font-weight: 700;
-  font-size: 13px;
-  color: var(--brand-500);
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 600;
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--text-tertiary);
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 10px;
-  letter-spacing: 0.06em;
+  margin: 0 0 16px;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
 }
 
+/* § section sign 取代 Material icon — 印刷術慣例 */
+.ddia-tldr-title::before {
+  content: "§";
+  font-size: 18px;
+  font-family: var(--font-display);
+  font-style: italic;
+  letter-spacing: 0;
+  color: var(--brand-500);
+  margin-right: 4px;
+  font-variation-settings: "opsz" 48, "wght" 500;
+}
+.dark .ddia-tldr-title::before {
+  color: var(--info-fg);
+}
+
+/* 隱藏 TLDR 標題裡的 Material icon（書腰風不用 lightning bolt） */
+.ddia-tldr-title .material-symbols-rounded {
+  display: none;
+}
+
 .dark .ddia-tldr-title {
-  color: var(--brand-300);
+  color: var(--text-tertiary);
 }
 
 .ddia-tldr ul {
   margin: 0;
-  padding-left: 22px;
+  padding-left: 1.2em;
+  list-style: none;
 }
 
 .ddia-tldr li {
-  margin: 5px 0;
+  margin: 8px 0;
   line-height: 1.75;
   color: var(--text-primary);
+  position: relative;
+  padding-left: 4px;
 }
 
-/* ---------- ChapterMeta：章首 metadata 列 ---------- */
+/* 列表 bullet 用 dot operator · 取代圓點 — 印刷感 */
+.ddia-tldr li::before {
+  content: "·";
+  position: absolute;
+  left: -0.8em;
+  top: -0.1em;
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--brand-500);
+  line-height: 1;
+}
+.dark .ddia-tldr li::before {
+  color: var(--info-fg);
+}
+
+/* ---------- ChapterMeta：章首 metadata 列（Editorial：書頁版權頁樣式）---------- */
 .ddia-meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 14px;
-  margin: 12px 0 28px;
-  padding: 14px 18px;
-  background: var(--bg-surface);
-  border: 1px solid var(--border-default);
-  border-radius: 12px;
-  font-size: 13.5px;
+  gap: 20px 24px;
+  margin: 16px 0 32px;
+  padding: 14px 0;
+  background: transparent;
+  border: 0;
+  border-top: 1px solid var(--border-default);
+  border-bottom: 1px solid var(--border-default);
+  border-radius: 0;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-variation-settings: "opsz" 24, "SOFT" 50, "wght" 400;
+  font-size: 13px;
+  letter-spacing: 0.04em;
 }
 
 .ddia-meta-item {
   display: inline-flex;
-  align-items: center;
-  gap: 6px;
+  align-items: baseline;
+  gap: 8px;
   color: var(--text-tertiary);
+}
+.ddia-meta-item .material-symbols-rounded {
+  display: none;
 }
 
 .ddia-meta-item strong {
+  font-family: var(--font-display);
+  font-style: normal;
+  font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 600;
   color: var(--text-primary);
   font-weight: 600;
+  letter-spacing: 0.02em;
 }
 
+/* ddia-badge：Editorial 化（無圓角、印刷感 italic） */
 .ddia-badge {
   display: inline-flex;
   align-items: center;
-  padding: 2px 10px;
-  border-radius: 999px;
-  font-size: 12px;
-  font-weight: 600;
-  background: var(--info-bg);
+  padding: 1px 0;
+  border: 0;
+  border-bottom: 1px dotted var(--info-fg);
+  border-radius: 0;
+  background: transparent;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-variation-settings: "opsz" 24, "SOFT" 60, "wght" 500;
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
   color: var(--info-fg);
-  border: 1px solid var(--info-border);
 }
 
 .ddia-badge.accent {
-  background: var(--warning-bg);
-  color: var(--warning-fg);
-  border-color: transparent;
+  border-bottom-color: var(--accent-500);
+  color: var(--accent-500);
+  background: transparent;
 }
 
-/* ---------- Quiz：章末測驗 ---------- */
+/* ---------- Quiz：章末測驗（Editorial：書末練習題排版） ---------- */
 .ddia-quiz {
-  background: var(--bg-surface);
-  border: 1px solid var(--border-default);
-  border-radius: 12px;
-  padding: 22px 24px;
-  margin: 32px 0;
+  background: transparent;
+  border: 0;
+  border-top: 1px solid var(--rule-hairline);
+  border-bottom: 1px solid var(--rule-hairline);
+  border-radius: 0;
+  padding: 28px 0 24px;
+  margin: 48px 0;
 }
 
 .ddia-quiz-header {
-  font-weight: 700;
-  font-size: 17px;
-  margin-bottom: 14px;
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 48, "SOFT" 30, "wght" 600;
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 18px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: baseline;
   color: var(--text-primary);
+  letter-spacing: -0.005em;
 }
 
 .ddia-quiz-header-title {
   display: inline-flex;
-  align-items: center;
-  gap: 8px;
+  align-items: baseline;
+  gap: 12px;
+}
+.ddia-quiz-header-title .material-symbols-rounded {
+  display: none;
+}
+/* 標題前綴 § 印刷符號 */
+.ddia-quiz-header-title::before {
+  content: "§";
+  font-family: var(--font-display);
+  font-style: italic;
+  font-variation-settings: "opsz" 48, "wght" 500;
+  font-size: 26px;
+  color: var(--brand-500);
+  margin-right: 4px;
+  line-height: 1;
+}
+.dark .ddia-quiz-header-title::before {
+  color: var(--info-fg);
 }
 
 .ddia-quiz-question {
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 600;
   font-weight: 600;
-  font-size: 15px;
-  margin: 18px 0 10px;
+  font-size: 17px;
+  margin: 24px 0 12px;
   color: var(--text-primary);
+  line-height: 1.55;
 }
 
 .ddia-quiz-option {
   display: flex;
   align-items: flex-start;
-  gap: 10px;
-  padding: 10px 14px;
-  margin: 6px 0;
-  border: 1px solid var(--border-default);
-  border-radius: 10px;
+  gap: 12px;
+  padding: 10px 14px 10px 14px;
+  margin: 4px 0;
+  border: 0;
+  border-left: 2px solid transparent;
+  border-radius: 0;
   cursor: pointer;
-  transition: all 0.15s;
-  background: var(--bg-canvas);
+  transition: border-left-color 0.15s, background 0.15s;
+  background: transparent;
+  font-family: var(--font-body);
   font-size: 14.5px;
-  line-height: 1.6;
+  line-height: 1.65;
+  color: var(--text-primary);
 }
 
 .ddia-quiz-option:hover {
-  border-color: var(--brand-500);
-  background: var(--brand-tint);
+  border-left-color: var(--brand-500);
+  background: var(--brand-tint-soft);
 }
 
 .ddia-quiz-option.selected {
-  border-color: var(--brand-500);
+  border-left-color: var(--brand-500);
   background: var(--brand-tint);
 }
 
 .ddia-quiz-option.correct {
-  border-color: var(--success-fg);
+  border-left-color: var(--success-fg);
   background: var(--success-bg);
 }
 
 .ddia-quiz-option.wrong {
-  border-color: var(--error-fg);
+  border-left-color: var(--error-fg);
   background: var(--error-bg);
 }
 
@@ -160,138 +250,162 @@
 
 .ddia-quiz-actions {
   display: flex;
-  gap: 12px;
-  margin-top: 18px;
+  gap: 24px;
+  margin-top: 24px;
+  align-items: center;
 }
 
 .ddia-quiz-explanation {
-  margin-top: 12px;
-  padding: 12px 16px;
-  background: var(--bg-subtle);
-  border-radius: 8px;
-  font-size: 14px;
-  line-height: 1.7;
-  border-left: 3px solid var(--brand-500);
+  margin-top: 16px;
+  padding: 6px 0 6px 20px;
+  background: transparent;
+  border-radius: 0;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-variation-settings: "opsz" 24, "SOFT" 50, "wght" 400;
+  font-size: 15px;
+  line-height: 1.75;
+  border-left: 3px solid var(--rule-hairline);
+  color: var(--text-secondary);
 }
 
 .ddia-quiz-score {
-  font-weight: 700;
-  font-size: 16px;
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 48, "wght" 600;
+  font-feature-settings: "onum" 1;
+  font-weight: 600;
+  font-size: 18px;
   color: var(--brand-500);
-  font-family: var(--vp-font-family-mono);
+  letter-spacing: 0;
 }
 
 .dark .ddia-quiz-score {
-  color: var(--brand-300);
+  color: var(--info-fg);
 }
 
-/* Wave 17：Quiz 重做次數提示 */
+/* Quiz 重做次數提示（Editorial：italic 譯註） */
 .ddia-quiz-attempt-note {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  margin: -6px 0 14px;
-  padding: 4px 10px;
-  background: var(--bg-subtle);
-  border-radius: 6px;
-  font-size: 12px;
+  margin: -8px 0 18px;
+  padding: 0;
+  background: transparent;
+  border-radius: 0;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-variation-settings: "opsz" 24, "SOFT" 60, "wght" 400;
+  font-size: 13px;
   color: var(--text-tertiary);
 }
 
-/* Wave 17：題目難度標記（基礎 / 應用 / 面試） */
+/* 題目難度標記（Editorial：小寫 italic「basic」、「applied」、「interview」標籤） */
 .ddia-quiz-difficulty {
   display: inline-block;
-  padding: 1px 7px;
-  margin-right: 6px;
-  border-radius: 4px;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  vertical-align: 2px;
-  border: 1px solid transparent;
+  padding: 0;
+  margin-right: 10px;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-variation-settings: "opsz" 24, "SOFT" 60, "wght" 500;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  vertical-align: 1px;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
 }
-.ddia-quiz-difficulty.is-basic {
-  background: var(--success-bg);
-  color: var(--success-fg);
-  border-color: color-mix(in srgb, var(--success-fg) 30%, transparent);
-}
-.ddia-quiz-difficulty.is-applied {
-  background: var(--info-bg);
-  color: var(--info-fg);
-  border-color: var(--info-border);
-}
-.ddia-quiz-difficulty.is-interview {
-  background: var(--warning-bg);
-  color: var(--warning-fg);
-  border-color: color-mix(in srgb, var(--warning-fg) 30%, transparent);
-}
+.ddia-quiz-difficulty.is-basic { color: var(--success-fg); }
+.ddia-quiz-difficulty.is-applied { color: var(--accent-500); }
+.ddia-quiz-difficulty.is-interview { color: var(--warning-fg); }
 
-/* Wave 17：explanation 內「回到對應章節」連結 */
+/* explanation 內「回到對應章節」連結（Editorial：文字鏈 + 下底線） */
 .ddia-quiz-anchor-link {
   display: inline-flex;
   align-items: center;
   gap: 3px;
-  margin-left: 8px;
-  padding: 1px 8px;
-  background: var(--bg-canvas);
-  border: 1px solid var(--border-default);
-  border-radius: 6px;
-  font-size: 12px;
-  color: var(--brand-500);
+  margin-left: 12px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--accent-500);
+  border-radius: 0;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-variation-settings: "opsz" 24, "SOFT" 60, "wght" 500;
+  font-size: 13px;
+  color: var(--accent-500);
   text-decoration: none;
-  transition: background 0.15s, border-color 0.15s;
+  transition: color 0.15s, border-color 0.15s;
 }
 .ddia-quiz-anchor-link:hover {
-  background: var(--brand-tint);
-  border-color: var(--brand-300);
+  color: var(--brand-500);
+  border-bottom-color: var(--brand-500);
 }
 :global(.dark) .ddia-quiz-anchor-link {
-  color: var(--brand-300);
+  color: var(--info-fg);
+  border-bottom-color: var(--info-fg);
 }
 
-/* ---------- 通用按鈕 ---------- */
+/* ---------- 通用按鈕（Editorial：方正、髮絲線邊、Fraunces SemiBold）---------- */
 .ddia-btn {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 16px;
-  border-radius: 8px;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 0;
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 600;
   font-weight: 600;
   font-size: 14px;
+  letter-spacing: 0.04em;
   cursor: pointer;
-  border: 1px solid var(--border-strong);
-  background: var(--bg-surface);
+  border: 1px solid var(--text-primary);
+  background: transparent;
   color: var(--text-primary);
-  transition: all 0.15s;
-  font-family: inherit;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.ddia-btn .material-symbols-rounded {
+  display: none;
 }
 
 .ddia-btn:hover:not(:disabled) {
-  border-color: var(--brand-500);
-  color: var(--brand-500);
+  background: var(--text-primary);
+  color: var(--bg-canvas);
+  border-color: var(--text-primary);
 }
 
 .ddia-btn.primary {
   background: var(--brand-500);
-  color: #FFFFFF;
+  color: var(--text-inverse);
   border-color: var(--brand-500);
 }
 
 .ddia-btn.primary:hover:not(:disabled) {
-  background: var(--brand-600);
-  border-color: var(--brand-600);
-  color: #FFFFFF;
+  background: var(--brand-700);
+  border-color: var(--brand-700);
+  color: var(--text-inverse);
 }
 
-/* Dark 模式：primary action 用 brand-400 / -300（比 surface 亮 1-2 階）—— 避免「按鈕沉入背景」 */
+.dark .ddia-btn {
+  border-color: var(--text-primary);
+  color: var(--text-primary);
+}
+.dark .ddia-btn:hover:not(:disabled) {
+  background: var(--text-primary);
+  color: var(--bg-canvas);
+}
+
 .dark .ddia-btn.primary {
-  background: var(--brand-400);
-  border-color: var(--brand-400);
-  color: #FFFFFF;
+  background: var(--info-fg);
+  border-color: var(--info-fg);
+  color: var(--bg-canvas);
 }
 .dark .ddia-btn.primary:hover:not(:disabled) {
-  background: var(--brand-300);
-  border-color: var(--brand-300);
+  background: var(--accent-200);
+  border-color: var(--accent-200);
+  color: var(--bg-canvas);
 }
 
 .ddia-btn:disabled {
@@ -310,52 +424,67 @@
   color: var(--error-fg);
 }
 
-/* ---------- Hero disclaimer：首頁版權聲明 ----------
-   視覺降階：中性灰底 + brand 左邊框、字級縮小、位置在 CTA 列「下方」（不再緊貼書名） */
+/* ---------- Hero disclaimer：首頁版權聲明（Editorial 譯註樣式 — italic + 上方髮絲線）---------- */
 .ddia-hero-disclaimer {
-  max-width: 640px;
-  margin: 18px auto 0;
-  padding: 8px 12px;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-default);
-  border-left: 3px solid var(--brand-500);
-  border-radius: 6px;
-  font-size: 12px;
-  line-height: 1.55;
+  max-width: 580px;
+  margin: 36px auto 0;
+  padding: 16px 0 0;
+  background: transparent;
+  border: 0;
+  border-top: 1px solid var(--border-default);
+  border-radius: 0;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-variation-settings: "opsz" 24, "SOFT" 60, "wght" 400;
+  font-size: 13px;
+  line-height: 1.7;
   color: var(--text-tertiary);
-  text-align: left;
+  text-align: center;
+  letter-spacing: 0.01em;
 }
 .ddia-hero-disclaimer strong {
   color: var(--text-secondary);
   font-weight: 600;
+  font-style: normal;
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 600;
 }
 .ddia-hero-disclaimer a {
-  color: var(--brand-500);
+  color: var(--accent-500);
   text-decoration: underline;
+  text-underline-offset: 0.2em;
+  text-decoration-color: rgba(196, 90, 27, 0.4);
 }
 .dark .ddia-hero-disclaimer {
-  border-left-color: var(--brand-300);
+  border-top-color: var(--border-default);
 }
 .dark .ddia-hero-disclaimer a {
-  color: var(--brand-300);
+  color: var(--info-fg);
 }
 
-/* Hero CTA 下方的 secondary nav：把次要入口從 hero 抽出來、降低首屏決策成本 */
+/* Hero CTA 下方的 secondary nav（Editorial：去除卡片化、改成單行文字按鈕） */
 .ddia-secondary-nav {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 24px;
   align-items: center;
   justify-content: center;
   max-width: 900px;
-  margin: 0 auto 24px;
-  padding: 0 24px;
+  margin: 32px auto 56px;
+  padding: 18px 24px;
+  border-top: 1px solid var(--border-default);
+  border-bottom: 1px solid var(--border-default);
+  font-family: var(--font-display);
   font-size: 13px;
   color: var(--text-tertiary);
 }
 .ddia-secondary-nav-label {
-  font-weight: 500;
+  font-style: italic;
+  font-variation-settings: "opsz" 24, "SOFT" 60, "wght" 400;
+  font-weight: 400;
   margin-right: 4px;
+  color: var(--text-tertiary);
+  letter-spacing: 0.04em;
 }
 
 /* ---------- Scenario badge：ch07 三情境 A/B/C 視覺錨點 ----------
@@ -426,75 +555,110 @@
   margin: 28px 0;
 }
 
-/* Dashboard 全新訪客的歡迎卡：取代「4 個零」KPI 的 empty-state */
+/* Dashboard 全新訪客歡迎卡（Editorial：書頁段落而非 SaaS 卡）*/
 .ddia-dashboard-welcome {
-  margin: 28px 0;
-  padding: 28px 24px;
-  background: var(--bg-surface);
-  border: 1px solid var(--border-default);
-  border-left: 4px solid var(--brand-500);
-  border-radius: 12px;
+  margin: 36px auto;
+  padding: 28px 0;
+  max-width: 640px;
+  background: transparent;
+  border: 0;
+  border-top: 1px solid var(--rule-hairline);
+  border-bottom: 1px solid var(--rule-hairline);
+  border-radius: 0;
   text-align: center;
 }
 .ddia-dashboard-welcome-eyebrow {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  color: var(--brand-500);
-  margin-bottom: 10px;
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 24, "SOFT" 60, "wght" 500;
+  font-style: italic;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: 12px;
+}
+.ddia-dashboard-welcome-eyebrow .material-symbols-rounded {
+  display: none; /* welcome 不要 hand icon */
 }
 .dark .ddia-dashboard-welcome-eyebrow {
-  color: var(--brand-300);
+  color: var(--text-tertiary);
 }
 .ddia-dashboard-welcome-text {
-  margin: 0 0 18px;
-  max-width: 540px;
-  margin-left: auto;
-  margin-right: auto;
-  font-size: 14.5px;
-  line-height: 1.7;
+  margin: 0 auto 22px;
+  max-width: 520px;
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 24, "SOFT" 50, "wght" 400;
+  font-style: italic;
+  font-size: 16px;
+  line-height: 1.75;
   color: var(--text-secondary);
+  letter-spacing: 0.01em;
 }
 .ddia-dashboard-welcome-cta {
   display: inline-flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 28px;
   justify-content: center;
+  align-items: center;
+}
+/* welcome card 內部 CTA 也要去掉 icon */
+.ddia-dashboard-welcome-cta .ddia-cta .material-symbols-rounded {
+  display: none;
+}
+
+/* Stat card（Editorial：書末附錄表格樣式 — 髮絲線分隔 + 大序體數字） */
+.ddia-dashboard {
+  border-top: 1px solid var(--rule-hairline);
+  border-left: 1px solid var(--rule-hairline);
 }
 
 .ddia-stat-card {
-  background: var(--bg-surface);
-  border: 1px solid var(--border-default);
-  border-radius: 12px;
-  padding: 20px;
-  transition: border-color 0.15s, box-shadow 0.15s;
+  background: transparent;
+  border: 0;
+  border-right: 1px solid var(--rule-hairline);
+  border-bottom: 1px solid var(--rule-hairline);
+  border-radius: 0;
+  padding: 22px 24px;
+  transition: background-color 0.15s;
 }
 
 .ddia-stat-card:hover {
-  border-color: var(--border-strong);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  background: var(--bg-surface);
+  border-color: var(--rule-hairline);
+  box-shadow: none;
 }
 
 .ddia-stat-label {
-  font-size: 13px;
-  color: var(--text-secondary);  /* secondary 比 tertiary 強：與下方大號數字形成「label → value」對比 */
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 500;
+  font-style: italic;
+  font-size: 12px;
+  color: var(--text-tertiary);
   font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
   display: inline-flex;
   align-items: center;
   gap: 6px;
 }
+.ddia-stat-label .material-symbols-rounded {
+  display: none;
+}
 
+/* 大數字：Fraunces oldstyle figures（不是 mono）— 印刷感比 mono 強 */
 .ddia-stat-value {
-  font-size: 28px;
-  font-weight: 700;
+  font-family: var(--font-display);
+  font-feature-settings: "onum" 1, "kern" 1;
+  font-variation-settings: "opsz" 144, "SOFT" 30, "wght" 500;
+  font-size: 38px;
+  font-weight: 500;
   color: var(--text-primary);
-  font-family: var(--vp-font-family-mono);
-  font-variant-numeric: tabular-nums;
-  line-height: 1.2;
-  margin-top: 6px;
+  line-height: 1.1;
+  margin-top: 8px;
   letter-spacing: -0.01em;
 }
 
@@ -532,31 +696,46 @@
   color: var(--text-tertiary);
 }
 
-/* 錯題本（Dashboard 下方） */
+/* 錯題本（Editorial：書末 errata 表格） */
 .ddia-incorrect-book {
-  margin: 16px 0 28px;
-  padding: 14px 18px;
-  background: var(--bg-surface);
-  border: 1px solid var(--border-default);
-  border-left: 3px solid var(--warning-fg);
-  border-radius: 10px;
+  margin: 24px 0 40px;
+  padding: 18px 0;
+  background: transparent;
+  border: 0;
+  border-top: 1px solid var(--rule-hairline);
+  border-bottom: 1px solid var(--rule-hairline);
+  border-radius: 0;
 }
 .ddia-incorrect-summary {
   display: flex;
-  align-items: center;
-  gap: 8px;
+  align-items: baseline;
+  gap: 10px;
   cursor: pointer;
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 600;
   font-weight: 600;
-  font-size: 14.5px;
+  font-size: 15px;
   color: var(--text-primary);
   list-style: none;
+  letter-spacing: 0.01em;
+}
+.ddia-incorrect-summary .material-symbols-rounded {
+  display: none;
 }
 .ddia-incorrect-summary::-webkit-details-marker { display: none; }
+.ddia-incorrect-summary::before {
+  content: "§";
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 16px;
+  color: var(--warning-fg);
+  margin-right: 2px;
+}
 .ddia-incorrect-summary::after {
   content: '▾';
   margin-left: auto;
   color: var(--text-tertiary);
-  font-size: 12px;
+  font-size: 11px;
   transition: transform 0.15s;
 }
 .ddia-incorrect-book[open] .ddia-incorrect-summary::after {
@@ -595,23 +774,28 @@
   color: var(--text-tertiary);
 }
 
-/* ---------- Chapter cards 列表（首頁 grid + Part 區）---------- */
+/* ---------- Chapter cards 列表（Editorial：書本扉頁卡風）---------- */
 .ddia-chapter-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 16px;
-  margin: 20px 0 40px;
+  gap: 0;
+  margin: 24px 0 56px;
   align-items: stretch;
+  /* 用 grid 自己的 border 構成連體髮絲線：每張卡只畫 right + bottom，最外層補 top + left */
+  border-top: 1px solid var(--rule-hairline);
+  border-left: 1px solid var(--rule-hairline);
 }
 
 .ddia-chapter-card {
   display: flex;
   flex-direction: column;
-  padding: 18px 20px;
-  background: var(--bg-surface);
-  border: 1px solid var(--border-default);
-  border-radius: 12px;
-  transition: all 0.18s;
+  padding: 22px 24px 18px;
+  background: transparent;
+  border: 0;
+  border-right: 1px solid var(--rule-hairline);
+  border-bottom: 1px solid var(--rule-hairline);
+  border-radius: 0;
+  transition: background-color 0.18s;
   text-decoration: none !important;
   color: var(--text-primary) !important;
   position: relative;
@@ -619,54 +803,84 @@
 }
 
 .ddia-chapter-card:hover {
-  border-color: var(--brand-500);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgb(47 74 128 / 0.08);
+  background: var(--bg-surface);
+}
+
+/* 細微的 hover 標示：左邊出現 3px oxblood 印記 */
+.ddia-chapter-card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--brand-500);
+  opacity: 0;
+  transition: opacity 0.18s;
+}
+.ddia-chapter-card:hover::before {
+  opacity: 1;
 }
 
 .ddia-chapter-card-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border-default);
 }
 
+/* 章節編號：Fraunces SemiBold + 全大寫 + 寬字距 + oldstyle figures */
 .ddia-chapter-card-num {
-  font-family: var(--vp-font-family-mono);
-  font-size: 12px;
+  font-family: var(--font-display);
+  font-feature-settings: "onum" 1, "smcp" 1;
+  font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 600;
+  font-size: 11.5px;
   color: var(--brand-500);
-  font-weight: 700;
-  letter-spacing: 0.06em;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
 }
 
 .dark .ddia-chapter-card-num {
-  color: var(--brand-300);
+  color: var(--info-fg);
 }
 
+/* 章節標題：Fraunces + Noto Serif TC + 較大字級 + 行高放開 */
 .ddia-chapter-card-title {
-  font-size: 16px;
-  font-weight: 700;
-  margin: 4px 0 10px;
-  line-height: 1.4;
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 48, "SOFT" 30, "wght" 600;
+  font-size: 18px;
+  font-weight: 600;
+  margin: 6px 0 12px;
+  line-height: 1.35;
   color: var(--text-primary);
+  letter-spacing: 0;
 }
 
 .ddia-chapter-card-summary {
+  font-family: var(--font-body);
   font-size: 13.5px;
-  color: var(--text-tertiary);
-  line-height: 1.6;
+  color: var(--text-secondary);
+  line-height: 1.7;
   flex: 1;
+  letter-spacing: 0.01em;
 }
 
 .ddia-chapter-card-status {
-  margin-top: 14px;
+  margin-top: 16px;
   padding-top: 12px;
   border-top: 1px solid var(--border-default);
-  font-size: 12px;
+  font-size: 11.5px;
   color: var(--text-tertiary);
   display: flex;
   justify-content: space-between;
   align-items: center;
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 24, "wght" 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 .ddia-chapter-card-status-tag {
@@ -680,147 +894,315 @@
   font-weight: 600;
 }
 
-.ddia-chapter-card.done {
-  border-left: 3px solid var(--status-done-fg);
+/* done 狀態：左邊永久 3px oxblood 印記 */
+.ddia-chapter-card.done::before {
+  opacity: 1;
+  background: var(--status-done-fg);
 }
 
-/* Part header（首頁 Part I / II / III 區塊標題） */
+/* Part header（首頁 Part I / II / III · Editorial 雜誌 section 開場頁）*/
 .ddia-part-header {
-  margin: 48px 0 12px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid var(--border-default);
+  margin: 72px 0 4px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--rule-hairline);
   display: flex;
-  align-items: baseline;
+  align-items: flex-end;
   justify-content: space-between;
-  gap: 16px;
+  gap: 24px;
 }
 
 .ddia-part-header-title {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+}
+
+/* 章節區段大寫小標：「PART · I」走 Fraunces SemiBold 全大寫
+   原本的 Material icon 視覺隱藏（保留 a11y、但不顯示） */
+.ddia-part-header-title > .material-symbols-rounded,
+.ddia-part-header-title > svg,
+.ddia-part-header-title .ddia-icon {
+  display: none;
 }
 
 .ddia-part-header h2 {
   margin: 0;
   border: none;
   padding: 0;
-  font-size: 20px;
-  font-weight: 700;
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 96, "SOFT" 30, "wght" 600;
+  font-size: 28px;
+  font-weight: 600;
   color: var(--text-primary);
+  letter-spacing: -0.005em;
+  line-height: 1.25;
+}
+
+/* 區段 eyebrow：Part 編號獨立成一行 italic 小字、放在 h2 上方 */
+.ddia-part-header h2::before {
+  content: attr(data-eyebrow);
+  display: block;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-variation-settings: "opsz" 24, "SOFT" 60, "wght" 500;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-tertiary);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  font-style: normal;
 }
 
 .ddia-part-header p {
-  margin: 4px 0 0;
-  color: var(--text-tertiary);
-  font-size: 13.5px;
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 14.5px;
+  font-family: var(--font-body);
+  letter-spacing: 0.01em;
+  line-height: 1.7;
+  max-width: 540px;
 }
 
-/* ---------- Hero：首頁 hero 區 ---------- */
+/* ---------- Hero：首頁 hero 區（Editorial 扉頁 / frontispiece）---------- */
 .ddia-hero {
-  padding: 48px 24px 24px;
-  margin-bottom: 24px;
+  padding: 72px 24px;
+  margin-bottom: 8px;
   text-align: center;
-  border-bottom: 1px solid var(--border-default);
+  border-bottom: 1px solid var(--rule-hairline);
+  position: relative;
 }
 
+/* Eyebrow：不再是膠囊 pill —— 改成 Fraunces italic 全大寫小字 + 上下窄髮絲線 */
 .ddia-hero-eyebrow {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  font-size: 12px;
-  font-weight: 600;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 24, "SOFT" 60, "wght" 500;
+  font-size: 11.5px;
+  font-weight: 500;
+  font-style: italic;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--brand-500);
-  padding: 5px 12px;
-  background: var(--info-bg);
-  border: 1px solid var(--info-border);
-  border-radius: 999px;
-  margin-bottom: 16px;
+  letter-spacing: 0.28em;
+  color: var(--text-tertiary);
+  padding: 0;
+  background: none;
+  border: 0;
+  border-radius: 0;
+  margin: 0 0 20px;
+}
+.ddia-hero-eyebrow .material-symbols-rounded {
+  display: none; /* eyebrow 不要 icon — Editorial 字體本身就是視覺 */
 }
 
 .dark .ddia-hero-eyebrow {
-  color: var(--brand-300);
+  color: var(--text-tertiary);
 }
 
+/* 主標題：Fraunces 印刷感（縮小成 44px、單行自然 wrap、不再硬拆三行）*/
 .ddia-hero h1 {
-  font-size: 36px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  margin: 0 0 8px;
+  font-family: var(--font-display);
+  font-feature-settings: "onum" 1, "kern" 1, "calt" 1, "liga" 1;
+  font-variation-settings: "opsz" 96, "SOFT" 60, "wght" 500;
+  font-size: 44px;
+  font-weight: 500;
+  letter-spacing: -0.012em;
+  margin: 0 auto 16px;
+  max-width: 720px;
   color: var(--text-primary);
-  line-height: 1.2;
+  line-height: 1.15;
+  text-wrap: balance;  /* 自然平衡末行而非硬斷 */
 }
 
 .ddia-hero-subtitle {
-  font-size: 17px;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-variation-settings: "opsz" 36, "SOFT" 50, "wght" 400;
+  font-size: 20px;
   color: var(--text-secondary);
-  margin: 0 0 6px;
+  margin: 0 0 14px;
+  letter-spacing: 0.01em;
 }
 
 .ddia-hero-meta {
-  font-size: 13px;
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 24, "wght" 500;
+  font-feature-settings: "smcp" 1, "onum" 1;
+  font-size: 12px;
   color: var(--text-tertiary);
-  font-family: var(--vp-font-family-mono);
-  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
 }
 
 .ddia-cta-row {
   display: inline-flex;
-  gap: 12px;
+  gap: 28px;
   justify-content: center;
-  margin-top: 24px;
+  margin-top: 32px;
   flex-wrap: wrap;
+  align-items: center;
 }
 
+/* CTA：去除膠囊圓角、改成 Editorial「文字按鈕」+ 下方髮絲線 hover 印記 */
 .ddia-cta {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 10px 20px;
-  border-radius: 10px;
+  gap: 8px;
+  padding: 10px 0;
+  border-radius: 0;
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 600;
   font-weight: 600;
-  font-size: 14.5px;
+  font-size: 15px;
+  letter-spacing: 0.04em;
   text-decoration: none !important;
-  transition: all 0.15s;
-  border: 1px solid transparent;
+  transition: all 0.18s;
+  border: 0;
+  border-bottom: 1.5px solid transparent;
+  background: transparent;
+  color: var(--text-primary) !important;
+  position: relative;
 }
 
 .ddia-cta.primary {
   background: var(--brand-500);
-  color: #FFFFFF !important;
-  border-color: var(--brand-500);
+  color: var(--text-inverse) !important;
+  border: 1px solid var(--brand-500);
+  border-radius: 0;
+  padding: 12px 24px;
 }
 
 .ddia-cta.primary:hover {
-  background: var(--brand-600);
-  border-color: var(--brand-600);
+  background: var(--brand-700);
+  border-color: var(--brand-700);
   transform: translateY(-1px);
 }
 
 .ddia-cta.ghost {
-  border-color: var(--border-default);
+  border: 0;
+  border-bottom: 1.5px solid var(--text-primary);
   color: var(--text-primary) !important;
-  background: var(--bg-surface);
+  background: transparent;
+  padding: 10px 4px;
 }
 
 .ddia-cta.ghost:hover {
-  border-color: var(--brand-500);
   color: var(--brand-500) !important;
+  border-bottom-color: var(--brand-500);
 }
 
-/* Dark 模式 ghost CTA 加 border-strong：在深底上邊界更明顯、不會「沉入背景」 */
+.dark .ddia-cta.primary {
+  background: var(--info-fg);
+  color: var(--bg-canvas) !important;
+  border-color: var(--info-fg);
+}
+
+.dark .ddia-cta.primary:hover {
+  background: var(--accent-200);
+  border-color: var(--accent-200);
+}
+
 .dark .ddia-cta.ghost {
-  border-color: var(--border-strong);
-  background: var(--bg-elevated, var(--bg-surface));
+  border-bottom-color: var(--text-primary);
+  color: var(--text-primary) !important;
+  background: transparent;
 }
 
 .dark .ddia-cta.ghost:hover {
-  border-color: var(--brand-300);
-  color: var(--brand-300) !important;
+  color: var(--info-fg) !important;
+  border-bottom-color: var(--info-fg);
 }
 
 .dark .ddia-hero {
-  border-bottom-color: var(--border-strong);
+  border-bottom-color: var(--rule-hairline);
+}
+
+/* ---------- VitePress custom-block（::: tip / info / warning / danger / details）----------
+   Editorial 化：無圓角、左邊 3px 髮絲線、italic 標題、無背景（or 極淡 tint） */
+.custom-block {
+  background: transparent;
+  border: 0;
+  border-left: 3px solid var(--rule-hairline);
+  border-radius: 0;
+  padding: 8px 0 8px 20px;
+  margin: 28px 0;
+  font-size: 15px;
+  line-height: 1.75;
+  color: var(--text-secondary);
+}
+
+.custom-block .custom-block-title {
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 600;
+  font-style: italic;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  margin: 0 0 6px;
+}
+
+.custom-block p {
+  margin: 6px 0;
+}
+
+.custom-block.tip { border-left-color: var(--brand-500); }
+.custom-block.tip .custom-block-title { color: var(--brand-500); }
+
+.custom-block.info { border-left-color: var(--accent-500); }
+.custom-block.info .custom-block-title { color: var(--accent-500); }
+
+.custom-block.warning { border-left-color: var(--warning-fg); }
+.custom-block.warning .custom-block-title { color: var(--warning-fg); }
+
+.custom-block.danger { border-left-color: var(--error-fg); }
+.custom-block.danger .custom-block-title { color: var(--error-fg); }
+
+.custom-block.details {
+  background: var(--bg-subtle);
+  padding: 16px 20px;
+}
+
+.dark .custom-block.tip { border-left-color: var(--info-fg); }
+.dark .custom-block.tip .custom-block-title { color: var(--info-fg); }
+.dark .custom-block.info { border-left-color: var(--accent-200); }
+.dark .custom-block.info .custom-block-title { color: var(--accent-200); }
+
+/* ---------- ChapterCard 底部 status row Editorial 化 ----------
+   隱藏 Material Symbols icon，改用 typographic mark + Fraunces italic */
+.ddia-chapter-card-status .material-symbols-rounded {
+  display: none;
+}
+
+.ddia-chapter-card-status-tag::before {
+  content: "·";
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-tertiary);
+  margin-right: 4px;
+  line-height: 1;
+  transform: translateY(-1px);
+  display: inline-block;
+}
+
+/* done 狀態的 dot 改實心 oxblood */
+.ddia-chapter-card.done .ddia-chapter-card-status-tag::before {
+  content: "●";
+  font-size: 9px;
+  color: var(--status-done-fg);
+  vertical-align: middle;
+}
+
+/* 時間 tag（第二個）用 italic 數字 + 「min」單位 */
+.ddia-chapter-card-status-tag:last-child {
+  font-style: italic;
+  font-variation-settings: "opsz" 24, "SOFT" 60, "wght" 400;
+}
+.ddia-chapter-card-status-tag:last-child::before {
+  content: ""; /* 第二個 tag 不要 dot prefix */
+  margin-right: 0;
 }
