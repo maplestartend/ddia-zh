@@ -6,21 +6,25 @@ title: 首頁
 <div class="ddia-hero">
   <span class="ddia-hero-eyebrow">
     <Icon name="menu_book" :size="14" filled />
-    非官方個人學習筆記 · 繁體中文
+    DDIA 中文學習筆記 · 繁體中文
   </span>
   <h1>Designing Data-Intensive Applications</h1>
-  <div class="ddia-hero-subtitle">設計資料密集型應用 · 中文學習筆記（非官方）</div>
+  <div class="ddia-hero-subtitle">設計資料密集型應用 · 個人學習筆記</div>
   <div class="ddia-hero-meta">12 章 · Part I / II / III · 預估 40 小時</div>
+  <div class="ddia-cta-row">
+    <BaseLink to="/part-0/basics" variant="primary" icon="foundation" filled>新手起步 · 0.0 三分鐘看懂後端</BaseLink>
+    <BaseLink to="/part-1/ch01-reliable" variant="ghost" icon="arrow_forward">已熟悉 SQL/後端 · 直接讀 Ch1</BaseLink>
+  </div>
   <div class="ddia-hero-disclaimer">
     本網站<strong>非</strong> Martin Kleppmann 或 O'Reilly Media 官方授權產品。原書著作權屬原作者與出版社；本站為個人非商業學習筆記，請至 <a href="https://dataintensive.net/" target="_blank" rel="noopener">dataintensive.net</a> 支持原作。
   </div>
-  <div class="ddia-cta-row">
-    <BaseLink to="/part-0/basics" variant="primary" icon="foundation" filled>新手起步 · 0.0 三分鐘看懂後端</BaseLink>
-    <BaseLink to="/part-1/ch01-reliable" variant="ghost" icon="play_arrow">直接讀 Ch1（已熟悉 SQL/後端）</BaseLink>
-    <BaseLink to="/part-0/" variant="ghost" icon="checklist">Part 0 自評</BaseLink>
-    <BaseLink to="/paths/" variant="ghost" icon="route">看學習路徑</BaseLink>
-    <BaseLink to="/glossary/" variant="ghost" icon="bookmarks">詞彙表</BaseLink>
-  </div>
+</div>
+
+<div class="ddia-secondary-nav">
+  <span class="ddia-secondary-nav-label">不確定怎麼開始？</span>
+  <BaseLink to="/part-0/" variant="ghost" icon="checklist">Part 0 自評</BaseLink>
+  <BaseLink to="/paths/" variant="ghost" icon="route">看學習路徑</BaseLink>
+  <BaseLink to="/glossary/" variant="ghost" icon="bookmarks">詞彙表</BaseLink>
 </div>
 
 <div style="max-width: 1100px; margin: 0 auto; padding: 0 24px;">

@@ -471,27 +471,52 @@ body {
   cursor: not-allowed;
 }
 
-/* Hero disclaimer：首頁版權聲明 banner（公開 repo 必備） */
+/* Hero disclaimer：首頁版權聲明（公開 repo 必備、但視覺降階避免比書名搶眼）
+   設計：中性灰底 + brand 左邊框、字級縮小、位置在 CTA 列「下方」（不再緊貼書名） */
 .ddia-hero-disclaimer {
-  max-width: 700px;
+  max-width: 640px;
   margin: 18px auto 0;
-  padding: 10px 14px;
-  background: var(--warning-bg);
-  border: 1px solid var(--warning-fg);
-  border-radius: 8px;
-  font-size: 13px;
-  line-height: 1.6;
-  color: var(--text-secondary);
+  padding: 8px 12px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-default);
+  border-left: 3px solid var(--brand-500);
+  border-radius: 6px;
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--text-tertiary);
+  text-align: left;
 }
 .ddia-hero-disclaimer strong {
-  color: var(--warning-fg);
+  color: var(--text-secondary);
+  font-weight: 600;
 }
 .ddia-hero-disclaimer a {
   color: var(--brand-500);
   text-decoration: underline;
 }
+.dark .ddia-hero-disclaimer {
+  border-left-color: var(--brand-300);
+}
 .dark .ddia-hero-disclaimer a {
   color: var(--brand-300);
+}
+
+/* Hero CTA 下方的 secondary nav：把次要入口從 hero 抽出來、降低首屏決策成本 */
+.ddia-secondary-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  max-width: 900px;
+  margin: 0 auto 24px;
+  padding: 0 24px;
+  font-size: 13px;
+  color: var(--text-tertiary);
+}
+.ddia-secondary-nav-label {
+  font-weight: 500;
+  margin-right: 4px;
 }
 
 /* Scenario badge：ch07 三情境 A/B/C 視覺錨點（traffic light：紅 = danger / 綠 = safe / 橘 = warn）*/
@@ -576,6 +601,45 @@ body {
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 16px;
   margin: 28px 0;
+}
+
+/* Dashboard 全新訪客的歡迎卡：取代「4 個零」KPI 的 empty-state */
+.ddia-dashboard-welcome {
+  margin: 28px 0;
+  padding: 28px 24px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-left: 4px solid var(--brand-500);
+  border-radius: 12px;
+  text-align: center;
+}
+.ddia-dashboard-welcome-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--brand-500);
+  margin-bottom: 10px;
+}
+.dark .ddia-dashboard-welcome-eyebrow {
+  color: var(--brand-300);
+}
+.ddia-dashboard-welcome-text {
+  margin: 0 0 18px;
+  max-width: 540px;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 14.5px;
+  line-height: 1.7;
+  color: var(--text-secondary);
+}
+.ddia-dashboard-welcome-cta {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
 }
 
 .ddia-stat-card {
