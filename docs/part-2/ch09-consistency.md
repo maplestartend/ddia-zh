@@ -64,7 +64,16 @@ T=2  C 讀 x → 0   ✗ ← C 看到回退，違反線性一致
 **結論**：`W + R > N` 是必要條件、**不是充分條件**——quorum 不無條件保證讀到最新值。
 :::
 
-要做到線性一致需用 **ABD 演算法**（Attiya-Bar-Noy-Dolev, 1995）：讀取後**強制把讀到的最新值寫回 quorum 個副本**才回應 client（不是「所有副本」—— 網路分區時也做不到所有）。Cassandra 等 Dynamo 風格系統並未實作這層 —— 它們只提供最終一致性。
+要做到線性一致需用 **ABD 演算法**（Attiya-Bar-Noy-Dolev, 1995）。**注意 ABD 的讀寫都是兩階段**：
+
+- **讀**：階段 1 向 read quorum 拿 `(value, timestamp)`、階段 2 用讀到的最大 timestamp 把該值**寫回 write quorum** 才回應 client（避免下一次讀拿到更舊的）
+- **寫**：階段 1 向 quorum 拿目前最大 timestamp、階段 2 用 `max_ts + 1` 帶值寫到 write quorum 才回應
+
+只做「讀階段 write-back」**不夠**——寫如果不先讀 timestamp、單純塞新值，會與並發寫破壞順序仍然非線性一致。
+
+::: tip ABD 的適用範圍
+原始 ABD 是 **single-register** 演算法（一個暫存器、single-writer multi-reader）。Lynch-Shvartsman 1997 擴成 multi-writer；要對「多個 key / multi-object linearizability」還要更多協定（leader-based 共識通常比較實際）。Cassandra 等 Dynamo 風格系統並未實作這層 —— 它們只提供最終一致性。
+:::
 
 ### 代價
 網路慢或不通時，要保線性一致只能拒絕服務 → **可用性下降**。
@@ -167,11 +176,15 @@ sequenceDiagram
 ## 9.5 <G term="consensus">共識（Consensus）</G>
 
 ### 共識問題
-N 個節點，每個提出一個值，要達成：
-- **一致性（Agreement）**：所有節點決定同一個值
-- **完整性（Integrity）**：值必須是某節點提過的
-- **有效性（Validity）**：若全節點提同值，必選該值
+N 個節點，每個提出一個值，要達成（依 DDIA p.365 / "Consensus Algorithms and Total Order Broadcast"）：
+- **一致同意（Uniform Agreement）**：沒有兩個節點 decide 不同的值
+- **完整性（Integrity）**：每個節點**至多 decide 一次**（不會反悔、不會 decide 兩次）
+- **有效性（Validity）**：decide 的值必須是**某個節點實際提過的**（不能憑空生成值）
 - **終止（Termination）**：非當機節點最終會做出決定（**前提：多數可用 _且_ 網路最終足夠穩定** — 這是 partial synchrony 假設下的 GST, Global Stabilization Time）
+
+::: warning 不要把 Validity 與「同值多數決」混淆
+有些文獻把「若全節點提同值，則 decide 該值」當成另一種強 validity / non-triviality，但**那不是 DDIA 用的版本**。本書的 Validity 只要求「decide 的值來自某個 proposer」——這個較弱版本是實際共識演算法（Paxos / Raft）真正保證的。
+:::
 
 ### FLP 不可能性
 **「在純非同步、可能有節點當機的網路中，沒有確定性演算法能保證共識會終止」**
@@ -211,9 +224,15 @@ stateDiagram-v2
 ```
 單看 index，A 跟 B 都「自認為 index=5 是對的」。
 
-**Term 解決**：每次選舉 term + 1。B 選舉時因為少數派**選不出新 term**（拿不到多數票），所以 B 的 term 一定 ≤ A 的 term。合併時 follower 看到「更大 term 的 entry」就丟棄自己 term 較小的 log。
+**Term 解決**：每次選舉 term + 1（term 是節點本地的計數器，**遞增不需要任何人同意**——所以 B 在少數派也能把 term 一路飆高）。但 B **拿不到 majority vote** 因而**選不出 leader**，所以 B 那邊的 entry 永遠 commit 不了。
 
-> **Term = 邏輯時鐘**，等同 [Ch8 的 fencing token](/part-2/ch08-trouble) 在共識協定裡的化身：「過期的 leader」一定帶著較小的 term，可以被識別並排除。
+分區恢復時兩件事護住安全性：
+1. **更大 term 強制 step down**：A（舊 leader）看到 B 的較大 term 會 step down 變 follower、跟著遞增自己的 term 重選——所以「term 大者勝」這條成立的不是「少數派的 term 較小」，而是「看到較大 term 就退位」
+2. **Vote 規則 + Leader Completeness**：candidate 要拿到 majority vote，而 vote 規則要求 **voter 自己的 log 不能比 candidate 還新**（最後一個 entry 的 `(term, index)` 字典序比較）。B 在少數派沒收到 A 那邊已 commit 的 entry，所以 majority 中至少一個 voter 會看到 B 的 log 比自己舊 → **拒絕投票** → B 永遠選不出 leader
+
+→ 結論：少數派分區的寫入永遠 commit 不了，這是「vote 規則」而非「term 不會增加」保證的。
+
+> **Term = 邏輯時鐘**，等同 [Ch8 的 fencing token](/part-2/ch08-trouble) 在共識協定裡的化身：「過期的 leader」一旦看到更大 term 就被識別並 step down。但安全性的根（為什麼少數派寫入 commit 不了）是 vote 規則 + Log Matching，不是 term 本身。
 
 ### 共識的代價
 - 需要多數可用（5 節點要 3 個活）

@@ -133,7 +133,7 @@ LSM 寫入（順序寫）：
 | 寫入速度 | 中（每次寫 1–2 page） | 快（只追加，順序寫） |
 | 讀取速度 | 快（一次找到） | 中（多層查找） |
 | 空間 | 有碎片 | compaction 期間 ~2× |
-| Write amplification | **3–10×**：每次改幾 byte 仍要寫整個 page、WAL（含 InnoDB 的 doublewrite buffer 約 +2×） | **10–30× 不等**：視 compaction 策略；leveled compaction 比 size-tiered 更高 |
+| Write amplification | **2–3×**：每次改幾 byte 仍要寫整個 page + WAL（InnoDB 的 doublewrite buffer 約 +2×、總計典型 ~5–6×） | **10–30× 不等**：視 compaction 策略；leveled compaction 比 size-tiered 更高 |
 | 範圍查詢 | 快 | 快（key 已排序） |
 | 適用 | 讀多寫少 | 寫多讀少、SSD |
 

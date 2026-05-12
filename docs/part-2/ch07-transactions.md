@@ -8,7 +8,7 @@ title: Ch7 交易
 
 <TLDR :points='[
   "<strong>ACID 並非鐵板一塊的概念</strong>：A/I/D 各家 DB 詮釋不一，C（一致性）甚至是應用責任不是 DB 責任。",
-  "<strong>弱隔離級別有經典異常</strong>：Read Committed → 解決 dirty read/write；Snapshot Isolation → 解決 non-repeatable read 與「讀取階段的 phantom」；但仍擋不住 lost update（PG 會偵測並 abort）、write skew、以及「基於不存在性寫入決策」的 phantom-based write skew。",
+  "<strong>弱隔離級別有經典異常</strong>：Read Committed → 解決 dirty read/write；Snapshot Isolation → 解決 non-repeatable read 與「讀取階段的 phantom」；但仍擋不住 lost update（PG/Oracle 在 SI/REPEATABLE READ 才會自動偵測、READ COMMITTED 預設不偵測）、write skew、以及「基於不存在性寫入決策」的 phantom-based write skew。",
   "<strong>Snapshot Isolation 用 MVCC 實作</strong>：每筆交易看到「開始時的快照」，讀不阻塞寫、寫不阻塞讀，是現代 DB 主流（PostgreSQL、Oracle）。",
   "<strong>Lost Update vs Write Skew</strong>：兩者都是並發異常，但 write skew 涉及「跨列的約束」，SI 也無法解決，需要 SSI 或顯式鎖。",
   "<strong>真正的 Serializable 有三種實作</strong>：Actual Serial Execution（VoltDB 單執行緒）、2PL（傳統鎖）、SSI（樂觀並發控制，PostgreSQL 9.1+）。"
@@ -167,7 +167,7 @@ UPDATE users SET active=false WHERE id=自己;
 UPDATE coupons SET remaining = remaining - 1 WHERE id=X;
 ```
 
-如果兩個交易這樣寫，PG REPEATABLE READ 對**同一列**的並發更新會偵測 → 第二個 abort（`40001 could not serialize`）—— 這是 PG 的 **first-updater-wins lost update detection**、跟 write skew 不同機制。**這種寫法在 PG 是安全的**。
+只要寫成這種「就地遞減」的原子 UPDATE，**任何隔離級別（包含預設的 READ COMMITTED）都安全**——DB 會用 row lock 把兩個 UPDATE 序列化，第二個讀到第一個 commit 後的新版本再扣。安全來自「原子 UPDATE」這個寫法本身，不來自隔離級別。
 
 <span class="ddia-scenario-badge warn">C · LOST UPDATE · 有坑</span> **「讀檢查 → 寫新值」**
 ```sql
@@ -176,11 +176,15 @@ SELECT remaining FROM coupons WHERE id=X;  -- 讀到 1
 UPDATE coupons SET remaining = 0 WHERE id=X;  -- 寫死新值
 ```
 
-兩交易都這樣做 → 都讀到 1、都寫 0 → 沒減到負、但**處理了兩筆訂單卻只扣了 1 次庫存**。PG SI 對「同列並發 UPDATE」仍會 abort 其一（lost update detection 抓得到），但**邏輯層仍漏一筆訂單**（abort 的那個若沒在應用層 retry）。
+兩交易都這樣做 → 都讀到 1、都寫 0 → **處理了兩筆訂單卻只扣了 1 次庫存**。在不同隔離級別下行為不同：
+
+- **READ COMMITTED（PG/MySQL 預設）**：PG **不偵測** lost update——第二個 UPDATE 阻塞等鎖、解鎖後直接寫上去 → **靜默 lost update**。MySQL InnoDB 預設也是這種行為
+- **REPEATABLE READ / SERIALIZABLE**（需顯式 `BEGIN ISOLATION LEVEL REPEATABLE READ`）：PG / Oracle 才會自動偵測同列並發 UPDATE → 第二個 abort with `40001 could not serialize access due to concurrent update`。**MySQL InnoDB 的 RR 仍不偵測 lost update**（與 PG 不同）
 
 **通則**：
-- **「先讀再判斷再寫」一定要 retry on conflict**（catch `40001` 後重做整個 BEGIN ... COMMIT）
-- **能用原子操作就用**（`SET col = col + n`）—— DB 內部會幫你序列化
+- **不要靠預設隔離級別擋 lost update**——預設是 READ COMMITTED、不擋
+- **「先讀再判斷再寫」要嘛升到 REPEATABLE READ + retry on `40001`，要嘛改寫成原子 UPDATE**（情境 B）
+- **能用原子操作就用**（`SET col = col + n`）—— 在任何隔離級別都安全
 - **跨列前提**（情境 A）才升 `SERIALIZABLE` 或顯式 `FOR UPDATE`
 :::
 
@@ -221,7 +225,7 @@ COMMIT;  -- ← 兩筆都成功，雙重預訂！
 | Dirty Read | ✗ 仍會發生 | ✓ 防止 | ✓ | ✓ |
 | Dirty Write | ✗ | ✓ | ✓ | ✓ |
 | Read Skew（non-repeatable read） | ✗ | ✗ | ✓ | ✓ |
-| Lost Update | ✗ | ✗ | ⚠️ PG / Oracle 偵測到後**以序列化錯誤 abort 之**（限**同一列**並發 UPDATE；跨列邏輯依賴的 lost update 不會被偵測，需應用 retry） | ✓ |
+| Lost Update | ✗ | ✗（PG/MySQL **預設不偵測**） | ⚠️ PG / Oracle 在 **SI / REPEATABLE READ** 偵測同一列並發 UPDATE → 以 `40001` abort（MySQL InnoDB 的 RR **仍不偵測**；跨列邏輯依賴的 lost update 不偵測、需應用 retry） | ✓ |
 | Write Skew | ✗ | ✗ | ✗ **仍會發生** | ✓ |
 | Phantom Read（**讀**走快照看不到新插入） | ✗ | ✗ | ✓ | ✓ |
 | Phantom-based Write Skew（**基於不存在性寫入決策**被打破） | ✗ | ✗ | ✗ | ✓（SSI / 2PL with predicate lock） |
