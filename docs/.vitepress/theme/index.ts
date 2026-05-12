@@ -1,0 +1,44 @@
+import DefaultTheme from 'vitepress/theme'
+import type { Theme } from 'vitepress'
+import './custom.css'
+
+import Icon from './components/Icon.vue'
+import TLDR from './components/TLDR.vue'
+import Quiz from './components/Quiz.vue'
+import Progress from './components/Progress.vue'
+import ChapterMeta from './components/ChapterMeta.vue'
+import Dashboard from './components/Dashboard.vue'
+import ChapterCard from './components/ChapterCard.vue'
+import NextChapterBridge from './components/NextChapterBridge.vue'
+import GlossaryTerm from './components/GlossaryTerm.vue'
+import GlossaryIndex from './components/GlossaryIndex.vue'
+import SectionDivider from './components/SectionDivider.vue'
+
+// FOUT 防護：Material Symbols 字型載入完成後才顯示圖示文字，
+// 避免首屏短暫露出「schedule」「menu_book」這類字面 fallback。
+// 必須包 typeof document 檢查以避免 SSG build 時報錯。
+if (typeof document !== 'undefined' && 'fonts' in document) {
+  document.fonts.ready.then(() => {
+    document.documentElement.classList.add('fonts-loaded')
+  })
+}
+
+export default {
+  extends: DefaultTheme,
+  enhanceApp({ app }) {
+    app.component('Icon', Icon)
+    app.component('TLDR', TLDR)
+    app.component('Quiz', Quiz)
+    app.component('Progress', Progress)
+    app.component('ChapterMeta', ChapterMeta)
+    app.component('Dashboard', Dashboard)
+    app.component('ChapterCard', ChapterCard)
+    app.component('NextChapterBridge', NextChapterBridge)
+    // 詞彙連結化：<G term="quorum">法定人數</G>
+    // 短別名 G 為了不污染 markdown 視覺，等同 GlossaryTerm
+    app.component('GlossaryTerm', GlossaryTerm)
+    app.component('G', GlossaryTerm)
+    app.component('GlossaryIndex', GlossaryIndex)
+    app.component('SectionDivider', SectionDivider)
+  }
+} satisfies Theme

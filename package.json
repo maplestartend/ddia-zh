@@ -1,0 +1,31 @@
+{
+  "name": "ddia-zh",
+  "version": "1.0.0",
+  "description": "DDIA《Designing Data-Intensive Applications》中文學習網站",
+  "type": "module",
+  "scripts": {
+    "dev": "vitepress dev docs",
+    "build": "vitepress build docs",
+    "preview": "vitepress preview docs",
+    "type-check": "vue-tsc --noEmit",
+    "screenshot": "node scripts/screenshot.mjs",
+    "lint:glossary": "node scripts/lint-glossary.mjs"
+  },
+  "keywords": [
+    "ddia",
+    "learning",
+    "distributed-systems"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^25.7.0",
+    "markdown-it-attrs": "^4.3.1",
+    "mermaid": "^11.15.0",
+    "playwright": "^1.60.0",
+    "typescript": "^6.0.3",
+    "vitepress": "^1.6.4",
+    "vitepress-plugin-mermaid": "^2.0.17",
+    "vue-tsc": "^3.2.8"
+  }
+}

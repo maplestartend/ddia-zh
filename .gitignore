@@ -1,0 +1,9 @@
+node_modules
+docs/.vitepress/cache
+docs/.vitepress/dist
+scripts/screenshots
+.DS_Store
+*.log
+.env
+*.local
+tsconfig.tsbuildinfo

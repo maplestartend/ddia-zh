@@ -1,0 +1,49 @@
+<template>
+  <a :href="link" class="ddia-chapter-card" :class="{ done: isChapterDone }">
+    <div class="ddia-chapter-card-head">
+      <span class="ddia-chapter-card-num">{{ num }}</span>
+      <Icon
+        v-if="isChapterDone"
+        name="check_circle"
+        :size="18"
+        filled
+        :style="{ color: 'var(--status-done-fg)' }"
+        label="已讀完"
+      />
+    </div>
+    <div class="ddia-chapter-card-title">{{ title }}</div>
+    <div class="ddia-chapter-card-summary">{{ summary }}</div>
+    <div class="ddia-chapter-card-status">
+      <span class="ddia-chapter-card-status-tag">
+        <Icon
+          :name="isChapterDone ? 'task_alt' : 'radio_button_unchecked'"
+          :size="14"
+          :filled="isChapterDone"
+        />
+        {{ isChapterDone ? '已讀完' : '尚未開始' }}
+      </span>
+      <span class="ddia-chapter-card-status-tag">
+        <Icon name="schedule" :size="14" />
+        {{ readTime }} 分鐘
+      </span>
+    </div>
+  </a>
+</template>
+
+<script setup lang="ts">
+import { computed } from 'vue'
+import Icon from './Icon.vue'
+import { useProgress } from '../../composables/useProgress'
+
+const props = defineProps<{
+  id: string
+  num: string
+  title: string
+  summary: string
+  link: string
+  readTime: number
+}>()
+
+const { isDone } = useProgress()
+const isChapterDone = computed(() => isDone(props.id))
+</script>

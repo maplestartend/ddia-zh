@@ -1,0 +1,215 @@
+// 進度與測驗紀錄的統一存取層。
+// 任何元件需要讀 / 寫進度，都透過這裡 —— 不要直接碰 localStorage。
+
+import { computed, onMounted } from 'vue'
+import { useStorage } from './useStorage'
+import { TOTAL_CHAPTERS } from '../data/chapters'
+
+export interface ProgressEntry {
+  done: boolean
+  at: string  // 'YYYY/M/D' 完成日期
+}
+
+export interface QuizEntry {
+  answers: (number | null)[]
+  submitted: boolean
+  score: number
+  total: number
+  timestamp: number
+}
+
+const PROGRESS_KEY = 'ddia-progress'
+// v1 是 string[]、v2 是 QuizSummary[]。改用獨立 key 名稱讓兩版本可共存，
+// 升級路徑：偵測 v1 key 存在 → migrate 到 v2 → 刪 v1 key。
+const QUIZ_INDEX_KEY_V1 = 'ddia-quiz-index'
+const QUIZ_INDEX_KEY_V2 = 'ddia-quiz-index-v2'
+const QUIZ_PREFIX = 'ddia-quiz-'
+
+type ProgressMap = Record<string, ProgressEntry>
+
+// QuizIndex 從 v1（string[]）升級為 v2（QuizSummary[]）—— 把 score/total 一起存進來，
+// 讓 accuracy computed 不必每次 reactivity 重算時去 parse localStorage（fix Dashboard 不更新 bug）。
+export interface QuizSummary {
+  chapterId: string
+  score: number
+  total: number
+  ts: number
+}
+type QuizIndex = QuizSummary[]
+
+function isProgressMap(v: unknown): v is ProgressMap {
+  return typeof v === 'object' && v !== null && !Array.isArray(v)
+}
+function isQuizSummary(v: unknown): v is QuizSummary {
+  if (typeof v !== 'object' || v === null) return false
+  const o = v as Record<string, unknown>
+  return typeof o.chapterId === 'string'
+    && typeof o.score === 'number'
+    && typeof o.total === 'number'
+    && typeof o.ts === 'number'
+}
+function isQuizIndex(v: unknown): v is QuizIndex {
+  return Array.isArray(v) && v.every(isQuizSummary)
+}
+
+// v1 → v2 升級：讀舊 string[] key、查每章的 quiz raw、補上 score/total/ts 變成 QuizSummary[]。
+// 副作用安全：所有 localStorage 存取都在這個函式內、由呼叫者保證 onMounted 才呼叫。
+function migrateV1ToV2(): QuizIndex {
+  try {
+    const raw = localStorage.getItem(QUIZ_INDEX_KEY_V1)
+    if (!raw) return []
+    const parsed = JSON.parse(raw)
+    if (!Array.isArray(parsed) || !parsed.every(x => typeof x === 'string')) return []
+    const upgraded: QuizIndex = []
+    for (const chId of parsed as string[]) {
+      try {
+        const qRaw = localStorage.getItem(QUIZ_PREFIX + chId)
+        if (!qRaw) continue
+        const q = JSON.parse(qRaw) as QuizEntry
+        if (typeof q.score === 'number' && typeof q.total === 'number') {
+          upgraded.push({ chapterId: chId, score: q.score, total: q.total, ts: q.timestamp || Date.now() })
+        }
+      } catch { /* ignore single chapter parse failure */ }
+    }
+    return upgraded
+  } catch {
+    return []
+  }
+}
+
+export function useProgress() {
+  const progress = useStorage<ProgressMap>(PROGRESS_KEY, {}, { validate: isProgressMap })
+  const quizIndex = useStorage<QuizIndex>(QUIZ_INDEX_KEY_V2, [], { validate: isQuizIndex })
+
+  // 升級流程：mount 後若 v2 還是空 + v1 raw 存在 → migrate、寫回、刪 v1。
+  // 在 onMounted 內執行 → 守住 CLAUDE.md 規則 #4（副作用不在 setup 頂層）。
+  //
+  // ⚠️ Invariant：本 onMounted **必須在 useStorage 的 onMounted 之後執行**，
+  //   否則 quizIndex.value 還沒從 localStorage 載入、看起來是空、會誤觸發 migrate
+  //   覆蓋掉真正 v2 資料。Vue 對 setup() 註冊順序是 FIFO：
+  //   `useStorage(...)` 先呼叫、它先註冊 onMounted；本 onMounted 後註冊 → 順序對。
+  //   修改此檔時若新增 onMounted 在 useStorage 呼叫前，會破壞此 invariant。
+  //
+  // 另外為了雙保險：升級前再讀一次 v2 raw 直接確認、不只依賴 reactive state。
+  onMounted(() => {
+    let v2HasData = quizIndex.value.length > 0
+    if (!v2HasData) {
+      try {
+        const v2Raw = localStorage.getItem(QUIZ_INDEX_KEY_V2)
+        if (v2Raw && JSON.parse(v2Raw)?.length > 0) v2HasData = true
+      } catch { /* ignore */ }
+    }
+    if (v2HasData) return
+    const upgraded = migrateV1ToV2()
+    if (upgraded.length === 0) return
+    quizIndex.value = upgraded  // useStorage watch 會自動寫回 v2 key
+    try { localStorage.removeItem(QUIZ_INDEX_KEY_V1) } catch { /* ignore */ }
+  })
+
+  const doneCount = computed(() =>
+    Object.values(progress.value).filter(v => v.done).length
+  )
+
+  const progressPct = computed(() =>
+    Math.round((doneCount.value / TOTAL_CHAPTERS) * 100)
+  )
+
+  function isDone(chapterId: string): boolean {
+    return !!progress.value[chapterId]?.done
+  }
+
+  function getDoneAt(chapterId: string): string {
+    return progress.value[chapterId]?.at ?? ''
+  }
+
+  function markDone(chapterId: string) {
+    const now = new Date().toLocaleDateString('zh-TW')
+    progress.value = { ...progress.value, [chapterId]: { done: true, at: now } }
+  }
+
+  function unmarkDone(chapterId: string) {
+    const next = { ...progress.value }
+    delete next[chapterId]
+    progress.value = next
+  }
+
+  function saveQuiz(chapterId: string, entry: QuizEntry) {
+    // reactive index 先寫（accuracy 立刻更新）、再寫詳細答案。
+    const summary: QuizSummary = {
+      chapterId,
+      score: entry.score,
+      total: entry.total,
+      ts: entry.timestamp
+    }
+    const prevIndex = quizIndex.value  // 留 snapshot 給 quota fail 時 rollback
+    const existing = prevIndex.findIndex(s => s.chapterId === chapterId)
+    if (existing >= 0) {
+      const next = [...prevIndex]
+      next[existing] = summary
+      quizIndex.value = next
+    } else {
+      quizIndex.value = [...prevIndex, summary]
+    }
+    try {
+      localStorage.setItem(QUIZ_PREFIX + chapterId, JSON.stringify(entry))
+    } catch {
+      // 詳細答案寫不進去 → 立刻 rollback reactive summary，避免 Dashboard 算到孤兒成績。
+      // （比靠 loadQuiz self-heal 即時——使用者不必進入該章 quiz 頁也能修正）
+      quizIndex.value = prevIndex
+    }
+  }
+
+  function loadQuiz(chapterId: string): QuizEntry | null {
+    try {
+      const raw = localStorage.getItem(QUIZ_PREFIX + chapterId)
+      if (!raw) {
+        // self-heal：saveQuiz 在 quota exceeded 時 summary 進了 reactive index、
+        // 但詳細答案沒寫進 localStorage（孤兒）。loadQuiz 找不到時順手把 index 也清掉，
+        // 避免 Dashboard accuracy 永遠算這筆「孤兒成績」。
+        const orphan = quizIndex.value.findIndex(s => s.chapterId === chapterId)
+        if (orphan >= 0) {
+          quizIndex.value = quizIndex.value.filter(s => s.chapterId !== chapterId)
+        }
+        return null
+      }
+      const parsed = JSON.parse(raw) as QuizEntry
+      if (typeof parsed.score !== 'number' || !Array.isArray(parsed.answers)) return null
+      return parsed
+    } catch { return null }
+  }
+
+  function clearQuiz(chapterId: string) {
+    // reactive 先更新（不依賴 localStorage 成功）、之後再刪 localStorage。
+    quizIndex.value = quizIndex.value.filter(s => s.chapterId !== chapterId)
+    try { localStorage.removeItem(QUIZ_PREFIX + chapterId) } catch { /* ignore */ }
+  }
+
+  const quizCount = computed(() => quizIndex.value.length)
+
+  // 純從 reactive quizIndex 算 —— 不再 parse localStorage，
+  // 任何一筆 summary 更新都會自動觸發重算。
+  const accuracy = computed(() => {
+    let totalScore = 0
+    let totalQ = 0
+    for (const s of quizIndex.value) {
+      totalScore += s.score
+      totalQ += s.total
+    }
+    return totalQ === 0 ? 0 : Math.round((totalScore / totalQ) * 100)
+  })
+
+  return {
+    progress,
+    doneCount,
+    progressPct,
+    isDone,
+    getDoneAt,
+    markDone,
+    unmarkDone,
+    quizCount,
+    accuracy,
+    saveQuiz,
+    loadQuiz,
+    clearQuiz
+  }
+}
