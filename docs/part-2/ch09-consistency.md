@@ -45,10 +45,14 @@ title: Ch9 一致性與共識
 
 例子（不滿足線性一致）：
 ```
-T=0  A 寫 x=1
+T=0  A 完成寫 x=1（client 已收到 ACK）
 T=1  B 讀 x → 1   ✓
 T=2  C 讀 x → 0   ✗ ← C 看到回退，違反線性一致
 ```
+
+::: tip 為什麼要強調「ACK 已收到」
+線性一致的精確定義是「每個操作在 invocation 與 response 之間**某個時刻原子發生**」。若 A 的寫尚未 ACK（in-flight），B 與 C 看到不同值並**不直接違反**線性一致——只有當「寫已對 client 完成 / ACK」這個事實成立、之後仍能讀到舊值，才是違反。判讀 linearizability 時要以 client 看到的 invocation/response 時間點為準（DDIA p.323-324）。
+:::
 
 ### 怎麼實作
 - Single-leader + 同步複製 + 讀只走 leader → 線性一致
@@ -87,6 +91,18 @@ T=2  C 讀 x → 0   ✗ ← C 看到回退，違反線性一致
 - P（網路分區）**總是會發生**，不是選項
 - 真正的選擇：分區時要 **CP（拒絕服務保一致性）** 還是 **AP（繼續服務允許不一致）**
 - **無分區時也有代價**：即使網路正常，更強一致 = 更高延遲（光速與多輪訊息成本），不是免費的
+
+::: warning CAP 的 C 不是 ACID 的 C，也不是 consistent hashing 的 C
+**學界三個完全不同的東西用了同一個字母**，是初學者最常踩的坑（DDIA p.336 footnote 41 對比前二者；第三條為本站補充）：
+
+| 縮寫 | 全名 | 意思 |
+|---|---|---|
+| **CAP 的 C** | Consistency | **Linearizability**（複製副本之間對外觀察一致） |
+| **ACID 的 C** | Consistency | **業務不變式**（如「餘額不為負」）—— 應用層責任、不是 DB 提供的 |
+| **Consistent hashing 的 C** | Consistent | **「節點變動時 key→node 映射變動最小」** 的雜湊性質 |
+
+讀文獻看到「consistent / consistency」**永遠先確認語境**，三者無關。
+:::
 
 ::: tip PACELC 補完 CAP（Abadi 2012）
 **P**artition 時 → 選 **A**vailability 還是 **C**onsistency；**E**lse（網路正常）→ 選 **L**atency 還是 **C**onsistency。

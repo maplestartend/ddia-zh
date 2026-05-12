@@ -90,6 +90,10 @@ sequenceDiagram
 - **非同步**：寫入立刻 ack → 快，但 leader 掛了可能丟資料。MySQL 預設。
 - **半同步**：至少一個 follower 同步、其餘非同步 → 實務常見折衷。MySQL 5.7+ 的 `rpl_semi_sync_master_wait_for_slave_count=1` 即此模式。
 
+::: warning DDIA 的「同步」≠「全部 follower ACK」
+書中 / 業界談「synchronous」更常指**至少一個 standby 確認**（與本書「半同步」實質相同），**極少**系統真的要求「**所有** follower ACK」才回 client——那會把可用性殺爆。PostgreSQL 的 `synchronous_standby_names` 也支援 `FIRST 1 (s1,s2)` / `ANY 2 (s1,s2,s3)` 等配置，多數情況不是「所有」。上圖第一個 sequence 的「全部 ACK」是為了視覺對比的極端情境、非真實實作；MySQL 的「半同步」另設一格只是因為該特定模式名稱，邏輯上不是第三類。
+:::
+
 ### Failover（主節點切換）的麻煩
 1. 怎麼確定 leader 真的掛了？（網路抖動 vs 真當機）
 2. 選誰當新 leader？（資料最新者）
@@ -127,7 +131,7 @@ sequenceDiagram
 
 | 策略 | 說明 | 風險 |
 |---|---|---|
-| Last-Write-Wins (LWW) | 用時間戳，最大勝 | 時鐘不同步 → 丟資料 |
+| Last-Write-Wins (LWW) | 用時間戳，最大勝（CockroachDB / YugabyteDB 用 HLC、Spanner 用 TrueTime 緩解時鐘漂移，但無法消除：跨節點寫入仍可能因時鐘誤差被靜默丟失） | 時鐘不同步 → 丟資料 |
 | 應用層 merge | 給 client 看到衝突，自己決定 | 複雜 |
 | CRDT | 自動可合併資料結構 | 資料結構受限 |
 | Mergeable persistent data | 像 git，保留分支 | 仍需應用處理 |
@@ -157,7 +161,7 @@ sequenceDiagram
 
 ::: warning Quorum 並非無條件保證
 W+R>N 在下列情況**不保證**讀到最新值：
-- **Sloppy quorum**：節點掛時，把寫入「臨時」轉交給原本不屬於該 key 的節點（hinted handoff）。讀寫集可能不重疊。Cassandra/Riak 預設啟用，以換取更高可用性。
+- **Sloppy quorum**：節點掛時，把寫入「臨時」轉交給原本不屬於該 key 的節點（hinted handoff）。**關鍵問題**：寫跑到「替補節點」，但讀仍對**原 home 節點集合**做 quorum read → **寫集與讀集完全不交集** → 讀就讀不到剛寫的最新值。Dynamo 用 hinted handoff 寫、replica 修復後背景傳回 home（Cassandra/Riak 預設啟用，以換取更高可用性）。
 - **並發寫**：W+R>N 只解決「最新值存在」，不解決「誰是最新」—— 需搭配版本向量或時間戳判定。
 - **節點故障切換期間**：副本切換時讀寫可能短暫打到不同節點集合。
 

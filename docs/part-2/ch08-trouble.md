@@ -94,6 +94,7 @@ LWW → x=1（保留 T1），但實際上 T2 是「後發生」的
 - 筆電闔上 → 醒來
 - 同機其他行程搶 CPU
 - 同步磁碟 I/O
+- **Container CPU throttling**：K8s / Docker 設了 cgroup CPU quota（如 `cpu: 500m`），一旦該 100ms slice 用完，**OS 直接把行程暫停到下個 slice 才繼續**。現代 Java / Go 服務在 K8s 上跑遇到「莫名的尾延遲尖刺」常是這原因、不是 GC
 
 ```java
 while (true) {

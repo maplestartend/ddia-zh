@@ -83,6 +83,10 @@ DDIA 的核心觀點：**可靠性不是某一層的責任**。
 - 即使每一層都「正確」，組合起來仍可能出錯（雙寫不一致、訊息重複、競態）
 - 唯一可靠的做法：**端到端的冪等識別碼**
 
+::: tip 思想源頭：Saltzer-Reed-Clark 1984
+這個觀念出自系統設計經典論文 **["End-to-End Arguments in System Design"](https://web.mit.edu/Saltzer/www/publications/endtoend/endtoend.pdf)**（Saltzer, Reed, Clark，1984）——任何**最終正確性保證**都必須放在**端點檢查**，中間層只能輔助、不能取代端點驗證。DDIA p.519 直接引用此論點，與 TCP / TLS 對「真正的可靠性」放在哪一層的設計同源。
+:::
+
 範例：付款流程
 - Client 產生 `request_id`
 - 整條鏈路（API、DB、訊息隊列、外部支付）都用同一 ID 去重

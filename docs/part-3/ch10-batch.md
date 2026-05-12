@@ -84,6 +84,12 @@ def reduce(word, counts):
 - Mapper 2：讀使用者表，輸出 (user_id, user_record)
 - Reducer：收到同一 user_id 的全部，做 join
 
+::: tip 實務細節：secondary sort 是 reduce-side join 的關鍵
+若不額外處理，reducer 收到的 `(activity, user_record)` 順序**不保證 user_record 先到**——這時 reducer 必須先把整批 activity 全部 buffer 進記憶體、等到 user_record 終於出現再 join，**大 user 容易 OOM**（一個熱門 user 的 activity 可能上百萬筆）。
+
+實務做法：用 **secondary sort**（次級排序）讓 shuffle 階段把 `(user_id, type_tag)` 的 `type_tag` 排成「user_record 永遠先於 activity」。reducer 一進來就先取 user_record、再 streaming 處理每筆 activity，記憶體只持有一份 user_record（DDIA p.405）。
+:::
+
 ---
 
 ## 10.4 Join 策略

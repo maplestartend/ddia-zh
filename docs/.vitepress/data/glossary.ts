@@ -203,6 +203,9 @@ export const GLOSSARY: readonly GlossaryEntry[] = [
   { term: 'mapreduce', slug: 'mapreduce', chinese: 'MapReduce', english: 'MapReduce',
     shortDef: 'Google 2004 提出的批次處理典範。Map + Shuffle + Reduce 三階段，可擴展到 PB 級資料。',
     chapter: '/part-3/ch10-batch' },
+  { term: 'watermark', slug: 'watermark', chinese: '水印', english: 'Watermark',
+    shortDef: 'Stream 處理框架（Flink / Beam / Kafka Streams）對「event-time T 之前的資料都到齊了」的明確宣告。框架據此關 window、觸發計算。是「準確性 vs 延遲」取捨的 API。',
+    chapter: '/part-3/ch11-streams' },
 
   // ── 並行 ──
   { term: 'race-condition', slug: 'race-condition', chinese: '競態條件', english: 'Race Condition',

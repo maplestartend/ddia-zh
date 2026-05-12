@@ -139,7 +139,13 @@ Esper、Flink CEP。
 滾動視窗統計（每分鐘的點擊量）、Top-N、Approximate count（HyperLogLog）。
 
 ### 3. 物化視圖（Materialized View）
-主表變了，索引/快取/聚合表自動更新。Kafka Streams 的核心場景。
+主表變了，下游的索引 / 快取 / 聚合表會**非同步**地被更新（延遲通常 ms~s 級，視 consumer lag）。Kafka Streams 的核心場景。
+
+::: warning 「自動更新」≠ 同步即時、也不保證最終一致
+- **延遲**：consumer 處理 stream 與真實寫入有 ms~s 級時間差；高負載 / consumer 故障時可達分鐘級
+- **失敗模式**：下游 consumer 掛掉 / 處理失敗會讓 view 暫時 stale；若處理**非冪等**（如「+1」而非「set」）、重試會讓 view **永久發散**
+- 解法：要求處理冪等（idempotent）+ at-least-once delivery，或走 §11.5 的 exactly-once 機制
+:::
 
 ### 4. 跨系統搜尋索引同步
 DB → Elasticsearch via CDC。
@@ -152,6 +158,13 @@ DB → Elasticsearch via CDC。
 兩個事件流（如「點擊事件」JOIN 「曝光事件」）。
 - 需要 window（畢竟流是無界的）
 - 處理「對方還沒到」的情況
+
+::: tip Window 大小是「準確性 vs 延遲」的取捨
+- **Window 太短** → 對方 event 還沒到就關窗、漏 join、結果不準
+- **Window 太長** → 結果出得慢、記憶體 buffer 大
+- **Watermark** 是 stream 處理框架（Flink、Beam、Kafka Streams）對這個權衡的**明確 API**：宣告「event-time T 之前的資料都到齊了」，框架據此關窗 / 觸發計算。配合 allowed lateness 處理偶發的更晚到事件
+- 詳見 <G term="watermark">Watermark</G> 詞彙表
+:::
 
 ### Stream-Table Join
 事件流 JOIN 維度資料表（如「訂單流」JOIN「使用者資料表」）。
