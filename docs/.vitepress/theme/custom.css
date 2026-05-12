@@ -141,6 +141,25 @@ body {
   font-family: var(--vp-font-family-base);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* 中文 typography：
+     - text-wrap: pretty 讓末行平衡、避免孤行字（Chrome 114+ / Safari 17.5+）
+     - line-break: strict 啟用中文標點避頭尾（標點符號不出現在行首 / 行尾） */
+  text-wrap: pretty;
+  line-break: strict;
+}
+
+/* 中文段落的 wrap 策略：
+   - word-break: normal 預設行為（中文每字皆可斷、英文按詞斷）
+   - overflow-wrap: break-word 英文超長 token 才強制斷、不溢出容器
+   主要用於正文段落、卡片描述、TLDR 點、disclaimer、quiz 等中文密度高的區塊 */
+.vp-doc p, .vp-doc li, .vp-doc td, .vp-doc dd, .vp-doc blockquote,
+.ddia-hero-subtitle, .ddia-hero-meta, .ddia-hero-disclaimer,
+.ddia-card-summary, .ddia-bridge-text, .ddia-tldr-item,
+.ddia-stat-label, .ddia-dashboard-welcome-text,
+.ddia-secondary-nav-label, .ddia-quiz-question, .ddia-quiz-option,
+.ddia-quiz-explanation, .ddia-part-header-title p {
+  word-break: normal;
+  overflow-wrap: break-word;
 }
 
 .numeric,
