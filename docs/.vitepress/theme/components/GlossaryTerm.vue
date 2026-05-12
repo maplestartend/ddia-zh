@@ -4,7 +4,7 @@
   </span>
   <a v-else
      ref="anchorRef"
-     :href="`/glossary#${entry.slug}`"
+     :href="glossaryHref"
      class="ddia-g"
      :aria-describedby="tooltipId"
      @mouseenter="onHover(true)"
@@ -35,11 +35,14 @@
 // - 資料 SSOT：docs/.vitepress/data/glossary.ts
 // - term 找不到時退化為純文字 + 橘色虛線（提醒作者）—— 不阻擋頁面渲染
 import { computed, ref, onMounted, onUnmounted, useId } from 'vue'
+import { withBase } from 'vitepress'
 import { findTerm } from '../../data/glossary'
 
 const props = defineProps<{ term: string }>()
 
 const entry = computed(() => findTerm(props.term))
+// withBase 處理部署到子路徑（GitHub Pages /ddia-zh/）時的 base 前綴；hard-code 絕對路徑會在 Pages 上 404
+const glossaryHref = computed(() => entry.value ? withBase(`/glossary/#${entry.value.slug}`) : undefined)
 const show = ref(false)
 const isTouch = ref(false)
 const anchorRef = ref<HTMLAnchorElement | null>(null)

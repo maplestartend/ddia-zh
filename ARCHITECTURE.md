@@ -75,9 +75,9 @@ DDIA 中文網站的所有資料都靠三個檔案維護，**禁止散落**：
 
 ### 2.1 章節清單 — [docs/.vitepress/data/chapters.ts](docs/.vitepress/data/chapters.ts)
 
-- 12 章主課程 (`CHAPTERS`) + 7 章前置知識 (`PREREQUISITES`)
+- 12 章主課程 (`CHAPTERS`) + Part 0 前置知識 (`PREREQUISITES`)（具體章數以 `chapters.ts` 為準）
 - 任何顯示章節清單的地方（首頁、Dashboard、進度頁、Part 入口）都 `import { CHAPTERS, PREREQUISITES, PARTS, TOTAL_CHAPTERS }`
-- **`TOTAL_CHAPTERS` 永遠是 12**——Part 0 是選讀補強，不計入主進度
+- **`TOTAL_CHAPTERS` 永遠等於 `CHAPTERS.length`**——Part 0 是選讀補強，不計入主進度
 - `chaptersByPart(part)` helper：`part=0` 回 PREREQUISITES、其他回對應的 CHAPTERS
 - 註：config.mts 的 sidebar 目前仍寫死，如果未來章節清單頻繁變動，建議改成動態產
 
@@ -134,7 +134,7 @@ DDIA 中文網站的所有資料都靠三個檔案維護，**禁止散落**：
 
 ## 4. 樣式系統
 
-[docs/.vitepress/theme/custom.css](docs/.vitepress/theme/custom.css) 目前單檔 ~700 行，採兩層 token：
+[docs/.vitepress/theme/custom.css](docs/.vitepress/theme/custom.css) 採兩層 token：
 
 ```
 Primitive tokens（色階、間距、字級）
@@ -146,7 +146,7 @@ Component CSS（.ddia-card, .ddia-quiz, .ddia-stat-card）
 
 明 / 暗模式：VitePress 預設 `.dark` class on `<html>`。**不要用 `[data-theme]`**（與 stock 專案不同——那是 Next.js 自管）。
 
-CSS 拆分上限：單檔 ~500 行。`custom.css` 接近 700 行，未來再長就拆成 `tokens.css` + `base.css` + `components.css` + `layout.css`，在 `theme/index.ts` 多檔 import。
+CSS 拆分上限：單檔 ~500 行。`custom.css` 已超過此上限（以 `wc -l` 為準），未來拆成 `tokens.css` + `base.css` + `components.css` + `layout.css`，在 `theme/index.ts` 多檔 import。
 
 ---
 
@@ -184,7 +184,7 @@ VitePress 在 `npm run build` 時會在 Node.js 環境跑每頁 Vue `setup()`。
 npm run type-check        # 型別 OK 嗎
 npm run build             # SSG 每頁能 render 嗎
 npm run dev               # 開伺服器（另一個 terminal）
-npm run screenshot        # Playwright 截 9 頁 × 明暗模式 = 18 張
+npm run screenshot        # Playwright 截關鍵頁 × 明暗模式（頁面清單以 scripts/screenshot.mjs 的 PAGES 為準）
 npm run lint:glossary     # 還有沒漏標的詞嗎
 ```
 
@@ -203,7 +203,7 @@ node scripts/screenshot.mjs after
 依優先度排序：
 
 1. **config.mts sidebar 硬編碼**：未來如果章節清單頻繁變動，要改成從 `chapters.ts` 動態產（已預留 `chaptersByPart()` helper）
-2. **custom.css 接近 700 行**：到 ~500 行該拆檔了，當前可接受
+2. **custom.css 已超過 500 行上限**：拆成 `tokens.css` / `base.css` / `components.css` / `layout.css` 是下一個 refactor 點
 3. **`vitepress build` chunk size warning**：>500KB chunk，可考慮 dynamic import + manualChunks 切分（影響首屏 FCP，但 CDN cache 後實際影響不大，目前不急）
 4. **沒有 CI**：依賴開發者自跑 type-check / build；可考慮加 GitHub Actions
 

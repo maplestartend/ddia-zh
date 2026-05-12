@@ -7,7 +7,7 @@
     <p class="ddia-bridge-text">
       <slot />
     </p>
-    <a v-if="nextLink" :href="nextLink" class="ddia-bridge-link">
+    <a v-if="nextLink" :href="resolvedHref" class="ddia-bridge-link">
       前往 {{ nextTitle }}
       <Icon name="chevron_right" :size="16" />
     </a>
@@ -15,11 +15,19 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
+import { withBase } from 'vitepress'
 import Icon from './Icon.vue'
-defineProps<{
+const props = defineProps<{
   nextLink?: string
   nextTitle?: string
 }>()
+// 內部相對路徑包 withBase 以處理 GitHub Pages 子路徑；外部 URL 直接放行
+const resolvedHref = computed(() => {
+  if (!props.nextLink) return undefined
+  if (/^https?:\/\//.test(props.nextLink)) return props.nextLink
+  return withBase(props.nextLink)
+})
 </script>
 
 <style scoped>
