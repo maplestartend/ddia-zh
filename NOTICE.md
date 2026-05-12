@@ -56,8 +56,9 @@ purposes**, with:
 If you are **Martin Kleppmann**, **O'Reilly Media**, or their authorized
 representative, and have any concerns about this repository:
 
-1. Open a GitHub issue at this repository, or
-2. Contact via GitHub username [@maplestartend](https://github.com/maplestartend)
+1. **Email**: <asercv14632@gmail.com> (preferred for identity verification)
+2. Open a GitHub issue using the [Takedown template](https://github.com/maplestartend/ddia-zh/issues/new?template=03-takedown.yml)
+3. Contact via GitHub username [@maplestartend](https://github.com/maplestartend)
 
 The author will respond and address concerns (modify, remove, or restrict
 content) within a reasonable timeframe.

@@ -1,5 +1,5 @@
 <template>
-  <a :href="link" class="ddia-chapter-card" :class="{ done: isChapterDone }">
+  <a :href="resolvedHref" class="ddia-chapter-card" :class="{ done: isChapterDone }">
     <div class="ddia-chapter-card-head">
       <span class="ddia-chapter-card-num">{{ num }}</span>
       <Icon
@@ -32,6 +32,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { withBase } from 'vitepress'
 import Icon from './Icon.vue'
 import { useProgress } from '../../composables/useProgress'
 
@@ -46,4 +47,6 @@ const props = defineProps<{
 
 const { isDone } = useProgress()
 const isChapterDone = computed(() => isDone(props.id))
+// 包 withBase 以支援 GitHub Pages 子路徑（base = '/ddia-zh/'）
+const resolvedHref = computed(() => withBase(props.link))
 </script>

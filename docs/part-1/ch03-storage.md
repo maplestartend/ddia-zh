@@ -65,18 +65,24 @@ SSTable L0 → L1 → L2 → ...（背景 compaction）
 :::
 
 ::: tip 如果你是前端開發者：你瀏覽器裡也有一個儲存引擎
-**IndexedDB** 是你瀏覽器內建的 KV + 索引資料庫，PWA / Dexie.js / RxDB 都建立在它上面。它的內部設計**剛好對應本章的 B-Tree 派**：
+**IndexedDB** 是你瀏覽器內建的 KV + 索引資料庫，PWA / Dexie.js / RxDB 都建立在它上面。**對外暴露的是 B-Tree 風味的 ordered index 語意**（key 有序、`IDBKeyRange` 走有序遍歷），但**底層實作各家瀏覽器不同**：
+
+| 瀏覽器 | IndexedDB 底層 | 派別 |
+|---|---|---|
+| **Chrome / Edge** | LevelDB | **LSM-Tree 派**（與 RocksDB 同源）|
+| **Firefox** | SQLite | B-Tree 派 |
+| **Safari** | 客製 KV（早期 SQLite） | 視版本而定 |
+
+也就是說：**規範看起來像 B-Tree，但 Chromium 系列下其實是 LSM**。對應到本章：
 
 | IndexedDB 行為 | 對應本章哪個概念 |
 |---|---|
-| `objectStore` 的 keyPath 自動 B-Tree 索引 | <G term="b-tree">B-Tree</G> primary index |
-| 用 `createIndex(name, keyPath)` 加額外欄位索引 | 次級索引（secondary index） |
-| 跨多欄位查詢要先 `createIndex(['a','b'])` —— ad-hoc 跨欄位不支援 | **composite index 預建**（與 Firestore 同樣的痛點） |
-| Dexie 用 JS 層 `.filter()` 補強 = 不走索引、慢 | 沒索引的查詢 = full scan，DB 內部也是這個邏輯 |
+| `objectStore` 的 keyPath → 自動有序 primary index | primary index（B-Tree 或 LSM 視瀏覽器）|
+| `createIndex(name, keyPath)` 加欄位索引 | 次級索引（secondary index） |
+| 跨多欄位查要先 `createIndex(['a','b'])` | **composite index 預建**（與 Firestore 同樣的痛點） |
+| Dexie `.filter(fn)` 在 callback 端走 JS、不能被索引利用 | partial scan（前段 `.where` 已收斂候選集、`.filter` 在那基礎上線性掃）|
 
-看完本章你會理解：**Dexie 為什麼 `.where('a').equals(1).filter(x => x.b > 5)` 很慢** —— 因為 `.filter` 走 JS 層、`.b` 沒有 index，所以等同 full table scan。要快就乖乖 `db.version().stores({ items: '++id, a, b, [a+b]' })` 預建 composite index。
-
-**LSM 派的瀏覽器對應**：你大概沒直接碰過、但 Service Worker 的 Cache Storage 內部是 log-structured，與 LSM 哲學相近（追加寫 + 背景清理）。
+看完本章你會理解：**Dexie 為什麼 `.where('a').equals(1).filter(x => x.b > 5)` 慢** —— `.filter` 是 JS 層、`.b` 沒 index、要靠 IndexedDB cursor 一筆筆拉出來再過濾。要快就 `db.version().stores({ items: '++id, a, b, [a+b]' })` **預建 composite index**（且**順序很重要**：`[a+b]` 不能用來查「只給 b」，跟 PG 多欄位索引同樣道理）。
 :::
 
 ---

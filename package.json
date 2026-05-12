@@ -9,7 +9,8 @@
     "preview": "vitepress preview docs",
     "type-check": "vue-tsc --noEmit",
     "screenshot": "node scripts/screenshot.mjs",
-    "lint:glossary": "node scripts/lint-glossary.mjs"
+    "lint:glossary": "node scripts/lint-glossary.mjs",
+    "lint:tldr": "node scripts/lint-tldr.mjs"
   },
   "keywords": [
     "ddia",

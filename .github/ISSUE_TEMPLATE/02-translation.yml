@@ -8,6 +8,7 @@ body:
       value: |
         本網站採**台灣繁體中文**用詞慣例（process = 行程、cluster = 叢集、ops = 維運、linearizability = 線性一致 等等）。
         如果你看到譯名不一致、或有更貼近台灣業界口語的建議，歡迎回報。
+        （若涉及私下溝通請改寄 asercv14632@gmail.com）
 
   - type: input
     id: location

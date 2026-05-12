@@ -32,7 +32,7 @@ title: Ch10 批次處理
 | **GitHub Actions / CI build** | 批次 job scheduler：定時跑、輸出產物 immutable |
 | `next-sitemap` / `next-mdx-remote` | 應用層的 ETL：input markdown → output HTML/JSON sitemap |
 
-**Lambda 架構**（10.5 會講）的「批次 + 速度」雙層，前端版本就是 **SSG 預先建好 + client-side fetch 補實時資料**——你大概沒意識到、但已經在用了。
+**Lambda 架構**（10.5 會講）的「批次 + 速度」雙層概念跟你做的「SSG 預先建好 + client-side fetch 補實時」**有共通精神（靜態 base layer + 動態增量補丁）**，但嚴格說不一樣：Lambda 是「**伺服器端兩層各自完整處理同份資料、最後合併**」，SSG + CSR 是「**靜態 + 動態混合**」、沒有「兩層處理同份資料再合併」這層。理解 Lambda 動機就好、別把 SSG 當 Lambda 來架構。
 
 讀完本章你會理解：**為什麼 Vercel/Netlify 的 build 時間敏感**（批次 shuffle 的代價）、**為什麼 ISR revalidate window 要設好**（衍生資料的新鮮度 vs 重算成本權衡）。
 :::

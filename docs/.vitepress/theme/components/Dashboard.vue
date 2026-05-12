@@ -42,7 +42,7 @@
     </div>
 
     <div v-if="lastRead" style="text-align: center; margin: 24px 0;">
-      <a :href="lastRead.link" class="ddia-cta primary">
+      <a :href="withBase(lastRead.link)" class="ddia-cta primary">
         <Icon name="play_arrow" :size="18" filled />
         繼續閱讀 · {{ lastRead.shortTitle }}
       </a>
@@ -52,6 +52,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { withBase } from 'vitepress'
 import Icon from './Icon.vue'
 import { useProgress } from '../../composables/useProgress'
 import { CHAPTERS, TOTAL_CHAPTERS } from '../../data/chapters'
