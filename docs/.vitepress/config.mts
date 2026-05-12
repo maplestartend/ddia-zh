@@ -1,10 +1,20 @@
 import { defineConfig } from 'vitepress'
 import { withMermaid } from 'vitepress-plugin-mermaid'
 import markdownItAttrs from 'markdown-it-attrs'
+import { chaptersByPart, PARTS, type Chapter } from './data/chapters'
 
 // base 路徑：本地 dev 用 '/'；GitHub Pages 部署用 '/ddia-zh/'
 // CI workflow 設定 GITHUB_PAGES=true 時才切換，避免本地 dev 也用子路徑造成路由失敗
 const base = process.env.GITHUB_PAGES === 'true' ? '/ddia-zh/' : '/'
+
+// sidebar 從 chapters.ts SSOT 動態產出：新增 / 改章節順序只動 chapters.ts 一處
+function sidebarGroup(part: 0 | 1 | 2 | 3, indexLink: string, textOverride?: string) {
+  return [{
+    text: textOverride ?? PARTS[part].title,
+    link: indexLink,
+    items: chaptersByPart(part).map((c: Chapter) => ({ text: c.shortTitle, link: c.link }))
+  }]
+}
 
 export default withMermaid(defineConfig({
   title: 'DDIA 中文學習',
@@ -52,58 +62,10 @@ export default withMermaid(defineConfig({
     ],
 
     sidebar: {
-      '/part-0/': [
-        {
-          text: 'Part 0 前置知識（選讀）',
-          link: '/part-0/',
-          items: [
-            { text: '0.0 三分鐘看懂後端世界', link: '/part-0/basics' },
-            { text: '0.1 為什麼需要資料密集系統', link: '/part-0/intro' },
-            { text: '0.2 衡量指標素養', link: '/part-0/metrics' },
-            { text: '0.3 SQL 與關聯模型速覽', link: '/part-0/sql' },
-            { text: '0.4 作業系統地基', link: '/part-0/os' },
-            { text: '0.5 網路地基', link: '/part-0/network' },
-            { text: '0.6 資料結構地基', link: '/part-0/data-structures' },
-            { text: '0.7 並行控制直覺', link: '/part-0/concurrency' }
-          ]
-        }
-      ],
-      '/part-1/': [
-        {
-          text: 'Part I 資料系統基礎',
-          link: '/part-1/',
-          items: [
-            { text: 'Ch1 可靠、可擴展、可維護', link: '/part-1/ch01-reliable' },
-            { text: 'Ch2 資料模型與查詢語言', link: '/part-1/ch02-data-models' },
-            { text: 'Ch3 儲存與檢索', link: '/part-1/ch03-storage' },
-            { text: 'Ch4 編碼與演進', link: '/part-1/ch04-encoding' }
-          ]
-        }
-      ],
-      '/part-2/': [
-        {
-          text: 'Part II 分散式資料',
-          link: '/part-2/',
-          items: [
-            { text: 'Ch5 複製', link: '/part-2/ch05-replication' },
-            { text: 'Ch6 分區', link: '/part-2/ch06-partitioning' },
-            { text: 'Ch7 交易', link: '/part-2/ch07-transactions' },
-            { text: 'Ch8 分散式系統的麻煩', link: '/part-2/ch08-trouble' },
-            { text: 'Ch9 一致性與共識', link: '/part-2/ch09-consistency' }
-          ]
-        }
-      ],
-      '/part-3/': [
-        {
-          text: 'Part III 衍生資料',
-          link: '/part-3/',
-          items: [
-            { text: 'Ch10 批次處理', link: '/part-3/ch10-batch' },
-            { text: 'Ch11 串流處理', link: '/part-3/ch11-streams' },
-            { text: 'Ch12 資料系統的未來', link: '/part-3/ch12-future' }
-          ]
-        }
-      ]
+      '/part-0/': sidebarGroup(0, '/part-0/', 'Part 0 前置知識（選讀）'),
+      '/part-1/': sidebarGroup(1, '/part-1/'),
+      '/part-2/': sidebarGroup(2, '/part-2/'),
+      '/part-3/': sidebarGroup(3, '/part-3/')
     },
 
     search: {
