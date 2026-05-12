@@ -91,12 +91,17 @@ function parseChapters() {
 const CHAPTER_ORDER = parseChapters()  // PREREQUISITES → CHAPTERS
 const linkToOrder = new Map(CHAPTER_ORDER.map((c, i) => [c.link, i]))
 
-// 從一個 md 檔抽 TLDR 內 raw text（不 JSON.parse，避免 escaped quote 干擾）。
+// 從一個 md 檔抽所有 TLDR 內 raw text（同檔多個 TLDR 都要檢查）。
 // 直接抓 <TLDR ... :points='...' /> 那個單引號內容當文字搜尋目標即可。
 function extractTldr(content) {
-  // 找 :points='[ 到對應 ]' 的整段
-  const m = content.match(/<TLDR[\s\S]*?:points='\[([\s\S]*?)\]'\s*\/?>/)
-  return m ? [m[1]] : []
+  const all = []
+  // /g 抓所有 TLDR 區塊
+  const re = /<TLDR[\s\S]*?:points='\[([\s\S]*?)\]'\s*\/?>/g
+  let m
+  while ((m = re.exec(content)) !== null) {
+    all.push(m[1])
+  }
+  return all
 }
 
 // 對每個有 TLDR 的 markdown 檔：找 TLDR 內提到的詞、若詞主章在本章之後 → flag

@@ -611,6 +611,12 @@ body {
   letter-spacing: -0.01em;
 }
 
+/* 空狀態的 `—` 改用較柔和的顏色 + 對齊高度，避免與其他三格的大數字並排時視覺塌空 */
+.ddia-stat-value.is-empty {
+  color: var(--text-tertiary);
+  font-weight: 500;
+}
+
 .ddia-stat-value.brand {
   color: var(--brand-500);
 }
@@ -825,6 +831,17 @@ body {
 .ddia-cta.ghost:hover {
   border-color: var(--brand-500);
   color: var(--brand-500) !important;
+}
+
+/* Dark 模式 ghost CTA 加 border-strong：在深底上邊界更明顯、不會「沉入背景」 */
+.dark .ddia-cta.ghost {
+  border-color: var(--border-strong);
+  background: var(--bg-elevated, var(--bg-surface));
+}
+
+.dark .ddia-cta.ghost:hover {
+  border-color: var(--brand-300);
+  color: var(--brand-300) !important;
 }
 
 /* ==========================================================================

@@ -293,5 +293,5 @@ Client → CDN → LB → API → Service → DB
 <NextChapterBridge next-link="/part-0/sql" next-title="0.3 SQL 與關聯模型速覽">
 有了 throughput / latency / P99 / SLA 的詞彙之後，下一步是補上另一個 DDIA 序言明示的硬前置：<strong>SQL 與關聯模型</strong>。Ch2、Ch7 整章都假設你會看 SQL，這章 30 分鐘給你最低門檻。
 
-也可以直接跳到 <a href="/part-1/ch01-reliable">Ch1 可靠、可擴展、可維護</a>，回頭遇到不熟的詞再回來查。
+也可以直接跳到 [Ch1 可靠、可擴展、可維護](/part-1/ch01-reliable)，回頭遇到不熟的詞再回來查。
 </NextChapterBridge>

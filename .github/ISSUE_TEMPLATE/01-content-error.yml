@@ -1,0 +1,54 @@
+name: 📕 內容錯誤回報
+description: 章節 / 詞彙 / 測驗題目有事實錯誤、誤導敘述、或翻譯不精確
+title: "[內容錯誤] "
+labels: ["content-error"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **謝謝你願意回報** —— 本網站「內容正確性 = 最高優先」，事實錯誤一律優先處理。
+        如果你發現的問題涉及私下溝通（例：你是原作者或出版社），請改寄 asercv14632@gmail.com。
+
+  - type: input
+    id: location
+    attributes:
+      label: 位置
+      description: 章節 + 段落 / 行號（例：Ch7 §7.2 表格 Lost Update 那列；或 docs/part-2/ch07-transactions.md:191）
+      placeholder: Ch X §X.X / 檔案:行號
+    validations:
+      required: true
+
+  - type: textarea
+    id: current
+    attributes:
+      label: 原文怎麼寫
+      description: 把目前的敘述貼上來
+      render: markdown
+    validations:
+      required: true
+
+  - type: textarea
+    id: why-wrong
+    attributes:
+      label: 為什麼錯
+      description: 引用原書頁碼、官方文件、論文、Jepsen 報告等更有說服力
+      render: markdown
+    validations:
+      required: true
+
+  - type: textarea
+    id: suggested
+    attributes:
+      label: 你建議的正確敘述（可選）
+      render: markdown
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: 嚴重度（你自評）
+      options:
+        - 🔴 事實錯誤、會讓讀者學歪
+        - 🟡 不精確、措辭可改進
+        - 🟢 typo / 微誤
+    validations:
+      required: true

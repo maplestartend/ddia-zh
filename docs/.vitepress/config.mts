@@ -2,11 +2,15 @@ import { defineConfig } from 'vitepress'
 import { withMermaid } from 'vitepress-plugin-mermaid'
 import markdownItAttrs from 'markdown-it-attrs'
 
+// base 路徑：本地 dev 用 '/'；GitHub Pages 部署用 '/ddia-zh/'
+// CI workflow 設定 GITHUB_PAGES=true 時才切換，避免本地 dev 也用子路徑造成路由失敗
+const base = process.env.GITHUB_PAGES === 'true' ? '/ddia-zh/' : '/'
+
 export default withMermaid(defineConfig({
   title: 'DDIA 中文學習',
-  description: '《Designing Data-Intensive Applications》個人學習筆記與互動式學習網站',
+  description: '《Designing Data-Intensive Applications》個人非官方學習筆記 · 繁體中文',
   lang: 'zh-TW',
-  base: '/',
+  base,
   cleanUrls: true,
   lastUpdated: true,
 

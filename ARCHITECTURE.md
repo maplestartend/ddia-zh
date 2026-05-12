@@ -4,6 +4,28 @@
 
 ---
 
+## 0. 部署管線（重要）
+
+```
+git push main
+   │
+   ▼
+.github/workflows/deploy.yml
+   ├─ npm ci
+   ├─ npm run type-check       (嚴格、會擋 build)
+   ├─ npm run lint:glossary    (non-blocking 訊號)
+   ├─ npm run lint:tldr        (non-blocking、Part 0 預設 ignore forward refs)
+   ├─ GITHUB_PAGES=true npm run build
+   │     → docs/.vitepress/config.mts 觸發 base = '/ddia-zh/'
+   └─ deploy to GitHub Pages
+         → https://maplestartend.github.io/ddia-zh/
+```
+
+**Base path 陷阱**：本地 dev `base = '/'`、Pages `base = '/ddia-zh/'`。
+- markdown `[...](/path)` → VitePress 自動加 base ✓
+- inline HTML `<a href="/path">` → **不會** 自動加 base，會 404
+- 解法：用 `<BaseLink to="/path" variant="..." icon="..." filled>...</BaseLink>` 包 `withBase()`
+
 ## 1. 全景
 
 ```
@@ -32,7 +54,10 @@
 │  │       ├─ ChapterCard.vue   │                              │
 │  │       ├─ ChapterMeta.vue   │                              │
 │  │       ├─ NextChapterBridge │                              │
-│  │       └─ GlossaryTerm.vue  │  ◀── <G> 短別名              │
+│  │       ├─ GlossaryTerm.vue  │  ◀── <G> 短別名              │
+│  │       ├─ GlossaryIndex.vue │  ◀── A-Z sticky 索引條       │
+│  │       ├─ SectionDivider    │  ◀── 章內視覺地標            │
+│  │       └─ BaseLink.vue      │  ◀── 包 withBase 的連結      │
 │  └────────────────────────────┘                              │
 │                                                              │
 │  docs/{index,part-*,glossary,paths,progress}.md              │

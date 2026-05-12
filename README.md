@@ -3,9 +3,25 @@
 > ⚠️ **非官方學習筆記** — 本網站**非** Martin Kleppmann 或 O'Reilly Media 官方授權產品，亦未受其背書或審閱。
 > 原書著作權完全屬於 **Martin Kleppmann 與 O'Reilly Media**。請至 [dataintensive.net](https://dataintensive.net/) 或實體書店支持原作。
 
+🌐 **線上版**：https://maplestartend.github.io/ddia-zh/（push 到 `main` 後 GitHub Actions 自動部署）
+📦 **原始碼**：https://github.com/maplestartend/ddia-zh
+
 把《Designing Data-Intensive Applications》(Martin Kleppmann, O'Reilly Media, 2017) 整理成 12 章 + Part 0 前置知識 + 詞彙表 + 學習路徑的繁體中文教材，配 TL;DR / 章末測驗 / 進度追蹤等主動學習元件。
 
-**性質**：個人非商業學習筆記，重新整理、改寫、補充原創評論與 Part 0 銜接內容；不複製原書內文。詳細版權說明見 [LICENSE](LICENSE)。
+**性質**：個人非商業學習筆記，重新整理、改寫、補充原創評論與 Part 0 銜接內容；不複製原書內文。詳細版權說明見 [LICENSE](LICENSE) 與 [NOTICE.md](NOTICE.md)。
+
+---
+
+## 🤝 回饋與聯絡
+
+歡迎指出**事實錯誤、翻譯建議、學習回饋**：
+
+| 管道 | 用途 |
+|---|---|
+| **[GitHub Issues](https://github.com/maplestartend/ddia-zh/issues/new/choose)** | 內容錯誤、翻譯建議、版權 takedown、一般學習建議（四種模板）|
+| **電子郵件 `asercv14632@gmail.com`** | 私下溝通（商業合作、版權細節、敏感建議）|
+
+**目前不接受外部 PR**——若你有想法，請走 Issue 或寫信給我，由我決定如何納入。
 
 ## 快速開始
 
@@ -35,8 +51,9 @@ npm run preview
 | `npm run build` | 產 production SSG，輸出 `docs/.vitepress/dist/` |
 | `npm run preview` | 預覽 production build |
 | `npm run type-check` | TypeScript + Vue 型別檢查（嚴禁 any、未用變數）|
-| `npm run screenshot` | Playwright 截圖驗收（需 dev server 先啟動） |
+| `npm run screenshot` | Playwright 截圖驗收（需 dev server 先啟動）—— 加 `--scroll=600` 拍 sticky 元件 |
 | `npm run lint:glossary` | 掃 markdown 找「詞彙表已收錄但內文未包 `<G>` 的位置」 |
+| `npm run lint:tldr` | 偵測「TLDR 用了後續章節才講的詞」（Part 0 章預設 ignore；`--strict` 啟用）|
 
 ## 寫作 / 維護快速指引
 
@@ -47,9 +64,12 @@ npm run preview
 | 改 sidebar / nav | [docs/.vitepress/config.mts](docs/.vitepress/config.mts) |
 | 改全站樣式 token | [docs/.vitepress/theme/custom.css](docs/.vitepress/theme/custom.css) |
 | 在內文連結詞彙 | `<G term="quorum">法定人數</G>` |
-| 加章首 TL;DR | `<TLDR :points='["...","..."]' />` |
+| 加章首 TL;DR | `<TLDR :points='["...","..."]' />` （每檔僅一個）|
 | 加章末測驗 | `<Quiz chapter-id="ch07" :questions='[...]' />` |
 | 加章末下一章橋接 | `<NextChapterBridge next-link="..." next-title="...">...</NextChapterBridge>` |
+| 加章內視覺地標 | `<SectionDivider icon="bolt" label="關鍵權衡" />` （自動偵測中文不套 uppercase）|
+| 加情境 badge | `<span class="ddia-scenario-badge danger\|safe\|warn">A · LABEL</span>` |
+| 加 base-aware 連結 | `<BaseLink to="/part-0/basics" variant="primary" icon="..." filled>...</BaseLink>` （部署到 GitHub Pages 子路徑時必須用這個、不要 hard-code `<a href="/...">`）|
 
 詳細寫作守則見 [CLAUDE.md](CLAUDE.md)，架構說明見 [ARCHITECTURE.md](ARCHITECTURE.md)。
 
@@ -85,11 +105,23 @@ docs/
 - **台灣化用詞**：process = 行程、cluster = 叢集、ops = 維運、Linearizability = 線性一致
 - **內容正確性 = 最高優先**：寧可空著不要寫錯。修改技術描述、測驗答案前對照原書。
 
+## 部署
+
+`main` 分支 push 後，GitHub Actions ([.github/workflows/deploy.yml](.github/workflows/deploy.yml)) 自動：
+
+1. `npm ci` 安裝依賴
+2. `npm run type-check`（嚴格）
+3. `npm run lint:glossary` + `npm run lint:tldr`（non-blocking）
+4. `GITHUB_PAGES=true npm run build`（觸發 base = `/ddia-zh/`）
+5. 部署到 GitHub Pages
+
+**重要**：因為 base 是 `/ddia-zh/` 而非 `/`，內部連結必須走 markdown `[...](/...)` 語法或 `<BaseLink to="/...">` Vue 元件——**不要 hard-code `<a href="/...">`**，那樣在 Pages 上會 404。
+
 ## 已知限制
 
 - 進度與測驗紀錄都在 **localStorage**，換瀏覽器 / 清快取會遺失（沒有後端帳號）
 - 全文搜尋是 VitePress 內建 local search，CJK tokenizer 自訂在 [config.mts](docs/.vitepress/config.mts)
-- 沒有 CI；commit 前自行跑 type-check + build
+- CI 只跑 type-check（嚴格）+ build；lint 是 non-blocking 訊號
 
 ## License
 

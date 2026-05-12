@@ -1,0 +1,54 @@
+name: ⚖️ 版權 / 下架請求（Takedown）
+description: 原作者、出版社、或其代理人對內容有版權疑慮
+title: "[Takedown] "
+labels: ["takedown", "priority-high"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **如果您是 Martin Kleppmann、O'Reilly Media、或其授權代理人**，對本網站某段內容有版權或商標疑慮，請使用此 issue 模板告知。
+        本網站為**非商業個人學習筆記**，作者承諾於合理時間內回應並處理（修正、移除、或限制）。
+
+        **更隱私的管道**：寄信到 **asercv14632@gmail.com**（建議用此方式以確認身份）。
+
+  - type: input
+    id: identity
+    attributes:
+      label: 身份說明
+      description: 例：Martin Kleppmann 本人、O'Reilly Media 法務部、授權代理人
+    validations:
+      required: true
+
+  - type: input
+    id: location
+    attributes:
+      label: 問題位置
+      description: URL / 章節 / 檔案路徑
+    validations:
+      required: true
+
+  - type: textarea
+    id: concern
+    attributes:
+      label: 版權疑慮內容
+      description: 哪一段被認為過度接近原書？或商標使用不當？
+    validations:
+      required: true
+
+  - type: dropdown
+    id: requested-action
+    attributes:
+      label: 期望的處理方式
+      options:
+        - 修改該段措辭使其更明顯為衍生作品
+        - 完整移除該段
+        - 加註更明顯的版權聲明
+        - 整個 repo 下架
+        - 其他（請於下方說明）
+    validations:
+      required: true
+
+  - type: textarea
+    id: other-action
+    attributes:
+      label: 其他處理方式說明（可選）

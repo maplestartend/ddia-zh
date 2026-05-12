@@ -22,6 +22,21 @@ title: Ch10 批次處理
 | 串流 (stream) | Kafka 消費者 | 秒 | 近即時分析 |
 | 批次 (batch) | nightly job | 小時～天 | 報表、ETL、機器學習訓練 |
 
+::: tip 如果你是前端開發者：Next.js SSG / ISR 就是 web 版的批次處理
+看似遙遠的「批次處理 MapReduce」其實**換個視角就是你天天用的東西**：
+
+| 你用過的 | 對應本章哪個概念 |
+|---|---|
+| `next build` SSG（Static Site Generation） | **批次處理**：build time 把資料庫 → HTML（衍生資料）；輸出**不可變**（可平行驗證、可回滾） |
+| **ISR**（Incremental Static Regeneration） | 批次的「**增量重算**」：不重做全站、只重做變動的 page |
+| **GitHub Actions / CI build** | 批次 job scheduler：定時跑、輸出產物 immutable |
+| `next-sitemap` / `next-mdx-remote` | 應用層的 ETL：input markdown → output HTML/JSON sitemap |
+
+**Lambda 架構**（10.5 會講）的「批次 + 速度」雙層，前端版本就是 **SSG 預先建好 + client-side fetch 補實時資料**——你大概沒意識到、但已經在用了。
+
+讀完本章你會理解：**為什麼 Vercel/Netlify 的 build 時間敏感**（批次 shuffle 的代價）、**為什麼 ISR revalidate window 要設好**（衍生資料的新鮮度 vs 重算成本權衡）。
+:::
+
 ---
 
 ## 10.2 Unix 哲學

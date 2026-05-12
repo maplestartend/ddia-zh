@@ -34,7 +34,10 @@
           測驗平均正確率
         </div>
         <!-- 沒做過測驗時顯示 — 而非 0%，避免誤判為「全錯」 -->
-        <div class="ddia-stat-value numeric">{{ quizCount === 0 ? '—' : `${accuracy}%` }}</div>
+        <!-- empty class 讓 `—` 字級對齊其他三格（不會視覺塌空一格） -->
+        <div class="ddia-stat-value numeric" :class="{ 'is-empty': quizCount === 0 }">
+          {{ quizCount === 0 ? '—' : `${accuracy}%` }}
+        </div>
       </div>
     </div>
 

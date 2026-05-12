@@ -73,8 +73,11 @@ function scrollToLetter(letter: string, e: MouseEvent) {
   box-shadow: 0 2px 8px -4px rgba(0, 0, 0, 0.08);
 }
 
+/* Dark 模式 sticky 索引條浮起感：用 bg-elevated 比 surface 再亮一層 + 強化邊界 */
 :global(.dark) .ddia-glossary-index {
-  box-shadow: 0 2px 8px -2px rgba(0, 0, 0, 0.4);
+  background: var(--bg-elevated, var(--bg-surface));
+  border-color: var(--border-strong);
+  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.02);
 }
 
 .ddia-glossary-index-label {

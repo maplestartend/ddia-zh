@@ -15,33 +15,18 @@ title: 首頁
     本網站<strong>非</strong> Martin Kleppmann 或 O'Reilly Media 官方授權產品。原書著作權屬原作者與出版社；本站為個人非商業學習筆記，請至 <a href="https://dataintensive.net/" target="_blank" rel="noopener">dataintensive.net</a> 支持原作。
   </div>
   <div class="ddia-cta-row">
-    <a href="/part-0/basics" class="ddia-cta primary">
-      <Icon name="foundation" :size="18" filled />
-      新手起步 · 0.0 三分鐘看懂後端
-    </a>
-    <a href="/part-1/ch01-reliable" class="ddia-cta ghost">
-      <Icon name="play_arrow" :size="18" />
-      直接讀 Ch1（已熟悉 SQL/後端）
-    </a>
-    <a href="/part-0/" class="ddia-cta ghost">
-      <Icon name="checklist" :size="18" />
-      Part 0 自評
-    </a>
-    <a href="/paths/" class="ddia-cta ghost">
-      <Icon name="route" :size="18" />
-      看學習路徑
-    </a>
-    <a href="/glossary/" class="ddia-cta ghost">
-      <Icon name="bookmarks" :size="18" />
-      詞彙表
-    </a>
+    <BaseLink to="/part-0/basics" variant="primary" icon="foundation" filled>新手起步 · 0.0 三分鐘看懂後端</BaseLink>
+    <BaseLink to="/part-1/ch01-reliable" variant="ghost" icon="play_arrow">直接讀 Ch1（已熟悉 SQL/後端）</BaseLink>
+    <BaseLink to="/part-0/" variant="ghost" icon="checklist">Part 0 自評</BaseLink>
+    <BaseLink to="/paths/" variant="ghost" icon="route">看學習路徑</BaseLink>
+    <BaseLink to="/glossary/" variant="ghost" icon="bookmarks">詞彙表</BaseLink>
   </div>
 </div>
 
 <div style="max-width: 1100px; margin: 0 auto; padding: 0 24px;">
 
 ::: tip 第一次接觸資料系統？
-DDIA 假設讀者已熟悉 SQL、後端服務、作業系統與網路基礎。如果你對「P99 延遲、JOIN、fsync、TCP partial failure、race condition」其中任一感到陌生，建議先看 **[Part 0 前置知識](/part-0/)**（選讀，但能省下後續每章 30% 的卡關時間）。
+DDIA 假設讀者已熟悉 SQL、後端服務、作業系統與網路基礎。如果你對「P99 延遲、JOIN、fsync、TCP partial failure、race condition」**其中任兩個以上**感到陌生，建議先看 **[Part 0 前置知識](/part-0/)**（選讀，但能省下後續每章 30% 的卡關時間）。**完全沒寫過後端？** 直接從 [**0.0 三分鐘看懂後端**](/part-0/basics) 起步、不會卡住。
 
 已熟悉？直接從下方 Ch1 開始。
 :::

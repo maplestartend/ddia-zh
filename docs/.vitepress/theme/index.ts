@@ -13,6 +13,7 @@ import NextChapterBridge from './components/NextChapterBridge.vue'
 import GlossaryTerm from './components/GlossaryTerm.vue'
 import GlossaryIndex from './components/GlossaryIndex.vue'
 import SectionDivider from './components/SectionDivider.vue'
+import BaseLink from './components/BaseLink.vue'
 
 // FOUT 防護：Material Symbols 字型載入完成後才顯示圖示文字，
 // 避免首屏短暫露出「schedule」「menu_book」這類字面 fallback。
@@ -40,5 +41,6 @@ export default {
     app.component('G', GlossaryTerm)
     app.component('GlossaryIndex', GlossaryIndex)
     app.component('SectionDivider', SectionDivider)
+    app.component('BaseLink', BaseLink)
   }
 } satisfies Theme

@@ -64,6 +64,21 @@ SSTable L0 → L1 → L2 → ...（背景 compaction）
 - **Bloom filter**：一種**機率資料結構**，能高效回答「key **絕對不在**這個集合裡」（無 false negative），但「在」會有少量誤報（false positive）。LSM-Tree 每層配一個 Bloom filter，讀取時若 filter 說「不在」就直接跳過該層、不用真的去翻 SSTable。
 :::
 
+::: tip 如果你是前端開發者：你瀏覽器裡也有一個儲存引擎
+**IndexedDB** 是你瀏覽器內建的 KV + 索引資料庫，PWA / Dexie.js / RxDB 都建立在它上面。它的內部設計**剛好對應本章的 B-Tree 派**：
+
+| IndexedDB 行為 | 對應本章哪個概念 |
+|---|---|
+| `objectStore` 的 keyPath 自動 B-Tree 索引 | <G term="b-tree">B-Tree</G> primary index |
+| 用 `createIndex(name, keyPath)` 加額外欄位索引 | 次級索引（secondary index） |
+| 跨多欄位查詢要先 `createIndex(['a','b'])` —— ad-hoc 跨欄位不支援 | **composite index 預建**（與 Firestore 同樣的痛點） |
+| Dexie 用 JS 層 `.filter()` 補強 = 不走索引、慢 | 沒索引的查詢 = full scan，DB 內部也是這個邏輯 |
+
+看完本章你會理解：**Dexie 為什麼 `.where('a').equals(1).filter(x => x.b > 5)` 很慢** —— 因為 `.filter` 走 JS 層、`.b` 沒有 index，所以等同 full table scan。要快就乖乖 `db.version().stores({ items: '++id, a, b, [a+b]' })` 預建 composite index。
+
+**LSM 派的瀏覽器對應**：你大概沒直接碰過、但 Service Worker 的 Cache Storage 內部是 log-structured，與 LSM 哲學相近（追加寫 + 背景清理）。
+:::
+
 ---
 
 ## 3.4 <G term="b-tree">B-Tree</G>

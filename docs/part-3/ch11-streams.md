@@ -33,7 +33,7 @@ title: Ch11 串流處理
 
 | 你用過的 API | 對應本章哪個概念 |
 |---|---|
-| `firebase.firestore().collection(...).onSnapshot(...)` | **概念上等同 CDC**（DB 主動推變更給你）—— 但實作是 server 維護的 query subscription / watch token，**不是真的 binlog 解析** |
+| `firebase.firestore().collection(...).onSnapshot(...)` | **概念上等同 CDC**（DB 主動推變更給你）—— 但實作是 server 維護的 query subscription / watch token、**不是真的 binlog 解析**；**也不支援 offset replay**：斷線重連靠 watch token 從伺服器目前狀態續訂，中斷期間的中間事件不會逐筆補回（只給你最新 snapshot 差異） |
 | `supabase.channel('...').on('postgres_changes', ...).subscribe()` | **真正的 CDC**：走 PostgreSQL logical replication slot 解析 WAL |
 | WebSocket subscribe（Pusher、Ably） | 通用 stream consumer |
 | Server-Sent Events `EventSource` | 單向 stream，無 ack 機制 |

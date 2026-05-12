@@ -5,6 +5,20 @@
 
 import { ref, watch, onMounted, type Ref } from 'vue'
 
+/** SSR 安全判斷：build / Node 渲染時為 false */
+const IS_BROWSER = typeof window !== 'undefined' && typeof localStorage !== 'undefined'
+
+/** 安全 deep-clone fallback：跨分頁 reset 時避免回傳同一個物件 reference 造成污染 */
+function cloneFallback<T>(value: T): T {
+  if (value === null || typeof value !== 'object') return value
+  try {
+    return structuredClone(value)
+  } catch {
+    // 老瀏覽器或 SSR Node < 17：退到 JSON 路徑（足夠處理 plain object / array）
+    try { return JSON.parse(JSON.stringify(value)) } catch { return value }
+  }
+}
+
 // 共享 ref 池：同一個 key 的多個 useStorage 呼叫共用同一個 ref，
 // 確保 Progress 切換已讀後 ChapterCard / Dashboard 即時反映。
 const sharedRefs = new Map<string, Ref<unknown>>()
@@ -26,7 +40,8 @@ export function useStorage<T>(
 
   const state = ref(fallback) as Ref<T>
   sharedRefs.set(key, state as Ref<unknown>)
-  sharedFallbacks.set(key, fallback)
+  // 存 fallback 的 deep clone，避免外部 mutate fallback 物件污染後續 reset
+  sharedFallbacks.set(key, cloneFallback(fallback))
   if (options.validate) sharedValidators.set(key, options.validate as (raw: unknown) => boolean)
 
   onMounted(() => {
@@ -54,14 +69,16 @@ export function useStorage<T>(
 }
 
 // 跨分頁同步：listen `storage` event 讓多分頁切換已讀也即時反映
-if (typeof window !== 'undefined') {
+// 模組頂層註冊一次（SPA 場景），用 IS_BROWSER 守 SSR
+if (IS_BROWSER) {
   window.addEventListener('storage', (e) => {
     if (!e.key || !sharedRefs.has(e.key)) return
     const ref = sharedRefs.get(e.key)!
     try {
       // newValue === null 表示其他分頁呼叫了 removeItem → 本分頁也應該重置回 fallback
       if (e.newValue === null) {
-        ref.value = sharedFallbacks.get(e.key)
+        // clone 一份才回寫，避免多分頁共用同一個 fallback 物件
+        ref.value = cloneFallback(sharedFallbacks.get(e.key))
         return
       }
       const next = JSON.parse(e.newValue)

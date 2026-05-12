@@ -85,6 +85,24 @@ T=2  C 讀 x → 0   ✗ ← C 看到回退，違反線性一致
 CAP 只談分區發生時的權衡；PACELC 加上「正常時也要在延遲與一致性之間選」，更貼近實務。Cassandra 是 PA/EL（兩邊都選 A/L），Spanner 是 PC/EC（兩邊都選 C）。
 :::
 
+::: tip 如果你是前端開發者：CRDT 是「繞過 linearizability 開銷」的近年熱門解
+Figma、Linear、Notion-style 協作編輯為什麼能做到「兩人同時改、沒有 lock、結果還是收斂」？答案是 **CRDT（Conflict-free Replicated Data Type）**。
+
+**核心想法**：用代數結構讓並發寫 **commute（可交換）** —— 不管事件以什麼順序到達各副本，最終狀態都一樣。就**不必**達成 linearizability、也**不必**跑共識，每個副本各自處理、最終一致。
+
+| 工具 | 用途 |
+|---|---|
+| **Yjs** | JS 生態最熱、支援 Text / Array / Map / XML，Quill / Tiptap / Monaco 都有整合 |
+| **Automerge** | Rust + JS、適合 offline-first PWA |
+| **Liveblocks** | 商業 SaaS，包裝 Yjs / Automerge 給前端開發者直接用 |
+
+**與本章的對應**：
+- 線性一致 vs 因果序 vs 收斂 —— **CRDT 放棄線性一致、只要因果序 + 收斂**，所以不需要共識協定
+- write skew / lost update —— **CRDT 用 commutative operation 直接避開**（例如 counter CRDT 不是「設成新值」而是「+1 / -1」）
+
+**代價**：state 結構受限（不是所有資料模型都能 CRDT 化）、metadata overhead（每個 op 帶 vector clock 或 dot）、不適合需要強約束的場景（金流不能 CRDT）。
+:::
+
 ---
 
 ## 9.3 順序保證

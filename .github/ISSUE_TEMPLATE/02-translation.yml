@@ -1,0 +1,42 @@
+name: 🇹🇼 翻譯 / 用詞建議
+description: 台灣化用詞、譯名、簡繁混雜等翻譯議題
+title: "[翻譯] "
+labels: ["translation"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        本網站採**台灣繁體中文**用詞慣例（process = 行程、cluster = 叢集、ops = 維運、linearizability = 線性一致 等等）。
+        如果你看到譯名不一致、或有更貼近台灣業界口語的建議，歡迎回報。
+
+  - type: input
+    id: location
+    attributes:
+      label: 位置
+      placeholder: Ch X §X.X / 檔案:行號
+    validations:
+      required: true
+
+  - type: input
+    id: current-term
+    attributes:
+      label: 目前用詞
+      placeholder: 例如：進程
+    validations:
+      required: true
+
+  - type: input
+    id: suggested-term
+    attributes:
+      label: 建議用詞
+      placeholder: 例如：行程
+    validations:
+      required: true
+
+  - type: textarea
+    id: rationale
+    attributes:
+      label: 為什麼建議改
+      description: 台灣業界慣用？教科書通用？避免歧義？
+    validations:
+      required: true

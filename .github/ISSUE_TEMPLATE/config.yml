@@ -1,0 +1,7 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 📧 直接聯絡作者（私下溝通）
+    url: mailto:asercv14632@gmail.com
+    about: |
+      如果你的事項適合私下溝通（例如版權疑慮、商業合作、敏感建議），
+      請直接寄信到 asercv14632@gmail.com。一般公開的問題與建議請走下方的 Issue 模板。

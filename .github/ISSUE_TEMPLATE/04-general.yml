@@ -1,0 +1,38 @@
+name: 💬 一般建議 / 學習回饋
+description: 想看到什麼補強？哪裡讀不通？學習路徑建議？
+title: "[建議] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        本網站持續演進中，歡迎讀者回饋。
+        如果不適合公開（例如商業合作、敏感建議），請改寄 asercv14632@gmail.com。
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: 建議類別
+      options:
+        - 想看到新章節 / 新主題
+        - 既有章節想看到更深入
+        - 學習路徑（新角色 / 新順序）
+        - 詞彙表（新詞 / 整理方式）
+        - UI / 互動體驗
+        - 程式碼 / 工具
+        - 其他
+    validations:
+      required: true
+
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: 具體建議
+      description: 寫得越具體越容易動工。例：「Ch3 加 IndexedDB 對照，因為前端讀者最熟它」
+    validations:
+      required: true
+
+  - type: textarea
+    id: why
+    attributes:
+      label: 為什麼這對讀者有價值（可選）
