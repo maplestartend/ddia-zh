@@ -75,6 +75,12 @@ export default withMermaid(defineConfig({
       },
       { text: '詞彙表', link: '/glossary/' },
       { text: '學習路徑', link: '/paths/' },
+      {
+        text: '視角橋',
+        items: [
+          { text: 'OLTP ↔ 資料工程', link: '/bridges/oltp-de' }
+        ]
+      },
       { text: '我的進度', link: '/progress' } // VitePress cleanUrls：無尾斜線
     ],
 
