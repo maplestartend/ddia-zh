@@ -240,6 +240,8 @@ city: [Taipei, Tokyo, NYC]
   }
 ]' />
 
+<ChapterNote chapter-id="ch03" />
+
 <Progress chapter-id="ch03" />
 
 ::: info 延伸閱讀

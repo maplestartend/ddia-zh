@@ -16,6 +16,10 @@ export interface QuizEntry {
   score: number
   total: number
   timestamp: number
+  // Wave 17 加入：首次作答分數（重做不會覆蓋、用於「錯題本」「首次答對率」）
+  firstAttemptScore?: number
+  firstAttemptAt?: number
+  attemptCount?: number
 }
 
 const PROGRESS_KEY = 'ddia-progress'
@@ -34,6 +38,9 @@ export interface QuizSummary {
   score: number
   total: number
   ts: number
+  // Wave 17：首次答對分數（追蹤學習真實表現、不被重做沖洗）
+  firstAttemptScore?: number
+  attemptCount?: number
 }
 type QuizIndex = QuizSummary[]
 
@@ -134,14 +141,31 @@ export function useProgress() {
   }
 
   function saveQuiz(chapterId: string, entry: QuizEntry) {
-    // reactive index 先寫（accuracy 立刻更新）、再寫詳細答案。
+    const prevIndex = quizIndex.value
+    const existingSummary = prevIndex.find(s => s.chapterId === chapterId)
+    // 首次作答：firstAttemptScore = score。重做時保留原 firstAttemptScore（不被沖洗）。
+    const firstAttemptScore = existingSummary?.firstAttemptScore
+      ?? entry.firstAttemptScore
+      ?? entry.score
+    const firstAttemptAt = existingSummary
+      ? undefined  // 已有首次紀錄，保留 entry 原值（如有）
+      : entry.firstAttemptAt ?? entry.timestamp
+    const attemptCount = (existingSummary?.attemptCount ?? 0) + 1
+    // 寫進詳細 entry（保留首次答對率資訊）
+    const fullEntry: QuizEntry = {
+      ...entry,
+      firstAttemptScore,
+      firstAttemptAt: firstAttemptAt ?? existingSummary?.ts,
+      attemptCount
+    }
     const summary: QuizSummary = {
       chapterId,
       score: entry.score,
       total: entry.total,
-      ts: entry.timestamp
+      ts: entry.timestamp,
+      firstAttemptScore,
+      attemptCount
     }
-    const prevIndex = quizIndex.value  // 留 snapshot 給 quota fail 時 rollback
     const existing = prevIndex.findIndex(s => s.chapterId === chapterId)
     if (existing >= 0) {
       const next = [...prevIndex]
@@ -151,10 +175,8 @@ export function useProgress() {
       quizIndex.value = [...prevIndex, summary]
     }
     try {
-      localStorage.setItem(QUIZ_PREFIX + chapterId, JSON.stringify(entry))
+      localStorage.setItem(QUIZ_PREFIX + chapterId, JSON.stringify(fullEntry))
     } catch {
-      // 詳細答案寫不進去 → 立刻 rollback reactive summary，避免 Dashboard 算到孤兒成績。
-      // （比靠 loadQuiz self-heal 即時——使用者不必進入該章 quiz 頁也能修正）
       quizIndex.value = prevIndex
     }
   }
@@ -198,6 +220,31 @@ export function useProgress() {
     return totalQ === 0 ? 0 : Math.round((totalScore / totalQ) * 100)
   })
 
+  // 首次答對率（誠實的學習表現指標、不會被「答完看答案再重做」沖洗）
+  const firstAttemptAccuracy = computed(() => {
+    let totalScore = 0
+    let totalQ = 0
+    for (const s of quizIndex.value) {
+      const first = s.firstAttemptScore ?? s.score  // 舊資料 fallback 用當前 score
+      totalScore += first
+      totalQ += s.total
+    }
+    return totalQ === 0 ? 0 : Math.round((totalScore / totalQ) * 100)
+  })
+
+  // 錯題本：列出首次未滿分的章節（依當前 quiz state、可重做以後就會脫離）
+  const incorrectChapters = computed(() => {
+    return quizIndex.value
+      .filter(s => (s.firstAttemptScore ?? s.score) < s.total)
+      .map(s => ({
+        chapterId: s.chapterId,
+        firstAttemptScore: s.firstAttemptScore ?? s.score,
+        currentScore: s.score,
+        total: s.total,
+        attemptCount: s.attemptCount ?? 1
+      }))
+  })
+
   return {
     progress,
     doneCount,
@@ -208,6 +255,8 @@ export function useProgress() {
     unmarkDone,
     quizCount,
     accuracy,
+    firstAttemptAccuracy,
+    incorrectChapters,
     saveQuiz,
     loadQuiz,
     clearQuiz

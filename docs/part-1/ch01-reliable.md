@@ -229,6 +229,8 @@ DDIA 全書其實就是在教你：**面對特定情境，如何做這些權衡*
   }
 ]' />
 
+<ChapterNote chapter-id="ch01" />
+
 <Progress chapter-id="ch01" />
 
 <NextChapterBridge next-link="/part-1/ch02-data-models" next-title="Ch2 資料模型與查詢語言">

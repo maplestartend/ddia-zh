@@ -193,6 +193,8 @@ sc.textFile("hdfs://logs")
   }
 ]' />
 
+<ChapterNote chapter-id="ch10" />
+
 <Progress chapter-id="ch10" />
 
 <NextChapterBridge next-link="/part-3/ch11-streams" next-title="Ch11 串流處理 Stream">

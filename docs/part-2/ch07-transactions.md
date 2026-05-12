@@ -393,6 +393,8 @@ await db.runTransaction(async (tx) => {
   }
 ]' />
 
+<ChapterNote chapter-id="ch07" />
+
 <Progress chapter-id="ch07" />
 
 ::: info 延伸閱讀

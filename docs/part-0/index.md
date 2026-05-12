@@ -17,23 +17,9 @@ Kleppmann 在原書序言寫：
 
 如果你**沒寫過後端**、看到 stateless / DB / API / 佇列這些詞會卡——這頁不該是你的起點。先讀 **[0.0 三分鐘看懂後端世界](/part-0/basics)**，看完再回來自評。
 
-## 我需要讀 Part 0 嗎？快速自評
+## 我需要讀 Part 0 嗎？互動自評
 
-回答以下 7 題。**任一題答不出來**，建議先讀對應的 Part 0 章節：
-
-| # | 自評題 | 答不出來 → 先讀 |
-|---|---|---|
-| 1 | 後端服務的「無狀態（stateless）」是什麼意思？為什麼設計成這樣？ | [0.1 為什麼需要資料密集系統](/part-0/intro) |
-| 2 | 為什麼 P99 延遲比平均延遲更能反映使用者體驗？ | [0.2 衡量指標素養](/part-0/metrics) |
-| 3 | `SELECT u.name, COUNT(o.id) FROM users u LEFT JOIN orders o ON o.user_id = u.id GROUP BY u.id` 這個查詢做什麼？ | [0.3 SQL 速覽](/part-0/sql) |
-| 4 | 行程（process）與執行緒（thread）的差別是什麼？fsync 為什麼存在？ | [0.4 作業系統地基](/part-0/os) |
-| 5 | TCP 三次握手中如果第二個 SYN-ACK 丟了會怎樣？HTTP 與 RPC 的本質差異？ | [0.5 網路地基](/part-0/network) |
-| 6 | B-Tree 為什麼平衡？Hash table 衝突怎麼處理？外部排序為什麼能用？ | [0.6 資料結構地基](/part-0/data-structures) |
-| 7 | 兩個執行緒同時對銀行帳戶 +100 為什麼會丟錢？什麼是隔離級別？ | [0.7 並行控制直覺](/part-0/concurrency) |
-
-::: tip 都答得出來？
-直接跳到 [Ch1 可靠、可擴展、可維護](/part-1/ch01-reliable)。Part 0 隨時可以回頭翻當參考。
-:::
+<Part0SelfAssessment />
 
 ## Part 0 章節地圖
 

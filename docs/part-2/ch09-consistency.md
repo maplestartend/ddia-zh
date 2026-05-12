@@ -394,6 +394,8 @@ T2 開始讀 @ TT = [108, 115] → 必定大於 T1 的 latest
   }
 ]' />
 
+<ChapterNote chapter-id="ch09" />
+
 <Progress chapter-id="ch09" />
 
 ::: info 延伸閱讀

@@ -157,6 +157,8 @@ DDIA 的核心觀點：**可靠性不是某一層的責任**。
   }
 ]' />
 
+<ChapterNote chapter-id="ch12" />
+
 <Progress chapter-id="ch12" />
 
 <NextChapterBridge next-link="/progress" next-title="檢視我的學習進度">

@@ -155,6 +155,8 @@ Client 怎麼知道某 key 該打哪個節點？
   }
 ]' />
 
+<ChapterNote chapter-id="ch06" />
+
 <Progress chapter-id="ch06" />
 
 <NextChapterBridge next-link="/part-2/ch07-transactions" next-title="Ch7 交易 Transactions">

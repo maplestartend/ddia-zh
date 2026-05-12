@@ -19,6 +19,11 @@ import GlossaryTerm from './components/GlossaryTerm.vue'
 import GlossaryIndex from './components/GlossaryIndex.vue'
 import SectionDivider from './components/SectionDivider.vue'
 import BaseLink from './components/BaseLink.vue'
+import PrereqBox from './components/PrereqBox.vue'
+import ChapterNote from './components/ChapterNote.vue'
+import CheatSheetExport from './components/CheatSheetExport.vue'
+import Part0SelfAssessment from './components/Part0SelfAssessment.vue'
+import ReviewDue from './components/ReviewDue.vue'
 
 // FOUT 防護：Material Symbols 字型載入完成後才顯示圖示文字，
 // 避免首屏短暫露出「schedule」「menu_book」這類字面 fallback。
@@ -47,5 +52,10 @@ export default {
     app.component('GlossaryIndex', GlossaryIndex)
     app.component('SectionDivider', SectionDivider)
     app.component('BaseLink', BaseLink)
+    app.component('PrereqBox', PrereqBox)
+    app.component('ChapterNote', ChapterNote)
+    app.component('CheatSheetExport', CheatSheetExport)
+    app.component('Part0SelfAssessment', Part0SelfAssessment)
+    app.component('ReviewDue', ReviewDue)
   }
 } satisfies Theme

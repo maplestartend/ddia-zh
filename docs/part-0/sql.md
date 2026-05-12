@@ -7,6 +7,12 @@ description: SELECT、JOIN、索引、交易直覺 —— Kleppmann 序言列為
 
 <ChapterMeta part="Part 0 前置知識" :read-time="30" difficulty="入門" :tags="['SQL', 'JOIN', '索引']" />
 
+<PrereqBox
+  :prereq="['基本的程式設計概念（變數、條件、迴圈）', '會看簡單 JSON 結構']"
+  first-read-hint="**完全沒寫過 SQL 的讀者請預估 1-2 小時、不是標題的 30 分鐘**——光標的 30 分鐘是給有 SQL 經驗的人快速 refresh 用。建議搭配 [SQLBolt](https://sqlbolt.com/) 或 [Mode SQL Tutorial](https://mode.com/sql-tutorial) 動手練 30 分鐘再回來"
+  :skippable="['§5 進階：CTE 與視窗函式（一般 CRUD 用不到，Ch10 OLAP 才會回頭）']"
+/>
+
 <TLDR :points='[
   "<strong><G term=\"sql\">SQL</G> 是宣告式語言</strong>——你說「要什麼」，不說「怎麼拿」。「怎麼拿」由 query planner 決定，看資料量挑演算法。",
   "<strong><G term=\"join\">JOIN</G> 是把多張表依關聯欄位合併</strong>——關聯模型最強大也最被誤解的部分。Inner / Left / Right / Full 各有用途。",

@@ -185,6 +185,70 @@
   color: var(--brand-300);
 }
 
+/* Wave 17：Quiz 重做次數提示 */
+.ddia-quiz-attempt-note {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin: -6px 0 14px;
+  padding: 4px 10px;
+  background: var(--bg-subtle);
+  border-radius: 6px;
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
+/* Wave 17：題目難度標記（基礎 / 應用 / 面試） */
+.ddia-quiz-difficulty {
+  display: inline-block;
+  padding: 1px 7px;
+  margin-right: 6px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  vertical-align: 2px;
+  border: 1px solid transparent;
+}
+.ddia-quiz-difficulty.is-basic {
+  background: var(--success-bg);
+  color: var(--success-fg);
+  border-color: color-mix(in srgb, var(--success-fg) 30%, transparent);
+}
+.ddia-quiz-difficulty.is-applied {
+  background: var(--info-bg);
+  color: var(--info-fg);
+  border-color: var(--info-border);
+}
+.ddia-quiz-difficulty.is-interview {
+  background: var(--warning-bg);
+  color: var(--warning-fg);
+  border-color: color-mix(in srgb, var(--warning-fg) 30%, transparent);
+}
+
+/* Wave 17：explanation 內「回到對應章節」連結 */
+.ddia-quiz-anchor-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  margin-left: 8px;
+  padding: 1px 8px;
+  background: var(--bg-canvas);
+  border: 1px solid var(--border-default);
+  border-radius: 6px;
+  font-size: 12px;
+  color: var(--brand-500);
+  text-decoration: none;
+  transition: background 0.15s, border-color 0.15s;
+}
+.ddia-quiz-anchor-link:hover {
+  background: var(--brand-tint);
+  border-color: var(--brand-300);
+}
+:global(.dark) .ddia-quiz-anchor-link {
+  color: var(--brand-300);
+}
+
 /* ---------- 通用按鈕 ---------- */
 .ddia-btn {
   display: inline-flex;

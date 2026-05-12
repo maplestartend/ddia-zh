@@ -160,6 +160,8 @@ RETURN person.name
   }
 ]' />
 
+<ChapterNote chapter-id="ch02" />
+
 <Progress chapter-id="ch02" />
 
 <NextChapterBridge next-link="/part-1/ch03-storage" next-title="Ch3 儲存與檢索">

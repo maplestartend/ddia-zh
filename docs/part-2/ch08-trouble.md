@@ -187,6 +187,8 @@ while (true) {
   }
 ]' />
 
+<ChapterNote chapter-id="ch08" />
+
 <Progress chapter-id="ch08" />
 
 <NextChapterBridge next-link="/part-2/ch09-consistency" next-title="Ch9 一致性與共識">

@@ -6,6 +6,10 @@ title: 我的學習進度
 
 <Dashboard />
 
+## 該複習的章節
+
+<ReviewDue />
+
 ## 章節清單
 
 <div class="ddia-chapter-grid">
@@ -24,7 +28,11 @@ title: 我的學習進度
 </div>
 
 ::: tip 進度怎麼運作
-- 你的進度與測驗紀錄都存在**瀏覽器的 localStorage**（不上傳任何資料）
-- 換瀏覽器或清快取會遺失，必要時可手動備份
+- 你的進度、測驗紀錄、章節筆記都存在**瀏覽器的 localStorage**（不上傳任何資料）
+- 換瀏覽器或清快取會遺失，必要時用下方「Cheat Sheet 匯出」做備份
 - 每章底部的「標記為已讀完」按鈕會更新此頁的儀表板
 :::
+
+## 匯出與重設
+
+<CheatSheetExport />

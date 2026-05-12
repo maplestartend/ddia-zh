@@ -7,6 +7,12 @@ description: 行程、執行緒、虛擬記憶體、page cache、fsync —— Ch
 
 <ChapterMeta part="Part 0 前置知識" :read-time="25" difficulty="入門" :tags="['行程', '記憶體', 'fsync']" />
 
+<PrereqBox
+  :prereq="['任何一門程式語言寫過 hello world', '知道「程式跑起來叫一個程式」這個直覺']"
+  first-read-hint="**沒上過作業系統課的讀者建議 45-60 分鐘**——本章把 OS 課的一學期內容壓到剛好夠看懂 DDIA Ch3 / Ch7。每節讀完試著用自己的話對朋友說一次再進下節"
+  :skippable="['§3 虛擬記憶體深入（DDIA 後續章節用不太到、留作補充）', '§5 page fault 詳細流程（看 TLDR + 例子就夠）']"
+/>
+
 <TLDR :points='[
   "<strong><G term=\"process\">行程</G> vs <G term=\"thread\">執行緒</G></strong>：行程有獨立虛擬記憶體；執行緒共享行程內記憶體—— 後者並發寫共享資料就是 race condition 的溫床。",
   "<strong><G term=\"page-cache\">Page cache</G></strong> 是 OS 把最近讀寫的磁碟頁保留在 RAM——讀 SSTable 第二次比第一次快很多就是它。",

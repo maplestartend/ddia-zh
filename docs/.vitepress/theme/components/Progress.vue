@@ -39,11 +39,13 @@ import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { withBase } from 'vitepress'
 import Icon from './Icon.vue'
 import { useProgress } from '../../composables/useProgress'
+import { useReview } from '../../composables/useReview'
 import { nextChapter } from '../../data/chapters'
 
 const props = defineProps<{ chapterId: string }>()
 
 const { isDone: checkDone, getDoneAt, markDone, unmarkDone, loadQuiz } = useProgress()
+const { seedReview } = useReview()
 const isDone = computed(() => checkDone(props.chapterId))
 const doneAt = computed(() => getDoneAt(props.chapterId))
 const next = computed(() => nextChapter(props.chapterId))
@@ -63,6 +65,8 @@ function toggle() {
     unmarkDone(props.chapterId)
   } else {
     markDone(props.chapterId)
+    // 第一次標已讀時建立 SRS baseline；後續複習由 progress 頁面控制
+    seedReview(props.chapterId)
   }
 }
 
