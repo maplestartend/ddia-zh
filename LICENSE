@@ -20,44 +20,12 @@ LIABILITY, WHETHER IN AN ACTION OF TORT OR CONTRACT, OR OTHERWISE, ARISING
 FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 IN THE SOFTWARE.
 
-**Note**: The MIT License above covers **code only** (Vue components,
-TypeScript composables, build scripts, CSS, and similar). Educational content
-(prose chapters, glossary, quizzes) is subject to the additional terms below.
-
 ---
 
-## Content Attribution & Disclaimer
+NOTE: This MIT License covers ONLY the source code in this repository
+(Vue components, TypeScript composables, build scripts, CSS).
 
-This repository's **textual learning content** (markdown chapters, glossary
-entries, quiz questions, learning paths) is a **derivative, non-commercial
-personal study notebook** based on the book:
-
-> *Designing Data-Intensive Applications* by Martin Kleppmann
-> O'Reilly Media, 2017 — ISBN 978-1449373320
-
-**The original book's copyright belongs entirely to Martin Kleppmann and
-O'Reilly Media.** This repository is **NOT**:
-
-- An official translation or licensed adaptation
-- Endorsed, sponsored, or reviewed by Martin Kleppmann or O'Reilly Media
-- A substitute for purchasing or reading the original book
-
-This repository **IS**:
-
-- A personal study notebook re-organized in Traditional Chinese (Taiwan)
-- Non-commercial — no ads, no paid content, no donation links
-- Original commentary, paraphrased summaries, Taiwan-localized terminology,
-  supplementary content (Part 0 prerequisites, lint scripts, interactive
-  components), and cross-references to the original book's chapters/pages
-- Provided "as is" for educational fair-use purposes
-
-**The textual content is licensed under**
-[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)
-(Attribution-NonCommercial-ShareAlike 4.0 International). You may share and
-adapt for non-commercial purposes, with attribution, under the same license.
-
-**If you are the original author / publisher and have concerns**, please open
-a GitHub issue; we will address it promptly.
-
-**Readers**: please support the original work by purchasing the book at
-[dataintensive.net](https://dataintensive.net/) or your local bookstore.
+The textual LEARNING CONTENT (markdown chapters, glossary, quizzes,
+learning paths) is licensed separately under CC BY-NC-SA 4.0.
+See LICENSE-CONTENT.md for full terms and the attribution policy
+for the original book.

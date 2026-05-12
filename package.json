@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "DDIA《Designing Data-Intensive Applications》中文學習網站",
   "type": "module",
+  "private": true,
   "scripts": {
     "dev": "vitepress dev docs",
     "build": "vitepress build docs",
@@ -10,17 +11,32 @@
     "type-check": "vue-tsc --noEmit",
     "screenshot": "node scripts/screenshot.mjs",
     "lint:glossary": "node scripts/lint-glossary.mjs",
-    "lint:tldr": "node scripts/lint-tldr.mjs"
+    "lint:tldr": "node scripts/lint-tldr.mjs",
+    "lint:base": "node scripts/lint-hardcoded-base.mjs"
   },
   "keywords": [
     "ddia",
     "learning",
-    "distributed-systems"
+    "distributed-systems",
+    "vitepress",
+    "taiwan",
+    "traditional-chinese"
   ],
-  "author": "",
-  "license": "MIT",
+  "author": "maplestartend <asercv14632@gmail.com>",
+  "license": "SEE LICENSE IN LICENSE",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maplestartend/ddia-zh.git"
+  },
+  "bugs": {
+    "url": "https://github.com/maplestartend/ddia-zh/issues"
+  },
+  "homepage": "https://maplestartend.github.io/ddia-zh/",
+  "engines": {
+    "node": ">=20"
+  },
   "devDependencies": {
-    "@types/node": "^25.7.0",
+    "@types/node": "^22.10.0",
     "markdown-it-attrs": "^4.3.1",
     "mermaid": "^11.15.0",
     "playwright": "^1.60.0",

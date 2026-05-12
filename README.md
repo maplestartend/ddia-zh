@@ -150,7 +150,12 @@ docs/
 雙授權：
 
 - **程式碼**（Vue 元件、composable、build script、CSS）：[MIT License](LICENSE)
-- **學習內容**（markdown 章節、詞彙表、測驗、學習路徑）：[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+- **學習內容**（markdown 章節、詞彙表、測驗、學習路徑）：[CC BY-NC-SA 4.0](LICENSE-CONTENT.md)
   非商業 · 需署名 · 衍生作需相同條款分享
 
-原書 *Designing Data-Intensive Applications* 著作權屬 **Martin Kleppmann 與 O'Reilly Media**。本網站僅作個人學習筆記的重新整理。完整版權與免責聲明見 [LICENSE](LICENSE)。
+原書 *Designing Data-Intensive Applications* 著作權屬 **Martin Kleppmann 與 O'Reilly Media**。本網站僅作個人學習筆記的重新整理。完整版權與免責聲明見 [LICENSE-CONTENT.md](LICENSE-CONTENT.md) 與 [NOTICE.md](NOTICE.md)。
+
+## 貢獻與安全議題
+
+- 內容回饋 / 翻譯建議：見 [CONTRIBUTING.md](CONTRIBUTING.md)
+- 安全漏洞回報：見 [SECURITY.md](SECURITY.md)

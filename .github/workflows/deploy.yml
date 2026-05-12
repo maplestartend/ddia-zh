@@ -59,6 +59,14 @@ jobs:
           npm run lint:tldr 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
           echo '```' >> "$GITHUB_STEP_SUMMARY"
 
+      - name: Lint hard-coded base (non-blocking)
+        continue-on-error: true
+        run: |
+          echo "## Lint: hard-coded base path" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          npm run lint:base 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+
       - name: Build VitePress
         env:
           GITHUB_PAGES: "true"  # 觸發 config.mts 的 base = '/ddia-zh/'

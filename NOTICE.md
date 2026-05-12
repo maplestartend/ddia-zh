@@ -37,7 +37,7 @@ This repository (`ddia-zh`):
 
 - **Code** (Vue components, composables, build scripts, CSS): MIT — see [LICENSE](LICENSE)
 - **Textual content** (markdown chapters, glossary, quizzes): CC BY-NC-SA 4.0
-  — see [LICENSE](LICENSE)
+  — see [LICENSE-CONTENT.md](LICENSE-CONTENT.md)
 
 ## Fair Use Claim
 
