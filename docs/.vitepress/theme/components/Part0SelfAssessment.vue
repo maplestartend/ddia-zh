@@ -104,7 +104,7 @@ const recommendations = computed(() => items.filter(i => !checked.value[i.id]))
   display: flex;
   align-items: baseline;
   gap: 10px;
-  color: var(--brand-500);
+  color: var(--mark-fg);
   margin-bottom: 10px;
 }
 .ddia-self-assess-header :deep(.material-symbols-rounded) {
@@ -115,7 +115,7 @@ const recommendations = computed(() => items.filter(i => !checked.value[i.id]))
   font-family: var(--font-display);
   font-style: italic;
   font-size: var(--type-h3);
-  color: var(--brand-500);
+  color: var(--mark-fg);
 }
 :global(.dark) .ddia-self-assess-header {
   color: var(--brand-fg);
@@ -132,7 +132,7 @@ const recommendations = computed(() => items.filter(i => !checked.value[i.id]))
   letter-spacing: -0.005em;
 }
 .ddia-self-assess-desc {
-  margin: 0 0 20px;
+  margin: 0 0 var(--space-3-5);
   font-family: var(--font-display);
   font-style: italic;
   font-variation-settings: var(--fvar-italic-note);
@@ -146,7 +146,7 @@ const recommendations = computed(() => items.filter(i => !checked.value[i.id]))
   list-style: none;
 }
 .ddia-self-assess-item {
-  margin: 6px 0;
+  margin: var(--space-1-5) 0;
   padding: 10px 14px;
   background: transparent;
   border: 0;
@@ -156,7 +156,7 @@ const recommendations = computed(() => items.filter(i => !checked.value[i.id]))
 }
 .ddia-self-assess-item:hover {
   background: var(--brand-tint-soft);
-  border-left-color: var(--brand-500);
+  border-left-color: var(--mark-fg);
 }
 .ddia-self-assess-item:has(input:checked) {
   background: var(--success-bg);
@@ -166,7 +166,7 @@ const recommendations = computed(() => items.filter(i => !checked.value[i.id]))
 .ddia-self-assess-item label {
   display: flex;
   align-items: flex-start;
-  gap: 12px;
+  gap: var(--space-2-5);
   cursor: pointer;
   font-family: var(--font-body);
   font-size: 14.5px;
@@ -175,7 +175,7 @@ const recommendations = computed(() => items.filter(i => !checked.value[i.id]))
 }
 .ddia-self-assess-item input[type='checkbox'] {
   margin-top: 5px;
-  accent-color: var(--brand-500);
+  accent-color: var(--mark-fg);
   cursor: pointer;
 }
 .ddia-self-assess-q :deep(code) {
@@ -184,7 +184,7 @@ const recommendations = computed(() => items.filter(i => !checked.value[i.id]))
   padding: 0 var(--space-1);
   background: var(--brand-tint-soft);
   border: 1px solid var(--brand-tint-border);
-  color: var(--brand-500);
+  color: var(--mark-fg);
   border-radius: 3px;
 }
 
@@ -198,7 +198,7 @@ const recommendations = computed(() => items.filter(i => !checked.value[i.id]))
   background: transparent;
   border-left: 3px solid var(--success-fg);
   color: var(--success-fg);
-  padding: 12px 0 12px 20px;
+  padding: var(--space-2-5) 0 var(--space-2-5) var(--space-3-5);
   border-radius: 0;
   font-family: var(--font-display);
   font-style: italic;
@@ -228,12 +228,12 @@ const recommendations = computed(() => items.filter(i => !checked.value[i.id]))
   border: 0;
   border-left: 3px solid var(--accent-500);
   border-radius: 0;
-  padding: 6px 0 6px 20px;
+  padding: var(--space-1-5) 0 var(--space-1-5) var(--space-3-5);
 }
 .ddia-self-assess-todo-head {
   display: inline-flex;
   align-items: baseline;
-  gap: 6px;
+  gap: var(--space-1-5);
   font-family: var(--font-display);
   font-variation-settings: var(--fvar-section-tight);
   color: var(--accent-500);
@@ -264,7 +264,7 @@ const recommendations = computed(() => items.filter(i => !checked.value[i.id]))
   position: absolute;
   left: -0.9em;
   font-family: var(--font-display);
-  font-size: 18px;
+  font-size: var(--type-body-lg);
   color: var(--accent-500);
 }
 .ddia-self-assess-reason {
@@ -274,10 +274,10 @@ const recommendations = computed(() => items.filter(i => !checked.value[i.id]))
   font-size: 13px;
 }
 .ddia-self-assess-hint {
-  margin: 6px 0 0;
+  margin: var(--space-1-5) 0 0;
   font-family: var(--font-display);
   font-style: italic;
-  font-size: 12.5px;
+  font-size: var(--type-meta);
   color: var(--text-tertiary);
 }
 </style>

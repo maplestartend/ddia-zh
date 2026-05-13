@@ -28,7 +28,7 @@ const isCjk = computed(() => /[一-鿿]/.test(props.label ?? ''))
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
+  gap: var(--space-1-5);
   margin: 48px 0 32px;
   text-align: center;
   border: 0;

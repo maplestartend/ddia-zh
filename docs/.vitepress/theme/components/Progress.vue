@@ -105,10 +105,9 @@ onUnmounted(() => {
 .ddia-chapter-loop-eyebrow {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--space-1-5);
   font-family: var(--font-display);
   font-variation-settings: var(--fvar-eyebrow-warm);
-  font-style: italic;
   font-size: var(--type-eyebrow);
   font-weight: 500;
   text-transform: uppercase;
@@ -178,7 +177,6 @@ onUnmounted(() => {
 }
 .ddia-loop-btn-sub {
   font-family: var(--font-display);
-  font-style: italic;
   font-variation-settings: var(--fvar-italic-warm);
   font-size: var(--type-eyebrow);
   color: var(--text-tertiary);
@@ -188,7 +186,7 @@ onUnmounted(() => {
 /* 已讀狀態：左邊 3px brand 印記 */
 .ddia-loop-btn.is-done {
   background: var(--brand-tint-soft);
-  color: var(--brand-500);
+  color: var(--mark-fg);
   position: relative;
 }
 .ddia-loop-btn.is-done::before {
@@ -198,10 +196,10 @@ onUnmounted(() => {
   top: 0;
   bottom: 0;
   width: 3px;
-  background: var(--brand-500);
+  background: var(--cta-bg);
 }
 .ddia-loop-btn.is-done .ddia-loop-btn-sub {
-  color: var(--brand-500);
+  color: var(--mark-fg);
   opacity: 0.75;
 }
 :global(.dark) .ddia-loop-btn.is-done {
@@ -216,7 +214,7 @@ onUnmounted(() => {
 
 /* 下一章 primary CTA */
 .ddia-loop-btn.is-next {
-  background: var(--brand-500);
+  background: var(--cta-bg);
   color: var(--text-inverse);
 }
 .ddia-loop-btn.is-next .ddia-loop-btn-sub {
@@ -229,7 +227,7 @@ onUnmounted(() => {
 .ddia-loop-btn.is-next::after {
   content: "→";
   margin-left: auto;
-  font-size: 18px;
+  font-size: var(--type-body-lg);
 }
 :global(.dark) .ddia-loop-btn.is-next {
   background: var(--brand-fg);

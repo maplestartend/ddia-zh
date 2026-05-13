@@ -66,12 +66,42 @@ if (typeof window !== 'undefined') {
     link.textContent = '跳到主要內容'
     document.body.insertBefore(link, document.body.firstChild)
   }
+  // a11y mermaid <title> 注入：SR 朗讀 mermaid SVG 時提供語境而非 raw graph data
+  // 規則：找 svg[id*="mermaid"]、若無 <title> 子元素、用「前一個 element 的文字（最多 80 字）」當 title；
+  // 沒有前一個 element 則 fallback「Mermaid 流程圖」
+  const injectMermaidTitles = () => {
+    const svgs = document.querySelectorAll<SVGSVGElement>('svg[id*="mermaid"]')
+    svgs.forEach(svg => {
+      if (svg.querySelector(':scope > title')) return  // already has
+      const parent = svg.closest('p, div')
+      const prev = parent?.previousElementSibling
+      const prevText = (prev?.textContent || '').trim().replace(/\s+/g, ' ').slice(0, 80)
+      const titleEl = document.createElementNS('http://www.w3.org/2000/svg', 'title')
+      titleEl.textContent = prevText || 'Mermaid 流程圖'
+      svg.insertBefore(titleEl, svg.firstChild)
+    })
+  }
+  // 用 MutationObserver 監聽 SVG 加入（mermaid plugin 是動態渲染、不在初始 DOM）
+  let mermaidObserver: MutationObserver | null = null
+  const watchMermaid = () => {
+    if (mermaidObserver) return
+    mermaidObserver = new MutationObserver(() => {
+      // debounce：等 mermaid render 穩定後再注入
+      requestAnimationFrame(injectMermaidTitles)
+    })
+    mermaidObserver.observe(document.body, { childList: true, subtree: true })
+    // 初次也跑一次（處理已 hydrate 的內容）
+    requestAnimationFrame(injectMermaidTitles)
+  }
   // 等 DOM ready
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => { ensureBar(); ensureSkipLink() })
+    document.addEventListener('DOMContentLoaded', () => {
+      ensureBar(); ensureSkipLink(); watchMermaid()
+    })
   } else {
     ensureBar()
     ensureSkipLink()
+    watchMermaid()
   }
   window.addEventListener('scroll', onScroll, { passive: true })
   window.addEventListener('resize', onScroll, { passive: true })

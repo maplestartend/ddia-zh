@@ -76,11 +76,17 @@
     "JetBrains Mono", "SF Mono", "Consolas",
     ui-monospace, "Noto Sans Mono CJK TC", monospace;
 
-  /* ---------- Spacing scale（Wave 3 加入：禁止 raw px、所有 margin/padding 從這 6 階挑） ---------- */
+  /* ---------- Spacing scale（Wave 3 加入、Wave 29a 補 0.5 階）
+     原本 6 階跳距 4→8→16→24→40→64 留下 12/20/28 等中間值無 token、佔殘留 80%
+     補 4 個 0.5 階 token 解問題 */
   --space-1: 4px;     /* 微縫：dot / icon gap */
+  --space-1-5: 6px;   /* Wave 29a：微縫升一階 */
   --space-2: 8px;     /* 元件內元素 */
+  --space-2-5: 12px;  /* Wave 29a：細節距、icon gap、章首儀式 */
   --space-3: 16px;    /* 段內 / 內 padding / p margin */
+  --space-3-5: 20px;  /* Wave 29a：list padding-left、行內 mid spacing */
   --space-4: 24px;    /* 段距 / 表格 margin / 一般元件 margin */
+  --space-4-5: 28px;  /* Wave 29a：章末元件 mid gap、blockquote */
   --space-5: 40px;    /* 區塊分隔 / callout / blockquote */
   --space-6: 64px;    /* 章節級分隔 / h2 / 儀式區塊 */
 
@@ -99,6 +105,10 @@
   --type-small:     14px;  /* 卡片副文 / 標籤 */
   --type-eyebrow:   12px;  /* italic small caps eyebrow 唯一規格 */
   --type-chapter-mark: 36px;  /* 章號（< h1 42px 避免階層倒置；mark 是「裝飾」、不該大過章名） */
+  /* Wave 29b 新增：對映實際高頻 raw 值 */
+  --type-h2-tight:  22px;  /* h3 / Quiz header / 元件中標（8 處 raw） */
+  --type-body-lg:   18px;  /* 內文加大 / Quiz question / Hero subtitle（7 處 raw） */
+  --type-meta:    12.5px;  /* badge / cite / meta / hint（6 處 raw） */
 
   /* Fraunces variation-settings 標準化（Wave 28a：加 4 套覆蓋常見實際使用 pattern） */
   --fvar-display:    "opsz" 72, "SOFT" 60, "wght" 500;  /* 大標題 / 章名 */
@@ -130,6 +140,13 @@
   --ink-mid:    var(--text-secondary);
   --ink-soft:   var(--text-tertiary);
   --ink-mark:   var(--brand-500);       /* 只保留給「真品牌印記」場合 */
+
+  /* ---------- Wave 29c：brand-500 semantic alias（語意化、批次收斂用）
+     之前 brand-500 在 components.css 散落 40+ 處、用途混雜（CTA / mark / hover / active）。
+     新增 3 支語意 alias：未來改 brand 色只動 tokens.css 一處、不必逐行 sed。 */
+  --mark-fg:     var(--brand-500);  /* 印刷符號 § · ◆ / drop cap / TLDR bullet 等「印記」 */
+  --rule-active: var(--brand-500);  /* hover indicator / sidebar active / ChapterCard top 印記 */
+  --cta-bg:      var(--brand-500);  /* CTA filled button background / Quiz score */
 }
 
 /* ---------- Semantic · Light（cream 紙本） ---------- */
@@ -175,10 +192,11 @@
 
   --focus-ring: 0 0 0 3px rgb(107 29 29 / 0.25);
 
-  --brand-tint-soft:   rgba(140, 58, 42, 0.05);
-  --brand-tint:        rgba(140, 58, 42, 0.10);
-  --brand-tint-strong: rgba(140, 58, 42, 0.16);
-  --brand-tint-border: rgba(140, 58, 42, 0.28);
+  /* Wave 29d：tint-soft alpha 0.05 → 0.10（原本 active state 視覺差 <3% 看不出） */
+  --brand-tint-soft:   rgba(140, 58, 42, 0.10);
+  --brand-tint:        rgba(140, 58, 42, 0.16);
+  --brand-tint-strong: rgba(140, 58, 42, 0.22);
+  --brand-tint-border: rgba(140, 58, 42, 0.32);
 
   /* accent (manuscript orange) tint family — 取代 hardcoded rgba */
   /* Wave 28c：同步到新 --accent-500 #93521A (147, 82, 26) — 原本仍是舊 hex #A24612 (162, 70, 18) */
@@ -229,10 +247,11 @@
 
   --focus-ring: 0 0 0 3px rgb(227 160 106 / 0.45);
 
-  --brand-tint-soft:   rgba(227, 160, 106, 0.06);
-  --brand-tint:        rgba(227, 160, 106, 0.10);
-  --brand-tint-strong: rgba(227, 160, 106, 0.18);
-  --brand-tint-border: rgba(227, 160, 106, 0.35);
+  /* Wave 29d：dark tint-soft alpha 0.06 → 0.12（active state 視覺可感知） */
+  --brand-tint-soft:   rgba(227, 160, 106, 0.12);
+  --brand-tint:        rgba(227, 160, 106, 0.18);
+  --brand-tint-strong: rgba(227, 160, 106, 0.24);
+  --brand-tint-border: rgba(227, 160, 106, 0.38);
 }
 
 /* ---------- VitePress 對應：把 semantic token 餵給 VP 預設變數 ---------- */

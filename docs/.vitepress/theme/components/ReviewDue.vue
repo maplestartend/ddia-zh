@@ -64,8 +64,8 @@ function onForgotten(chapterId: string) {
 <style scoped>
 /* Editorial 複習清單：書末錯題本 errata 樣式 */
 .ddia-review {
-  margin: 28px 0;
-  padding: 20px 0;
+  margin: var(--space-4-5) 0;
+  padding: var(--space-3-5) 0;
   background: transparent;
   border: 0;
   border-top: 1px solid var(--rule-hairline);
@@ -75,10 +75,9 @@ function onForgotten(chapterId: string) {
 .ddia-review-eyebrow {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--space-1-5);
   font-family: var(--font-display);
   font-variation-settings: var(--fvar-eyebrow-warm);
-  font-style: italic;
   font-size: var(--type-eyebrow);
   font-weight: 500;
   text-transform: uppercase;
@@ -96,7 +95,6 @@ function onForgotten(chapterId: string) {
   flex-wrap: wrap;
   color: var(--text-secondary);
   font-family: var(--font-display);
-  font-style: italic;
   font-variation-settings: var(--fvar-italic-note);
   font-size: 14.5px;
 }
@@ -106,15 +104,14 @@ function onForgotten(chapterId: string) {
 .ddia-review-empty::before {
   content: "·";
   font-family: var(--font-display);
-  font-size: 18px;
+  font-size: var(--type-body-lg);
   color: var(--success-fg);
   font-weight: 700;
 }
 .ddia-review-empty-hint {
-  font-size: 12.5px;
+  font-size: var(--type-meta);
   margin-left: auto;
   color: var(--text-tertiary);
-  font-style: italic;
 }
 .ddia-review-list {
   margin: 0;
@@ -126,7 +123,7 @@ function onForgotten(chapterId: string) {
   align-items: center;
   justify-content: space-between;
   gap: 14px;
-  padding: 12px 0;
+  padding: var(--space-2-5) 0;
   border-top: 1px solid var(--border-default);
   flex-wrap: wrap;
 }
@@ -146,7 +143,7 @@ function onForgotten(chapterId: string) {
   text-decoration: none;
 }
 .ddia-review-item-title:hover {
-  color: var(--brand-500);
+  color: var(--mark-fg);
   border-bottom: 1px solid var(--brand-500);
 }
 :global(.dark) .ddia-review-item-title:hover {
@@ -156,9 +153,8 @@ function onForgotten(chapterId: string) {
 .ddia-review-item-meta {
   display: block;
   font-family: var(--font-display);
-  font-style: italic;
   font-variation-settings: var(--fvar-italic-warm);
-  font-size: 12.5px;
+  font-size: var(--type-meta);
   color: var(--text-tertiary);
   margin-top: var(--space-1);
   letter-spacing: 0.01em;
@@ -171,13 +167,13 @@ function onForgotten(chapterId: string) {
   display: inline-flex;
   align-items: center;
   gap: var(--space-1);
-  padding: 6px 12px;
+  padding: var(--space-1-5) var(--space-2-5);
   background: transparent;
   border: 1px solid var(--text-primary);
   border-radius: 0;
   font-family: var(--font-display);
   font-variation-settings: var(--fvar-section-tight);
-  font-size: 12.5px;
+  font-size: var(--type-meta);
   letter-spacing: 0.04em;
   color: var(--text-primary);
   cursor: pointer;
@@ -191,8 +187,8 @@ function onForgotten(chapterId: string) {
   color: var(--bg-canvas);
 }
 .ddia-review-btn.primary {
-  background: var(--brand-500);
-  border-color: var(--brand-500);
+  background: var(--cta-bg);
+  border-color: var(--mark-fg);
   color: var(--text-inverse);
 }
 .ddia-review-btn.primary:hover {

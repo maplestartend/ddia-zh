@@ -118,7 +118,7 @@ onMounted(() => {
 }
 
 .ddia-chapter-opener-epigraph {
-  margin: 28px 0 0;
+  margin: var(--space-4-5) 0 0;
   padding: 6px 0 6px var(--space-4);
   border: 0;
   border-left: 3px solid var(--rule-hairline);
@@ -138,7 +138,7 @@ onMounted(() => {
   font-family: var(--font-display);
   font-style: normal;
   font-variation-settings: var(--fvar-section-mid);
-  font-size: 12.5px;
+  font-size: var(--type-meta);
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--text-tertiary);

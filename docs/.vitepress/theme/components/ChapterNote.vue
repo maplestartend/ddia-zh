@@ -68,7 +68,7 @@ watch(content, () => {
 <style scoped>
 /* Editorial 章節筆記：書頁批註欄樣式 */
 .ddia-note {
-  margin: 28px 0;
+  margin: var(--space-4-5) 0;
   padding: var(--space-3) 0;
   background: transparent;
   border: 0;
@@ -99,9 +99,8 @@ watch(content, () => {
 .ddia-note-summary::before {
   content: "§";
   font-family: var(--font-display);
-  font-style: italic;
   font-size: var(--type-body);
-  color: var(--brand-500);
+  color: var(--mark-fg);
 }
 .ddia-note-summary::-webkit-details-marker {
   display: none;
@@ -124,14 +123,12 @@ watch(content, () => {
   color: var(--brand-fg);
   border-radius: 0;
   font-family: var(--font-display);
-  font-style: italic;
   font-size: 11.5px;
   font-weight: 500;
   letter-spacing: 0.06em;
 }
 .ddia-note-hint {
   font-family: var(--font-display);
-  font-style: italic;
   font-size: 11.5px;
   color: var(--text-tertiary);
   font-weight: 400;
@@ -141,7 +138,7 @@ watch(content, () => {
   min-height: 120px;
   max-height: 600px;
   margin-top: 14px;
-  padding: 12px 14px;
+  padding: var(--space-2-5) 14px;
   background: var(--bg-surface);
   border: 0;
   border-bottom: 1px solid var(--rule-hairline);
@@ -156,7 +153,7 @@ watch(content, () => {
   letter-spacing: 0.01em;
 }
 .ddia-note-textarea:focus {
-  border-bottom-color: var(--brand-500);
+  border-bottom-color: var(--mark-fg);
   background: var(--bg-subtle);
 }
 .ddia-note-textarea:focus-visible {
@@ -167,11 +164,10 @@ watch(content, () => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 12px;
+  margin-top: var(--space-2-5);
 }
 .ddia-note-meta {
   font-family: var(--font-display);
-  font-style: italic;
   font-size: 11.5px;
   color: var(--text-tertiary);
   margin-left: auto;

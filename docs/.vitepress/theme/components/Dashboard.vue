@@ -41,7 +41,7 @@
         <div class="ddia-stat-card">
           <div class="ddia-stat-label">已讀完章節</div>
           <div class="ddia-stat-value brand numeric">{{ doneCount }} / {{ totalChapters }}</div>
-          <div class="ddia-progress-bar" style="margin-top: 12px;">
+          <div class="ddia-progress-bar" style="margin-top: var(--space-2-5);">
             <div class="ddia-progress-fill" :style="{ width: progressPct + '%' }" />
           </div>
         </div>

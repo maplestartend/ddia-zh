@@ -14,7 +14,7 @@
   border-bottom: 1px solid var(--rule-hairline);
   border-radius: 0;
   padding: 22px 0 26px;
-  margin: 28px 0 36px;
+  margin: var(--space-4-5) 0 36px;
   position: relative;
 }
 
@@ -35,11 +35,11 @@
 /* § section sign 取代 Material icon — 印刷術慣例 */
 .ddia-tldr-title::before {
   content: "§";
-  font-size: 18px;
+  font-size: var(--type-body-lg);
   font-family: var(--font-display);
   font-style: italic;
   letter-spacing: 0;
-  color: var(--brand-500);
+  color: var(--mark-fg);
   margin-right: var(--space-1);
   font-variation-settings: "opsz" 48, "wght" 500;
 }
@@ -77,9 +77,9 @@
   left: -0.8em;
   top: -0.1em;
   font-family: var(--font-display);
-  font-size: 22px;
+  font-size: var(--type-h2-tight);
   font-weight: 700;
-  color: var(--brand-500);
+  color: var(--mark-fg);
   line-height: 1;
 }
 .dark .ddia-tldr li::before {
@@ -136,7 +136,7 @@
   font-family: var(--font-display);
   font-style: italic;
   font-variation-settings: var(--fvar-eyebrow-warm);
-  font-size: 12.5px;
+  font-size: var(--type-meta);
   font-weight: 500;
   letter-spacing: 0.04em;
   color: var(--brand-fg);
@@ -162,7 +162,7 @@
 .ddia-quiz-header {
   font-family: var(--font-display);
   font-variation-settings: "opsz" 48, "SOFT" 30, "wght" 600;
-  font-size: 22px;
+  font-size: var(--type-h2-tight);
   font-weight: 600;
   margin-bottom: 18px;
   display: flex;
@@ -175,7 +175,7 @@
 .ddia-quiz-header-title {
   display: inline-flex;
   align-items: baseline;
-  gap: 12px;
+  gap: var(--space-2-5);
 }
 .ddia-quiz-header-title .material-symbols-rounded {
   display: none;
@@ -187,7 +187,7 @@
   font-style: italic;
   font-variation-settings: "opsz" 48, "wght" 500;
   font-size: var(--type-h2);
-  color: var(--brand-500);
+  color: var(--mark-fg);
   margin-right: var(--space-1);
   line-height: 1;
 }
@@ -208,7 +208,7 @@
 .ddia-quiz-option {
   display: flex;
   align-items: flex-start;
-  gap: 12px;
+  gap: var(--space-2-5);
   padding: 10px 14px 10px 14px;
   margin: var(--space-1) 0;
   border: 0;
@@ -224,20 +224,20 @@
 }
 
 .ddia-quiz-option:hover {
-  border-left-color: var(--brand-500);
+  border-left-color: var(--mark-fg);
   background: var(--brand-tint-soft);
 }
 
 /* 鍵盤導航：label 內含 radio、focus 從 input 傳到 label 父元素 — 用 :focus-within 包整行 */
 .ddia-quiz-option:focus-within {
-  border-left-color: var(--brand-500);
+  border-left-color: var(--mark-fg);
   background: var(--brand-tint-soft);
   outline: var(--focus-ring-width) solid var(--focus-ring-color);
   outline-offset: var(--focus-ring-offset);
 }
 
 .ddia-quiz-option.selected {
-  border-left-color: var(--brand-500);
+  border-left-color: var(--mark-fg);
   background: var(--brand-tint);
 }
 
@@ -253,7 +253,7 @@
 
 .ddia-quiz-option input[type='radio'] {
   margin-top: var(--space-1);
-  accent-color: var(--brand-500);
+  accent-color: var(--mark-fg);
 }
 
 .ddia-quiz-actions {
@@ -265,7 +265,7 @@
 
 .ddia-quiz-explanation {
   margin-top: var(--space-3);
-  padding: 6px 0 6px 20px;
+  padding: var(--space-1-5) 0 var(--space-1-5) var(--space-3-5);
   background: transparent;
   border-radius: 0;
   font-family: var(--font-display);
@@ -282,8 +282,8 @@
   font-variation-settings: "opsz" 48, "wght" 600;
   font-feature-settings: "onum" 1;
   font-weight: 600;
-  font-size: 18px;
-  color: var(--brand-500);
+  font-size: var(--type-body-lg);
+  color: var(--mark-fg);
   letter-spacing: 0;
 }
 
@@ -333,7 +333,7 @@
   display: inline-flex;
   align-items: center;
   gap: 3px;
-  margin-left: 12px;
+  margin-left: var(--space-2-5);
   padding: 0;
   background: transparent;
   border: 0;
@@ -348,8 +348,8 @@
   transition: color 0.15s, border-color 0.15s;
 }
 .ddia-quiz-anchor-link:hover {
-  color: var(--brand-500);
-  border-bottom-color: var(--brand-500);
+  color: var(--mark-fg);
+  border-bottom-color: var(--mark-fg);
 }
 :global(.dark) .ddia-quiz-anchor-link {
   color: var(--brand-fg);
@@ -361,7 +361,7 @@
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  padding: 10px 20px;
+  padding: 10px var(--space-3-5);
   border-radius: 0;
   font-family: var(--font-display);
   font-variation-settings: var(--fvar-section-tight);
@@ -385,9 +385,9 @@
 }
 
 .ddia-btn.primary {
-  background: var(--brand-500);
+  background: var(--cta-bg);
   color: var(--text-inverse);
-  border-color: var(--brand-500);
+  border-color: var(--mark-fg);
 }
 
 .ddia-btn.primary:hover:not(:disabled) {
@@ -573,7 +573,7 @@
 
 .ddia-progress-fill {
   height: 100%;
-  background: var(--brand-500);
+  background: var(--cta-bg);
   transition: width 0.4s ease;
 }
 
@@ -582,13 +582,13 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: var(--space-3);
-  margin: 28px 0;
+  margin: var(--space-4-5) 0;
 }
 
 /* Dashboard 全新訪客歡迎卡（Editorial：書頁段落而非 SaaS 卡）*/
 .ddia-dashboard-welcome {
   margin: 36px auto;
-  padding: 28px 0;
+  padding: var(--space-4-5) 0;
   max-width: 640px;
   background: transparent;
   border: 0;
@@ -600,7 +600,7 @@
 .ddia-dashboard-welcome-eyebrow {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--space-1-5);
   font-family: var(--font-display);
   font-variation-settings: var(--fvar-eyebrow-warm);
   font-style: italic;
@@ -609,7 +609,7 @@
   letter-spacing: var(--ls-eyebrow);
   text-transform: uppercase;
   color: var(--text-tertiary);
-  margin-bottom: 12px;
+  margin-bottom: var(--space-2-5);
 }
 .ddia-dashboard-welcome-eyebrow .material-symbols-rounded {
   display: none; /* welcome 不要 hand icon */
@@ -631,7 +631,7 @@
 .ddia-dashboard-welcome-cta {
   display: inline-flex;
   flex-wrap: wrap;
-  gap: 28px;
+  gap: var(--space-4-5);
   justify-content: center;
   align-items: center;
 }
@@ -671,7 +671,7 @@
   text-transform: uppercase;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--space-1-5);
 }
 .ddia-stat-label .material-symbols-rounded {
   display: none;
@@ -697,7 +697,7 @@
 }
 
 .ddia-stat-value.brand {
-  color: var(--brand-500);
+  color: var(--mark-fg);
 }
 
 .dark .ddia-stat-value.brand {
@@ -707,7 +707,7 @@
 /* Wave 21.1：誠實版標籤（Editorial：去 glass pill 圓角背景、改 italic 印刷標記） */
 .ddia-stat-tag {
   display: inline-block;
-  margin-left: 6px;
+  margin-left: var(--space-1-5);
   padding: 0;
   background: transparent;
   color: var(--success-fg);
@@ -798,7 +798,7 @@
   color: var(--text-primary);
 }
 .ddia-incorrect-link:hover strong {
-  color: var(--brand-500);
+  color: var(--mark-fg);
 }
 :global(.dark) .ddia-incorrect-link:hover strong {
   color: var(--brand-300);
@@ -844,6 +844,12 @@
 .ddia-chapter-card:active {
   background: var(--brand-tint-soft);  /* Wave 28d：按下瞬間視覺壓凹 */
 }
+/* Wave 29d：整張卡片 :focus-visible 自訂 outline、取代 base.css 全域 box-shadow */
+.ddia-chapter-card:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+  box-shadow: none;
+}
 
 /* Editorial hover 標示：頂部出現 3px brand 印記（像 paperback chapter heading 標籤）
    F4 改動：原本印記在左、視覺往左拉但讀者要往右進內文；改 top 後更像書本章節分隔 */
@@ -854,7 +860,7 @@
   right: 0;
   top: 0;
   height: 3px;
-  background: var(--brand-500);
+  background: var(--cta-bg);
   opacity: 0;
   transition: opacity 0.18s;
 }
@@ -878,7 +884,7 @@
   font-feature-settings: "onum" 1, "smcp" 1;
   font-variation-settings: var(--fvar-section-tight);
   font-size: 11.5px;
-  color: var(--brand-500);
+  color: var(--mark-fg);
   font-weight: 600;
   letter-spacing: var(--ls-eyebrow);
   text-transform: uppercase;
@@ -892,9 +898,9 @@
 .ddia-chapter-card-title {
   font-family: var(--font-display);
   font-variation-settings: "opsz" 48, "SOFT" 30, "wght" 600;
-  font-size: 18px;
+  font-size: var(--type-body-lg);
   font-weight: 600;
-  margin: 6px 0 12px;
+  margin: var(--space-1-5) 0 var(--space-2-5);
   line-height: 1.35;
   color: var(--text-primary);
   letter-spacing: 0;
@@ -911,7 +917,7 @@
 
 .ddia-chapter-card-status {
   margin-top: var(--space-3);
-  padding-top: 12px;
+  padding-top: var(--space-2-5);
   border-top: 1px solid var(--border-default);
   font-size: 11.5px;
   color: var(--text-tertiary);
@@ -991,7 +997,7 @@
   color: var(--text-tertiary);
   letter-spacing: var(--ls-eyebrow);
   text-transform: uppercase;
-  margin-bottom: 6px;
+  margin-bottom: var(--space-1-5);
 }
 
 .ddia-part-header p {
@@ -1031,7 +1037,7 @@
   background: none;
   border: 0;
   border-radius: 0;
-  margin: 0 0 20px;
+  margin: 0 0 var(--space-3-5);
 }
 .ddia-hero-eyebrow .material-symbols-rounded {
   display: none; /* eyebrow 不要 icon — Editorial 字體本身就是視覺 */
@@ -1078,7 +1084,7 @@
 
 .ddia-cta-row {
   display: inline-flex;
-  gap: 28px;
+  gap: var(--space-4-5);
   justify-content: center;
   margin-top: 32px;
   flex-wrap: wrap;
@@ -1107,7 +1113,7 @@
 }
 
 .ddia-cta.primary {
-  background: var(--brand-500);
+  background: var(--cta-bg);
   color: var(--text-inverse) !important;
   border: 1px solid var(--brand-500);
   border-radius: 0;
@@ -1129,7 +1135,7 @@
 
 .ddia-cta.ghost:hover {
   color: var(--brand-500) !important;
-  border-bottom-color: var(--brand-500);
+  border-bottom-color: var(--mark-fg);
 }
 
 .dark .ddia-cta.primary {
@@ -1166,7 +1172,7 @@
   border-left: 3px solid var(--rule-hairline);
   border-radius: 0;
   padding: var(--space-2) 0 var(--space-2) 20px;
-  margin: 28px 0;
+  margin: var(--space-4-5) 0;
   font-size: 15px;
   line-height: 1.75;
   color: var(--text-secondary);
@@ -1181,15 +1187,15 @@
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--text-primary);
-  margin: 0 0 6px;
+  margin: 0 0 var(--space-1-5);
 }
 
 .custom-block p {
-  margin: 6px 0;
+  margin: var(--space-1-5) 0;
 }
 
-.custom-block.tip { border-left-color: var(--brand-500); }
-.custom-block.tip .custom-block-title { color: var(--brand-500); }
+.custom-block.tip { border-left-color: var(--mark-fg); }
+.custom-block.tip .custom-block-title { color: var(--mark-fg); }
 
 .custom-block.info { border-left-color: var(--accent-500); }
 .custom-block.info .custom-block-title { color: var(--accent-500); }
@@ -1290,7 +1296,7 @@ button.DocSearch.DocSearch-Button {
   font-family: var(--font-display);
   font-style: italic;
   color: var(--text-tertiary) !important;
-  padding: 6px 12px !important;
+  padding: var(--space-1-5) var(--space-2-5) !important;
   transition: border-color 0.15s, color 0.15s, background-color 0.15s !important;
 }
 .VPNavBarSearch .DocSearch-Button:hover,
@@ -1314,7 +1320,7 @@ button.DocSearch.DocSearch-Button:focus-visible {
 }
 .DocSearch-Button:hover .DocSearch-Search-Icon,
 .DocSearch-Button:focus-visible .DocSearch-Search-Icon {
-  color: var(--brand-500);
+  color: var(--mark-fg);
 }
 /* ⌘K 鍵盤提示：預設樣式太重（陰影 + 圓角 + 灰底），改成單純 mono 字 */
 .DocSearch-Button-Keys,
@@ -1342,7 +1348,7 @@ button.DocSearch.DocSearch-Button:focus-visible {
   border: 0 !important;
   background: transparent !important;
   box-shadow: none !important;
-  padding: 10px 12px !important;
+  padding: 10px var(--space-2-5) !important;
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
@@ -1380,7 +1386,7 @@ button.DocSearch.DocSearch-Button:focus-visible {
   background: var(--brand-tint-soft) !important;
 }
 .VPSwitchAppearance:hover::before {
-  color: var(--brand-500);
+  color: var(--mark-fg);
   transform: rotate(-12deg);
 }
 .dark .VPSwitchAppearance:hover::before {
@@ -1435,7 +1441,7 @@ button.DocSearch.DocSearch-Button:focus-visible {
   top: 4px;
   bottom: 4px;
   width: 2px;
-  background: var(--brand-500);
+  background: var(--cta-bg);
 }
 
 /* ----- Outline TOC（右側）：Editorial 化 ----- */
@@ -1452,7 +1458,7 @@ button.DocSearch.DocSearch-Button:focus-visible {
   color: var(--text-tertiary);
   border-bottom: 1px solid var(--rule-hairline);
   padding-bottom: var(--space-2);
-  margin-bottom: 12px;
+  margin-bottom: var(--space-2-5);
 }
 .VPDocAsideOutline .outline-link {
   font-size: 13px;
@@ -1468,8 +1474,8 @@ button.DocSearch.DocSearch-Button:focus-visible {
   border-left-color: var(--rule-soft);
 }
 .VPDocAsideOutline .outline-link.active {
-  color: var(--brand-500);
-  border-left-color: var(--brand-500);
+  color: var(--mark-fg);
+  border-left-color: var(--mark-fg);
   font-weight: 500;
 }
 /* outline marker：移除 VP 預設左 vertical line（用我們的 border-left 代替） */
@@ -1514,7 +1520,7 @@ button.DocSearch.DocSearch-Button:focus-visible {
   font-family: var(--font-display);
   font-style: italic;
   font-variation-settings: var(--fvar-italic-warm);
-  font-size: 12.5px;
+  font-size: var(--type-meta);
   color: var(--text-tertiary);
   letter-spacing: 0.04em;
   line-height: 1.8;
@@ -1627,8 +1633,8 @@ button.DocSearch.DocSearch-Button:focus-visible {
 
 /* ---------- Dashboard resume link：returning user 看見的「繼續讀」入口 ---------- */
 .ddia-dashboard-resume {
-  margin: 28px auto 36px;
-  padding: 20px 0;
+  margin: var(--space-4-5) auto 36px;
+  padding: var(--space-3-5) 0;
   max-width: 640px;
   text-align: center;
   border-top: 1px solid var(--rule-hairline);
@@ -1656,8 +1662,8 @@ button.DocSearch.DocSearch-Button:focus-visible {
   transition: color 0.15s, border-bottom-color 0.15s;
 }
 .ddia-dashboard-resume-link:hover {
-  color: var(--brand-500);
-  border-bottom-color: var(--brand-500);
+  color: var(--mark-fg);
+  border-bottom-color: var(--mark-fg);
 }
 .ddia-dashboard-resume-num {
   font-family: var(--font-display);
@@ -1666,7 +1672,7 @@ button.DocSearch.DocSearch-Button:focus-visible {
   font-size: 13px;
   letter-spacing: var(--ls-eyebrow);
   text-transform: uppercase;
-  color: var(--brand-500);
+  color: var(--mark-fg);
 }
 .ddia-dashboard-resume-title {
   font-family: var(--font-display);
@@ -1676,7 +1682,7 @@ button.DocSearch.DocSearch-Button:focus-visible {
 }
 .ddia-dashboard-resume-arrow {
   font-family: var(--font-display);
-  font-size: 18px;
+  font-size: var(--type-body-lg);
   color: var(--text-tertiary);
 }
 .dark .ddia-dashboard-resume-num {
@@ -1720,16 +1726,16 @@ button.DocSearch.DocSearch-Button:focus-visible {
   font-family: var(--font-display);
   font-style: italic;
   font-variation-settings: "opsz" 48, "SOFT" 60, "wght" 400;
-  font-size: 22px;
+  font-size: var(--type-h2-tight);
   line-height: 1.55;
   color: var(--text-primary);
-  margin: 0 0 28px;
+  margin: 0 0 var(--space-4-5);
   text-wrap: balance;
 }
 .ddia-dashboard-ceremony-links {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--space-2-5);
   align-items: center;
 }
 .ddia-dashboard-ceremony-link {
@@ -1744,8 +1750,8 @@ button.DocSearch.DocSearch-Button:focus-visible {
   transition: color 0.15s, border-bottom-color 0.15s;
 }
 .ddia-dashboard-ceremony-link:hover {
-  color: var(--brand-500);
-  border-bottom-color: var(--brand-500);
+  color: var(--mark-fg);
+  border-bottom-color: var(--mark-fg);
   border-bottom-style: solid;
 }
 .dark .ddia-dashboard-ceremony-link:hover {
@@ -1760,7 +1766,7 @@ button.DocSearch.DocSearch-Button:focus-visible {
   top: 0;
   left: 0;
   height: 2px;
-  background: var(--brand-500);
+  background: var(--cta-bg);
   width: 0%;
   z-index: 999;
   pointer-events: none;
@@ -1787,7 +1793,7 @@ button.DocSearch.DocSearch-Button:focus-visible {
   letter-spacing: var(--ls-eyebrow);
   text-transform: uppercase;
   color: var(--text-tertiary);
-  margin-bottom: 12px;
+  margin-bottom: var(--space-2-5);
 }
 .ddia-quiz-next-link {
   display: inline-flex;
@@ -1800,8 +1806,8 @@ button.DocSearch.DocSearch-Button:focus-visible {
   transition: color 0.15s, border-bottom-color 0.15s;
 }
 .ddia-quiz-next-link:hover {
-  color: var(--brand-500);
-  border-bottom-color: var(--brand-500);
+  color: var(--mark-fg);
+  border-bottom-color: var(--mark-fg);
 }
 .ddia-quiz-next-num {
   font-family: var(--font-display);
@@ -1810,17 +1816,17 @@ button.DocSearch.DocSearch-Button:focus-visible {
   font-size: 13px;
   letter-spacing: var(--ls-eyebrow);
   text-transform: uppercase;
-  color: var(--brand-500);
+  color: var(--mark-fg);
 }
 .ddia-quiz-next-title {
   font-family: var(--font-display);
   font-variation-settings: "opsz" 48, "SOFT" 50, "wght" 500;
-  font-size: 22px;
+  font-size: var(--type-h2-tight);
   letter-spacing: 0.01em;
 }
 .ddia-quiz-next-arrow {
   font-family: var(--font-display);
-  font-size: 18px;
+  font-size: var(--type-body-lg);
   color: var(--text-tertiary);
 }
 .dark .ddia-quiz-next-num {

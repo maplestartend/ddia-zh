@@ -232,16 +232,15 @@ function resetAll() {
 .ddia-export-eyebrow {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--space-1-5);
   font-family: var(--font-display);
   font-variation-settings: var(--fvar-eyebrow-warm);
-  font-style: italic;
   font-size: var(--type-eyebrow);
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: var(--ls-eyebrow);
   color: var(--text-tertiary);
-  margin-bottom: 12px;
+  margin-bottom: var(--space-2-5);
 }
 .ddia-export-eyebrow :deep(.material-symbols-rounded) {
   display: none;
@@ -249,7 +248,6 @@ function resetAll() {
 .ddia-export-text {
   margin: 0 0 18px;
   font-family: var(--font-display);
-  font-style: italic;
   font-variation-settings: var(--fvar-italic-note);
   font-size: 15px;
   line-height: 1.75;
@@ -263,7 +261,7 @@ function resetAll() {
 
 /* 危險區：摺疊式 details、italic 印刷感 + / − 印記取代 ▾ 三角箭頭 */
 .ddia-export-danger {
-  margin-top: 28px;
+  margin-top: var(--space-4-5);
   padding-top: 18px;
   border-top: 1px dashed var(--rule-hairline);
 }
@@ -274,7 +272,6 @@ function resetAll() {
   align-items: baseline;
   gap: var(--space-2);
   font-family: var(--font-display);
-  font-style: italic;
   font-variation-settings: var(--fvar-eyebrow);
   font-size: 13px;
   text-transform: uppercase;
@@ -287,7 +284,7 @@ function resetAll() {
 .ddia-export-danger-mark {
   font-family: var(--font-display);
   font-style: normal;
-  font-size: 18px;
+  font-size: var(--type-body-lg);
   line-height: 1;
   color: var(--text-tertiary);
   width: 16px;
@@ -312,7 +309,7 @@ function resetAll() {
   right: 0;
 }
 .ddia-export-danger-text {
-  margin: 12px 0 14px;
+  margin: var(--space-2-5) 0 14px;
   font-family: var(--font-body);
   font-size: var(--type-small);
   line-height: 1.75;

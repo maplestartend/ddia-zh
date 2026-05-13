@@ -50,7 +50,7 @@ defineProps<{
 .ddia-prereq-eyebrow {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--space-1-5);
   font-family: var(--font-display);
   font-variation-settings: var(--fvar-eyebrow-warm);
   /* Wave 28f：功能性元件 eyebrow 去 italic、保留 uppercase + letter-spacing 撐 small-caps 感
@@ -60,7 +60,7 @@ defineProps<{
   text-transform: uppercase;
   letter-spacing: var(--ls-eyebrow);
   color: var(--text-tertiary);
-  margin-bottom: 12px;
+  margin-bottom: var(--space-2-5);
 }
 .ddia-prereq-eyebrow :deep(.material-symbols-rounded) {
   display: none;
@@ -108,7 +108,7 @@ defineProps<{
   left: -0.9em;
   font-family: var(--font-display);
   color: var(--text-tertiary);
-  font-size: 18px;
+  font-size: var(--type-body-lg);
   line-height: 1;
 }
 .ddia-prereq-item {

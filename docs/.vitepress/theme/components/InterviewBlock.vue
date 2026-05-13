@@ -79,7 +79,7 @@ watch(answers, (v) => {
 .ddia-interview-eyebrow {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--space-1-5);
   font-family: var(--font-display);
   font-variation-settings: var(--fvar-eyebrow-warm);
   font-style: italic;
@@ -88,7 +88,7 @@ watch(answers, (v) => {
   text-transform: uppercase;
   letter-spacing: var(--ls-eyebrow);
   color: var(--warning-fg);
-  margin-bottom: 12px;
+  margin-bottom: var(--space-2-5);
 }
 .ddia-interview-eyebrow :deep(.material-symbols-rounded) {
   display: none;
@@ -109,7 +109,7 @@ watch(answers, (v) => {
   counter-reset: q;
 }
 .ddia-interview-q {
-  margin: 20px 0;
+  margin: var(--space-3-5) 0;
   counter-increment: q;
   position: relative;
 }

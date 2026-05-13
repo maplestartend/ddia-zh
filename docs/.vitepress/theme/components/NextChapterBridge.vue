@@ -65,7 +65,7 @@ const displayTeaser = computed(() => currentChap.value?.teaser)
 .ddia-bridge {
   display: block;
   margin: 56px 0 32px;
-  padding: 28px 0 32px;
+  padding: var(--space-4-5) 0 32px;
   text-align: center;
   background: transparent;
   border: 0;
@@ -82,8 +82,14 @@ const displayTeaser = computed(() => currentChap.value?.teaser)
 .ddia-bridge:active {
   background-color: var(--brand-tint-soft);  /* Wave 28d：按下瞬間壓凹 */
 }
+/* Wave 29d：自訂 :focus-visible 取代 base.css 全域 box-shadow、整塊 <a> 銳利環 */
+.ddia-bridge:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+  box-shadow: none;
+}
 .ddia-bridge:hover .ddia-bridge-title {
-  color: var(--brand-500);
+  color: var(--mark-fg);
 }
 :global(.dark) .ddia-bridge:hover .ddia-bridge-title {
   color: var(--brand-fg);
@@ -108,8 +114,8 @@ const displayTeaser = computed(() => currentChap.value?.teaser)
   font-variation-settings: "opsz" 48, "SOFT" 60, "wght" 500;
   font-size: var(--type-display-2);
   letter-spacing: 0.18em;
-  color: var(--brand-500);
-  margin-bottom: 6px;
+  color: var(--mark-fg);
+  margin-bottom: var(--space-1-5);
   padding-left: 0.18em;
 }
 :global(.dark) .ddia-bridge-num {
@@ -129,7 +135,7 @@ const displayTeaser = computed(() => currentChap.value?.teaser)
 }
 
 .ddia-bridge-teaser {
-  margin: 6px auto 0;
+  margin: var(--space-1-5) auto 0;
   max-width: 38em;
   font-family: var(--font-display);
   font-style: italic;
@@ -142,13 +148,13 @@ const displayTeaser = computed(() => currentChap.value?.teaser)
 .ddia-bridge-rule {
   height: 1px;
   background: var(--rule-hairline);
-  margin: 28px auto 0;
+  margin: var(--space-4-5) auto 0;
   max-width: 6em;
 }
 
 @media (max-width: 640px) {
   .ddia-bridge { padding: 22px 0 var(--space-4); }
-  .ddia-bridge-num { font-size: 22px; }
-  .ddia-bridge-title { font-size: 22px; }
+  .ddia-bridge-num { font-size: var(--type-h2-tight); }
+  .ddia-bridge-title { font-size: var(--type-h2-tight); }
 }
 </style>
