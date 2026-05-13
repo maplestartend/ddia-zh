@@ -81,13 +81,22 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .ddia-click-flash { transition: none; }
 }
-/* Wave 31b：Windows 高對比模式 box-shadow 會被瀏覽器強制 none、按鍵視覺消失。
-   用 outline dashed Highlight 提供平台原生對比色後備。 */
+/* Wave 31b + 32：Windows 高對比模式 box-shadow 強制 none、按鍵視覺消失。
+   用 outline dashed Highlight 提供平台原生對比色後備。
+   Wave 32：outline-offset 從 -2 → 0 — 避免與 .ddia-reading-progress (height 2 / z-index 999)
+   或 fixed nav 邊緣重疊裁切；Highlight 對比已足、不需內縮。 */
 @media (forced-colors: active) {
   .ddia-click-flash {
     outline: 2px dashed Highlight;
-    outline-offset: -2px;
+    outline-offset: 0;
     box-shadow: none;
+  }
+  /* skip link 在高對比模式也補：避免 --cta-bg / --text-inverse 被瀏覽器覆寫成 Canvas 文字消失 */
+  .ddia-skip-link {
+    background: Canvas;
+    color: CanvasText;
+    outline: 2px solid Highlight;
+    outline-offset: 0;
   }
 }
 
@@ -119,7 +128,7 @@ body {
   font-weight: 500;
   letter-spacing: -0.008em;
   line-height: 1.18;
-  margin: var(--space-2-5) 0 32px;
+  margin: var(--space-2-5) 0 var(--space-4-5);
   padding-bottom: var(--space-4);
   border-bottom: 1px solid var(--rule-hairline);
   color: var(--text-primary);
@@ -135,8 +144,7 @@ body {
   font-weight: 600;
   border-top: 1px solid var(--rule-hairline);
   padding-top: var(--space-4-5);
-  margin-top: var(--space-5);  /* 從 56px 縮回 48 — padding-top 32→28 + margin 48 仍夠 chunk */
-  letter-spacing: 0.005em;
+  margin-top: var(--space-chapter-break);  /* Wave 32：48 還原章節 chunk 節奏（Wave 31d 誤 round 到 40 失去章/節層級差） */
   line-height: 1.3;
 }
 
@@ -197,8 +205,7 @@ body {
   font-variation-settings: "opsz" 36, "SOFT" 40, "wght" 620;
   font-weight: 600;
   font-size: var(--type-h2-tight);
-  margin-top: var(--space-5);  /* 拉大 h3 上方留白避免黏 body */
-  letter-spacing: 0.005em;
+  margin-top: var(--space-5);  /* 拉大 h3 上方留白避免黏 body；與 h2 chapter-break 48 差 8px 保留章/節層級 */
   color: var(--text-primary);
 }
 
@@ -244,9 +251,9 @@ body {
 /* Wave 30.1 hotfix：Wave 30e 誤刪了活代碼、本次恢復 + 補 Part 0 缺口。
    實測 grep 12 章 + Part 0 markdown 序列：
    - Part 0 七章（intro/metrics/sql/os/network/data-structures/concurrency）：Quiz → Bridge（無 Interview/Note/Progress）
-   - ch02/04/10/12：Quiz → Note → Progress → Bridge（無 Interview / callout）
+   - ch02/04/06/08/10/12（6 章）：Quiz → Note → Progress → Bridge（無 Interview / callout）
    - ch03：Quiz → Note → Progress → callout → Bridge（無 Interview）
-   - ch01/ch11：Quiz → Interview → Note → Progress → callout → Bridge（完整序列）
+   - ch01/05/07/09/11（5 章）：Quiz → Interview → Note → Progress → callout → Bridge（完整序列）
    三階節奏：內容延續 28 / 過場 40 / 儀式封頂 64。 */
 .ddia-quiz + .ddia-interview,
 .ddia-interview + .ddia-note,

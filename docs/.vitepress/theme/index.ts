@@ -133,9 +133,11 @@ export default {
     if (typeof window === 'undefined') return  // SSG safe（Node build 時 router 為 undefined）
 
     let mermaidObserver: MutationObserver | null = null
-    // 純裝飾性短字（dinkus / hr / 空白 / 全形破折號 / box-drawing chars）：不可作朗讀 title
-    // Wave 31b 擴充：補 box-drawing `─━│┃` + 全形破折號 `─━` + 雙引號 `「」『』` 開頭噪音
-    const DECORATIVE_RE = /^[\s\-—–◆·§→·•．。、，\.\*─━│┃「」『』〈〉《》【】「」]+$/u
+    // 純裝飾性短字（dinkus / hr / 空白 / 全形破折號 / box-drawing / 省略號）：不可作朗讀 title
+    // Wave 31b 擴充：補 box-drawing `─━│┃` + 全形破折號 + 中文書名 / 引號
+    // Wave 32 擴充：補 unicode 空白 `　` 全形空白、`​` ZWSP、`﻿` BOM
+    //              + 省略號 `…⋯` + 去除原本重複的 `「」`
+    const DECORATIVE_RE = /^[\s　​﻿\-—–◆·§→·•．。、，\.\*…⋯─━│┃「」『』〈〉《》【】]+$/u
 
     const injectMermaidTitles = () => {
       const root = document.querySelector('.vp-doc')

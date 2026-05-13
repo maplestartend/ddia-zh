@@ -97,9 +97,18 @@
   --space-3-5: 20px;  /* Wave 29a：list padding-left、行內 mid spacing */
   --space-4: 24px;    /* 段距 / 表格 margin / 一般元件 margin */
   --space-4-5: 28px;  /* Wave 29a：章末元件 mid gap、blockquote */
-  --space-5: 40px;    /* 區塊分隔 / callout / blockquote / hr / h2 chunked margin */
+  --space-5: 40px;    /* 區塊分隔 / callout / blockquote / hr */
   --space-5-5: 56px;  /* Wave 30b：章末→Bridge 半儀式間距（5 處 raw → token；非 5↔6 數學中點 52） */
   --space-6: 64px;    /* 章節級分隔 / h2 大段 / 儀式區塊 */
+
+  /* Wave 32：h2/h3 chunked break 專用 token（介於 40 過場 與 64 章節之間）
+     Wave 31d 將 h2/h3 同 round 到 var(--space-5) 40 後失去章/節層級差、本 token 還原 chunk 節奏 */
+  --space-chapter-break: 48px;  /* h2 margin-top 專用、書本章節 chunk 韻律 */
+
+  /* Wave 32 語意 alias — 給「我要章末儀式間距」這種設計直覺的呼叫名、底層數字 token 不動 */
+  --space-transition:  var(--space-5);    /* 過場：callout / blockquote / 區塊分隔 */
+  --space-half-ritual: var(--space-5-5);  /* 半儀式：章末→Bridge 印記 */
+  --space-ritual:      var(--space-6);    /* 儀式：h2 大段 / Part / 章節級 */
 
   --gap-paragraph: var(--space-3);   /* <p> margin */
   --gap-block:     var(--space-4);   /* table / callout / 普通元件 */

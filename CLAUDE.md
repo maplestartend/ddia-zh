@@ -25,7 +25,7 @@ VitePress 個人學習網站，將《Designing Data-Intensive Applications》(Ma
 - 章節資料 SSOT：[docs/.vitepress/data/chapters.ts](docs/.vitepress/data/chapters.ts)
 - 共用 composable：[docs/.vitepress/composables/](docs/.vitepress/composables/)
 - 內容：`docs/part-{0,1,2,3}/*.md`（Part 0 = 0.0 basics + 0.1-0.7 前置）
-- 工具腳本：[scripts/](scripts/) — lint-glossary / lint-tldr / lint-hardcoded-base / screenshot
+- 工具腳本：[scripts/](scripts/) — lint-glossary / lint-tldr / lint-hardcoded-base / lint-typography / lint-spacing / lint-dark-patch / lint-chapter-sequence / screenshot
 - 公開資源：[LICENSE](LICENSE) / [LICENSE-CONTENT.md](LICENSE-CONTENT.md) / [NOTICE.md](NOTICE.md) / [CONTRIBUTING.md](CONTRIBUTING.md) / [SECURITY.md](SECURITY.md) / [.github/ISSUE_TEMPLATE/](.github/ISSUE_TEMPLATE/) / [.github/workflows/](.github/workflows/)
 
 ## 必踩才會記得的地雷
