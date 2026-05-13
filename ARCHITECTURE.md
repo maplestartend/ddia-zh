@@ -12,14 +12,19 @@ git push main
    ▼
 .github/workflows/deploy.yml
    ├─ npm ci
-   ├─ npm run type-check       (嚴格、會擋 build)
-   ├─ npm run lint:glossary    (non-blocking 訊號)
-   ├─ npm run lint:tldr        (non-blocking、Part 0 預設 ignore forward refs)
+   ├─ npm run type-check                       (嚴格、會擋 build)
+   ├─ npm run lint:glossary                    (non-blocking)
+   ├─ npm run lint:tldr                        (non-blocking、Part 0 預設 ignore forward refs)
+   ├─ npm run lint:base                        (BLOCKING、防 hard-coded href Pages 404)
+   ├─ npm run lint:dark-patch  --strict        (BLOCKING、Wave 31a alias 機制守門)
+   ├─ npm run lint:chapter-sequence  --strict  (BLOCKING、Wave 30e regression 防護)
    ├─ GITHUB_PAGES=true npm run build
    │     → docs/.vitepress/config.mts 觸發 base = '/ddia-zh/'
    └─ deploy to GitHub Pages
          → https://maplestartend.github.io/ddia-zh/
 ```
+
+PR 端 [.github/workflows/ci.yml](.github/workflows/ci.yml) 跑同一套 lint + build。
 
 **Base path 陷阱**：本地 dev `base = '/'`、Pages `base = '/ddia-zh/'`。
 - markdown `[...](/path)` → VitePress 自動加 base ✓
@@ -134,35 +139,51 @@ DDIA 中文網站的所有資料都靠三個檔案維護，**禁止散落**：
 
 ## 4. 樣式系統
 
-CSS 拆 4 檔放在 [docs/.vitepress/theme/styles/](docs/.vitepress/theme/styles/)，採兩層 token：
+CSS 拆 4 檔放在 [docs/.vitepress/theme/styles/](docs/.vitepress/theme/styles/)，採**兩層 token + alias 重綁**：
 
 ```
-Primitive tokens（色階、間距、字級）
+Primitive tokens（brand-500 / accent-500 / neutral-*、type / space 階梯）
         ↓
-Semantic tokens（--brand-500, --text-primary, --border-default）
+Semantic tokens（--brand-fg / --mark-fg / --rule-active / --cta-bg / --text-primary / --rule-hairline）
         ↓
-Component CSS（.ddia-card, .ddia-quiz, .ddia-stat-card）
+Component CSS（.ddia-quiz, .ddia-stat-card, .ddia-chapter-card ...）
 ```
+
+**Dark mode alias 重綁機制**（Wave 31a）：`.dark` scope 把 `--mark-fg / --rule-active / --cta-bg` 重綁到 `var(--brand-fg)`（=暖橙 `#E3A06A`），元件 CSS 不需要寫 `.dark .xxx { color: ... }` 補釘。違反此機制的 alias-redundant patch 由 `lint:dark-patch --strict` (CI BLOCKING) 守門。
 
 明 / 暗模式：VitePress 預設 `.dark` class on `<html>`。**不要用 `[data-theme]`**（與 stock 專案不同——那是 Next.js 自管）。
 
-CSS 拆分上限：單檔 ~500 行。已拆為 `tokens.css` / `base.css` / `components.css` / `layout.css`，由 `theme/index.ts` 按序 import；`components.css` 約 668 行（接近單檔上限），下次再長可再拆 hero / dashboard / quiz / chapter-card 子檔。
+**CSS 拆分**：tokens / base / components / layout 四檔由 `theme/index.ts` 按序 import；`components.css` 現約 1800 行（Editorial 改造後最大檔、含 TLDR / Quiz / Hero / Dashboard / ChapterCard / VP chrome override 等多模組）、未來再長可再拆 hero / dashboard / quiz / chapter-card 子檔。
+
+**Token scale 終態**（Wave 33）：
+- **Type**：14 階（11 / 11.5 / 12 / 12.5 / 13 / 14 / 14.5 / 15 / 15.5 / 16 / 18 / 20 / 22 / 26 / 28 / 36 / 38 / 42 / 44px、`--type-mini` ~ `--type-display-1`）
+- **Letter-spacing**：7 階（`--ls-tight 0.01` / `body-cn 0.02` / `loose 0.04` / `mid 0.08` / `wide 0.16` / `eyebrow 0.18` / `display 0.28`）
+- **Spacing**：12 階 numeric（`--space-1` 4 ~ `--space-6` 64 含 0.5 階 + `--space-h2-break` 48）+ 3 語意 alias（`--space-transition` / `half-ritual` / `ritual`）
+- **Fraunces fvar 套組**：8 套（display / section / eyebrow / italic-note + warm / tight / mid 變體）
+- **lint:typography + allowlist**：raw 全收 + 設計級值用 `/* lint-typography-allow: reason */` 行內白名單放行
 
 ---
 
 ## 5. 字型 + 圖示
 
-### 字型：Noto Sans TC + JetBrains Mono
+### 字型：三層 stack（Display / Body / Mono）
 
-於 [config.mts](docs/.vitepress/config.mts) `head` 用 `<link rel="stylesheet">` 從 Google Fonts 載入。`.numeric` class 套用等寬字。
+於 [config.mts](docs/.vitepress/config.mts) `head` 用 `<link rel="stylesheet">` 從 Google Fonts 載入：
 
-### 圖示：Material Symbols Rounded
+- **Display**（標題 / hero / 章節編號 / pull-quote / eyebrow / CTA）：**Fraunces**（可變字型、opsz/SOFT/wght 三軸）+ Noto Serif TC fallback
+- **Body**（內文）：Noto Sans TC（CJK 螢幕閱讀 sans 仍最舒服）
+- **Mono**（程式碼 / 數字）：JetBrains Mono
 
-四軸字型（FILL / wght / GRAD / opsz）。元件 [Icon.vue](docs/.vitepress/theme/components/Icon.vue) 包裝。
+`.numeric` class 套用 mono tabular、`.oldstyle` class 套用 Fraunces oldstyle figures。
 
-**地雷**：圖示名稱必須是 [官方 ligature 名](https://fonts.google.com/icons)（例 `menu_book`、`schedule`）。用錯名字會顯示成字面文字。
+### 圖示：Editorial 改造後全站隱藏 Material Symbols
 
-**FOUT 防護**：在 [theme/index.ts](docs/.vitepress/theme/index.ts) 監聽 `document.fonts.ready` 後加 `.fonts-loaded` class、CSS 在那之前用 `color: transparent` 隱藏 icon span 內的字面 fallback。
+Editorial Manuscript 風格不用 icon、改用 typographic mark（`§` section sign / `·` dot / `◆` dinkus / `→` arrow）。實作策略：
+
+- `.material-symbols-rounded { display: none !important }`（[base.css](docs/.vitepress/theme/styles/base.css)）— **全站隱藏**
+- 標題 / eyebrow 前綴改用 CSS `::before` 注入 typographic mark（例 `.ddia-tldr-title::before { content: "§" }`）
+- [Icon.vue](docs/.vitepress/theme/components/Icon.vue) 元件機制保留、但 render 出來的 span 完全 hide（換回 icon 一行切換）
+- Google Fonts stylesheet 已從 [config.mts](docs/.vitepress/config.mts) 移除、不再吃 ~150KB Material Symbols payload
 
 ---
 
@@ -202,10 +223,11 @@ node scripts/screenshot.mjs after
 
 依優先度排序：
 
-1. **config.mts sidebar 硬編碼**：未來如果章節清單頻繁變動，要改成從 `chapters.ts` 動態產（已預留 `chaptersByPart()` helper）
-2. **CSS 拆 4 檔已完成**：`tokens` / `base` / `components` / `layout`；`components.css` 接近 500 行上限，未來再拆 hero / dashboard / quiz 子檔
+1. **config.mts sidebar 已動態化**：Wave 早期已從 `chapters.ts` 動態產（用 `fullSidebar(activePart)` + `chaptersByPart()`）。✅
+2. **components.css 約 1800 行**（超過原 500 行單檔上限）：Editorial 改造後最大檔、含 TLDR / Quiz / Hero / Dashboard / ChapterCard / VP chrome override 等多模組；未來再拆 hero / dashboard / quiz / chapter-card 子檔
 3. **`vitepress build` chunk size warning**：>500KB chunk，可考慮 dynamic import + manualChunks 切分（影響首屏 FCP，但 CDN cache 後實際影響不大，目前不急）
-4. **沒有 CI**：依賴開發者自跑 type-check / build；可考慮加 GitHub Actions
+4. **語意 spacing alias 採用率 ≈ 0%**：Wave 32e 加了 `--space-transition` / `--space-half-ritual` / `--space-ritual` 但 base.css / components.css 仍直呼 numeric `--space-5 / -5-5 / -6`；下一輪可 sweep
+5. **CI 已建立**：[deploy.yml](.github/workflows/deploy.yml)（main push）+ [ci.yml](.github/workflows/ci.yml)（PR）跑 type-check + 8 個 lint + build；其中 base / dark-patch / chapter-sequence 三個 lint BLOCKING ✅
 
 ---
 

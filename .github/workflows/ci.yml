@@ -45,12 +45,41 @@ jobs:
           npm run lint:tldr 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
           echo '```' >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Lint hard-coded base (non-blocking)
-        continue-on-error: true
+      - name: Lint hard-coded base (BLOCKING — production 404 risk)
         run: |
           echo "## Lint: hard-coded base path" >> "$GITHUB_STEP_SUMMARY"
           echo '```' >> "$GITHUB_STEP_SUMMARY"
           npm run lint:base 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Lint typography (non-blocking)
+        continue-on-error: true
+        run: |
+          echo "## Lint: typography" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          npm run lint:typography 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Lint spacing (non-blocking)
+        continue-on-error: true
+        run: |
+          echo "## Lint: spacing" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          npm run lint:spacing 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Lint dark-patch (BLOCKING — Wave 31a alias mechanism guard)
+        run: |
+          echo "## Lint: dark-patch" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          node scripts/lint-dark-patch.mjs --strict 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Lint chapter sequence (BLOCKING — Wave 30.1 hotfix guard)
+        run: |
+          echo "## Lint: chapter sequence" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          node scripts/lint-chapter-sequence.mjs --strict 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
           echo '```' >> "$GITHUB_STEP_SUMMARY"
 
       - name: Build (validate SSG renders all pages)

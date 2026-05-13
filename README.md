@@ -63,9 +63,14 @@ npm run preview
 | `npm run build` | 產 production SSG，輸出 `docs/.vitepress/dist/` |
 | `npm run preview` | 預覽 production build |
 | `npm run type-check` | TypeScript + Vue 型別檢查（嚴禁 any、未用變數）|
-| `npm run screenshot` | Playwright 截圖驗收（需 dev server 先啟動）—— 加 `--scroll=600` 拍 sticky 元件 |
-| `npm run lint:glossary` | 掃 markdown 找「詞彙表已收錄但內文未包 `<G>` 的位置」 |
-| `npm run lint:tldr` | 偵測「TLDR 用了後續章節才講的詞」（Part 0 章預設 ignore；`--strict` 啟用）|
+| `npm run screenshot` | Playwright 截圖驗收（需 dev server 先啟動、預設 `snapshot-*.png`；`before` / `after` 子命令做對照）|
+| `npm run lint:glossary` | 掃 markdown 找「詞彙表已收錄但內文未包 `<G>` 的位置」（non-blocking）|
+| `npm run lint:tldr` | 偵測「TLDR 用了後續章節才講的詞」（Part 0 預設 ignore；`--strict` 啟用、non-blocking）|
+| `npm run lint:base` | 偵測 hard-coded `<a href="/...">` 反模式（Pages 404 風險、**CI BLOCKING**）|
+| `npm run lint:typography` | 偵測 raw `font-size` / `letter-spacing`（建議用 var(--type-\*) / var(--ls-\*)，支援 `/* lint-typography-allow: reason */` 行內白名單）|
+| `npm run lint:spacing` | 偵測 raw `margin` / `padding`（建議用 var(--space-\*)）|
+| `npm run lint:dark-patch` | 偵測 `.dark .xxx { var(--mark-fg\|rule-active\|cta-bg) }` alias-redundant 補釘（Wave 31a alias 機制守門、**CI BLOCKING**）|
+| `npm run lint:chapter-sequence` | 驗 docs/part-{0,1,2,3}/\*.md 章末元件序列是否在 5 種已知模式（**CI BLOCKING**、Wave 30e regression 防護）|
 
 ## 寫作 / 維護快速指引
 
@@ -108,14 +113,23 @@ docs/
 - **Playwright** — 截圖驗收
 - **localStorage** — 進度、測驗紀錄（純前端、無後端）
 
-## 設計慣例
+## 設計慣例（Editorial Manuscript · O'Reilly 紙本書感）
 
-- **Brand**：深鋼藍 `#2F4A80`
-- **字型**：Noto Sans TC（中文）+ JetBrains Mono（數字/程式碼）
-- **元件慣例**：`bg-surface` 卡片 + 1px border + 12px border-radius
-- **暗色模式**：VitePress 預設 `.dark` class on `<html>`，不要用 `[data-theme]`
-- **台灣化用詞**：process = 行程、cluster = 叢集、ops = 維運、Linearizability = 線性一致
-- **內容正確性 = 最高優先**：寧可空著不要寫錯。修改技術描述、測驗答案前對照原書。
+- **Brand**：mahogany clay `#8C3A2A`（紅木陶土、暖含黃）；dark 模式走暖橙 `#E3A06A`（同 `var(--brand-fg)` 替身）
+- **Accent**：manuscript orange `#93521A`（連結色、與 brand 拉開 hue 避色盲合流）
+- **底色**：cream paper `#F4EFE6`（米黃紙底）；dark 模式 `#1C1714` 暖炭墨
+- **字型**：三層 stack
+  - **Display**（標題 / hero / 章節編號 / pull-quote）：**Fraunces** + Noto Serif TC（可變字型、opsz/SOFT/wght 三軸調音）
+  - **Body**（內文）：Noto Sans TC
+  - **Mono**（程式碼 / 數字）：JetBrains Mono
+- **元件慣例**：**無圓角** + 髮絲線分隔（不是 1px 全包邊 + 12px radius 卡片）；hover 用左 3px 印記 + 微淡背景、**不用** lift shadow
+- **暗色模式**：VitePress 預設 `.dark` class on `<html>`，**不要**用 `[data-theme]`；alias `--mark-fg / --rule-active / --cta-bg` 在 `.dark` scope 自動重綁暖橙
+- **章末節奏**：3 階（內容延續 28px / 過場 40px / 儀式封頂 64px）；Bridge 用 `--space-h2-break 48` 章節 chunk
+- **台灣化用詞**：process = 行程、cluster = 叢集、ops = 維運、Linearizability = 線性一致、queue = 佇列、variable = 變數
+- **全站繁體中文鐵則**：絕對禁止任何簡體字（含 third-party UI 預設字串、見 [CLAUDE.md §8](CLAUDE.md)）
+- **內容正確性 = 最高優先**：寧可空著不要寫錯。修改技術描述、測驗答案前對照原書
+
+詳細設計守則（含 fvar 套組、token 兩層架構、儀式 italic 邊界、AI-slop 反指紋清單）見 [CLAUDE.md](CLAUDE.md) 末段「設計慣例」。
 
 ## 部署
 
@@ -123,11 +137,16 @@ docs/
 
 1. `npm ci` 安裝依賴
 2. `npm run type-check`（嚴格、阻擋 build）
-3. `npm run lint:glossary` + `npm run lint:tldr`（non-blocking、輸出印到 Actions step summary）
-4. `GITHUB_PAGES=true npm run build`（觸發 base = `/ddia-zh/`）
-5. 部署到 GitHub Pages
+3. **Non-blocking lints**（輸出印到 Actions step summary）：
+   - `lint:glossary`、`lint:tldr`、`lint:typography`、`lint:spacing`
+4. **BLOCKING lints**（失敗擋部署）：
+   - `lint:base` — 防 hard-coded href 在 Pages 404
+   - `lint:dark-patch` — Wave 31a alias 機制守門
+   - `lint:chapter-sequence` — Wave 30e regression 防護
+5. `GITHUB_PAGES=true npm run build`（觸發 base = `/ddia-zh/`）
+6. 部署到 GitHub Pages
 
-另有 [ci.yml](.github/workflows/ci.yml) 在 PR 觸發時跑相同驗證（例：dependabot 的依賴升級 PR）。
+[ci.yml](.github/workflows/ci.yml) 在 PR 觸發時跑相同 lint + type-check + build 驗證（dependabot 依賴升級 PR、未來外部 PR 等）。
 
 **內部連結注意事項**
 
@@ -143,7 +162,7 @@ docs/
 
 - 進度與測驗紀錄都在 **localStorage**，換瀏覽器 / 清快取會遺失（沒有後端帳號）
 - 全文搜尋是 VitePress 內建 local search，CJK tokenizer 自訂在 [config.mts](docs/.vitepress/config.mts)
-- CI 只跑 type-check（嚴格）+ build；lint 是 non-blocking 訊號
+- CI 跑 type-check + 8 個 lint + build；其中 base / dark-patch / chapter-sequence 三個 lint 是 BLOCKING（失敗擋部署）
 
 ## License
 

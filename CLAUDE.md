@@ -296,10 +296,19 @@ push 到 `main` 觸發 [.github/workflows/deploy.yml](.github/workflows/deploy.y
 ## 跑測試 / 檢查
 
 ```powershell
-npm run dev           # 開發伺服器（背景跑）
-npm run type-check    # TypeScript / Vue 型別檢查
-npm run build         # production SSG build
-npm run screenshot    # Playwright 截圖（dev server 須先開）
+npm run dev                    # 開發伺服器（背景跑）
+npm run type-check             # TypeScript / Vue 型別檢查
+npm run build                  # production SSG build
+npm run screenshot             # Playwright 截圖（dev server 須先開）
+
+# Lint 8 個（其中 base / dark-patch / chapter-sequence 三個 CI BLOCKING）
+npm run lint:glossary          # 詞彙表內文 <G> 標記檢查（non-blocking）
+npm run lint:tldr              # TLDR 用詞檢查（non-blocking）
+npm run lint:base              # hard-coded href 偵測（BLOCKING）
+npm run lint:typography        # raw font-size / letter-spacing（支援 allowlist 註解）
+npm run lint:spacing           # raw margin / padding
+npm run lint:dark-patch        # alias-redundant .dark 補釘（BLOCKING）
+npm run lint:chapter-sequence  # 章末元件序列驗證（BLOCKING）
 ```
 
 改 [docs/.vitepress/data/chapters.ts](docs/.vitepress/data/chapters.ts)、composables、theme 元件 之前先跑過一次 type-check + build 確認綠燈再動。
