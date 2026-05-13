@@ -2,7 +2,7 @@
 title: Ch10 批次處理
 ---
 
-# Ch10 · 批次處理 Batch Processing
+<ChapterOpener chapter-id="ch10" />
 
 <ChapterMeta part="Part III 衍生資料" :read-time="55" difficulty="中等" :tags="['MapReduce', 'Spark', 'Hadoop']" prereq="Ch3, Ch5" />
 
@@ -159,6 +159,7 @@ sc.textFile("hdfs://logs")
 
 <Quiz chapter-id="ch10" :questions='[
   {
+    difficulty: "basic",
     question: "MapReduce 工作流中，「Shuffle」階段做的是？",
     options: [
       "把資料隨機排列以避免熱點",
@@ -170,6 +171,7 @@ sc.textFile("hdfs://logs")
     explanation: "Shuffle 是 MapReduce 的核心（也是最貴的部分）：跨網路傳輸所有 mapper 輸出，按 key 分組送到對應 reducer。優化 shuffle（combiner、partitioner）是 MapReduce 調優的關鍵。"
   },
   {
+    difficulty: "applied",
     question: "Spark / Flink 等 Dataflow 引擎相對於 MapReduce 的主要效能優勢來自於？",
     options: [
       "用更新的程式語言",
@@ -181,6 +183,7 @@ sc.textFile("hdfs://logs")
     explanation: "MapReduce 每階段都 materialize 到磁碟。Dataflow 引擎用 DAG + 記憶體中間結果，能融合連續運算、避免無謂 I/O。在**迭代式運算（如 ML 訓練）或多階段管線**上可快 10-100 倍（這是 Spark 早期主打的場景）；單純的 map-only 工作負載則差距不大。"
   },
   {
+    difficulty: "applied",
     question: "Broadcast Hash Join 適合什麼情境？",
     options: [
       "兩個大表都無法放入記憶體",
@@ -197,6 +200,4 @@ sc.textFile("hdfs://logs")
 
 <Progress chapter-id="ch10" />
 
-<NextChapterBridge next-link="/part-3/ch11-streams" next-title="Ch11 串流處理 Stream">
-批次處理週期太長 —— 想要「資料一進來就處理」就需要串流。下一章看 Kafka、CDC、Event Sourcing，並理解一個關鍵洞見：<strong>「資料庫的世界」與「事件流的世界」其實是同一件事</strong>（stream-table duality），CDC pipeline 之所以強大就是因為這個觀念。
-</NextChapterBridge>
+<NextChapterBridge chapter-id="ch10" />

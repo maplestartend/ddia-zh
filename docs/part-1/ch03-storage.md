@@ -2,7 +2,7 @@
 title: Ch3 儲存與檢索
 ---
 
-# Ch3 · 儲存與檢索
+<ChapterOpener chapter-id="ch03" />
 
 <ChapterMeta part="Part I 資料系統基礎" :read-time="45" difficulty="中等" :tags="['LSM-Tree', 'B-Tree', 'OLAP']" prereq="Ch2" />
 
@@ -133,7 +133,7 @@ LSM 寫入（順序寫）：
 | 寫入速度 | 中（每次寫 1–2 page） | 快（只追加，順序寫） |
 | 讀取速度 | 快（一次找到） | 中（多層查找） |
 | 空間 | 有碎片 | compaction 期間 ~2× |
-| Write amplification | **2–3×**：每次改幾 byte 仍要寫整個 page + WAL（InnoDB 的 doublewrite buffer 約 +2×、總計典型 ~5–6×） | **10–30× 不等**：視 compaction 策略；leveled compaction 比 size-tiered 更高 |
+| Write amplification | **2–3×**：每次改幾 byte 仍要寫整個 page + WAL（InnoDB doublewrite buffer 額外 +1× 左右、MySQL 8.0 後並行 doublewrite 已有優化；典型總計 ~3–5×） | **5–10×（size-tiered）/ 10–30×（leveled）**：視 compaction 策略而定 |
 | 範圍查詢 | 快 | 快（key 已排序） |
 | 適用 | 讀多寫少 | 寫多讀少、SSD |
 
@@ -185,6 +185,40 @@ city: [Taipei, Tokyo, NYC]
 
 ---
 
+## 3.7 儲存引擎選型決策樹
+
+把整章的取捨壓成一張決策圖，實際做工程選型時可照走：
+
+```mermaid
+graph TD
+    Start[要存什麼 / 怎麼用？] --> Q1{讀寫比例？}
+    Q1 -- 讀遠多於寫<br/>每筆改少、查詢多 --> BTree[B-Tree 派<br/>PG / MySQL / SQLite]
+    Q1 -- 寫遠多於讀<br/>大量 ingest / 時序 / IoT --> Q2{需要範圍查詢？}
+    Q1 -- 讀寫接近 --> Q3{資料量 vs 記憶體？}
+
+    Q2 -- 是 / 純 KV 也常用 --> LSM[LSM 派<br/>RocksDB / Cassandra / ScyllaDB]
+    Q2 -- 不需排序、純點查 --> Q4{需要持久化？}
+    Q4 -- 全在記憶體 OK --> Redis[Redis / Memcached]
+    Q4 -- 要持久 --> Hash[Bitcask 風格<br/>Hash index + log]
+
+    Q3 -- 索引塞得進 RAM --> BTree
+    Q3 -- 索引塞不進、需大量歷史 --> Q5{是 OLTP 還是 OLAP？}
+    Q5 -- OLTP<br/>少欄多列、隨機改 --> LSM
+    Q5 -- OLAP<br/>多欄少列、聚合 --> Column[欄式儲存<br/>Parquet / ClickHouse /<br/>Redshift / BigQuery]
+```
+
+**決策樹快速結論**：
+- 預設 PG / MySQL（B-Tree）——多數 web app 適用
+- 寫密集 / 時序 / IoT → RocksDB / Cassandra（LSM）
+- 純快取 → Redis；持久 KV 且要單機極快 → Bitcask 系
+- 數據分析 / 倉儲 → 欄式（Parquet on S3 + DuckDB / ClickHouse / BigQuery）
+
+::: warning 多數應用不在這個樹的決策節點上
+**實務上 90% 工程師「選什麼 DB」的決策權都不在他手上**——公司有的就用、團隊熟的就用。這張樹的價值是**讓你判斷「現有 DB 對我的負載合不合適」**，而不是「在白紙上挑」。看到效能問題時，回頭看樹判斷：是不是用 B-Tree 跑了 LSM 該跑的負載？
+:::
+
+---
+
 ## 章末練習
 
 ::: tip 思考題
@@ -195,6 +229,7 @@ city: [Taipei, Tokyo, NYC]
 
 <Quiz chapter-id="ch03" :questions='[
   {
+    difficulty: "applied",
     question: "LSM-Tree 相對於 B-Tree 的主要寫入優勢來源於？",
     options: [
       "資料結構天生較小",
@@ -206,6 +241,7 @@ city: [Taipei, Tokyo, NYC]
     explanation: "LSM 寫入只 append 到 memtable 與 WAL，背景做 compaction。順序寫對 SSD 和 HDD 都遠快於 B-Tree 的隨機原地更新。"
   },
   {
+    difficulty: "applied",
     question: "為什麼 OLAP 系統普遍採用欄式儲存？",
     options: [
       "因為列式儲存無法存浮點數",
@@ -217,6 +253,7 @@ city: [Taipei, Tokyo, NYC]
     explanation: "OLAP 典型查詢是「SELECT SUM(amount) GROUP BY year」這種少欄多列。欄式儲存讓你只讀 amount 和 year 兩欄，加上類型一致的壓縮（RLE、bitpacking），效能差距可達 100 倍。"
   },
   {
+    difficulty: "applied",
     question: "B-Tree 為什麼需要 WAL（Write-Ahead Log）？",
     options: [
       "為了壓縮資料",
@@ -228,6 +265,7 @@ city: [Taipei, Tokyo, NYC]
     explanation: "B-Tree 在 page 上原地修改，page 寫到一半當機就會留下半新半舊狀態。WAL 先把變更記到日誌，恢復時 redo 即可保證一致性。"
   },
   {
+    difficulty: "basic",
     question: "Bloom filter 在 LSM-Tree 中的用途是？",
     options: [
       "壓縮 SSTable 大小",
@@ -250,6 +288,4 @@ city: [Taipei, Tokyo, NYC]
 - [The Log-Structured Merge-Tree](https://www.cs.umb.edu/~poneil/lsmtree.pdf) — 原始 LSM 論文 (O'Neil, 1996)
 :::
 
-<NextChapterBridge next-link="/part-1/ch04-encoding" next-title="Ch4 編碼與演進">
-資料存進磁碟、傳到網路前，必須<strong>序列化</strong>。下一章會看到 JSON / Protobuf / Avro 三種主流格式的取捨，以及「向前 / 向後相容性」這個在滾動部署、訊息隊列、跨服務 API 設計中無所不在的關鍵概念。
-</NextChapterBridge>
+<NextChapterBridge chapter-id="ch03" />

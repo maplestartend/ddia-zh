@@ -151,6 +151,7 @@ T1 與 T2 彼此能看見對方的中間狀態嗎？這由**隔離級別**決定
 
 <Quiz chapter-id="p0-concur" :questions='[
   {
+    "difficulty": "applied",
     "question": "兩個 ATM 同時對同一帳戶 +100，銀行最終餘額少了 100。這個現象的名字是？",
     "options": [
       "Phantom read",
@@ -162,6 +163,7 @@ T1 與 T2 彼此能看見對方的中間狀態嗎？這由**隔離級別**決定
     "explanation": "Lost update 是並發 read-modify-write 的經典 race。解法：原子操作（DB 內 UPDATE balance = balance + 100 直接寫）、顯式 lock（SELECT ... FOR UPDATE）、CAS 樂觀並發。DDIA Ch7 把 lost update 列為要交易層級隔離才能擋的異常之一。"
   },
   {
+    "difficulty": "applied",
     "question": "你用 PostgreSQL 的預設隔離級別（Read Committed），下列哪個異常 PG 已經幫你擋掉？",
     "options": [
       "Lost update",
@@ -173,6 +175,7 @@ T1 與 T2 彼此能看見對方的中間狀態嗎？這由**隔離級別**決定
     "explanation": "Read Committed 只擋髒讀與髒寫。Lost update、write skew、phantom 都擋不住—— 要升級到 Repeatable Read / Snapshot Isolation / Serializable 才能擋更多。實務上很多人以為 PG 預設「夠安全」，其實只擋最初級異常。"
   },
   {
+    "difficulty": "interview",
     "question": "為什麼 DDIA Ch9 把「跨節點達成共識」列為全書最硬的議題？",
     "options": [
       "因為共識演算法數學最多",

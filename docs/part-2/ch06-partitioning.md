@@ -2,7 +2,7 @@
 title: Ch6 分區
 ---
 
-# Ch6 · 分區 Partitioning
+<ChapterOpener chapter-id="ch06" />
 
 <ChapterMeta part="Part II 分散式資料" :read-time="40" difficulty="進階" :tags="['Sharding', 'Hot spot', 'Rebalancing']" prereq="Ch5" />
 
@@ -121,6 +121,7 @@ Client 怎麼知道某 key 該打哪個節點？
 
 <Quiz chapter-id="ch06" :questions='[
   {
+    difficulty: "applied",
     question: "為什麼「Hash mod N」是糟糕的分區策略？",
     options: [
       "雜湊函式太慢",
@@ -132,6 +133,7 @@ Client 怎麼知道某 key 該打哪個節點？
     explanation: "若 N 從 10 變 11，hash(key) mod 10 與 hash(key) mod 11 的結果對大部分 key 不同，導致大規模資料搬遷。fixed partitions 與一致性雜湊都是為了避開這個問題。"
   },
   {
+    difficulty: "applied",
     question: "Term-partitioned secondary index 的最大缺點是？",
     options: [
       "查詢慢",
@@ -143,6 +145,7 @@ Client 怎麼知道某 key 該打哪個節點？
     explanation: "全域索引讓讀變便宜（直接查），但寫一筆資料可能要更新多個跨節點的索引項。許多系統採非同步更新，因此索引可能短暫不一致。"
   },
   {
+    difficulty: "applied",
     question: "「按時間戳做 key-range 分區」最容易產生什麼問題？",
     options: [
       "查詢效能太好",
@@ -159,6 +162,4 @@ Client 怎麼知道某 key 該打哪個節點？
 
 <Progress chapter-id="ch06" />
 
-<NextChapterBridge next-link="/part-2/ch07-transactions" next-title="Ch7 交易 Transactions">
-資料一旦跨多列、跨多表、跨多節點，就會碰到「一個操作失敗如何回滾」「並發讀寫如何互不干擾」的問題。Ch7 講<strong>單機交易</strong>的隔離級別與並發異常（Read Committed / Snapshot Isolation / Serializable），這是後續理解分散式交易（Ch9）的必經之路。
-</NextChapterBridge>
+<NextChapterBridge chapter-id="ch06" />

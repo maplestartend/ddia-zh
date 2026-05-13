@@ -132,6 +132,7 @@ OS:    Page Fault → 從磁碟讀 → 載入 → 恢復程式
 
 <Quiz chapter-id="p0-os" :questions='[
   {
+    "difficulty": "applied",
     "question": "DB 呼叫 write() 寫入交易日誌後，立刻告訴使用者「交易已提交」。如果此時機器斷電，最可能的結果是？",
     "options": [
       "資料安全，磁碟一定寫好了",
@@ -143,6 +144,7 @@ OS:    Page Fault → 從磁碟讀 → 載入 → 恢復程式
     "explanation": "這就是為什麼 WAL 設計上 commit 前必須 fsync。write() 只把資料丟給 OS——OS 為了效能會合併寫入、可能延遲幾百毫秒才真的寫磁碟。fsync 才強制等磁碟確認。"
   },
   {
+    "difficulty": "interview",
     "question": "Java 應用發生 stop-the-world GC 暫停 5 秒，這段期間它持有的分散式鎖會怎樣？",
     "options": [
       "GC 期間鎖自動延期",
@@ -154,6 +156,7 @@ OS:    Page Fault → 從磁碟讀 → 載入 → 恢復程式
     "explanation": "這是 DDIA Ch8 的經典例子。GC 5 秒 > lease 超時，其他節點搶到新鎖開始改資料，GC 結束的節點仍以為自己持鎖、繼續寫—— 兩邊都改造成 split brain。解法是 fencing token：儲存層拒絕「過期」的請求。"
   },
   {
+    "difficulty": "applied",
     "question": "你的 DB 工作集是 10GB、RAM 8GB。最可能發生什麼？",
     "options": [
       "效能不變—— OS 會把不常用的資料自動 swap",

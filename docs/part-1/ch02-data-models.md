@@ -2,7 +2,7 @@
 title: Ch2 資料模型與查詢語言
 ---
 
-# Ch2 · 資料模型與查詢語言
+<ChapterOpener chapter-id="ch02" />
 
 <ChapterMeta part="Part I 資料系統基礎" :read-time="40" difficulty="入門" :tags="['SQL', 'NoSQL', 'Graph']" />
 
@@ -126,6 +126,7 @@ RETURN person.name
 
 <Quiz chapter-id="ch02" :questions='[
   {
+    difficulty: "applied",
     question: "下列哪種情境最適合使用文件模型而非關聯模型？",
     options: [
       "兩個實體之間有頻繁需要 JOIN 的多對多關係",
@@ -137,6 +138,7 @@ RETURN person.name
     explanation: "文件模型的優勢是「局部性」—— 樹狀資料能一次讀取完成。多對多、強約束、跨表分析都是關聯模型的強項。"
   },
   {
+    difficulty: "basic",
     question: "「宣告式查詢語言」相對於命令式的最大優勢是？",
     options: [
       "執行速度一定更快",
@@ -148,6 +150,7 @@ RETURN person.name
     explanation: "宣告式描述「要什麼」而非「怎麼做」，給 query planner 最大彈性 —— 加索引、改 JOIN 演算法、平行執行都不需改查詢。"
   },
   {
+    difficulty: "applied",
     question: "對於「找出 Alice 朋友的朋友的朋友」這類查詢，哪種模型最自然？",
     options: [
       "關聯模型 + 三次 self-join",
@@ -164,6 +167,4 @@ RETURN person.name
 
 <Progress chapter-id="ch02" />
 
-<NextChapterBridge next-link="/part-1/ch03-storage" next-title="Ch3 儲存與檢索">
-選好資料模型，下一步是「實際存到磁碟」的問題：怎麼存讓寫快？怎麼建索引讓讀快？Ch3 會看到 LSM-Tree 與 B-Tree 兩種主流引擎截然不同的權衡 —— 也解釋了為什麼 Cassandra 與 PostgreSQL 在寫密集 vs 讀密集場景表現差這麼多。
-</NextChapterBridge>
+<NextChapterBridge chapter-id="ch02" />

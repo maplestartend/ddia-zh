@@ -488,35 +488,39 @@
 }
 
 /* ---------- Scenario badge：ch07 三情境 A/B/C 視覺錨點 ----------
-   traffic light：紅 = danger / 綠 = safe / 橘 = warn */
+   Editorial 改造：去 traffic light 紅綠橘背景 + 去 6px 圓角 + 改 italic eyebrow + 左 hairline
+   保留 .danger / .safe / .warn class 名稱以維持向後相容，只用左側髮絲線色彩做暗示 */
 .ddia-scenario-badge {
   display: inline-flex;
-  align-items: center;
-  padding: 2px 8px;
-  margin-right: 8px;
-  border-radius: 6px;
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: 11.5px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
+  align-items: baseline;
+  padding: 0 0 0 10px;
+  margin-right: 10px;
+  border-radius: 0;
+  border: 0;
+  border-left: 2px solid var(--rule-hairline);
+  background: transparent;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-variation-settings: "opsz" 24, "SOFT" 50, "wght" 500;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
   white-space: nowrap;
-  vertical-align: middle;
-  border: 1px solid transparent;
+  vertical-align: baseline;
+  color: var(--text-secondary);
 }
 .ddia-scenario-badge.danger {
-  background: var(--error-bg);
+  border-left-color: var(--error-fg);
   color: var(--error-fg);
-  border-color: color-mix(in srgb, var(--error-fg) 30%, transparent);
 }
 .ddia-scenario-badge.safe {
-  background: var(--success-bg);
+  border-left-color: var(--success-fg);
   color: var(--success-fg);
-  border-color: color-mix(in srgb, var(--success-fg) 30%, transparent);
 }
 .ddia-scenario-badge.warn {
-  background: var(--warning-bg);
+  border-left-color: var(--warning-fg);
   color: var(--warning-fg);
-  border-color: color-mix(in srgb, var(--warning-fg) 30%, transparent);
 }
 
 /* ---------- Progress / Chapter loop（learning loop 元件 scoped 樣式在 Vue 內） ---------- */
@@ -535,17 +539,17 @@
 }
 
 .ddia-progress-bar {
-  height: 4px;
+  height: 3px;
   background: var(--bg-subtle);
   border-radius: 0;
   overflow: hidden;
   margin: 8px 0;
-  border: 1px solid var(--border-default);
+  border: 0;
 }
 
 .ddia-progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--brand-500), var(--accent-500));
+  background: var(--brand-500);
   transition: width 0.4s ease;
 }
 
@@ -676,19 +680,27 @@
   color: var(--brand-300);
 }
 
-/* Wave 21.1：誠實版標籤 + sub 行（顯示「目前 X%（含重做）」） */
+/* Wave 21.1：誠實版標籤（Editorial：去 glass pill 圓角背景、改 italic 印刷標記） */
 .ddia-stat-tag {
   display: inline-block;
-  margin-left: 4px;
-  padding: 1px 6px;
-  background: color-mix(in srgb, var(--success-fg) 16%, transparent);
+  margin-left: 6px;
+  padding: 0;
+  background: transparent;
   color: var(--success-fg);
-  border-radius: 4px;
-  font-size: 10px;
-  font-weight: 700;
+  border-radius: 0;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 11.5px;
+  font-weight: 500;
   letter-spacing: 0.05em;
-  vertical-align: 2px;
+  vertical-align: baseline;
   cursor: help;
+}
+.ddia-stat-tag::before {
+  content: "· ";
+  color: var(--text-tertiary);
+  margin-right: 2px;
+  font-style: normal;
 }
 .ddia-stat-sub {
   margin-top: 4px;
@@ -806,14 +818,15 @@
   background: var(--bg-surface);
 }
 
-/* 細微的 hover 標示：左邊出現 3px oxblood 印記。鍵盤 :focus-visible 也觸發 */
+/* Editorial hover 標示：頂部出現 3px brand 印記（像 paperback chapter heading 標籤）
+   F4 改動：原本印記在左、視覺往左拉但讀者要往右進內文；改 top 後更像書本章節分隔 */
 .ddia-chapter-card::before {
   content: "";
   position: absolute;
   left: 0;
+  right: 0;
   top: 0;
-  bottom: 0;
-  width: 3px;
+  height: 3px;
   background: var(--brand-500);
   opacity: 0;
   transition: opacity 0.18s;
@@ -1077,7 +1090,6 @@
 .ddia-cta.primary:hover {
   background: var(--brand-700);
   border-color: var(--brand-700);
-  transform: translateY(-1px);
 }
 
 .ddia-cta.ghost {
@@ -1530,6 +1542,54 @@ button.DocSearch.DocSearch-Button:focus-visible {
   font-family: var(--font-display) !important;
 }
 
+/* ----- Mermaid 暗色模式 SVG override（F5） ----------
+   vitepress-plugin-mermaid 不支援 darkThemeVariables、暗色模式下 mermaid 仍用米黃紙底色，
+   與 --bg-canvas (#171311) 反差過大。用 SVG fill / stroke override 強制套暗色 palette。
+   只覆寫填色與線色、字色已在上面 .vp-doc 規則處理。 */
+.dark .vp-doc svg[id*="mermaid"] g rect,
+.dark .vp-doc svg[id*="mermaid"] g polygon,
+.dark .vp-doc div[class*="mermaid"] rect,
+.dark .vp-doc div[class*="mermaid"] polygon {
+  fill: #1F1A17 !important;        /* --bg-surface dark */
+  stroke: #E3A06A !important;       /* --info-fg / brand accent in dark */
+}
+/* sequence diagram actor / note 區塊 */
+.dark .vp-doc svg[id*="mermaid"] .actor,
+.dark .vp-doc svg[id*="mermaid"] .actor-man {
+  fill: #1F1A17 !important;
+  stroke: #E3A06A !important;
+}
+.dark .vp-doc svg[id*="mermaid"] .note,
+.dark .vp-doc svg[id*="mermaid"] .noteText {
+  fill: #261F1B !important;
+  stroke: #A67A4D !important;
+}
+/* 連線 / 箭頭 */
+.dark .vp-doc svg[id*="mermaid"] .messageLine0,
+.dark .vp-doc svg[id*="mermaid"] .messageLine1,
+.dark .vp-doc svg[id*="mermaid"] line.actor-line,
+.dark .vp-doc svg[id*="mermaid"] path.flowchart-link,
+.dark .vp-doc svg[id*="mermaid"] line.flowchart-link {
+  stroke: #B5AC97 !important;
+}
+.dark .vp-doc svg[id*="mermaid"] #arrowhead path,
+.dark .vp-doc svg[id*="mermaid"] marker path {
+  fill: #B5AC97 !important;
+  stroke: #B5AC97 !important;
+}
+/* 字色暗色版（覆寫 themeVariables.primaryTextColor 在 SVG 內 inline 寫的 #1C1A17） */
+.dark .vp-doc svg[id*="mermaid"] text,
+.dark .vp-doc div[class*="mermaid"] text,
+.dark .vp-doc svg[id*="mermaid"] .messageText,
+.dark .vp-doc svg[id*="mermaid"] .noteText tspan {
+  fill: #EDE3CE !important;          /* --text-primary dark */
+}
+/* 整體 mermaid 背景（containing div / svg）拉到暗 */
+.dark .vp-doc div[class*="mermaid"],
+.dark .vp-doc svg[id*="mermaid"] {
+  background: transparent !important;
+}
+
 /* ---------- Dashboard resume link：returning user 看見的「繼續讀」入口 ---------- */
 .ddia-dashboard-resume {
   margin: 28px auto 36px;
@@ -1588,6 +1648,72 @@ button.DocSearch.DocSearch-Button:focus-visible {
   color: var(--info-fg);
 }
 .dark .ddia-dashboard-resume-link:hover {
+  color: var(--info-fg);
+  border-bottom-color: var(--info-fg);
+}
+
+/* ---------- Dashboard 完成 Ceremony：12 章全讀完換結語 + 三個延伸選項（F2） ---------- */
+.ddia-dashboard-ceremony {
+  margin: 36px auto 48px;
+  padding: 32px 0 36px;
+  max-width: 640px;
+  text-align: center;
+  border-top: 1px solid var(--rule-hairline);
+  border-bottom: 1px solid var(--rule-hairline);
+}
+.ddia-dashboard-ceremony-dinkus {
+  font-family: var(--font-display);
+  font-size: 14px;
+  letter-spacing: 0.6em;
+  color: var(--text-tertiary);
+  margin-bottom: 16px;
+  padding-left: 0.6em;
+}
+.ddia-dashboard-ceremony-eyebrow {
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 24, "SOFT" 60, "wght" 500;
+  font-style: italic;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: 18px;
+  padding-left: 0.3em;
+}
+.ddia-dashboard-ceremony-text {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-variation-settings: "opsz" 48, "SOFT" 60, "wght" 400;
+  font-size: 22px;
+  line-height: 1.55;
+  color: var(--text-primary);
+  margin: 0 0 28px;
+  text-wrap: balance;
+}
+.ddia-dashboard-ceremony-links {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+.ddia-dashboard-ceremony-link {
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 24, "SOFT" 50, "wght" 500;
+  font-size: 14px;
+  letter-spacing: 0.04em;
+  color: var(--text-secondary);
+  text-decoration: none;
+  border-bottom: 1px dotted var(--border-default);
+  padding: 4px 2px;
+  transition: color 0.15s, border-bottom-color 0.15s;
+}
+.ddia-dashboard-ceremony-link:hover {
+  color: var(--brand-500);
+  border-bottom-color: var(--brand-500);
+  border-bottom-style: solid;
+}
+.dark .ddia-dashboard-ceremony-link:hover {
   color: var(--info-fg);
   border-bottom-color: var(--info-fg);
 }

@@ -1,104 +1,161 @@
 <template>
-  <div class="ddia-bridge">
-    <div class="ddia-bridge-eyebrow">
-      <Icon name="arrow_forward" :size="14" />
-      接下來
-    </div>
-    <p class="ddia-bridge-text">
-      <slot />
+  <a v-if="resolvedHref" :href="resolvedHref" class="ddia-bridge">
+    <div class="ddia-bridge-dinkus" aria-hidden="true">◆ ◆ ◆</div>
+    <div class="ddia-bridge-eyebrow">The Next Chapter</div>
+    <div class="ddia-bridge-num" v-if="displayNum">{{ displayNum }}</div>
+    <div class="ddia-bridge-title" v-if="displayTitle">{{ displayTitle }}</div>
+    <p v-if="displayTeaser || hasSlotContent" class="ddia-bridge-teaser">
+      <slot>{{ displayTeaser }}</slot>
     </p>
-    <a v-if="nextLink" :href="resolvedHref" class="ddia-bridge-link">
-      前往 {{ nextTitle }}
-      <Icon name="chevron_right" :size="16" />
-    </a>
-  </div>
+    <div class="ddia-bridge-rule" aria-hidden="true" />
+  </a>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, useSlots } from 'vue'
 import { withBase } from 'vitepress'
-import Icon from './Icon.vue'
+import { CHAPTERS, PREREQUISITES, type Chapter } from '../../data/chapters'
+
+// 兩種用法：
+// 1. chapter-id 自動模式（推薦）：
+//      <NextChapterBridge chapter-id="ch05" />
+//    從 chapters.ts 拉下一章資訊；本章是 chapter-id 對應章、自動跳下一章。
+// 2. 手動模式（向後相容、Part 概覽 / 自訂橋接時用）：
+//      <NextChapterBridge next-link="/part-2/" next-title="Part II 分散式資料" />
+//      <slot> 內可放自訂 teaser 文字 </slot>
 const props = defineProps<{
-  nextLink?: string
-  nextTitle?: string
+  chapterId?: string           // 本章 id；下一章自動找
+  nextLink?: string            // 手動 link
+  nextTitle?: string           // 手動 title
 }>()
-// 內部相對路徑包 withBase 以處理 GitHub Pages 子路徑；外部 URL 直接放行
-const resolvedHref = computed(() => {
-  if (!props.nextLink) return undefined
-  if (/^https?:\/\//.test(props.nextLink)) return props.nextLink
-  return withBase(props.nextLink)
+
+const slots = useSlots()
+const hasSlotContent = computed(() => !!slots.default?.())
+
+const nextChap = computed<Chapter | undefined>(() => {
+  if (!props.chapterId) return undefined
+  // 主課 12 章序列
+  const idx = CHAPTERS.findIndex(c => c.id === props.chapterId)
+  if (idx >= 0 && idx < CHAPTERS.length - 1) return CHAPTERS[idx + 1]
+  // Part 0 序列
+  const pIdx = PREREQUISITES.findIndex(c => c.id === props.chapterId)
+  if (pIdx >= 0 && pIdx < PREREQUISITES.length - 1) return PREREQUISITES[pIdx + 1]
+  return undefined
 })
+
+const resolvedHref = computed(() => {
+  const link = props.nextLink ?? nextChap.value?.link
+  if (!link) return undefined
+  if (/^https?:\/\//.test(link)) return link
+  return withBase(link)
+})
+
+const displayNum = computed(() => nextChap.value?.num ?? '')
+const displayTitle = computed(() => props.nextTitle ?? nextChap.value?.shortTitle ?? '')
+// teaser 來自前一章（即 chapter-id 對應章）的 teaser 欄位——它寫的是「對下章的預告」
+const currentChap = computed<Chapter | undefined>(() => {
+  if (!props.chapterId) return undefined
+  return [...CHAPTERS, ...PREREQUISITES].find(c => c.id === props.chapterId)
+})
+const displayTeaser = computed(() => currentChap.value?.teaser)
 </script>
 
 <style scoped>
-/* Editorial 章末橋接：書頁注腳樣式 — 髮絲線分隔 + italic eyebrow */
+/* Editorial 章末橋接：書頁儀式 — dinkus + italic eyebrow + 章號 + 章名 + teaser
+   整塊可點、不靠按鈕；觸發 hover 用左 3px 印記取代 lift shadow */
 .ddia-bridge {
-  margin: 40px 0 24px;
-  padding: 22px 0 18px;
+  display: block;
+  margin: 56px 0 32px;
+  padding: 28px 0 32px;
+  text-align: center;
   background: transparent;
   border: 0;
   border-top: 1px solid var(--rule-hairline);
-  border-bottom: 1px solid var(--rule-hairline);
   border-radius: 0;
+  color: inherit;
+  text-decoration: none;
+  position: relative;
+  transition: background-color 0.2s ease;
+}
+.ddia-bridge:hover {
+  background-color: var(--bg-surface);
+}
+.ddia-bridge:hover .ddia-bridge-title {
+  color: var(--brand-500);
+}
+:global(.dark) .ddia-bridge:hover .ddia-bridge-title {
+  color: var(--info-fg);
+}
+
+.ddia-bridge-dinkus {
+  font-family: var(--font-display);
+  font-size: 14px;
+  letter-spacing: 0.6em;
+  color: var(--text-tertiary);
+  margin-bottom: 18px;
+  padding-left: 0.6em;  /* compensate for letter-spacing pushing things right */
 }
 
 .ddia-bridge-eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
   font-family: var(--font-display);
   font-variation-settings: "opsz" 24, "SOFT" 60, "wght" 500;
   font-style: italic;
   font-size: 12px;
   font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.32em;
   color: var(--text-tertiary);
-  margin-bottom: 10px;
-}
-.ddia-bridge-eyebrow :deep(.material-symbols-rounded) {
-  display: none;
+  margin-bottom: 14px;
+  padding-left: 0.3em;
 }
 
-.ddia-bridge-text {
-  margin: 0;
-  font-family: var(--font-body);
-  font-size: 15px;
-  line-height: 1.75;
-  color: var(--text-primary);
-  letter-spacing: 0.01em;
-}
-
-.ddia-bridge-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  margin-top: 14px;
+.ddia-bridge-num {
   font-family: var(--font-display);
-  font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 600;
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--accent-500);
-  text-decoration: none;
-  border-bottom: 1px solid var(--accent-500);
-  padding-bottom: 2px;
-}
-
-:global(.dark) .ddia-bridge-link {
-  color: var(--info-fg);
-  border-bottom-color: var(--info-fg);
-}
-
-.ddia-bridge-link:hover {
+  font-feature-settings: "onum" 1;
+  font-variation-settings: "opsz" 48, "SOFT" 60, "wght" 500;
+  font-size: 28px;
+  letter-spacing: 0.18em;
   color: var(--brand-500);
-  border-bottom-color: var(--brand-500);
+  margin-bottom: 6px;
+  padding-left: 0.18em;
+}
+:global(.dark) .ddia-bridge-num {
+  color: var(--info-fg);
 }
 
-.ddia-bridge-link :deep(.material-symbols-rounded) {
-  display: none;
+.ddia-bridge-title {
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 48, "SOFT" 70, "wght" 500;
+  font-size: 26px;
+  font-weight: 500;
+  line-height: 1.25;
+  color: var(--text-primary);
+  margin: 0 0 14px;
+  transition: color 0.2s ease;
+  text-wrap: balance;
 }
-.ddia-bridge-link::after {
-  content: "→";
-  margin-left: 2px;
+
+.ddia-bridge-teaser {
+  margin: 6px auto 0;
+  max-width: 38em;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-variation-settings: "opsz" 24, "SOFT" 50, "wght" 400;
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--text-secondary);
+}
+
+.ddia-bridge-rule {
+  height: 1px;
+  background: var(--rule-hairline);
+  margin: 28px auto 0;
+  max-width: 6em;
+}
+
+@media (max-width: 640px) {
+  .ddia-bridge { padding: 22px 0 24px; }
+  .ddia-bridge-num { font-size: 22px; }
+  .ddia-bridge-title { font-size: 22px; }
 }
 </style>

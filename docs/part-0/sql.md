@@ -247,6 +247,7 @@ Read Uncommitted < Read Committed < Repeatable Read
 
 <Quiz chapter-id="p0-sql" :questions='[
   {
+    "difficulty": "applied",
     "question": "下列哪個 SQL 查詢，會回傳「所有使用者，連同他們的訂單數量（沒訂單的人顯示 0）」？",
     "options": [
       "SELECT u.name, COUNT(o.id) FROM users u INNER JOIN orders o ON o.user_id = u.id GROUP BY u.id",
@@ -258,6 +259,7 @@ Read Uncommitted < Read Committed < Repeatable Read
     "explanation": "LEFT JOIN 保留左邊（users）全部，右邊沒對應就是 NULL；COUNT(o.id) 只算非 NULL 的，所以沒訂單的人顯示 0。INNER JOIN 會把沒訂單的人整列濾掉。"
   },
   {
+    "difficulty": "applied",
     "question": "你在 `users.email` 上建了索引，下列哪個敘述最準確？",
     "options": [
       "所有查詢都會變快",
@@ -269,6 +271,7 @@ Read Uncommitted < Read Committed < Repeatable Read
     "explanation": "索引是「為查詢預排序的副本」—— 加速讀、拖慢寫（每次寫都要更新索引）、佔額外空間。DDIA Ch3 整章在拆 B-Tree、LSM-Tree、Hash index 在這三個維度上的權衡。"
   },
   {
+    "difficulty": "basic",
     "question": "ACID 中的「Atomicity（原子性）」最準確的意思是？",
     "options": [
       "資料庫每筆寫入是不可分割的原子操作",
@@ -280,6 +283,7 @@ Read Uncommitted < Read Committed < Repeatable Read
     "explanation": "Atomicity 指交易層級——多個 SQL 操作打包成一個邏輯單元，commit 全部生效、rollback 全部撤銷。它和 CPU 的 atomic instruction 不是同一個層次。DDIA Ch7 強調這個詞在不同情境下容易混淆。"
   },
   {
+    "difficulty": "interview",
     "question": "為什麼 PostgreSQL 的 Repeatable Read 和 MySQL InnoDB 的 Repeatable Read 不能假設一樣？",
     "options": [
       "因為兩家公司不和",

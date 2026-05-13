@@ -183,6 +183,7 @@ RPC 想偽裝成本地函式呼叫，但**永遠做不到**。本地函式：
 
 <Quiz chapter-id="p0-net" :questions='[
   {
+    "difficulty": "applied",
     "question": "你的服務 A 向服務 B 發 RPC，等了 5 秒沒收到回應。下列哪個推論最準確？",
     "options": [
       "B 一定還沒處理請求—— 重試是安全的",
@@ -194,6 +195,7 @@ RPC 想偽裝成本地函式呼叫，但**永遠做不到**。本地函式：
     "explanation": "這是 DDIA Ch8 反覆強調的：timeout 並不告訴你對方做了什麼、沒做什麼。要安全重試只能靠 idempotency key（同 key 重複請求只執行一次效果）。"
   },
   {
+    "difficulty": "applied",
     "question": "你發現跨美國服務間呼叫 P99 延遲 130ms，老闆問能不能降到 10ms。最準確的回答是？",
     "options": [
       "升級伺服器 CPU 可以做到",
@@ -205,6 +207,7 @@ RPC 想偽裝成本地函式呼叫，但**永遠做不到**。本地函式：
     "explanation": "光速是延遲的物理下界。頻寬可以加錢買、延遲不行。要降跨美國呼叫延遲只能：放置 edge 節點靠近使用者、減少 RPC 跳數、提前算好。增 CPU / 頻寬都救不了延遲。"
   },
   {
+    "difficulty": "applied",
     "question": "DDIA Ch4 強調 RPC 不能等同本地函式呼叫，最根本的原因是？",
     "options": [
       "RPC 比較慢",

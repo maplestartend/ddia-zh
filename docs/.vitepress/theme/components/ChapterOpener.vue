@@ -1,11 +1,11 @@
 <template>
   <header class="ddia-chapter-opener">
-    <div class="ddia-chapter-opener-mark">{{ num }}</div>
-    <div class="ddia-chapter-opener-eyebrow">{{ eyebrow }}</div>
-    <h1 class="ddia-chapter-opener-title">{{ title }}</h1>
-    <blockquote v-if="epigraph" class="ddia-chapter-opener-epigraph">
-      <p class="ddia-chapter-opener-quote">{{ epigraph }}</p>
-      <cite v-if="epigraphSource" class="ddia-chapter-opener-cite">— {{ epigraphSource }}</cite>
+    <div class="ddia-chapter-opener-mark">{{ displayNum }}</div>
+    <div class="ddia-chapter-opener-eyebrow">{{ displayEyebrow }}</div>
+    <h1 class="ddia-chapter-opener-title">{{ displayTitle }}</h1>
+    <blockquote v-if="displayEpigraph" class="ddia-chapter-opener-epigraph">
+      <p class="ddia-chapter-opener-quote">{{ displayEpigraph }}</p>
+      <cite v-if="displayEpigraphSource" class="ddia-chapter-opener-cite">— {{ displayEpigraphSource }}</cite>
     </blockquote>
     <div class="ddia-chapter-opener-rule" />
   </header>
@@ -13,22 +13,59 @@
 
 <script setup lang="ts">
 // Editorial 章首儀式元件：大號章節編號 + italic eyebrow + 章名 + （可選）引言
-// 用法：
-//   <ChapterOpener
-//     num="V"
-//     eyebrow="Chapter · Five"
-//     title="複製 Replication"
-//     epigraph="The major difference between a thing that might go wrong..."
-//     epigraph-source="Douglas Adams" />
-// 用在章節 markdown 檔最上方（取代或補在現有 h1 / TLDR / ChapterMeta 之前）。
-// 若該章不想要引言，省略 epigraph 即可。
-defineProps<{
-  num: string                  // 「V」「12」「5」都行
-  eyebrow: string              // 「Chapter · Five」「Part 0 · §0.2」
-  title: string                // 章節主標
-  epigraph?: string            // 引言（可選）
-  epigraphSource?: string      // 引言來源 / 作者（可選）
+// 兩種用法：
+// 1. 以 chapter-id 自動帶（推薦）：
+//      <ChapterOpener chapter-id="ch05" />
+//    從 chapters.ts 拉 num / shortTitle / epigraph / epigraphSource。
+// 2. 手動覆寫（特殊章首、Part 概覽等）：
+//      <ChapterOpener num="V" eyebrow="Chapter · Five" title="..." epigraph="..." />
+//    手動 prop 覆寫自動值。
+//
+// 用在章節 markdown 檔最上方，**取代原本的 h1**（不要重複）。
+import { computed, onMounted } from 'vue'
+import { CHAPTERS, PREREQUISITES, PARTS, type Chapter } from '../../data/chapters'
+
+// F3 lastVisited 紀錄：本元件在每章首掛載、記錄使用者最近進的章節，給 Dashboard
+// 用「繼續 · ChXX」顯示。比起原本「找下一個未讀章節」更誠實——使用者可能讀到中段就關掉。
+const LAST_VISITED_KEY = 'ddia-last-visited'
+
+const props = defineProps<{
+  chapterId?: string           // 自動模式：'ch05' / 'p0-os' 對映 chapters.ts
+  num?: string                 // 手動覆寫：「V」「12」「0.3」都行
+  eyebrow?: string             // 手動覆寫 eyebrow 行
+  title?: string               // 手動覆寫章名
+  epigraph?: string
+  epigraphSource?: string
 }>()
+
+const resolved = computed<Chapter | undefined>(() => {
+  if (!props.chapterId) return undefined
+  return [...CHAPTERS, ...PREREQUISITES].find(c => c.id === props.chapterId)
+})
+
+const displayNum = computed(() => props.num ?? resolved.value?.num ?? '')
+const displayTitle = computed(() => props.title ?? resolved.value?.shortTitle ?? '')
+const displayEyebrow = computed(() => {
+  if (props.eyebrow) return props.eyebrow
+  const ch = resolved.value
+  if (!ch) return ''
+  return PARTS[ch.part]?.title ?? ''
+})
+const displayEpigraph = computed(() => props.epigraph ?? resolved.value?.epigraph)
+const displayEpigraphSource = computed(() =>
+  props.epigraphSource ?? resolved.value?.epigraphSource
+)
+
+onMounted(() => {
+  // 只在 chapter-id 自動模式記錄；手動模式（Part 概覽等）不算章節閱讀
+  if (!props.chapterId) return
+  try {
+    localStorage.setItem(LAST_VISITED_KEY, JSON.stringify({
+      chapterId: props.chapterId,
+      at: Date.now()
+    }))
+  } catch { /* quota / 私密模式 ignore */ }
+})
 </script>
 
 <style scoped>

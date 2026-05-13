@@ -2,9 +2,15 @@
 title: Ch9 一致性與共識
 ---
 
-# Ch9 · 一致性與共識
+<ChapterOpener chapter-id="ch09" />
 
 <ChapterMeta part="Part II 分散式資料" :read-time="65" difficulty="進階" :tags="['Linearizability', 'Raft', '2PC']" prereq="Ch8" />
+
+<PrereqBox
+  :prereq="['Ch5 複製（leader / follower / quorum）', 'Ch7 交易（ACID、isolation）', 'Ch8 分散式問題（時鐘、網路分區、fencing token）']"
+  first-read-hint="**90-120 分鐘**——全書最硬的一章。Linearizability vs Serializability、CAP 真實意義、共識三種等價形式（全序廣播 ≡ 線性一致 KV ≡ 共識）這三組概念建議讀完先停下來自己畫一遍。沒讀過 [Raft 視覺化動畫](https://raft.github.io/) 的人強烈建議先看 10 分鐘再回來"
+  :skippable="['§9.5 Paxos 細節（先抓住 vote 規則 + Log Matching、Paxos 與 Raft 的差異等之後再回頭）', '§9.6 Spanner TrueTime 數學推導第一次讀可略過、抓住「主動 wait 等不確定性過去」的核心直覺即可']"
+/>
 
 <TLDR :points='[
   "<strong>Linearizability（線性一致）= 系統表現得像只有單一副本</strong>。是分散式一致性最強保證，但要付出延遲與可用性代價。",
@@ -362,14 +368,18 @@ Kafka producer 帶的 `leader_epoch` 與 Raft 的 `term` 角色相同：擋住 z
 Spanner（Google 2012）做到 **external consistency**（= strict serializability）的關鍵是 **TrueTime API**：
 
 - **核心抽象**：`TT.now()` 不回傳單一時間戳，而是回傳區間 `[earliest, latest]`，保證真實時間在這區間內
-- **ε 邊界**：Google 透過 GPS + 原子鐘把 ε 控制在 ~7ms 以內（2012 OSDI paper 數值；現代資料中心 ε 已降至 ms / sub-ms 級）
-- **commit-wait**：交易 commit 時，Spanner 會**主動 sleep 直到 `latest` 過去**，確保「我 commit 後、任何下次的 TT.now() 都比我大」→ 線性一致時序就成立
+- **ε 邊界**：2012 OSDI 論文公布 **ε 平均 ~6ms、worst case ~10ms**（不是上界 7ms、坊間常見錯誤）；commit-wait 實際時間 ≈ **2ε**、典型 ~10-14ms。現代資料中心透過更密的 time master、ε 已降至 ms / sub-ms 級、Google 未公開實際數字
+- **commit-wait**：交易 commit 時，Spanner 會**主動 sleep 直到 `latest` 過去**，確保「我 commit 後、任何下次的 TT.now() 都比我大」→ 線性一致時序就成立。**注意 wait 時間不是固定常數**——取決於當下 ε、GPS / 原子鐘異常時 ε 會 spike、commit-wait 跟著拉長
 
 ```
-T1 commit @ TT = [100, 107]
-  ↓ 強制 sleep 7ms (commit-wait)
-T2 開始讀 @ TT = [108, 115] → 必定大於 T1 的 latest
+T1 commit @ TT = [100, 110]   (ε ≈ 5ms)
+  ↓ 強制 sleep 到 latest=110 過去 (≈ 2ε ≈ 10ms)
+T2 開始讀 @ TT = [115, 125] → 必定大於 T1 的 latest
 ```
+
+::: warning ε 不是常數
+GPS 收訊干擾、原子鐘漂移、time master 失聯都會讓 ε 瞬間升高、commit-wait 跟著變長。Google 的 SRE 報告提過罕見 ε spike 到數十 ms 的事件——Spanner 的承諾是「**永不違反 external consistency**」、不是「**永遠快**」。
+:::
 
 **對比 HLC**（CockroachDB / YugabyteDB 用的）：
 - HLC（Hybrid Logical Clock）只**緩解**時鐘漂移、不消除——當實體時鐘誤差超過 max_offset（CRDB 預設 500ms）會直接 panic
@@ -377,6 +387,44 @@ T2 開始讀 @ TT = [108, 115] → 必定大於 T1 的 latest
 - 沒 Google 級基礎設施（GPS + 原子鐘）的公司通常選 HLC + max_offset 容忍機制
 
 > Spanner 也提供 **stale read**（指定一個過去時間點讀）讓延遲敏感應用避開 commit-wait——但這就不是線性一致了，是「明確標示的歷史讀」。
+
+---
+
+## 9.7 共識 / 分散式 SQL 選型決策樹
+
+把 Raft / Paxos / Spanner / CRDB 等選擇壓成一張圖：
+
+```mermaid
+graph TD
+    Start[要選什麼？] --> Q1{需要的是<br/>共識引擎 還是<br/>強一致 DB？}
+
+    Q1 -- 共識引擎<br/>做 leader election / 配置中心 --> Q2{內部用還是外部依賴？}
+    Q2 -- 服務 metadata / config<br/>kube / 微服務發現 --> Etcd[etcd<br/>Raft、CNCF 標準]
+    Q2 -- 已用 ZK 生態<br/>Kafka / HBase --> ZK[ZooKeeper<br/>ZAB、舊但穩]
+    Q2 -- 自寫服務<br/>需內嵌 Raft 函式庫 --> Lib[hashicorp/raft<br/>etcd/raft<br/>Go 寫的話最常用]
+
+    Q1 -- 強一致 DB --> Q3{跨多 region 還是<br/>單 region 就夠？}
+    Q3 -- 單 region OK<br/>水平擴展寫即可 --> Q4{熟悉哪家？}
+    Q4 -- PG 生態 --> CRDB[CockroachDB<br/>PG-wire 相容、HLC + Raft]
+    Q4 -- MySQL 生態 --> TiDB[TiDB<br/>MySQL 相容、Raft + Percolator]
+
+    Q3 -- 跨 region 且要 external consistency --> Q5{付得起 Google Cloud 嗎？}
+    Q5 -- 是 --> Spanner[Spanner<br/>TrueTime + 2PC + Paxos]
+    Q5 -- 否、self-host --> Q6{接受 max_offset panic 設計嗎？}
+    Q6 -- 是 --> CRDBgeo[CockroachDB 跨 region<br/>HLC + 嚴格 max_offset]
+    Q6 -- 否、要更強保證 --> YB[YugabyteDB<br/>HLC + tablet leader 在主 region]
+```
+
+**選型快速結論**：
+- 服務配置中心 / leader election → **etcd**（Kubernetes 早就這樣選）
+- 跨機房強一致 + Google Cloud → **Spanner**
+- 跨機房強一致 + self-host → **CockroachDB** 或 **YugabyteDB**
+- 已用 ZK / Kafka 生態 → 沿用 **ZooKeeper**
+- 自寫 Go 服務內嵌共識 → **hashicorp/raft** 或 **etcd/raft**
+
+::: warning 不要自己寫 Raft
+本書講共識的細節是為了**讓你看懂為什麼這些東西貴**，**不是鼓勵你自己實作**。Raft / Paxos 的邊界情況（split-brain、leader lease、log compaction、joint consensus 動態成員變更）每一個都會在 production 撞鞋——直接用驗證過的函式庫或 etcd / ZK 服務。
+:::
 
 ---
 
@@ -391,6 +439,7 @@ T2 開始讀 @ TT = [108, 115] → 必定大於 T1 的 latest
 
 <Quiz chapter-id="ch09" :questions='[
   {
+    difficulty: "basic",
     question: "Linearizability 的本質定義是？",
     options: [
       "資料按時間順序儲存",
@@ -402,6 +451,7 @@ T2 開始讀 @ TT = [108, 115] → 必定大於 T1 的 latest
     explanation: "Linearizability = 強一致性的形式定義：每個操作看起來在某個瞬時點原子發生，且這些瞬時點順序與真實時序一致。觀察者看不出系統有多個副本。"
   },
   {
+    difficulty: "interview",
     question: "CAP 定理的正確詮釋是？",
     options: [
       "在任何時刻，分散式系統只能滿足 C/A/P 三者中的兩個",
@@ -414,6 +464,7 @@ T2 開始讀 @ TT = [108, 115] → 必定大於 T1 的 latest
     sectionAnchor: "_9-2-cap-重新詮釋"
   },
   {
+    difficulty: "interview",
     question: "FLP 不可能性結果告訴我們什麼？",
     options: [
       "分散式共識完全不可能",
@@ -425,6 +476,7 @@ T2 開始讀 @ TT = [108, 115] → 必定大於 T1 的 latest
     explanation: "FLP 是理論下限：純非同步 + 可能崩潰 → 你做不出「保證終止」的確定演算法。Raft/Paxos 不違反它 —— 它們用 timeout 假設「夠長時間後網路會穩定」來確保實務上終止。"
   },
   {
+    difficulty: "applied",
     question: "兩階段提交（2PC）的最大實務問題是？",
     options: [
       "需要 SSD 才能運作",
@@ -436,6 +488,7 @@ T2 開始讀 @ TT = [108, 115] → 必定大於 T1 的 latest
     explanation: "2PC 是阻塞協定 —— prepare 後決定權集中在 coordinator，它若掛了，participants 處於「不能 commit 也不能 abort」的狀態，鎖會一直拿著。XA 在實務中惡名昭彰部分來自此。"
   },
   {
+    difficulty: "interview",
     question: "下列何者與「共識（consensus）」等價？",
     options: [
       "兩階段鎖",
@@ -468,6 +521,4 @@ T2 開始讀 @ TT = [108, 115] → 必定大於 T1 的 latest
 - [hashicorp/raft](https://github.com/hashicorp/raft) — 生產級 Raft 實作，看 snapshot / membership change
 :::
 
-<NextChapterBridge next-link="/part-3/ch10-batch" next-title="Ch10 批次處理 Batch">
-Part II 結束 —— 你已掌握「線上系統」的核心問題。從 Ch10 進入 <strong>Part III 衍生資料</strong>：從原始資料導出新資料的兩種典範。批次處理（MapReduce / Spark）是「定期把大量資料壓成新結果」的世界，是資料倉儲、ML 訓練、報表的基礎。
-</NextChapterBridge>
+<NextChapterBridge chapter-id="ch09" />

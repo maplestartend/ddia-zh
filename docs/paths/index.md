@@ -155,6 +155,10 @@ Ch2/4/6/10/12 之後行有餘力再補。
 
 ## 配套資源 {.role-h2 .icon-library_books}
 
+::: tip 面試準備路徑專用
+[**面試題速查表 · 系統設計題 ↔ DDIA 章節對應**](/paths/interview-cheatsheet) ——News Feed、轉帳、即時通訊、分散式 KV 等 8 道經典系統設計面試題對映到 DDIA 哪幾章哪幾節、配「面試官可能追問的尾刀」。讀完每章後回來自測 5 分鐘、講不出來就回去再讀。
+:::
+
 | 資源 | 用途 |
 |---|---|
 | [Raft 視覺化](https://raft.github.io/) | 配 Ch9 |

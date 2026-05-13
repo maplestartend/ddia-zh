@@ -275,7 +275,7 @@ npm run screenshot    # Playwright 截圖（dev server 須先開）
 
 - 進度與測驗紀錄都在 **localStorage**，換瀏覽器 / 清快取會遺失（沒有後端帳號）
 - 全文搜尋是 VitePress 內建 local search，CJK tokenizer 自訂在 `config.mts:106`
-- 沒有 CI；commit 前自行跑 type-check + build + screenshot
+- **CI 已啟用**（[deploy.yml](.github/workflows/deploy.yml)）：push 到 `main` 會自動跑 type-check + lint:glossary（non-blocking）+ lint:tldr（non-blocking）+ **lint:base（blocking）** + GITHUB_PAGES build。**lint:base 失敗會擋部署**（防 hard-coded href 在 Pages 上 404）。本地仍建議改完跑 `npm run type-check + build + screenshot` 確認綠燈再 push、減少 CI 來回
 
 ---
 

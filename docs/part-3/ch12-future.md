@@ -2,7 +2,7 @@
 title: Ch12 資料系統的未來
 ---
 
-# Ch12 · 資料系統的未來
+<ChapterOpener chapter-id="ch12" />
 
 <ChapterMeta part="Part III 衍生資料" :read-time="40" difficulty="中等" :tags="['Lambda', 'Unbundling', '倫理']" prereq="Ch10, Ch11" />
 
@@ -123,6 +123,7 @@ DDIA 的核心觀點：**可靠性不是某一層的責任**。
 
 <Quiz chapter-id="ch12" :questions='[
   {
+    difficulty: "applied",
     question: "Lambda 架構的最大缺點是？",
     options: [
       "效能不夠",
@@ -134,6 +135,7 @@ DDIA 的核心觀點：**可靠性不是某一層的責任**。
     explanation: "Lambda 用「批次層保證準確」+「流層保證即時」雙管齊下，但代價是同一邏輯要寫兩遍（不同框架），維護地獄。Kappa 架構提出用單一流處理 + 重播能力來簡化。"
   },
   {
+    difficulty: "interview",
     question: "「Unbundling the database」的核心想法是？",
     options: [
       "把資料庫程式拆成多個微服務",
@@ -145,6 +147,7 @@ DDIA 的核心觀點：**可靠性不是某一層的責任**。
     explanation: "傳統 DB 把索引、複製、materialized view 都綁在內部。Unbundling 想法：選一個 source of truth（通常是 Kafka log），由它衍生所有其他系統 —— 每個關注點選最適合的工具。"
   },
   {
+    difficulty: "interview",
     question: "為什麼說「端到端的冪等識別碼」是分散式可靠性的關鍵？",
     options: [
       "因為它讓資料庫變快",

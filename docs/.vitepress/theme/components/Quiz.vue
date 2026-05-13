@@ -100,6 +100,7 @@ import { ref, computed, onMounted } from 'vue'
 import { withBase } from 'vitepress'
 import Icon from './Icon.vue'
 import { useProgress } from '../../composables/useProgress'
+import { useReview } from '../../composables/useReview'
 import { nextChapter } from '../../data/chapters'
 
 type Difficulty = 'basic' | 'applied' | 'interview'
@@ -120,6 +121,7 @@ const props = defineProps<{
 }>()
 
 const { saveQuiz, loadQuiz, clearQuiz } = useProgress()
+const { seedReview } = useReview()
 
 const answers = ref<(number | null)[]>(props.questions.map(() => null))
 const submitted = ref(false)
@@ -174,11 +176,13 @@ function onAnchorClick(anchor: string, e: MouseEvent) {
 
 function submit() {
   submitted.value = true
+  const score = correctCount.value
+  const total = props.questions.length
   saveQuiz(props.chapterId, {
     answers: answers.value,
     submitted: true,
-    score: correctCount.value,
-    total: props.questions.length,
+    score,
+    total,
     timestamp: Date.now()
   })
   // saveQuiz 內部會處理首次答對率，這裡僅 reload 取最新狀態
@@ -186,6 +190,12 @@ function submit() {
   if (updated) {
     attemptCount.value = updated.attemptCount ?? 1
     firstAttemptScore.value = updated.firstAttemptScore ?? updated.score
+  }
+  // B2：首次作答未達 80% → 自動 seed SRS 複習。
+  // 已 seed 過的章（先標已讀 / 之前作答過）seedReview 內部會跳過、不會重置 interval。
+  // 條件改成「首次作答」用 attemptCount === 1 判定，避免重做時又被 seed。
+  if ((updated?.attemptCount ?? 1) === 1 && score / total < 0.8) {
+    seedReview(props.chapterId)
   }
 }
 

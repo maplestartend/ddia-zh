@@ -414,7 +414,7 @@ DB 在 SERIALIZABLE / REPEATABLE READ 下偵測到並發衝突而**主動 abort 
 
 **各家 DB 實際拋的錯誤碼**：
 - **PostgreSQL**：`SQLSTATE 40001`、訊息 `could not serialize access due to concurrent update`
-- **Oracle**：`ORA-08177`（vendor-specific）/ SQLSTATE `72000`（一般 vendor catch ORA code）
+- **Oracle**：`ORA-08177`（vendor 專屬 code）。SQLSTATE 多為 generic `72000`——但這是 Oracle 把幾乎所有執行期錯誤都歸 `72000`（"SQL execute phase errors" class）的副作用、**不是「ORA-08177 對映專屬 SQLSTATE 72000」的乾淨關係**。實務判斷序列化失敗仍要看 vendor code `ORA-08177`
 - **SQL Server**：error number `1205`（deadlock）/ `3960`（snapshot update conflict）—— 不用 SQLSTATE
 - **MySQL InnoDB**：`SQLSTATE 40001` + error 1213（同上、但只在 deadlock 場景拋；RR 仍不偵測 lost update）
 

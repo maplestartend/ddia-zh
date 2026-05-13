@@ -234,6 +234,7 @@ Client → CDN → LB → API → Service → DB
 
 <Quiz chapter-id="p0-metrics" :questions='[
   {
+    "difficulty": "applied",
     "question": "你的服務 1000 個請求延遲分布如下：999 個是 10ms、1 個是 5000ms。請問平均延遲與 P99 延遲各是多少？",
     "options": [
       "平均 ≈ 15ms、P99 = 10ms",
@@ -245,6 +246,7 @@ Client → CDN → LB → API → Service → DB
     "explanation": "平均 = (999×10 + 1×5000) / 1000 = 14.99ms。P99 = 排序後第 990 個（前 99%）的延遲 = 10ms。那個 5000ms 的請求要到 P999 才會出現。這也是為什麼只看 P99 不夠—要看 P999 才會看到真正的尾端。"
   },
   {
+    "difficulty": "applied",
     "question": "某服務的 P99 延遲是 100ms。客戶端要 fan-out 給 50 個這樣的後端、等全部回應才能渲染頁面。整體頁面延遲至少落在 100ms 以上的機率最接近？",
     "options": [
       "1%（單一後端的 P99 機率）",
@@ -256,6 +258,7 @@ Client → CDN → LB → API → Service → DB
     "explanation": "1 - (0.99)^50 ≈ 0.395 = 39.5%。Fan-out 把單一後端的「1% 罕見事件」放大成「整體 40% 概率事件」—— 這就是 tail latency amplification。降 P99 比降 P50 對 fan-out 系統更有意義。"
   },
   {
+    "difficulty": "basic",
     "question": "下列哪個敘述最準確區分 SLA 與 SLO？",
     "options": [
       "SLA 對外、SLO 對內；SLA 違反通常伴隨合約賠償，SLO 違反觸發內部 alert 與行動",
@@ -267,6 +270,7 @@ Client → CDN → LB → API → Service → DB
     "explanation": "SLA = Agreement（合約），對外承諾、違反賠錢；SLO = Objective（目標），對內設定、違反觸發 alert 與部署凍結。SLI 才是「目前實際量到的值」。Google SRE Book 對這三個定義最權威。"
   },
   {
+    "difficulty": "interview",
     "question": "你跑 load test 量延遲，發現使用 wrk2 結果和 wrk 差很多——wrk2 報的 P99 高很多。最可能的原因是？",
     "options": [
       "wrk2 比較慢，所以延遲被放大",
@@ -278,6 +282,7 @@ Client → CDN → LB → API → Service → DB
     "explanation": "Gil Tene 開發 wrk2 就是為了解決 wrk 的 Coordinated Omission：「我等前一個請求回應才發下一個」會自動避開慢的時段，讓延遲統計失真。wrk2 用「不管回應、按固定速率發」的開放式負載，量到的數字更接近真實生產環境。"
   },
   {
+    "difficulty": "interview",
     "question": "為什麼 Amazon 把 P999（而非 P99）列為內部 SLO？",
     "options": [
       "P999 比較難達成，當挑戰用",

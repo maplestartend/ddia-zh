@@ -2,9 +2,15 @@
 title: Ch7 交易
 ---
 
-# Ch7 · 交易 Transactions
+<ChapterOpener chapter-id="ch07" />
 
 <ChapterMeta part="Part II 分散式資料" :read-time="60" difficulty="進階" :tags="['ACID', 'Isolation', 'Serializable']" prereq="Ch5, Ch6" />
+
+<PrereqBox
+  :prereq="['[Part 0.3 SQL §5 交易與隔離](/part-0/sql)', '[Part 0.4 OS §1 行程與執行緒](/part-0/os)', 'Ch5（複製基本概念）']"
+  first-read-hint="**90-120 分鐘**——交易章資訊密度全書最高，「異常 × 隔離級別」矩陣（§7.2）與「真正可序列化的三種實作」（§7.3）建議讀完先停下來自己畫一遍。Lost update / Write skew / Phantom 三個詞要能用例子互相區辨"
+  :skippable="['§7.2 末「Phantom 在 SI 下要分兩種看」warning block 第一次讀可以跳——第二次回頭再讀；先抓住「SI 擋不住 write skew」就好']"
+/>
 
 <TLDR :points='[
   "<strong>ACID 並非鐵板一塊的概念</strong>：A/I/D 各家 DB 詮釋不一，C（一致性）甚至是應用責任不是 DB 責任。",
@@ -62,8 +68,8 @@ COMMIT;
 
 ::: warning 命名地獄：REPEATABLE READ 在各家 DB 是不同東西
 SQL 標準的 REPEATABLE READ 並未要求防止 phantom，且各家詮釋差異極大：
-- **PostgreSQL** 的 REPEATABLE READ = 完整的 Snapshot Isolation
-- **MySQL InnoDB** 的 REPEATABLE READ 接近 SI，但對 phantom 行為不同（gap lock）
+- **PostgreSQL** 的 REPEATABLE READ = 完整的 Snapshot Isolation（純 MVCC、commit 時 first-committer-wins 偵測寫衝突）
+- **MySQL InnoDB** 的 REPEATABLE READ **嚴格說不是 SI**——是「**MVCC consistent read + locking read 混合**」：純 `SELECT` 用 MVCC 走 snapshot；但 `SELECT ... FOR UPDATE` / `UPDATE` / `DELETE` 用 next-key lock 鎖最新版（不是 snapshot）→ 同一交易內讀到自己改完的列，**但其他人改的列在 snapshot 中看不見**、且不會像 PG 那樣 commit 時 `40001` abort
 - **Oracle** 沒有真正的 REPEATABLE READ；它的「Serializable」其實是 SI
 
 讀文件看到「REPEATABLE READ」時，**永遠先查具體 DB 的實際語意**。
@@ -258,7 +264,9 @@ COMMIT;  -- ← 兩筆都成功，雙重預訂！
 | **Lost Update（跨列邏輯依賴）** | ✗ | ✗ | ✗ 不偵測、需應用 retry | ✓（SSI 才偵測為 write skew 變體） |
 | Write Skew | ✗ | ✗ | ✗ **仍會發生** | ✓ |
 | Phantom Read（**讀**走快照看不到新插入） | ✗ | ✗ | ✓ | ✓ |
-| Phantom-based Write Skew（**基於不存在性寫入決策**被打破） | ✗ | ✗ | ✗ | ✓（SSI / 2PL with predicate lock） |
+| Phantom-based Write Skew \* （**基於不存在性寫入決策**被打破） | ✗ | ✗ | ✗ | ✓（SSI / 2PL with predicate lock） |
+
+\* **本站為教學細分、非標準分類**：Berenson 1995 與 DDIA 原書都把這個情境歸為 Write Skew 的特例（讀「不存在」→ 寫入創造存在）、沒有獨立編號。為了讓讀者區分「讀階段 phantom」與「寫決策 phantom」、本站在矩陣表獨立成一行，但學術文獻引用時請仍歸 Write Skew。
 
 ::: warning Phantom 在 SI 下要分兩種看
 **讀取階段的 phantom**（同交易兩次範圍查詢得不同列集合）—— SI 因為讀走快照能擋住。
@@ -378,6 +386,7 @@ await db.runTransaction(async (tx) => {
 
 <Quiz chapter-id="ch07" :questions='[
   {
+    difficulty: "applied",
     question: "Snapshot Isolation 仍然可能發生下列哪一種異常？",
     options: [
       "Dirty Read",
@@ -390,6 +399,7 @@ await db.runTransaction(async (tx) => {
     sectionAnchor: "write-skew"
   },
   {
+    difficulty: "interview",
     question: "PostgreSQL 的 SERIALIZABLE 採用 SSI，相對於 2PL 的主要差別是？",
     options: [
       "SSI 不保證可序列化",
@@ -402,6 +412,7 @@ await db.runTransaction(async (tx) => {
     sectionAnchor: "two-phase-locking"
   },
   {
+    difficulty: "interview",
     question: "ACID 中的「C」（Consistency）的真相是？",
     options: [
       "由 DB 完全保證",
@@ -413,6 +424,7 @@ await db.runTransaction(async (tx) => {
     explanation: "DDIA 直言「C 是 ACID 中的混入字」。它指業務不變式（如「帳戶餘額不能為負」），這得由應用邏輯確保，DB 只負責 A/I/D 給你保護這些約束的工具。"
   },
   {
+    difficulty: "applied",
     question: "下列哪個是「Lost Update」的可靠解法？",
     options: [
       "完全靠應用程式重試",
@@ -442,6 +454,4 @@ await db.runTransaction(async (tx) => {
 - [A Critique of ANSI SQL Isolation Levels](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/tr-95-51.pdf) — Berenson et al. 1995，揭示 SQL 標準命名地獄的源頭
 :::
 
-<NextChapterBridge next-link="/part-2/ch08-trouble" next-title="Ch8 分散式系統的麻煩">
-本章 SI 的快照、Serializable 的鎖，<strong>都假設「網路可靠、時鐘準確、行程不會無預警暫停」</strong>。下一章打碎這個假設 —— 真實分散式系統會碰到部分失效、時鐘漂移、stop-the-world GC，這些痛點正是 Ch9 共識演算法（Raft / Paxos）要解決的問題。
-</NextChapterBridge>
+<NextChapterBridge chapter-id="ch07" />

@@ -59,8 +59,7 @@ jobs:
           npm run lint:tldr 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
           echo '```' >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Lint hard-coded base (non-blocking)
-        continue-on-error: true
+      - name: Lint hard-coded base (BLOCKING — production 404 risk)
         run: |
           echo "## Lint: hard-coded base path" >> "$GITHUB_STEP_SUMMARY"
           echo '```' >> "$GITHUB_STEP_SUMMARY"

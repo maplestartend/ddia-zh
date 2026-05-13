@@ -3,9 +3,15 @@ title: Ch1 可靠、可擴展、可維護的應用
 description: DDIA 第 1 章 — Reliability、Scalability、Maintainability 三大設計目標
 ---
 
-# Ch1 · 可靠、可擴展、可維護的應用
+<ChapterOpener chapter-id="ch01" />
 
 <ChapterMeta part="Part I 資料系統基礎" :read-time="35" difficulty="入門" :tags="['SLA', 'P99', '負載']" />
+
+<PrereqBox
+  :prereq="['基本網頁服務概念（HTTP、QPS）', '若完全沒接觸過 P99 / SLO 概念、建議先讀 [Part 0.2 度量與分布](/part-0/metrics)']"
+  first-read-hint="**60-90 分鐘**——這章是全書世界觀的基底，多花時間吃透 P99 / fan-out / fault vs failure 三組詞會讓後續所有章節讀起來省一半力氣"
+  :skippable="['§1.3 Twitter fan-out on write 詳細數學（記得結論：寫時放大讀時節省、超級大 V 改成讀時 query 混合策略即可）']"
+/>
 
 <TLDR :points='[
   "<strong>三大設計目標</strong>：Reliability（可靠性）、Scalability（可擴展性）、Maintainability（可維護性）。它們不是非黑即白的指標，而是需要持續權衡的方向。",
@@ -173,6 +179,7 @@ DDIA 全書其實就是在教你：**面對特定情境，如何做這些權衡*
 
 <Quiz chapter-id="ch01" :questions='[
   {
+    difficulty: "basic",
     question: "下列關於 Reliability 的敘述，何者最準確？",
     options: [
       "可靠系統就是永遠不會故障的系統",
@@ -184,6 +191,7 @@ DDIA 全書其實就是在教你：**面對特定情境，如何做這些權衡*
     explanation: "Fault 是元件層級的偏差，Failure 是系統層級的失效。容錯設計的目標是「故障發生時不導致失效」，而不是消除故障本身。"
   },
   {
+    difficulty: "applied",
     question: "為什麼用平均延遲（mean latency）來衡量系統性能不夠？",
     options: [
       "因為平均值計算太複雜",
@@ -195,6 +203,7 @@ DDIA 全書其實就是在教你：**面對特定情境，如何做這些權衡*
     explanation: "平均值被極端值拉動但隱藏了分布。P95/P99/P999 才能揭示最差使用者的體驗，而這些「尾端使用者」通常是消費高、影響大的關鍵客群。"
   },
   {
+    difficulty: "applied",
     question: "Twitter 的「fan-out on write」（寫時推播）策略，主要解決什麼問題？",
     options: [
       "減少資料庫的儲存空間",
@@ -206,6 +215,7 @@ DDIA 全書其實就是在教你：**面對特定情境，如何做這些權衡*
     explanation: "讀取時序列原本要 JOIN follows + tweets + users，成本與追隨對象成正比。改成寫時把推文推到每個追隨者的時間軸快取，讀取只需單表查詢。代價是寫入變昂貴，且對超級大 V 不適用 —— 因此實務上採混合策略。"
   },
   {
+    difficulty: "basic",
     question: "下列何者屬於「偶發複雜度」（accidental complexity）？",
     options: [
       "分散式共識本身的難度",
@@ -217,6 +227,7 @@ DDIA 全書其實就是在教你：**面對特定情境，如何做這些權衡*
     explanation: "偶發複雜度是因為實作工具或選擇而引入、可以透過更好的抽象消除的複雜度。共識難度、時區、金融原子性都是業務或物理層面的本質複雜度。"
   },
   {
+    difficulty: "basic",
     question: "Chaos Engineering（混沌工程）的核心想法是？",
     options: [
       "讓開發者寫程式時隨機跳過測試",
@@ -239,9 +250,7 @@ DDIA 全書其實就是在教你：**面對特定情境，如何做這些權衡*
 
 <Progress chapter-id="ch01" />
 
-<NextChapterBridge next-link="/part-1/ch02-data-models" next-title="Ch2 資料模型與查詢語言">
-本章談的是<strong>「目標」</strong>—— 系統要可靠、可擴、可維護。下一章談<strong>「素材」</strong>：當你要存資料，可以用關聯、文件、圖三種主要模型，各自反映對「資料形狀」的不同假設。選錯模型，後面的可靠性與擴展性都會難做。
-</NextChapterBridge>
+<NextChapterBridge chapter-id="ch01" />
 
 ---
 

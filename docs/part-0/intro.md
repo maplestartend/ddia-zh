@@ -170,6 +170,7 @@ DB、Cache、MQ 都有狀態。它們面對的問題：
 
 <Quiz chapter-id="p0-intro" :questions='[
   {
+    "difficulty": "basic",
     "question": "下列哪個系統最不像「資料密集型」？",
     "options": [
       "Twitter 推文 timeline 服務（10 億用戶、即時 fan-out）",
@@ -181,6 +182,7 @@ DB、Cache、MQ 都有狀態。它們面對的問題：
     "explanation": "Ray-tracing 渲染是「計算密集」—— 瓶頸是 CPU/GPU。其他三個都是資料量、資料變化速度為主——典型的資料密集，DDIA 全書的目標讀者。"
   },
   {
+    "difficulty": "basic",
     "question": "「應用服務設計成 stateless」最直接的好處是？",
     "options": [
       "省記憶體",
@@ -192,6 +194,7 @@ DB、Cache、MQ 都有狀態。它們面對的問題：
     "explanation": "Stateless 的核心好處是「橫向擴展簡單」—— 加機器不用煩惱狀態同步，掛一台不用煩惱資料丟失。代價是把難題集中到資料層（DB/Cache/MQ）。"
   },
   {
+    "difficulty": "applied",
     "question": "為什麼 DDIA Part II（複製、分區、交易、共識）會是全書最硬的部分？",
     "options": [
       "因為這部分數學最多",

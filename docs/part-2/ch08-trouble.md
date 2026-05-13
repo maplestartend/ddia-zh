@@ -2,7 +2,7 @@
 title: Ch8 分散式系統的麻煩
 ---
 
-# Ch8 · 分散式系統的麻煩
+<ChapterOpener chapter-id="ch08" />
 
 <ChapterMeta part="Part II 分散式資料" :read-time="50" difficulty="進階" :tags="['Network', 'Clock', 'Failure']" prereq="Ch5" />
 
@@ -142,6 +142,7 @@ while (true) {
 
 <Quiz chapter-id="ch08" :questions='[
   {
+    difficulty: "applied",
     question: "為什麼 timeout 是分散式系統中偵測故障的主要工具，但「不完美」？",
     options: [
       "因為網路太快，沒時間 timeout",
@@ -153,6 +154,7 @@ while (true) {
     explanation: "「沒收到回應」可能是對方掛了，也可能只是慢。timeout 強制做出二選一的判斷，但這個判斷可能錯，導致重複處理（對方其實成功了）或誤判故障。"
   },
   {
+    difficulty: "applied",
     question: "為什麼不能用 `System.currentTimeMillis()` 來測量函式執行時間？",
     options: [
       "因為它太慢",
@@ -164,6 +166,7 @@ while (true) {
     explanation: "time-of-day clock 會被 NTP 校正，可能向前跳或向後倒退。測 duration 要用 monotonic clock（`System.nanoTime`），它保證單調遞增。"
   },
   {
+    difficulty: "interview",
     question: "Fencing Token 機制要解決的問題是？",
     options: [
       "加密通訊",
@@ -175,6 +178,7 @@ while (true) {
     explanation: "光靠 timeout-based lock 不夠 —— 因為持有者可能卡住、lock 已轉手卻不知道。Fencing token 是單調遞增號，儲存層拒絕「比目前 token 還舊」的寫入請求。"
   },
   {
+    difficulty: "basic",
     question: "「Byzantine fault」與一般的 fail-stop 故障差別在？",
     options: [
       "Byzantine fault 只發生在數學家身上",
@@ -191,6 +195,4 @@ while (true) {
 
 <Progress chapter-id="ch08" />
 
-<NextChapterBridge next-link="/part-2/ch09-consistency" next-title="Ch9 一致性與共識">
-看完分散式系統的種種地雷，Ch9 給出系統化的應對：<strong>線性一致性</strong>是我們想要的最強保證、<strong>CAP 定理</strong>講為什麼有些保證在分區時必須放棄、<strong>共識演算法（Raft / Paxos）</strong>則是用工程手段在不可靠網路上達成「節點對某個值達成一致」。本章是全書最硬的一章，建議讀完先休息一下。
-</NextChapterBridge>
+<NextChapterBridge chapter-id="ch08" />
