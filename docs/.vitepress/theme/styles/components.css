@@ -228,6 +228,14 @@
   background: var(--brand-tint-soft);
 }
 
+/* 鍵盤導航：label 內含 radio、focus 從 input 傳到 label 父元素 — 用 :focus-within 包整行 */
+.ddia-quiz-option:focus-within {
+  border-left-color: var(--brand-500);
+  background: var(--brand-tint-soft);
+  outline: 2px solid var(--brand-500);
+  outline-offset: 2px;
+}
+
 .ddia-quiz-option.selected {
   border-left-color: var(--brand-500);
   background: var(--brand-tint);
@@ -1309,12 +1317,13 @@ button.DocSearch.DocSearch-Button:focus-visible {
 .VPSwitchAppearance {
   width: auto !important;
   height: auto !important;
-  min-width: 36px !important;
+  min-width: 44px !important;   /* WCAG 2.5.5 AA：觸控目標 ≥ 44×44 */
+  min-height: 44px !important;
   border-radius: 0 !important;
   border: 0 !important;
   background: transparent !important;
   box-shadow: none !important;
-  padding: 6px 10px !important;
+  padding: 10px 12px !important;
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
@@ -1496,7 +1505,7 @@ button.DocSearch.DocSearch-Button:focus-visible {
   display: block;
   font-family: var(--font-display);
   font-size: 12px;
-  color: var(--brand-500);
+  color: var(--text-tertiary);  /* 印刷符號 ◆ 改 ink、不用 brand：頁尾不該搶 attention */
   margin-bottom: 14px;
 }
 
@@ -1675,7 +1684,7 @@ button.DocSearch.DocSearch-Button:focus-visible {
   font-style: italic;
   font-size: 12px;
   font-weight: 500;
-  letter-spacing: 0.32em;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--text-tertiary);
   margin-bottom: 18px;

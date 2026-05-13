@@ -117,6 +117,37 @@ body {
   line-height: 1.3;
 }
 
+/* a11y skip link：focus 才現身、Tab 第一鍵能跳過 nav / sidebar 直達內文 */
+.ddia-skip-link {
+  position: fixed;
+  top: -100px;
+  left: 16px;
+  z-index: 10000;
+  padding: 12px 18px;
+  background: var(--brand-500);
+  color: var(--text-inverse);
+  text-decoration: none;
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 0;
+  transition: top 0.15s;
+}
+.ddia-skip-link:focus,
+.ddia-skip-link:focus-visible {
+  top: 16px;
+  outline: 2px solid var(--text-primary);
+  outline-offset: 2px;
+}
+
+/* SectionDivider 緊接 h2 時、h2 抑制自己的 border-top + padding-top —— 避免 dinkus 撞跨頁 hairline。
+   SectionDivider 本身已是 section 儀式分隔、後接的 h2 應該安靜接續、不再開新分隔 */
+.ddia-section-divider + h2 {
+  border-top: 0 !important;
+  padding-top: 0 !important;
+  margin-top: 12px !important;
+}
+
 /* H2 icon：Editorial 簡化 — 統一用 § section sign 取代 Material Symbols
    保留 .role-h2 class（markdown-it-attrs 機制不動，未來想換回 icon 可一行切換） */
 .vp-doc h2.role-h2::before {
@@ -125,7 +156,7 @@ body {
   font-style: italic;
   font-variation-settings: "opsz" 36, "SOFT" 60, "wght" 500;
   font-size: 28px;
-  color: var(--brand-500);
+  color: var(--text-secondary);  /* 印刷符號用 ink、不用 brand：避免 brand 雜訊 */
   margin-right: 14px;
   vertical-align: baseline;
   display: inline-block;
@@ -133,7 +164,7 @@ body {
 }
 
 .dark .vp-doc h2.role-h2::before {
-  color: var(--info-fg);
+  color: var(--text-secondary);
 }
 
 
@@ -149,8 +180,19 @@ body {
 }
 
 .vp-doc p {
-  margin: 22px 0;  /* 段距拉開 — line-height 1.85 配段距 22px = book-paragraph 韻律 */
+  margin: 18px 0;  /* 中文段距 18px + line-height 1.85 — 改回正常書頁韻律（22px 對中文過鬆） */
   color: var(--text-primary);
+}
+
+/* 章首相鄰元件 border 去重：ChapterOpener → ChapterMeta → PrereqBox → TLDR 連續堆疊時、
+   每個元件都有上下 hairline 會造成 100px 內 7 條水平線、書頁不會這樣堆。
+   策略：後者去掉自己的 border-top、靠前者的 border-bottom 共用一條線。 */
+.ddia-chapter-opener + .ddia-meta,
+.ddia-meta + .ddia-prereq,
+.ddia-prereq + .ddia-tldr,
+.ddia-meta + .ddia-tldr {
+  border-top: 0 !important;
+  margin-top: 12px !important;
 }
 
 /* Editorial drop cap：章首（h1 之後的第一個 p）首字大寫 — 書本書頁感
@@ -165,11 +207,11 @@ body {
   line-height: 0.88;
   margin: 0.06em 0.08em -0.04em 0;
   padding-right: 0.04em;
-  color: var(--brand-500);
+  color: var(--text-secondary);  /* drop cap 改 ink、不用 brand：書頁首字大寫是裝飾不是品牌 */
 }
 .dark .vp-doc > h1:first-of-type + p::first-letter,
 .dark .vp-doc > div:first-of-type > h1 + p::first-letter {
-  color: var(--info-fg);
+  color: var(--text-secondary);
 }
 
 /* Editorial：強調連結用 manuscript orange、底線細實線（不是 VP 預設粗虛底線） */
@@ -279,13 +321,13 @@ body {
   font-size: 0.88em;
   padding: 0 4px;
   background: var(--brand-tint-soft);
-  color: var(--brand-500);
+  color: var(--text-primary);   /* 內文行內 code 改 ink、不用 brand：避免 brand 雜訊 */
   border-radius: 0;
   border: 0;
-  border-bottom: 1px dotted var(--brand-tint-border);
+  border-bottom: 1px dotted var(--border-default);
 }
 .dark .vp-doc :not(pre) > code {
-  color: #D4B896;
+  color: var(--text-primary);
   background: rgba(227, 160, 106, 0.06);
   border-bottom-color: rgba(227, 160, 106, 0.18);
 }

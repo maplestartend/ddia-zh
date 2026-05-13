@@ -136,7 +136,9 @@ export default withMermaid(defineConfig({
 
   markdown: {
     lineNumbers: true,
-    theme: { light: 'github-light', dark: 'github-dark' },
+    // dark 模式 syntax theme：避免 github-dark 的冷藍紫色 leak 進暖色頁面
+    // vitesse-dark 是暖灰底 + 米色字、與 Editorial 暖炭墨頁面協調
+    theme: { light: 'github-light', dark: 'vitesse-dark' },
     config(md) {
       // 讓 markdown 標題能加 class，例如：## 後端工程師 {.role-h2-backend}
       // 配合 CSS ::before 注入 Material Symbols icon，保持 outline 文字乾淨

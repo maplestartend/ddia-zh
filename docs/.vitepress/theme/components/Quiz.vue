@@ -170,7 +170,8 @@ function onAnchorClick(anchor: string, e: MouseEvent) {
   const el = document.getElementById(anchor)
   if (!el) return
   const top = el.getBoundingClientRect().top + window.scrollY - 80
-  window.scrollTo({ top, behavior: 'smooth' })
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  window.scrollTo({ top, behavior: prefersReduced ? 'auto' : 'smooth' })
   history.replaceState(null, '', `#${anchor}`)
 }
 

@@ -248,11 +248,9 @@ DDIA 全書其實就是在教你：**面對特定情境，如何做這些權衡*
 
 <Progress chapter-id="ch01" />
 
-<NextChapterBridge chapter-id="ch01" />
-
----
-
 ::: info 延伸閱讀
 - Netflix 的 [Chaos Engineering Principles](https://principlesofchaos.org/)
 - Gil Tene 的 ["How NOT to Measure Latency"](https://www.youtube.com/watch?v=lJ8ydIuPFeU)
 :::
+
+<NextChapterBridge chapter-id="ch01" />

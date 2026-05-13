@@ -51,7 +51,8 @@ function scrollToLetter(letter: string, e: MouseEvent) {
   if (!el) return
   // sticky index 自己占 ~52px，扣掉避免被遮
   const top = el.getBoundingClientRect().top + window.scrollY - 70
-  window.scrollTo({ top, behavior: 'smooth' })
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  window.scrollTo({ top, behavior: prefersReduced ? 'auto' : 'smooth' })
   history.replaceState(null, '', `#${letter.toLowerCase()}`)
 }
 </script>

@@ -93,7 +93,7 @@ const displayTeaser = computed(() => currentChap.value?.teaser)
   font-size: 12px;
   font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.32em;
+  letter-spacing: 0.22em;
   color: var(--text-tertiary);
   margin-bottom: 14px;
   padding-left: 0.3em;

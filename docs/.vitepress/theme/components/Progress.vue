@@ -74,7 +74,8 @@ function scrollToQuiz() {
   const el = document.querySelector('.ddia-quiz')
   if (!el) return
   const top = el.getBoundingClientRect().top + window.scrollY - 80
-  window.scrollTo({ top, behavior: 'smooth' })
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  window.scrollTo({ top, behavior: prefersReduced ? 'auto' : 'smooth' })
 }
 
 // Quiz 元件 mount 後本 DOM 才有 .ddia-quiz、需在下一個 paint 偵測

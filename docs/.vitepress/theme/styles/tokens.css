@@ -70,6 +70,53 @@
   --font-mono:
     "JetBrains Mono", "SF Mono", "Consolas",
     ui-monospace, "Noto Sans Mono CJK TC", monospace;
+
+  /* ---------- Spacing scale（Wave 3 加入：禁止 raw px、所有 margin/padding 從這 6 階挑） ---------- */
+  --space-1: 4px;     /* 微縫：dot / icon gap */
+  --space-2: 8px;     /* 元件內元素 */
+  --space-3: 16px;    /* 段內 / 內 padding / p margin */
+  --space-4: 24px;    /* 段距 / 表格 margin / 一般元件 margin */
+  --space-5: 40px;    /* 區塊分隔 / callout / blockquote */
+  --space-6: 64px;    /* 章節級分隔 / h2 / 儀式區塊 */
+
+  --gap-paragraph: var(--space-3);   /* <p> margin */
+  --gap-block:     var(--space-4);   /* table / callout / 普通元件 */
+  --gap-section:   var(--space-5);   /* h3 / section break / hr / SectionDivider */
+  --gap-chapter:   var(--space-6);   /* h2 / 章首 ChapterOpener bottom */
+
+  /* ---------- Type scale（Wave 3：6 階字級階層、禁止 raw px font-size） ---------- */
+  --type-display-1: 44px;  /* hero h1 / 章節最大 */
+  --type-display-2: 28px;  /* Part header h2 / bridge-title / quiz-next-title */
+  --type-h1:        42px;  /* ChapterOpener title / .vp-doc h1 */
+  --type-h2:        26px;  /* 章節 h2 */
+  --type-h3:        20px;  /* 元件內 section header */
+  --type-body:      16px;  /* 內文預設 */
+  --type-small:     14px;  /* 卡片副文 / 標籤 */
+  --type-eyebrow:   12px;  /* italic small caps eyebrow 唯一規格 */
+  --type-chapter-mark: 56px;  /* 章號（比章名小、避免階層倒置） */
+
+  /* Fraunces variation-settings 標準化（從 6 個 SOFT 檔位收斂到 4 套規格） */
+  --fvar-display:    "opsz" 72, "SOFT" 60, "wght" 500;  /* 大標題 / 章名 */
+  --fvar-section:    "opsz" 36, "SOFT" 50, "wght" 600;  /* h2 / h3 / 元件 section */
+  --fvar-eyebrow:    "opsz" 24, "SOFT" 50, "wght" 500;  /* italic eyebrow / cite / pager */
+  --fvar-italic-note:"opsz" 24, "SOFT" 50, "wght" 400;  /* italic 引言段落 */
+
+  /* letter-spacing 標準（從 0.18/0.22/0.28/0.32 四套收斂到 1 個） */
+  --ls-eyebrow: 0.22em;  /* italic uppercase small caps eyebrow 全站唯一 */
+  --ls-chapter-mark: 0.18em;  /* CH·01 之類章號 spacing */
+
+  /* ---------- Interactive state（Wave 3：hover/active/focus 統一規則） ---------- */
+  --interactive-hover-bg:   var(--bg-surface);
+  --interactive-hover-mark: var(--brand-500);
+  --interactive-active-bg:  rgba(140, 58, 42, 0.10);  /* brand-tint 同色 */
+  --interactive-focus-outline-width: 2px;
+  --interactive-focus-outline-offset: 2px;
+
+  /* ---------- Ink scale（Wave 3：取代「brand-500 兼任 ink 重點」的散落用法） ---------- */
+  --ink-strong: var(--text-primary);   /* 印刷符號 § · ◆ 用這個、不用 brand-500 */
+  --ink-mid:    var(--text-secondary);
+  --ink-soft:   var(--text-tertiary);
+  --ink-mark:   var(--brand-500);       /* 只保留給「真品牌印記」場合 */
 }
 
 /* ---------- Semantic · Light（cream 紙本） ---------- */
@@ -193,4 +240,17 @@
   --vp-c-brand-1: #E3A06A; /* dark 連結色：暖橙 */
   --vp-c-brand-2: #DC9148;
   --vp-c-brand-3: #C45A1B;
+
+  /* ★ CSS 變數作用域不會把 :root 對 semantic token 的綁定自動帶進 .dark scope，
+     必須在 .dark 內重綁、否則 VP 預設冷藍灰 #1b1b1f 會 leak 到全頁底色（暗色模式破功主因）*/
+  --vp-c-bg:     var(--bg-canvas);
+  --vp-c-bg-alt: var(--bg-surface);
+  --vp-c-bg-soft: var(--bg-subtle);
+
+  --vp-c-text-1: var(--text-primary);
+  --vp-c-text-2: var(--text-secondary);
+  --vp-c-text-3: var(--text-tertiary);
+
+  --vp-c-divider: var(--border-default);
+  --vp-c-gutter:  var(--border-default);
 }

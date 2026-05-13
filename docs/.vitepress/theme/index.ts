@@ -57,11 +57,21 @@ if (typeof window !== 'undefined') {
     }
     update()
   }
+  // a11y skip link：第一個 Tab 鍵浮現「跳到主要內容」，協助鍵盤導航者繞過 nav / sidebar
+  const ensureSkipLink = () => {
+    if (document.querySelector('.ddia-skip-link')) return
+    const link = document.createElement('a')
+    link.className = 'ddia-skip-link'
+    link.href = '#VPContent'
+    link.textContent = '跳到主要內容'
+    document.body.insertBefore(link, document.body.firstChild)
+  }
   // 等 DOM ready
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', ensureBar)
+    document.addEventListener('DOMContentLoaded', () => { ensureBar(); ensureSkipLink() })
   } else {
     ensureBar()
+    ensureSkipLink()
   }
   window.addEventListener('scroll', onScroll, { passive: true })
   window.addEventListener('resize', onScroll, { passive: true })

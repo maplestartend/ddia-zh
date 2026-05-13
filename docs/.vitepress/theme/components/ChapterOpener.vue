@@ -76,16 +76,17 @@ onMounted(() => {
   text-align: left;
 }
 
-/* 大號章節編號：Fraunces SemiBold + oldstyle figures + 大字級 */
+/* 章節編號：Fraunces SemiBold + oldstyle figures
+   字級從 96px 改 56px——書頁慣例「章名 > 章號」，原 96px > 章名 42px 是階層倒置 */
 .ddia-chapter-opener-mark {
   font-family: var(--font-display);
   font-feature-settings: "onum" 1, "kern" 1;
-  font-variation-settings: "opsz" 144, "SOFT" 80, "wght" 500;
-  font-size: 96px;
+  font-variation-settings: "opsz" 96, "SOFT" 60, "wght" 500;
+  font-size: 56px;
   line-height: 1;
   color: var(--brand-500);
-  letter-spacing: -0.02em;
-  margin-bottom: 12px;
+  letter-spacing: -0.01em;
+  margin-bottom: 10px;
 }
 
 .ddia-chapter-opener-eyebrow {
@@ -95,7 +96,7 @@ onMounted(() => {
   font-size: 13px;
   font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.32em;
+  letter-spacing: 0.22em;
   color: var(--text-tertiary);
   margin-bottom: 18px;
 }
@@ -148,7 +149,7 @@ onMounted(() => {
 }
 
 @media (max-width: 640px) {
-  .ddia-chapter-opener-mark { font-size: 64px; }
-  .ddia-chapter-opener-title { font-size: 32px; }
+  .ddia-chapter-opener-mark { font-size: 40px; }
+  .ddia-chapter-opener-title { font-size: 28px; }
 }
 </style>
