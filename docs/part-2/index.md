@@ -50,6 +50,10 @@ Ch5 複製 ──┐
 
 ## 讀完這部分，你應該能做的決策 {.role-h2 .icon-account_tree}
 
+Part II 五章對應五類「**該怎麼選**」的決策。下面 4 棵獨立決策樹分別對應其中四類最常被問到的——
+
+### 1. 要不要用 read replica?（Ch5）
+
 ```mermaid
 flowchart TD
     A[要不要用 read replica?] --> B{讀多寫少?}
@@ -57,16 +61,31 @@ flowchart TD
     C -- 不行 --> D[同步複製或讀 leader]
     C -- 可以 --> E[非同步複製<br/>注意 read-your-writes]
     B -- 否 --> F[沒必要 / 用快取]
+```
 
+### 2. 寫太多單機扛不住要怎麼分區?（Ch6）
+
+```mermaid
+flowchart TD
     G[寫太多單機扛不住?] --> H{需要範圍查詢?}
     H -- 是 --> I[Key Range 分區<br/>注意熱點]
     H -- 否 --> J[Hash 分區<br/>用 virtual nodes]
+```
 
+### 3. 業務有跨筆原子性需求 → 選哪個隔離級別?（Ch7）
+
+```mermaid
+flowchart TD
     K[業務有跨筆原子性需求?] --> L{隔離級別?}
     L -- 怕 dirty read --> M[Read Committed<br/>多數 DB 預設]
     L -- 怕 non-repeatable read --> N[Snapshot Isolation<br/>PG / Oracle]
     L -- 怕 write skew / phantom --> O[Serializable<br/>SSI / 2PL]
+```
 
+### 4. 需要強一致 + 跨節點 → CP 還是 AP?（Ch8 / Ch9）
+
+```mermaid
+flowchart TD
     P[需要強一致 + 跨節點?] --> Q{接受分區時拒服務?}
     Q -- 可以 --> R[CP 系統<br/>etcd / ZooKeeper + Raft]
     Q -- 不行 --> S[AP 系統<br/>Dynamo / Cassandra 最終一致]

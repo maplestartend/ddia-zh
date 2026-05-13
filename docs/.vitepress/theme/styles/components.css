@@ -1590,14 +1590,18 @@ button.DocSearch.DocSearch-Button:focus-visible {
   fill: #1F1A17 !important;        /* --bg-surface dark */
   stroke: #E3A06A !important;       /* --info-fg / brand accent in dark */
 }
-/* sequence diagram actor / note 區塊 */
-.dark .vp-doc svg[id*="mermaid"] .actor,
-.dark .vp-doc svg[id*="mermaid"] .actor-man {
+/* sequence diagram actor box / note 區塊背景與邊框
+   重要：要明確限制只命中 rect / polygon、不要連帶把 <text class="actor actor-box"> 的字色一起改成背景色
+   （這是 ch09 ABD 與 ch11 watermark 在 dark 下 participant 名字消失的元兇）*/
+.dark .vp-doc svg[id*="mermaid"] rect.actor,
+.dark .vp-doc svg[id*="mermaid"] polygon.actor,
+.dark .vp-doc svg[id*="mermaid"] rect.actor-man,
+.dark .vp-doc svg[id*="mermaid"] polygon.actor-man {
   fill: #1F1A17 !important;
   stroke: #E3A06A !important;
 }
-.dark .vp-doc svg[id*="mermaid"] .note,
-.dark .vp-doc svg[id*="mermaid"] .noteText {
+.dark .vp-doc svg[id*="mermaid"] rect.note,
+.dark .vp-doc svg[id*="mermaid"] polygon.note {
   fill: #261F1B !important;
   stroke: #A67A4D !important;
 }
@@ -1614,12 +1618,38 @@ button.DocSearch.DocSearch-Button:focus-visible {
   fill: #B5AC97 !important;
   stroke: #B5AC97 !important;
 }
-/* 字色暗色版（覆寫 themeVariables.primaryTextColor 在 SVG 內 inline 寫的 #1C1A17） */
+/* 字色暗色版（覆寫 themeVariables.primaryTextColor 在 SVG 內 inline 寫的 #1C1A17）
+   明確列出 mermaid 用的 text class、避免被前面 background-color 規則蓋掉 */
 .dark .vp-doc svg[id*="mermaid"] text,
 .dark .vp-doc div[class*="mermaid"] text,
+.dark .vp-doc svg[id*="mermaid"] text.actor,
+.dark .vp-doc svg[id*="mermaid"] text.actor-box,
+.dark .vp-doc svg[id*="mermaid"] text.actor-man,
+.dark .vp-doc svg[id*="mermaid"] text.messageText,
+.dark .vp-doc svg[id*="mermaid"] text.noteText,
+.dark .vp-doc svg[id*="mermaid"] text.labelText,
+.dark .vp-doc svg[id*="mermaid"] text tspan,
 .dark .vp-doc svg[id*="mermaid"] .messageText,
-.dark .vp-doc svg[id*="mermaid"] .noteText tspan {
+.dark .vp-doc svg[id*="mermaid"] .noteText tspan,
+.dark .vp-doc svg[id*="mermaid"] .actor-box {
   fill: #EDE3CE !important;          /* --text-primary dark */
+}
+
+/* mermaid sequenceDiagram 的 actor 名稱與 flowchart node label 用 foreignObject + HTML div 渲染、
+   不是 SVG <text>——上面的 fill 規則對 HTML 內容無效（要用 color、不是 fill）。
+   這是「ch09 §9.1 ABD 與 ch11 watermark 在 dark 下 participant 名字完全消失」的元兇修法。 */
+.dark .vp-doc svg[id*="mermaid"] foreignObject,
+.dark .vp-doc svg[id*="mermaid"] foreignObject *,
+.dark .vp-doc div[class*="mermaid"] foreignObject,
+.dark .vp-doc div[class*="mermaid"] foreignObject * {
+  color: #EDE3CE !important;
+}
+/* mermaid 暗色 edge label 背景（避免半透明白底蓋住箭頭線） */
+.dark .vp-doc svg[id*="mermaid"] .edgeLabel rect,
+.dark .vp-doc svg[id*="mermaid"] .edgeLabel,
+.dark .vp-doc svg[id*="mermaid"] .label-container {
+  fill: #1F1A17 !important;
+  background-color: #1F1A17 !important;
 }
 /* 整體 mermaid 背景（containing div / svg）拉到暗 */
 .dark .vp-doc div[class*="mermaid"],

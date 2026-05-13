@@ -169,10 +169,30 @@ export default withMermaid(defineConfig({
       noteTextColor: '#1C1A17',
       noteBorderColor: '#A24612',
       fontFamily: '"Fraunces", "Noto Serif TC", Georgia, serif',
-      fontSize: '14px'
+      fontSize: '15px'   // 從 14px 升 15px、Fraunces 在小尺寸辨識度較差
+    },
+    // 強制 SVG 不要等比塞進容器（讓字維持原生大小、容器走 overflow-x: auto）
+    // 配合 layout.css 的 mermaid 容器規則
+    flowchart: {
+      useMaxWidth: false,
+      htmlLabels: true,
+      padding: 12,        // 預設 8 太緊、多行 label 第二/三行會被裁；12 給 Fraunces descender 餘裕
+      nodeSpacing: 50,
+      rankSpacing: 60
+    },
+    sequence: {
+      useMaxWidth: false,
+      actorMargin: 50,
+      boxMargin: 10,
+      messageMargin: 35,
+      noteMargin: 10
+    },
+    state: {
+      useMaxWidth: false,
+      padding: 16        // Raft state diagram transition label 會打架、給更多餘裕
     }
     // 註：vitepress-plugin-mermaid 不支援 darkThemeVariables；
-    // 暗色模式的 mermaid 圖會用 light theme variables，視覺與暗色頁面有色溫落差。
-    // 已知限制，列入 BACKLOG（若關鍵則改用 mermaid-js 動態 theme switch hook）
+    // 暗色模式的 mermaid 圖會用 light theme variables、但 components.css 用 SVG override 補了暗色 palette
+    // （含 foreignObject HTML 內容的 color 覆寫——sequenceDiagram 的 actor 名字與 flowchart node label）
   }
 }))
