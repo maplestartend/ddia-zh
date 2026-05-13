@@ -7,17 +7,17 @@ title: Ch7 交易
 <ChapterMeta part="Part II 分散式資料" :read-time="60" difficulty="進階" :tags="['ACID', 'Isolation', 'Serializable']" prereq="Ch5, Ch6" />
 
 <PrereqBox
-  :prereq="['[Part 0.3 SQL §5 交易與隔離](/part-0/sql)', '[Part 0.4 OS §1 行程與執行緒](/part-0/os)', 'Ch5（複製基本概念）']"
+  :prereq="['[Part 0.3 SQL §5 交易與隔離](/part-0/sql)', '[Part 0.5 OS §1 行程與執行緒](/part-0/os)', 'Ch5（複製基本概念）']"
   first-read-hint="**90-120 分鐘**——交易章資訊密度全書最高，「異常 × 隔離級別」矩陣（§7.2）與「真正可序列化的三種實作」（§7.3）建議讀完先停下來自己畫一遍。Lost update / Write skew / Phantom 三個詞要能用例子互相區辨"
   :skippable="['§7.2 末「Phantom 在 SI 下要分兩種看」warning block 第一次讀可以跳——第二次回頭再讀；先抓住「SI 擋不住 write skew」就好']"
 />
 
 <TLDR :points='[
-  "<strong>ACID 並非鐵板一塊的概念</strong>：A/I/D 各家 DB 詮釋不一，C（一致性）甚至是應用責任不是 DB 責任。",
-  "<strong>弱隔離級別有經典異常</strong>：Read Committed → 解決 dirty read/write；Snapshot Isolation → 解決 non-repeatable read 與「讀取階段的 phantom」；但仍擋不住 lost update（PG/Oracle 在 SI/REPEATABLE READ 才會自動偵測、READ COMMITTED 預設不偵測）、write skew、以及「基於不存在性寫入決策」的 phantom-based write skew。",
-  "<strong>Snapshot Isolation 用 MVCC 實作</strong>：每筆交易看到「開始時的快照」，讀不阻塞寫、寫不阻塞讀，是現代 DB 主流（PostgreSQL、Oracle）。",
-  "<strong>Lost Update vs Write Skew</strong>：兩者都是並發異常，但 write skew 涉及「跨列的約束」，SI 也無法解決，需要 SSI 或顯式鎖。",
-  "<strong>真正的 Serializable 有三種實作</strong>：Actual Serial Execution（VoltDB 單執行緒）、2PL（傳統鎖）、SSI（樂觀並發控制，PostgreSQL 9.1+）。"
+  "<strong>ACID 並非鐵板一塊</strong>：A / I / D 各家 DB 詮釋不一，C（一致性）甚至是應用責任、不是 DB 責任。",
+  "<strong>弱隔離級別有經典異常</strong>：Read Committed 解決 dirty read / write；Snapshot Isolation 解決 non-repeatable read；但仍擋不住 lost update（PG / Oracle 在 SI 才自動偵測、READ COMMITTED 預設不偵測）、write skew、以及基於不存在性決策的 phantom-based write skew。",
+  "<strong>Snapshot Isolation 用 MVCC 實作</strong>：每筆交易看到「開始時的快照」、讀不阻塞寫、寫不阻塞讀 —— 是現代 DB 主流（PostgreSQL、Oracle）。",
+  "<strong>Lost Update vs Write Skew</strong>：都是並發異常，但 write skew 涉及「跨列的約束」、SI 也擋不住 —— 需要 SSI 或顯式鎖。",
+  "<strong>真正的 Serializable 有三種實作</strong>：Actual Serial Execution（VoltDB 單執行緒）、2PL（傳統鎖）、SSI（樂觀並發、PostgreSQL 9.1+）。"
 ]' />
 
 ## 7.0 為什麼需要交易？
@@ -260,7 +260,7 @@ COMMIT;  -- ← 兩筆都成功，雙重預訂！
 | Dirty Read | ✗ 仍會發生 | ✓ 防止 | ✓ | ✓ |
 | Dirty Write | ✗ | ✓ | ✓ | ✓ |
 | Read Skew（non-repeatable read） | ✗ | ✗ | ✓ | ✓ |
-| **Lost Update（同列「先讀再寫」）** | ✗ | ✗（PG/MySQL 預設不偵測） | ⚠️ PG/Oracle 在 SI/RR 偵測 → `40001` abort（MySQL InnoDB RR **仍不偵測**） | ✓ |
+| **Lost Update（同列「先讀再寫」）** | ✗ | ✗（PG/MySQL 預設不偵測） | ⚠️ PG/Oracle 在 SI/RR 偵測（PG → `40001` / Oracle → `ORA-08177` abort；MySQL InnoDB RR **仍不偵測**） | ✓ |
 | **Lost Update（跨列邏輯依賴）** | ✗ | ✗ | ✗ 不偵測、需應用 retry | ✓（SSI 才偵測為 write skew 變體） |
 | Write Skew | ✗ | ✗ | ✗ **仍會發生** | ✓ |
 | Phantom Read（**讀**走快照看不到新插入） | ✗ | ✗ | ✓ | ✓ |

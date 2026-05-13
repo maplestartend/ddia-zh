@@ -9,8 +9,8 @@ title: Ch8 分散式系統的麻煩
 <TLDR :points='[
   "<strong>分散式系統的本質是「部分失效」</strong>：單機要麼正常要麼掛掉，分散式系統會處於「某部分掛、某部分正常、誰也不確定」的灰色狀態。",
   "<strong>網路是 unreliable 的</strong>：封包可能丟失、重複、亂序、延遲。Timeout 是唯一的偵測手段，但長短都有代價。",
-  "<strong>時鐘有兩種，都不能信</strong>：time-of-day clock（可跳變）vs monotonic clock（單調但無絕對意義）。NTP 同步誤差可達數百 ms，無法用於排序事件。",
-  "<strong>Process pause 隨時可能發生</strong>：GC、虛擬機暫停、page fault、CPU 排程都會讓你的行程「死一段時間」，然後復活以為時間沒過。",
+  "<strong>時鐘有兩種、都不能信</strong>：time-of-day clock（可跳變）vs monotonic clock（單調但無絕對意義）。NTP 同步誤差可達數百 ms、無法用於排序事件。",
+  "<strong>Process pause 隨時可能發生</strong>：GC、虛擬機暫停、page fault、CPU 排程都會讓你的行程「死一段時間」、然後復活以為時間沒過。",
   "<strong>「真相由多數決定」</strong>：單一節點不能信任自己（可能已被孤立）；分散式系統用 quorum、fencing token 等機制讓多數決定誰是 leader。"
 ]' />
 
@@ -23,7 +23,7 @@ title: Ch8 分散式系統的麻煩
 | **Page fault** | 程式存取的記憶體頁不在 RAM，OS 需從磁碟載入 —— 過程中程式停下等磁碟。 |
 | **WAL**（Write-Ahead Log） | 「先寫日誌，再改實際資料」的崩潰恢復機制；磁碟 DB 與檔案系統的標配。 |
 | **Wall clock** | 真實世界時間（如 `System.currentTimeMillis()`），可被 NTP 校正甚至向後跳。 |
-| **Monotonic clock** | 程序內單調遞增的計時器（如 `System.nanoTime()`），只能測 duration，不能跨機器比較。 |
+| **Monotonic clock** | 行程內單調遞增的計時器（如 `System.nanoTime()`），只能測 duration，不能跨機器比較。 |
 
 不熟也沒關係，本章會在用到時再解釋。先建立印象即可。
 :::

@@ -7,11 +7,11 @@ title: Ch5 複製
 <ChapterMeta part="Part II 分散式資料" :read-time="55" difficulty="進階" :tags="['Leader/Follower', 'Quorum', 'CRDT']" prereq="Ch1, Ch3" />
 
 <TLDR :points='[
-  "<strong>複製 = 在多個節點存同一份資料的副本</strong>。動機：低延遲（地理近）、高可用（容錯）、高讀吞吐（讀分散）。",
+  "<strong>複製 = 在多個節點存同一份資料的副本</strong>：動機是低延遲（地理近）、高可用（容錯）、高讀吞吐（讀分散）。",
   "<strong>三種架構</strong>：Single-Leader（最常見，PostgreSQL/MySQL）、Multi-Leader（跨資料中心）、Leaderless（Dynamo 風格，Cassandra/Riak）。",
-  "<strong>同步 vs 非同步複製的權衡</strong>：同步保證一致性但任一節點掛掉整體卡死；非同步快但有資料丟失風險。實務常用「半同步」。",
-  "<strong>複製延遲三大問題</strong>：read-your-writes、monotonic reads、consistent prefix reads。要靠應用層或路由策略解決。",
-  "<strong>無主複製靠 Quorum</strong>：W + R > N 在「嚴格 quorum、無 sloppy 模式、無節點切換」時才保證讀到最新值；實務 Dynamo 風格啟用 sloppy quorum 換可用性時不保證。版本向量（version vector）解決並發寫衝突。"
+  "<strong>同步 vs 非同步的權衡</strong>：同步保證一致性但任一節點掛掉整體卡死；非同步快但有資料丟失風險。實務常用「半同步」。",
+  "<strong>複製延遲三大問題</strong>：read-your-writes、monotonic reads、consistent prefix reads —— 要靠應用層或路由策略解決。",
+  "<strong>Leaderless 靠 Quorum</strong>：W + R > N 在「嚴格 quorum」下保證讀到最新值；Dynamo 風格啟用 sloppy quorum（鬆散法定人數 — 原節點不可達時暫寫到替代節點、待恢復後再同步回去）換可用性時不保證。版本向量（version vector）解決並發寫衝突。"
 ]' />
 
 ## 5.1 為什麼需要<G term="replication">複製</G>
@@ -131,10 +131,14 @@ sequenceDiagram
 
 | 策略 | 說明 | 風險 |
 |---|---|---|
-| Last-Write-Wins (LWW) | 用時間戳，最大勝（CockroachDB / YugabyteDB 用 HLC、Spanner 用 TrueTime 緩解時鐘漂移，但無法消除：跨節點寫入仍可能因時鐘誤差被靜默丟失） | 時鐘不同步 → 丟資料 |
+| Last-Write-Wins (LWW) | 用時間戳，最大勝（Cassandra / DynamoDB / Riak 預設策略） | 時鐘不同步 → 並發寫被靜默丟失 |
 | 應用層 merge | 給 client 看到衝突，自己決定 | 複雜 |
 | CRDT | 自動可合併資料結構 | 資料結構受限 |
 | Mergeable persistent data | 像 git，保留分支 | 仍需應用處理 |
+
+::: warning CockroachDB / Spanner / YugabyteDB ≠ LWW
+這三家常被誤認為「用 HLC / TrueTime 做 LWW 衝突解決」，**其實不是**：它們是 **Raft single-leader-per-range**、每個資料範圍只有一個 leader 寫入，**根本不存在並發 multi-leader 寫衝突**。HLC / TrueTime 在這幾家用於 **MVCC 時間戳排序與外部一致性**（external consistency），不是用於解多寫者衝突。真正在「並發寫到不同副本、用時間戳挑勝者」的是 Cassandra / DynamoDB / Riak 這類 Dynamo-style leaderless 系統。
+:::
 
 ---
 
@@ -206,7 +210,7 @@ graph TD
     Q2 -- 衝突不可接受<br/>金融 / 強一致 --> SLgeo[Single-Leader<br/>+ 在最近 region 部署 leader<br/>承擔跨 region 寫延遲]
     Q2 -- 衝突可容忍<br/>計數器 / 文件協作 --> Q3{需要 commutative 結構嗎？}
     Q3 -- 是 --> CRDT[Multi-Leader + CRDT<br/>Yjs / Automerge / Riak DT]
-    Q3 -- 否、用 LWW 接受最後寫贏 --> ML[Multi-Leader + LWW<br/>CockroachDB / YugabyteDB<br/>用 HLC / TrueTime 緩解時鐘]
+    Q3 -- 否、用 LWW 接受最後寫贏 --> ML[Multi-Leader + LWW<br/>Bucardo / MySQL Group Replication<br/>Oracle GoldenGate / BDR]
 
     Q1 -- 寫入 throughput 是瓶頸<br/>大量 ingest --> Lless{需要範圍查詢嗎？}
     Lless -- 否、純 KV 點查 --> DynamoLike[Leaderless<br/>Cassandra / Riak / ScyllaDB<br/>Quorum + read repair]
@@ -280,7 +284,31 @@ graph TD
       "無法用於跨資料中心"
     ],
     answer: 1,
-    explanation: "LWW 用時間戳比大小，但分散式系統的時鐘有漂移（Ch8 主題）。若節點 A 的時鐘比真實世界落後，A 上「較新」的寫入會打上**較小**的時間戳，在 LWW 比較中輸給時鐘較準節點 B 的「較舊」寫入 → 較新的資料被靜默丟失。HLC/TrueTime 可緩解但無法消除此問題。"
+    explanation: "LWW 用時間戳比大小，但分散式系統的時鐘有漂移（Ch8 主題）。若節點 A 的時鐘比真實世界落後，A 上「較新」的寫入會打上**較小**的時間戳、在 LWW 比較中輸給時鐘較準節點 B 的「較舊」寫入 → 較新的資料被靜默丟失。HLC 可緩解但無法消除此問題（CockroachDB / Spanner 用 single-leader Raft 從根本避開 multi-leader 衝突、不採 LWW）。"
+  },
+  {
+    difficulty: "basic",
+    question: "你用 PostgreSQL async streaming replication、把讀流量導到 follower。最容易在使用者體驗上踩到的問題是？",
+    options: [
+      "Follower 完全不能讀",
+      "Follower 因複製延遲落後 leader 數百毫秒以上，使用者剛寫完立刻刷新可能看不到自己的寫入（read-your-writes 問題）",
+      "Follower 自動 promote 成新 leader、原 leader 變唯讀",
+      "Follower 跑得比 leader 快、更新先到"
+    ],
+    answer: 1,
+    explanation: "Async replication 本質：leader commit 後才把 WAL 送 follower —— follower 永遠有一段 lag（通常 < 100ms、網路抖動可飆到秒級）。使用者寫完導到 follower 讀可能讀到舊值。三種應用層修法：(a) 寫後固定時間導 leader、(b) 用 monotonic-read session sticky、(c) 用 read-your-writes 邏輯時間戳等候 follower 追上。"
+  },
+  {
+    difficulty: "interview",
+    question: "Multi-Leader 系統用 LWW 解衝突、跟 Ch9 的 Linearizability（線性一致）兼容嗎？",
+    options: [
+      "兼容 —— LWW 提供事件全序排序、符合線性一致定義",
+      "不兼容 —— LWW 靠時鐘排序，時鐘漂移時可能讓「真實時序較早」的寫帶較大時間戳贏掉「較晚」的寫，外部觀察者看到的順序與真實時序不一致",
+      "只有跨資料中心時才不兼容",
+      "Linearizability 不適用於 multi-leader 系統的討論範圍"
+    ],
+    answer: 1,
+    explanation: "Linearizability 要求每個讀請求看到「最新已 commit」的值、且所有讀寫順序可序列化為單一 timeline、與真實時序一致。LWW 在時鐘漂移時可能讓真實時序較早的寫贏掉較晚的 —— 觀察者看到的順序就不再與真實時序一致。Ch9 強調：要真正線性一致必須用 consensus（Raft / Paxos）、不能只靠時鐘戳。Multi-leader + LWW 是 AP 系統的設計選擇，本來就不追求線性一致 —— 兩者目標不同、本質衝突。"
   }
 ]' />
 

@@ -7,10 +7,10 @@ title: Ch3 儲存與檢索
 <ChapterMeta part="Part I 資料系統基礎" :read-time="45" difficulty="中等" :tags="['LSM-Tree', 'B-Tree', 'OLAP']" prereq="Ch2" />
 
 <TLDR :points='[
-  "<strong>儲存引擎兩大家族</strong>：log-structured（LSM-Tree，如 LevelDB/RocksDB/Cassandra）vs page-oriented（B-Tree，如 PostgreSQL/MySQL/SQLite）。",
-  "<strong>LSM-Tree 寫快讀慢</strong>：寫入只追加，背景做 compaction；讀取可能要查多層 SSTable。B-Tree 反之 —— 原地更新，讀取快。",
+  "<strong>儲存引擎兩大家族</strong>：log-structured（LSM-Tree，如 LevelDB / RocksDB / Cassandra）vs page-oriented（B-Tree，如 PostgreSQL / MySQL / SQLite）。",
+  "<strong>LSM-Tree 寫快讀慢</strong>：寫入只追加、背景做 compaction（合併壓實 — 把多層 SSTable 合併去重、回收空間）；讀取可能要查多層 SSTable。B-Tree 反之 —— 原地更新、讀取快。",
   "<strong>Write amplification 與 Read amplification</strong>：兩種引擎在這兩個維度做不同權衡。SSD 上 LSM 的優勢更明顯（避免隨機寫）。",
-  "<strong>OLTP vs OLAP 走向不同儲存格式</strong>：OLTP 用列式（row-oriented），OLAP 用欄式（column-oriented）；欄式可達到 100x 壓縮比與向量化執行。",
+  "<strong>OLTP vs OLAP 走向不同儲存格式</strong>：OLTP 用列式（row-oriented）、OLAP 用欄式（column-oriented）；欄式可達 10x 量級壓縮 + 向量化執行。",
   "<strong>索引是讀寫之間的權衡</strong>：每加一個索引都讓寫變慢、佔更多空間，但讓特定查詢變快。沒有「萬能索引」。"
 ]' />
 
@@ -52,7 +52,7 @@ db_get() { grep "^$1," database | sed -e "s/^$1,//" | tail -n 1; }
 
 **LSM-Tree** 流程：
 ```
-寫入 → memtable（記憶體紅黑樹）
+寫入 → memtable（記憶體表 — 寫入先進的 RAM 結構、滿了再 flush 為 SSTable，多用紅黑樹或 skiplist）
    ↓ flush（滿時）
 SSTable L0 → L1 → L2 → ...（背景 compaction）
 ```
@@ -209,7 +209,7 @@ graph TD
 - 預設 PG / MySQL（B-Tree）——多數 web app 適用
 - 寫密集 / 時序 / IoT → RocksDB / Cassandra（LSM）
 - 純快取 → Redis；持久 KV 且要單機極快 → Bitcask 系
-- 數據分析 / 倉儲 → 欄式（Parquet on S3 + DuckDB / ClickHouse / BigQuery）
+- 資料分析 / 倉儲 → 欄式（Parquet on S3 + DuckDB / ClickHouse / BigQuery）
 
 ::: warning 多數應用不在這個樹的決策節點上
 **實務上 90% 工程師「選什麼 DB」的決策權都不在他手上**——公司有的就用、團隊熟的就用。這張樹的價值是**讓你判斷「現有 DB 對我的負載合不合適」**，而不是「在白紙上挑」。看到效能問題時，回頭看樹判斷：是不是用 B-Tree 跑了 LSM 該跑的負載？
@@ -266,13 +266,37 @@ graph TD
     difficulty: "basic",
     question: "Bloom filter 在 LSM-Tree 中的用途是？",
     options: [
-      "壓縮 SSTable 大小",
+      "確保 SSTable 之間不會有重複 key",
       "判斷 key「絕對不在」某層 SSTable，避免無謂的磁碟讀取",
-      "排序 key",
-      "做 garbage collection"
+      "在記憶體中維護所有 SSTable 的完整索引",
+      "減少 compaction 時需要合併的 SSTable 數量"
     ],
     answer: 1,
-    explanation: "Bloom filter 可能誤判「在」但不會誤判「不在」。LSM 查詢可能要掃多層 SSTable，先用 Bloom filter 過濾，能大幅減少磁碟 I/O。"
+    explanation: "Bloom filter 可能誤判「在」（false positive）但不會誤判「不在」（無 false negative）。LSM 點查詢可能要掃多層 SSTable，先用 Bloom filter 在記憶體中快速判定「絕不在」、可大幅減少磁碟 I/O。重複 key 由 compaction 處理（不是 Bloom filter）、完整索引由 SSTable 的 index block 處理、compaction 計畫由 leveled / tiered 策略決定。"
+  },
+  {
+    difficulty: "applied",
+    question: "你的 OLTP 表上有 5 個欄位、每個都加了索引。下列哪個是這個選擇的主要代價？",
+    options: [
+      "查詢一定變慢",
+      "每次 INSERT / UPDATE 要同時更新所有相關索引，寫入吞吐下降；磁碟用量可能是表本身的數倍",
+      "DB 會自動降級為 KV store",
+      "資料一致性會被破壞"
+    ],
+    answer: 1,
+    explanation: "索引是「為特定查詢預排序的副本」—— 加速這個查詢但拖慢寫（所有索引都要更新）+ 佔磁碟。實務上每張表 5+ 索引很常見，但要監控 INSERT 延遲與磁碟用量。DDIA Ch3 反覆強調「索引是讀寫之間的權衡，沒有萬能索引」。"
+  },
+  {
+    difficulty: "interview",
+    question: "Kafka 的 partition log 與 LSM-Tree 在「儲存哲學」上有什麼共通點？",
+    options: [
+      "兩者都用 B-Tree 加速隨機讀",
+      "兩者都把寫入當成 append-only sequence、避開隨機寫；讀取靠順序掃 + 預先建立的索引 / Bloom filter 加速",
+      "兩者都不允許刪除資料、只能追加",
+      "兩者都需要 fsync 每筆寫入才回 ACK"
+    ],
+    answer: 1,
+    explanation: "Kafka partition = append-only log + 順序消費；LSM = append memtable + flush SSTable + background compaction —— 共通點是「順序寫優於隨機寫」（特別在 SSD 之前的時代）。差異：LSM 對外是 KV、Kafka 對外是 ordered stream；LSM 有 compaction 合併重複 key、Kafka 用 retention 過期 + 可選 compaction topic。DDIA Ch11 對 log abstraction 的論述把這兩家放在同一個家族 —— 讀完 Ch11 回來看本題會更有體會。"
   }
 ]' />
 

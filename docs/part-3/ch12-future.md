@@ -7,11 +7,11 @@ title: Ch12 資料系統的未來
 <ChapterMeta part="Part III 衍生資料" :read-time="40" difficulty="中等" :tags="['Lambda', 'Unbundling', '倫理']" prereq="Ch10, Ch11" />
 
 <TLDR :points='[
-  "<strong>整合不同的儲存系統是這個時代的核心挑戰</strong>。一個應用通常同時依賴 OLTP DB、search、cache、warehouse —— 如何讓它們同步？",
+  "<strong>整合不同的儲存系統是這個時代的核心挑戰</strong>：一個應用通常同時依賴 OLTP DB / search / cache / warehouse —— 如何讓它們同步？",
   "<strong>「Source of truth + 衍生資料」典範</strong>：選一個主資料系統（通常是事件 log 或 OLTP DB），其他全部用 CDC / event 衍生。",
-  "<strong>Lambda 架構（批+流並行）→ Kappa 架構（只用流）</strong>：用串流統一處理批次與線上，是現代資料平台的主流方向。",
-  "<strong>Unbundling 資料庫</strong>：把傳統 DB 內建的 features（索引、replication、materialized view）打散，由多個專門系統用事件 log 拼起來。",
-  "<strong>端到端 (end-to-end) 正確性</strong>：可靠性是端到端問題，不能只在某一層解決；冪等性、唯一識別碼、versioning 要貫穿全鏈。倫理 / 隱私是工程師的責任，不只是合規問題。"
+  "<strong>Lambda 架構（批 + 流並行）→ Kappa 架構（只用流）</strong>：用串流統一處理批次與線上，是現代資料平台的主流方向。",
+  "<strong>Unbundling 資料庫</strong>：把傳統 DB 內建的 features（索引、replication、materialized view）打散、由多個專門系統用事件 log 拼起來。",
+  "<strong>端到端（end-to-end）正確性</strong>：可靠性是端到端問題、不能只在某一層解決；冪等性、唯一識別碼、versioning 要貫穿全鏈。倫理 / 隱私是工程師的責任、不只是合規問題。"
 ]' />
 
 ## 12.1 資料整合：對的工具用在對的地方

@@ -7,11 +7,11 @@ title: Ch4 編碼與演進
 <ChapterMeta part="Part I 資料系統基礎" :read-time="35" difficulty="入門" :tags="['Protobuf', 'Avro', 'RPC']" />
 
 <TLDR :points='[
-  "<strong>編碼 = 把記憶體物件序列化為 byte 串</strong>。常見格式：JSON/XML（人類可讀，肥）vs Protobuf/Thrift/Avro（二進位，緊湊有 schema）。",
-  "<strong>向後相容（backward compatibility）= 新程式能讀舊資料</strong>；<strong>向前相容（forward compatibility）= 舊程式能讀新資料</strong>。後者更難，但在滾動部署（rolling deploy）中必要。",
-  "<strong>Protobuf/Thrift 用欄位標籤（tag number）</strong>容忍欄位增刪；<strong>Avro 用「writer schema vs reader schema」</strong>，特別適合資料倉儲（schema 變動頻繁）。",
+  "<strong>編碼 = 把記憶體物件序列化為 byte 串</strong>：常見格式 JSON / XML（人類可讀、肥）vs Protobuf / Thrift / Avro（二進位、緊湊、有 schema）。",
+  "<strong>向後相容 = 新程式能讀舊資料；向前相容 = 舊程式能讀新資料</strong>。後者更難，但在滾動部署中必要。",
+  "<strong>Protobuf / Thrift 用欄位標籤（tag number）容忍欄位增刪</strong>；<strong>Avro 用「writer schema vs reader schema」</strong>，特別適合資料倉儲（schema 變動頻繁）。",
   "<strong>三大跨服務溝通模式</strong>：資料庫（透過 DB）、RPC（同步呼叫）、訊息傳遞（非同步隊列）。",
-  "<strong>RPC 不是本地函式呼叫的透明替代品</strong>：網路會失敗、會延遲、會逾時。優秀的 RPC 框架要承認這個事實（Future、Promise、明確錯誤碼）。"
+  "<strong>RPC 不是本地函式呼叫的透明替代品</strong>：網路會失敗、會延遲、會逾時。優秀的 RPC 框架要承認這個事實（Future / Promise、明確錯誤碼）。"
 ]' />
 
 ## 4.1 為什麼需要編碼

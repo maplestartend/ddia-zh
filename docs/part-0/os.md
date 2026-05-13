@@ -1,9 +1,9 @@
 ---
-title: 0.4 作業系統地基
+title: 0.5 作業系統地基
 description: 行程、執行緒、虛擬記憶體、page cache、fsync —— Ch3 / Ch7 銜接點
 ---
 
-# 0.4 · 作業系統地基
+# 0.5 · 作業系統地基
 
 <ChapterMeta part="Part 0 前置知識" :read-time="25" difficulty="入門" :tags="['行程', '記憶體', 'fsync']" />
 
@@ -14,16 +14,12 @@ description: 行程、執行緒、虛擬記憶體、page cache、fsync —— Ch
 />
 
 <TLDR :points='[
-  "<strong><G term=\"process\">行程</G> vs <G term=\"thread\">執行緒</G></strong>：行程有獨立虛擬記憶體；執行緒共享行程內記憶體—— 後者並發寫共享資料就是 race condition 的溫床。",
-  "<strong><G term=\"page-cache\">Page cache</G></strong> 是 OS 把最近讀寫的磁碟頁保留在 RAM——讀 SSTable 第二次比第一次快很多就是它。",
-  "<strong><G term=\"fsync\">fsync</G> 才強制寫回磁碟</strong>。沒呼叫 fsync 的寫入，停電可能丟失——這是 <G term=\"wal\">WAL</G> 為何存在、為何要先 sync log 才 commit 的根本原因。",
-  "<strong><G term=\"process-pause\">Process Pause</G></strong> 真實存在：GC、VM 遷移、闔上筆電——分散式系統會把它誤判為「節點失聯」，這是 Ch8 的反覆主題。",
-  "<strong><G term=\"page-fault\">Page Fault</G></strong>：程式存取的頁不在 RAM 中—— OS 同步從磁碟載入、程式行程停下等磁碟。這就是為什麼工作集 > RAM 會雪崩。"
+  "<strong>行程 vs 執行緒</strong>：行程有獨立虛擬記憶體；執行緒共享行程內記憶體 —— 後者並發寫共享資料就是 race condition 的源頭。",
+  "<strong>Page cache</strong>：OS 把最近讀寫的磁碟頁保留在 RAM —— 同一份資料第二次讀比第一次快很多就是它。",
+  "<strong>fsync 才強制寫回磁碟</strong>：沒呼叫的寫入、停電可能丟失 —— 這是 WAL（先寫日誌再改資料）為何存在的根本原因。",
+  "<strong>Process Pause 真實存在</strong>：GC、VM 遷移、闔上筆電 —— 分散式系統會把它誤判為「節點失聯」、是 Ch8 的反覆主題。",
+  "<strong>Page Fault</strong>：要存取的頁不在 RAM、OS 同步從磁碟載入、行程停下等磁碟 —— 工作集大於 RAM 會雪崩就是這個。"
 ]' />
-
-::: warning 這章是骨架
-我會逐步擴充。目前只給最低限度、能撐住 DDIA 銜接的內容。完整深入請走 [OSTEP](https://pages.cs.wisc.edu/~remzi/OSTEP/)（免費電子書）。
-:::
 
 ## 1) <G term="process">行程</G>與<G term="thread">執行緒</G>
 
@@ -144,16 +140,16 @@ OS:    Page Fault → 從磁碟讀 → 載入 → 恢復程式
     "explanation": "這就是為什麼 WAL 設計上 commit 前必須 fsync。write() 只把資料丟給 OS——OS 為了效能會合併寫入、可能延遲幾百毫秒才真的寫磁碟。fsync 才強制等磁碟確認。"
   },
   {
-    "difficulty": "interview",
-    "question": "Java 應用發生 stop-the-world GC 暫停 5 秒，這段期間它持有的分散式鎖會怎樣？",
+    "difficulty": "applied",
+    "question": "Java 應用發生 stop-the-world GC 暫停 5 秒、然後復活。從這個行程自己的視角來看，它最可能的感覺是？",
     "options": [
-      "GC 期間鎖自動延期",
-      "鎖可能已被其他節點視為過期、被新節點搶走—— 等 GC 結束時這個節點仍認為自己持有，造成資料污染",
-      "GC 不影響任何外部狀態",
-      "JVM 會通知所有外部系統暫停"
+      "等同 sleep 5 秒 — 程式知道自己被暫停了 5 秒",
+      "完全沒感覺、直接從上一行繼續執行 — 它無法區分「剛剛被暫停 5 秒」與「沒被暫停」",
+      "JVM 會自動補一個事件通知程式被暫停過",
+      "OS 會在程式復活前打印警告到 stderr"
     ],
     "answer": 1,
-    "explanation": "這是 DDIA Ch8 的經典例子。GC 5 秒 > lease 超時，其他節點搶到新鎖開始改資料，GC 結束的節點仍以為自己持鎖、繼續寫—— 兩邊都改造成 split brain。解法是 fencing token：儲存層拒絕「過期」的請求。"
+    "explanation": "Process pause 對被暫停的行程是「完全透明」—— 它復活時繼續從上一行執行、不知道有 5 秒空白。這就是為什麼分散式系統不能假設「一段程式碼會在預期時間內完成」—— GC、VM 遷移、闔上筆電都可能讓行程暫停任意久。Ch8 會用這個直覺展開出對應的修法。"
   },
   {
     "difficulty": "applied",
@@ -169,6 +165,6 @@ OS:    Page Fault → 從磁碟讀 → 載入 → 恢復程式
   }
 ]' />
 
-<NextChapterBridge next-link="/part-0/network" next-title="0.5 網路地基">
+<NextChapterBridge next-link="/part-0/network" next-title="0.6 網路地基">
 OS 層之後是網路層—— TCP、HTTP、RPC、為什麼「網路會丟包延遲」是 Ch4 / Ch8 的全部前提。
 </NextChapterBridge>

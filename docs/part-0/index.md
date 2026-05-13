@@ -28,9 +28,9 @@ Kleppmann 在原書序言寫：
   <ChapterCard id="p0-intro" num="0.1" title="為什麼需要資料密集系統" summary="從一個簡單後端講起：stateless、典型元件、為什麼需要 DDIA" link="/part-0/intro" :read-time="12" />
   <ChapterCard id="p0-metrics" num="0.2" title="衡量指標素養" summary="QPS / Latency / P99 / Tail Latency / SLA/SLO —— Ch1 的銜接點" link="/part-0/metrics" :read-time="18" />
   <ChapterCard id="p0-sql" num="0.3" title="SQL 與關聯模型速覽" summary="SELECT / JOIN / 索引 / 交易直覺" link="/part-0/sql" :read-time="30" />
-  <ChapterCard id="p0-os" num="0.4" title="作業系統地基" summary="行程、執行緒、虛擬記憶體、page cache、fsync" link="/part-0/os" :read-time="25" />
-  <ChapterCard id="p0-net" num="0.5" title="網路地基" summary="TCP/IP、HTTP、RPC、延遲 vs 頻寬、partial failure" link="/part-0/network" :read-time="22" />
-  <ChapterCard id="p0-ds" num="0.6" title="資料結構地基" summary="Hash、B-Tree、外部排序、Big-O" link="/part-0/data-structures" :read-time="25" />
+  <ChapterCard id="p0-ds" num="0.4" title="資料結構地基" summary="Hash、B-Tree、外部排序、Big-O —— 接 0.3 SQL 索引" link="/part-0/data-structures" :read-time="25" />
+  <ChapterCard id="p0-os" num="0.5" title="作業系統地基" summary="行程、執行緒、虛擬記憶體、page cache、fsync" link="/part-0/os" :read-time="25" />
+  <ChapterCard id="p0-net" num="0.6" title="網路地基" summary="TCP/IP、HTTP、RPC、延遲 vs 頻寬、partial failure" link="/part-0/network" :read-time="22" />
   <ChapterCard id="p0-concur" num="0.7" title="並行控制直覺" summary="Race condition、lock、原子性、隔離級別" link="/part-0/concurrency" :read-time="20" />
 </div>
 

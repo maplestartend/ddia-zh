@@ -66,12 +66,12 @@ const items: AssessItem[] = [
     link: '/part-0/metrics', label: '0.2 衡量指標素養', reason: 'QPS / Latency / P99 / SLA / SLO' },
   { id: 'q3', q: '<code>SELECT u.name, COUNT(o.id) FROM users u LEFT JOIN orders o ON o.user_id = u.id GROUP BY u.id</code> 這個查詢做什麼？',
     link: '/part-0/sql', label: '0.3 SQL 與關聯模型速覽', reason: 'SELECT / JOIN / 索引 / 交易直覺' },
-  { id: 'q4', q: '行程（process）與執行緒（thread）的差別是什麼？fsync 為什麼存在？',
-    link: '/part-0/os', label: '0.4 作業系統地基', reason: 'process / thread / page cache / fsync' },
-  { id: 'q5', q: 'TCP 三次握手中如果第二個 SYN-ACK 丟了會怎樣？HTTP 與 RPC 的本質差異？',
-    link: '/part-0/network', label: '0.5 網路地基', reason: 'TCP / HTTP / RPC / partial failure' },
-  { id: 'q6', q: 'B-Tree 為什麼平衡？Hash table 衝突怎麼處理？外部排序為什麼能用？',
-    link: '/part-0/data-structures', label: '0.6 資料結構地基', reason: 'Hash / B-Tree / 外部排序 / Big-O' },
+  { id: 'q4', q: 'B-Tree 為什麼平衡？Hash table 衝突怎麼處理？外部排序為什麼能用？',
+    link: '/part-0/data-structures', label: '0.4 資料結構地基', reason: 'Hash / B-Tree / 外部排序 / Big-O' },
+  { id: 'q5', q: '行程（process）與執行緒（thread）的差別是什麼？fsync 為什麼存在？',
+    link: '/part-0/os', label: '0.5 作業系統地基', reason: 'process / thread / page cache / fsync' },
+  { id: 'q6', q: 'TCP 三次握手中如果第二個 SYN-ACK 丟了會怎樣？HTTP 與 RPC 的本質差異？',
+    link: '/part-0/network', label: '0.6 網路地基', reason: 'TCP / HTTP / RPC / partial failure' },
   { id: 'q7', q: '兩個執行緒同時對銀行帳戶 +100 為什麼會丟錢？什麼是隔離級別？',
     link: '/part-0/concurrency', label: '0.7 並行控制直覺', reason: 'race condition / lock / 隔離級別' }
 ]
@@ -80,7 +80,8 @@ type CheckMap = Record<string, boolean>
 function isCheckMap(v: unknown): v is CheckMap {
   return typeof v === 'object' && v !== null && !Array.isArray(v)
 }
-const checked = useStorage<CheckMap>('ddia-part0-assess', {}, { validate: isCheckMap })
+// v2 (Wave 35)：Part 0 重排後 q4-q6 內容互換，舊 v1 checked 在新題目上意義錯位、必須失效
+const checked = useStorage<CheckMap>('ddia-part0-assess-v2', {}, { validate: isCheckMap })
 
 function toggle(id: string) {
   checked.value = { ...checked.value, [id]: !checked.value[id] }

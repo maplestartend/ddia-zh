@@ -927,6 +927,18 @@
   background: var(--status-done-fg);
 }
 
+/* Wave 34：「已通關」獨立狀態 — 比 done 更強的學習證據（Quiz 首次 >= 60%）
+   視覺強度：passed > done > 未開始。passed 用 mahogany clay（brand 色）取代 oxblood。
+   passed 與 done 可同時存在；passed 視覺優先（規則在 done 之後、specificity 相同覆寫）。 */
+.ddia-chapter-card.passed .ddia-chapter-card-status-tag.is-passed {
+  color: var(--mark-fg);
+  font-weight: 600;
+}
+.ddia-chapter-card.passed::before {
+  opacity: 1;
+  background: var(--mark-fg);
+}
+
 /* Part header（首頁 Part I / II / III · Editorial 雜誌 section 開場頁）*/
 .ddia-part-header {
   margin: 72px 0 var(--space-1);
@@ -1167,16 +1179,20 @@
   margin: var(--space-1-5) 0;
 }
 
-.custom-block.tip { border-left-color: var(--mark-fg); }
+/* background-color: transparent 顯式覆寫 — 不寫的話 VP 預設 .custom-block.tip
+   (specificity 0,2,0) 的 `background-color: var(--vp-custom-block-tip-bg)` 米黃會贏，
+   破壞 Editorial 無浮起原則、踩到 docusaurus 四色 admonition 指紋。
+   .details 仍刻意 bg-subtle（在下方 1182），不在此處透明化。 */
+.custom-block.tip { border-left-color: var(--mark-fg); background-color: transparent; }
 .custom-block.tip .custom-block-title { color: var(--mark-fg); }
 
-.custom-block.info { border-left-color: var(--accent-500); }
+.custom-block.info { border-left-color: var(--accent-500); background-color: transparent; }
 .custom-block.info .custom-block-title { color: var(--accent-500); }
 
-.custom-block.warning { border-left-color: var(--warning-fg); }
+.custom-block.warning { border-left-color: var(--warning-fg); background-color: transparent; }
 .custom-block.warning .custom-block-title { color: var(--warning-fg); }
 
-.custom-block.danger { border-left-color: var(--error-fg); }
+.custom-block.danger { border-left-color: var(--error-fg); background-color: transparent; }
 .custom-block.danger .custom-block-title { color: var(--error-fg); }
 
 .custom-block.details {
@@ -1211,6 +1227,14 @@
   content: "●";
   font-size: 9px;  /* lint-typography-allow: 已讀 dot indicator 視覺尺寸、非 body 字級 */
   color: var(--status-done-fg);
+  vertical-align: middle;
+}
+
+/* Wave 34：passed 狀態的 dot 改為 ◆ dinkus + mahogany 色（視覺優先於 done） */
+.ddia-chapter-card.passed .ddia-chapter-card-status-tag.is-passed::before {
+  content: "◆";
+  font-size: 9px;  /* lint-typography-allow: 已通關 dinkus indicator 視覺尺寸、非 body 字級 */
+  color: var(--mark-fg);
   vertical-align: middle;
 }
 

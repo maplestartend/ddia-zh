@@ -7,11 +7,11 @@ title: Ch6 分區
 <ChapterMeta part="Part II 分散式資料" :read-time="40" difficulty="進階" :tags="['Sharding', 'Hot spot', 'Rebalancing']" prereq="Ch5" />
 
 <TLDR :points='[
-  "<strong>分區（Partitioning / Sharding）= 把大資料集切成多塊，分散到多個節點</strong>。動機是擴展寫入吞吐與儲存容量。",
-  "<strong>兩大分區策略</strong>：Key Range（按 key 範圍切，BigTable）vs Hash of Key（按 hash 切，Cassandra/Dynamo）。前者支援範圍查詢但易熱點，後者均勻但破壞順序。",
-  "<strong>熱點 (Hot spot) 是最大殺手</strong>：Bieber 效應 —— 某個 key 暴紅導致單一分區崩潰。對策：加隨機 prefix、應用層 split。",
+  "<strong>分區（Partitioning / Sharding）= 把大資料集切成多塊、分散到多節點</strong>：動機是擴展寫入吞吐與儲存容量。",
+  "<strong>兩大分區策略</strong>：Key Range（按 key 範圍切，BigTable）vs Hash of Key（按 hash 切，Cassandra / Dynamo）。前者支援範圍查詢但易熱點、後者均勻但破壞順序。",
+  "<strong>熱點（Hot spot）是最大殺手</strong>：Bieber 效應 —— 某個 key 暴紅導致單一分區崩潰。對策是加隨機 prefix、應用層 split。",
   "<strong>二級索引兩種實作</strong>：document-partitioned（每分區自己索引，寫便宜讀貴）vs term-partitioned（全域索引，讀便宜寫貴）。",
-  "<strong>Rebalancing 三策略</strong>：fixed number of partitions（最簡單推薦）、dynamic、proportional to nodes。請求路由由 ZooKeeper 或 gossip 解決。"
+  "<strong>Rebalancing 三策略</strong>：fixed number of partitions（最簡單、推薦）、dynamic、proportional to nodes。請求路由由 ZooKeeper 或 gossip 解決。"
 ]' />
 
 ## 6.1 分區與複製
@@ -130,7 +130,7 @@ Client 怎麼知道某 key 該打哪個節點？
       "無法跨資料中心"
     ],
     answer: 1,
-    explanation: "若 N 從 10 變 11，hash(key) mod 10 與 hash(key) mod 11 的結果對大部分 key 不同，導致大規模資料搬遷。fixed partitions 與一致性雜湊都是為了避開這個問題。"
+    explanation: "若 N 從 10 變 11，hash(key) mod 10 與 hash(key) mod 11 的結果對大部分 key 不同，導致大規模資料遷移。fixed partitions 與一致性雜湊都是為了避開這個問題。"
   },
   {
     difficulty: "applied",

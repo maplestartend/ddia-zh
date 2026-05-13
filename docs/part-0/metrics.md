@@ -8,11 +8,11 @@ description: QPS、Latency、P99、Tail Latency、SLA/SLO —— DDIA Ch1 的直
 <ChapterMeta part="Part 0 前置知識" :read-time="18" difficulty="入門" :tags="['QPS', 'P99', 'SLA']" />
 
 <TLDR :points='[
-  "<strong>Throughput（吞吐量）</strong>與<strong>Latency（延遲）</strong>是兩個不同維度——前者問「每秒處理多少」，後者問「單一請求要等多久」。系統可以高吞吐但高延遲（批次處理）、低吞吐但低延遲（即時但稀疏）。",
-  "<strong>用平均延遲彙報效能是錯的</strong>——平均值會被快速請求拉低、看不到尾端使用者的痛苦。要用 P50 / P95 / P99 / P999 分布。",
-  "<strong>Tail latency（尾端延遲）會被 fan-out 放大</strong>。如果一個請求需要 100 個後端各回應，那「整體延遲」就是「100 個之中最慢的那個」的延遲——P99 後端會變成大概率事件。",
-  "<strong>SLA（對外合約）vs SLO（對內目標）</strong>。SLA 違反會賠錢、SLO 違反會 alert。典型寫法：「99.9% 的請求在過去 5 分鐘內 P99 < 200ms」。",
-  "<strong>Amazon 的觀察</strong>：延遲最差的請求往往來自帳號資料最多、消費也最大的高價值客戶——所以把 P999 列為內部 SLO，不容許這些人體驗惡化。"
+  "<strong>吞吐量（Throughput）與延遲（Latency）是兩個不同的軸</strong>：前者問「每秒處理多少」、後者問「單一請求等多久」。",
+  "<strong>用平均延遲彙報效能是錯的</strong>：平均被快速請求拉低、看不到尾端使用者的痛苦。要看 P50 / P95 / P99 / P999 分布。",
+  "<strong>尾端延遲（tail latency）會被「扇出」（fan-out — 一個請求觸發 N 個下游、要等全部回應）放大</strong>：一個請求若打到 100 個後端各回應一次，整體延遲 = 「100 個之中最慢那個」的延遲。",
+  "<strong>SLA（對外合約）vs SLO（對內目標）</strong>：違反 SLA 賠錢、違反 SLO 警報。典型寫法：「99.9% 的請求在過去 5 分鐘 P99 < 200ms」。",
+  "<strong>Amazon 的觀察</strong>：延遲最差的請求往往來自帳號資料、消費量最大的高價值客戶 —— 所以把 P999 列為內部 SLO。"
 ]' />
 
 ## 為什麼這章是 Ch1 的前置？

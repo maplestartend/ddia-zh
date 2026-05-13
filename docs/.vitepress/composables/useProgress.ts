@@ -3,7 +3,12 @@
 
 import { computed, onMounted } from 'vue'
 import { useStorage } from './useStorage'
-import { TOTAL_CHAPTERS } from '../data/chapters'
+import { TOTAL_CHAPTERS, CHAPTERS } from '../data/chapters'
+
+// 「已通關」門檻：Quiz 首次作答達 60% 視為通關。
+// 60% 是學習動機友善值——比 80% 寬鬆、不會讓答對 4/5 = 80% 的讀者覺得「我沒通關」。
+// 「已讀」與「已通關」是獨立狀態：手動標記已讀 vs 用 Quiz 表現自動推導通關。
+const PASS_THRESHOLD = 0.6
 
 export interface ProgressEntry {
   done: boolean
@@ -232,6 +237,37 @@ export function useProgress() {
     return totalQ === 0 ? 0 : Math.round((totalScore / totalQ) * 100)
   })
 
+  // 「已通關」狀態：Quiz 首次作答 >= 60%（與「已讀」獨立）
+  function isPassed(chapterId: string): boolean {
+    const summary = quizIndex.value.find(s => s.chapterId === chapterId)
+    if (!summary || summary.total === 0) return false
+    const first = summary.firstAttemptScore ?? summary.score
+    return first / summary.total >= PASS_THRESHOLD
+  }
+
+  // 首次作答百分比（用於 ChapterCard 等 UI 顯示「首次 75%」這類具體數值）
+  // 沒做 Quiz 或 total = 0 回 null（讓 UI 知道沒資料、不要顯示 0%）
+  function getFirstAttemptPct(chapterId: string): number | null {
+    const summary = quizIndex.value.find(s => s.chapterId === chapterId)
+    if (!summary || summary.total === 0) return null
+    const first = summary.firstAttemptScore ?? summary.score
+    return Math.round((first / summary.total) * 100)
+  }
+
+  // 已通關章節數（只算主 12 章、不算 Part 0）
+  const passedCount = computed(() => {
+    return CHAPTERS.filter(c => {
+      const summary = quizIndex.value.find(s => s.chapterId === c.id)
+      if (!summary || summary.total === 0) return false
+      const first = summary.firstAttemptScore ?? summary.score
+      return first / summary.total >= PASS_THRESHOLD
+    }).length
+  })
+
+  const passedPct = computed(() =>
+    Math.round((passedCount.value / TOTAL_CHAPTERS) * 100)
+  )
+
   // 錯題本：列出首次未滿分的章節（依當前 quiz state、可重做以後就會脫離）
   const incorrectChapters = computed(() => {
     return quizIndex.value
@@ -259,6 +295,11 @@ export function useProgress() {
     incorrectChapters,
     saveQuiz,
     loadQuiz,
-    clearQuiz
+    clearQuiz,
+    // 通關狀態（Wave 34）：與「已讀」獨立、Quiz 首次 >= 60% 自動通關
+    isPassed,
+    passedCount,
+    passedPct,
+    getFirstAttemptPct
   }
 }

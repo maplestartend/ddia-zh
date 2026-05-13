@@ -7,10 +7,10 @@ title: Ch10 批次處理
 <ChapterMeta part="Part III 衍生資料" :read-time="55" difficulty="中等" :tags="['MapReduce', 'Spark', 'Hadoop']" prereq="Ch3, Ch5" />
 
 <TLDR :points='[
-  "<strong>批次處理三種典範</strong>：(1) Unix 哲學（小工具用 pipe 串接）(2) MapReduce（HDFS + map/reduce）(3) Dataflow 引擎（Spark/Flink，DAG 而非僵硬兩階段）。",
-  "<strong>MapReduce 的關鍵不在 map/reduce 本身，而在 shuffle</strong>（同 key 聚到同一 reducer）。Shuffle 跨網路寫磁碟，是效能瓶頸與容錯重點。",
-  "<strong>Join 策略</strong>：sort-merge join（大表 vs 大表）、broadcast hash join（小表廣播）、partitioned hash join（兩邊同樣分區）。",
-  "<strong>Dataflow 引擎勝出原因</strong>：把中間結果留在記憶體不寫磁碟、用 DAG 排程允許運算融合（pipelining）、提供更高層 API（DataFrame, SQL）。",
+  "<strong>批次處理三種典範</strong>：(1) Unix 哲學（小工具用 pipe 串接）(2) MapReduce（HDFS + map / reduce）(3) Dataflow 引擎（Spark / Flink，DAG 而非僵硬兩階段）。",
+  "<strong>MapReduce 的關鍵不在 map / reduce、而在 shuffle</strong>（洗牌 — 把同 key 聚到同一 reducer 的跨網路階段）：Shuffle 跨網路寫磁碟，是效能瓶頸與容錯重點。",
+  "<strong>Join 策略三種</strong>：sort-merge join（大表 vs 大表）、broadcast hash join（小表廣播）、partitioned hash join（兩邊同樣分區）。",
+  "<strong>Dataflow 引擎勝出原因</strong>：把中間結果留在記憶體不寫磁碟、用 DAG 排程允許運算融合（pipelining）、提供更高層 API（DataFrame / SQL）。",
   "<strong>批次輸出應是不可變（immutable）的衍生資料</strong>：可重複執行、可回溯、可平行驗證 —— Lambda 架構的基礎。"
 ]' />
 

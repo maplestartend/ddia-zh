@@ -14,11 +14,11 @@ description: SELECT、JOIN、索引、交易直覺 —— Kleppmann 序言列為
 />
 
 <TLDR :points='[
-  "<strong><G term=\"sql\">SQL</G> 是宣告式語言</strong>——你說「要什麼」，不說「怎麼拿」。「怎麼拿」由 query planner 決定，看資料量挑演算法。",
-  "<strong><G term=\"join\">JOIN</G> 是把多張表依關聯欄位合併</strong>——關聯模型最強大也最被誤解的部分。Inner / Left / Right / Full 各有用途。",
-  "<strong>索引是「為查詢預先排好順序的副本」</strong>——加速讀，但拖慢寫；要付儲存成本。沒索引的查詢叫 full table scan。",
-  "<strong>交易 = 多個操作的「全有或全無」</strong>。ACID 是它的四大保證；隔離級別決定並發交易彼此能看見多少。",
-  "Ch2 整章在問「為什麼有 SQL / 文件 / 圖三種模型」、Ch7 整章在拆 ACID 的 I——這章先讓你看得懂 SQL，回頭讀那兩章才不會卡。"
+  "<strong>SQL 是宣告式語言</strong>：你說「要什麼」、不說「怎麼拿」。「怎麼拿」由 query planner 決定。",
+  "<strong>JOIN = 把多張表依關聯欄位合併</strong>：關聯模型最強大、也最被誤解的部分。Inner / Left / Right / Full 各有用途。",
+  "<strong>索引 = 為查詢預先排好順序的副本</strong>：加速讀、拖慢寫、佔額外空間。沒索引的查詢叫 full table scan。",
+  "<strong>交易 = 多個操作的「全有或全無」</strong>：ACID 是它的四大保證；隔離級別決定並發交易彼此能看見多少。",
+  "<strong>Ch2 問三種模型、Ch7 拆 ACID 的 I</strong>：這章先讓你看得懂 SQL、回頭讀那兩章才不會卡。"
 ]' />
 
 ::: warning 這章是「快速暖身」，不是「完整 SQL 教學」
@@ -296,6 +296,6 @@ Read Uncommitted < Read Committed < Repeatable Read
   }
 ]' />
 
-<NextChapterBridge next-link="/part-0/os" next-title="0.4 作業系統地基">
-SQL 看懂了，接下來補 OS 層的概念—— page cache、fsync、行程暫停—— Ch3 storage engine 和 Ch7 並發都會用到。
+<NextChapterBridge next-link="/part-0/data-structures" next-title="0.4 資料結構地基">
+SQL 索引看懂了，接下來補索引底下的資料結構：Hash table、B-Tree、外部排序——Ch3 storage engine 整章在拆 B-Tree vs LSM-Tree，本章先把 B-Tree 直覺建好。
 </NextChapterBridge>

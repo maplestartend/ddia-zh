@@ -3,6 +3,14 @@
     <div class="ddia-chapter-loop-eyebrow">
       <Icon name="autorenew" :size="14" />
       學習循環
+      <span v-if="quizDone" class="ddia-pass-pill" :class="{ 'is-passed': passed }">
+        <Icon
+          :name="passed ? 'workspace_premium' : 'pending'"
+          :size="12"
+          :filled="passed"
+        />
+        {{ passed ? `已通關 · 首次 ${firstPct}%` : `待通關 · 首次 ${firstPct}%` }}
+      </span>
     </div>
     <div class="ddia-chapter-loop-actions">
       <button class="ddia-loop-btn" :class="{ 'is-done': isDone }" @click="toggle">
@@ -44,7 +52,7 @@ import { nextChapter } from '../../data/chapters'
 
 const props = defineProps<{ chapterId: string }>()
 
-const { isDone: checkDone, getDoneAt, markDone, unmarkDone, loadQuiz } = useProgress()
+const { isDone: checkDone, getDoneAt, markDone, unmarkDone, loadQuiz, isPassed, getFirstAttemptPct } = useProgress()
 const { seedReview } = useReview()
 const isDone = computed(() => checkDone(props.chapterId))
 const doneAt = computed(() => getDoneAt(props.chapterId))
@@ -59,6 +67,15 @@ const quizResult = computed(() => {
   return loadQuiz(props.chapterId)
 })
 const quizDone = computed(() => !!quizResult.value?.submitted)
+// 通關狀態（Wave 34：與已讀獨立、Quiz 首次 >= 60% 自動通關）
+const passed = computed(() => {
+  quizDoneTick.value  // 依賴 tick 觸發重算（與 quizResult 同步）
+  return isPassed(props.chapterId)
+})
+const firstPct = computed(() => {
+  quizDoneTick.value
+  return getFirstAttemptPct(props.chapterId) ?? 0
+})
 
 function toggle() {
   if (isDone.value) {
@@ -117,6 +134,40 @@ onUnmounted(() => {
 }
 .ddia-chapter-loop-eyebrow :deep(.material-symbols-rounded) {
   display: none;
+}
+
+/* 通關 pill：附在 eyebrow 旁、輕量無框、italic + small caps + 髮絲線分隔的 dinkus mark */
+.ddia-pass-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: var(--space-2);
+  padding: 2px 8px;
+  font-family: var(--font-display);
+  font-variation-settings: var(--fvar-italic-warm);
+  font-style: italic;
+  font-size: var(--type-eyebrow);
+  letter-spacing: var(--ls-loose);
+  color: var(--text-tertiary);
+  border-left: 2px solid var(--rule-hairline);
+  background: transparent;
+  text-transform: none;
+}
+.ddia-pass-pill.is-passed {
+  color: var(--mark-fg);
+  border-left-color: var(--mark-fg);
+}
+.ddia-pass-pill :deep(.material-symbols-rounded) {
+  display: none;
+}
+.ddia-pass-pill::before {
+  content: "·";
+  margin-right: 2px;
+  color: var(--rule-hairline);
+}
+.ddia-pass-pill.is-passed::before {
+  content: "◆";
+  color: var(--mark-fg);
 }
 
 .ddia-chapter-loop-actions {

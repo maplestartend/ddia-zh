@@ -7,11 +7,11 @@ title: Ch2 資料模型與查詢語言
 <ChapterMeta part="Part I 資料系統基礎" :read-time="40" difficulty="入門" :tags="['SQL', 'NoSQL', 'Graph']" />
 
 <TLDR :points='[
-  "<strong>三大資料模型</strong>：關聯模型（SQL）、文件模型（document）、圖模型（graph）。沒有最好，只有最適合特定資料形狀。",
-  "<strong>文件 vs 關聯的本質差異</strong>：當資料天然是樹狀、且整份文件常被一起讀寫時，文件模型有「局部性」優勢（單次 I/O 取整棵子樹）；多對多關係、跨實體查詢時，關聯模型壓倒性勝出。注意「一對多」兩者都能做，差別在「整棵樹原子讀寫」的便利度。",
+  "<strong>三大資料模型</strong>：關聯（SQL）、文件（document）、圖（graph）—— 沒有最好、只有最適合特定資料形狀。",
+  "<strong>文件 vs 關聯的本質差異</strong>：資料天然是樹狀、且整份文件常一起讀寫時，文件模型有「局部性」優勢；多對多關係、跨實體查詢時，關聯模型壓倒勝出。",
   "<strong>Schema-on-read vs Schema-on-write</strong>：類似動態 vs 靜態型別 —— 文件 DB 把 schema 推到應用層讀取時處理。",
-  "<strong>宣告式查詢（SQL、Cypher）優於命令式</strong>：DB 引擎可自由優化執行計畫、可平行化、隱藏儲存細節。",
-  "<strong>圖模型勝出的場景</strong>：當「多對多關係本身是查詢主體」時（社交網路、知識圖譜、路徑搜尋）。Cypher、SPARQL、Datalog 是三種圖查詢語言。"
+  "<strong>宣告式查詢（SQL / Cypher）優於命令式</strong>：DB 引擎可自由優化執行計畫、可平行化、隱藏儲存細節。",
+  "<strong>圖模型勝出的場景</strong>：當「多對多關係本身是查詢主體」時（社交網路、知識圖譜、路徑搜尋）。Cypher / SPARQL / Datalog 是三種圖查詢語言。"
 ]' />
 
 ## 2.1 關聯模型 vs 文件模型
@@ -160,6 +160,42 @@ RETURN person.name
     ],
     answer: 2,
     explanation: "多層次的「多對多關係遍歷」正是圖模型的甜蜜點。SQL 需要遞迴 CTE 或多次 JOIN，圖查詢語言（Cypher）一行就能寫完。"
+  },
+  {
+    difficulty: "basic",
+    question: "下列哪個敘述最準確描述 Schema-on-read？",
+    options: [
+      "資料儲存時不強制 schema，讀取時由應用程式按當前期待解讀結構",
+      "讀取資料時自動產生 schema 文件給 DBA 參考",
+      "Schema 改變時，舊資料會被資料庫自動轉換",
+      "Schema 必須在每次讀取前重新定義一次"
+    ],
+    answer: 0,
+    explanation: "Schema-on-read（多數 NoSQL 文件 DB 採用）= 寫入時不強制 schema、讀取時由應用層按當前期待解讀。優點是 schema 演進靈活（加欄位不需 ALTER TABLE）、缺點是舊資料的結構差異要由應用層處理。Schema-on-write（傳統 SQL DB）反之 —— 寫入就強制驗證。"
+  },
+  {
+    difficulty: "applied",
+    question: "你的 MongoDB 集合裡，每個 user document 嵌入 `posts` 陣列。當系統長到每個 user 有上千篇 post 時最常見的問題是？",
+    options: [
+      "MongoDB 不允許這麼大的 document",
+      "更新單一 post 仍需重寫整份 user document，且查詢「最近 N 篇」需要 unwind 陣列 —— 局部性優勢反成寫入瓶頸",
+      "MongoDB 自動把陣列搬到別的集合",
+      "陣列順序會在背景被隨機重排"
+    ],
+    answer: 1,
+    explanation: "嵌入陣列適合「資料量小、整體一起讀寫」的場景。當陣列無上限成長時，document 越來越大、更新代價放大、查詢需要 unwind —— 多對多場景反而適合另外建一個 collection 用 ref 關聯（向關聯模型靠近）。DDIA Ch2「文件模型的局部性優勢」要看資料模式、不是無條件採用。"
+  },
+  {
+    difficulty: "interview",
+    question: "你的 e-commerce 後端目前用 PostgreSQL，要新增「商品全文搜尋（中英文模糊）」需求。下列哪個組合最符合 DDIA 提到的「polyglot persistence」精神？",
+    options: [
+      "把所有資料搬到 Elasticsearch、廢棄 PostgreSQL",
+      "PostgreSQL 仍是主資料庫，用 CDC（如 Debezium）把商品變更非同步同步到 Elasticsearch 作搜尋引擎",
+      "在 PostgreSQL 用 `LIKE %keyword%` 做模糊查詢、不引入新元件",
+      "用 Redis cache 加速 SQL LIKE 查詢"
+    ],
+    answer: 1,
+    explanation: "Polyglot persistence = 對每種查詢需求選最適合的儲存。PG 強於交易與關聯查詢、ES 強於全文搜尋。DDIA Ch12 進一步推到 unbundling —— 選一個 source of truth（PG），用 CDC 衍生其他系統。`LIKE %x%` 無法用 B-Tree 索引、必然全表掃描；Redis cache 仍要先有 SQL 結果才能 cache、無法繞過底層 LIKE 慢的問題。"
   }
 ]' />
 

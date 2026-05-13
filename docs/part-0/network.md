@@ -1,23 +1,19 @@
 ---
-title: 0.5 網路地基
+title: 0.6 網路地基
 description: TCP/IP、HTTP、RPC、延遲 vs 頻寬、partial failure
 ---
 
-# 0.5 · 網路地基
+# 0.6 · 網路地基
 
 <ChapterMeta part="Part 0 前置知識" :read-time="22" difficulty="入門" :tags="['TCP', 'HTTP', 'RPC']" />
 
 <TLDR :points='[
-  "<strong><G term=\"tcp\">TCP</G> 提供「可靠、有序、有流量控制」的傳輸</strong>—— 但「可靠」是指最終會送到或斷線，不是即時。timeout 與重傳會引入不可預測的延遲。",
-  "<strong><G term=\"http\">HTTP</G> 建立在 TCP 上</strong>，無狀態、request-response。REST API 是它的應用層慣例。",
-  "<strong><G term=\"rpc\">RPC</G> 假裝成本地呼叫，但本質仍是網路</strong>—— 永遠會遇到 timeout、變動延遲、partial failure。這是 DDIA Ch4 與 Ch8 反覆強調的「漏抽象」。",
-  "<strong>延遲 vs 頻寬是不同維度</strong>。光速是延遲的物理下界（跨美國 RTT ~70ms 是物理限制），頻寬可以加錢買、延遲不行。",
-  "<strong><G term=\"fault\">Partial failure</G></strong> 是分散式系統最難的事—— 不像單機「整個壞」，網路斷一半時你不知道對方還在不在、自己的訊息有沒有送到。"
+  "<strong>TCP 提供「可靠、有序、有流量控制」的傳輸</strong>：但「可靠」只是「最終會送到或斷線」、不是即時。timeout 與重傳會引入不可預測的延遲。",
+  "<strong>HTTP 建在 TCP 上</strong>：無狀態、request-response。REST API 是它的應用層慣例。",
+  "<strong>RPC 假裝成本地呼叫、但本質仍是網路</strong>：永遠會遇到 timeout、變動延遲、partial failure —— DDIA Ch4 與 Ch8 反覆強調的「漏抽象」。",
+  "<strong>延遲 vs 頻寬是不同維度</strong>：光速是延遲的物理下界（跨美國 RTT ~70ms 是物理限制），頻寬可以加錢買、延遲不行。",
+  "<strong>Partial failure（部分失效 — 有的節點正常、有的異常，且你不知道是哪些）是分散式系統最難的事</strong>：不像單機「整個壞」、網路斷一半時你不知道對方還在不在、自己的訊息有沒有送到。"
 ]' />
-
-::: warning 這章是骨架
-完整深入請走 [Beej's Guide to Network Programming](https://beej.us/guide/bgnet/) 與 [High Performance Browser Networking](https://hpbn.co/)。
-:::
 
 ## 1) TCP/IP 的分層心智模型
 
@@ -53,7 +49,7 @@ Client                    Server
 
 ### 超時重傳：「可靠」的代價
 
-TCP 保證資料最終到達——做法是：沒收到 ACK 就**重傳**。重傳間隔指數退避（exponential backoff）：100ms → 200ms → 400ms → ...
+TCP 保證資料最終到達——做法是：沒收到 ACK 就**重傳**。重傳間隔指數退避（exponential backoff，每次倍增間隔避免重傳風暴）：100ms → 200ms → 400ms → ...
 
 **問題**：應用層看到的「延遲」可能是 1ms、也可能是 30 秒（重傳了好幾次）—— 高度不可預測。
 
@@ -199,12 +195,12 @@ RPC 想偽裝成本地函式呼叫，但**永遠做不到**。本地函式：
     "question": "你發現跨美國服務間呼叫 P99 延遲 130ms，老闆問能不能降到 10ms。最準確的回答是？",
     "options": [
       "升級伺服器 CPU 可以做到",
-      "不行—— 跨美國光速 RTT 至少 ~34ms，加上路由 ~70ms 是物理下界，10ms 違反物理限制",
+      "不行—— 光在光纖中速度只達真空 2/3，跨美國光纖實際 RTT ~50ms 是物理下界，加路由跳數實測 70-90ms。10ms 違反物理常數",
       "升級網卡到 100Gbps 可以做到",
       "用 UDP 可以做到"
     ],
     "answer": 1,
-    "explanation": "光速是延遲的物理下界。頻寬可以加錢買、延遲不行。要降跨美國呼叫延遲只能：放置 edge 節點靠近使用者、減少 RPC 跳數、提前算好。增 CPU / 頻寬都救不了延遲。"
+    "explanation": "光速是延遲的物理下界，且光在光纖中速度只達真空中的 2/3（折射率 ~1.5）—— 跨美國 5000km 真空 RTT ~34ms、光纖 RTT ~50ms、加上路由跳數實測 70-90ms。要降跨美國呼叫延遲只能：放置 edge 節點靠近使用者、減少 RPC 跳數、提前算好。增 CPU / 頻寬都救不了延遲。"
   },
   {
     "difficulty": "applied",
@@ -220,6 +216,6 @@ RPC 想偽裝成本地函式呼叫，但**永遠做不到**。本地函式：
   }
 ]' />
 
-<NextChapterBridge next-link="/part-0/data-structures" next-title="0.6 資料結構地基">
-網路 + OS 之後，補一下 Ch3 storage 直接用的資料結構：Hash table、B-Tree、外部排序。
+<NextChapterBridge next-link="/part-0/concurrency" next-title="0.7 並行控制直覺">
+資料結構 + OS + 網路 之後，最後一個前置主題：並行—— 兩個執行緒同時改一筆資料會發生什麼事，是 Ch7 與 Ch9 整章的前提。
 </NextChapterBridge>

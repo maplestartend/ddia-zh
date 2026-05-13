@@ -13,11 +13,11 @@ title: Ch9 一致性與共識
 />
 
 <TLDR :points='[
-  "<strong>Linearizability（線性一致）= 系統表現得像只有單一副本</strong>。是分散式一致性最強保證，但要付出延遲與可用性代價。",
-  "<strong>CAP 定理是被誤解最多的</strong>：實際上是「網路分區時，選 Consistency 還是 Availability」，與「正常時的 latency」無關。",
+  "<strong>Linearizability（線性一致）= 系統表現得像只有單一副本</strong>：是分散式一致性最強的保證，但要付出延遲與可用性代價。",
+  "<strong>CAP 定理是被誤解最多的</strong>：實際上是「網路分區時、選 Consistency 還是 Availability」，與「正常時的 latency」無關。",
   "<strong>順序 ≠ 線性一致</strong>：因果序（causal order）只是偏序；全序廣播（total order broadcast）等價於共識。",
-  "<strong>兩階段提交（2PC）是分散式交易的經典解</strong>，但有 coordinator 單點失效問題；XA 在實務中惡名昭彰。",
-  "<strong>共識演算法（Raft、Paxos、ZAB）的本質是讓 N 個節點對某個值達成一致</strong>。所有「正確的」leader election、分散式鎖、原子廣播都歸結到共識。"
+  "<strong>兩階段提交（2PC）是分散式交易的經典解</strong>：但有 coordinator 單點失效問題、XA 在實務中惡名昭彰。",
+  "<strong>共識演算法（Raft / Paxos / ZAB）的本質</strong>：讓 N 個節點對某個值達成一致。所有「正確的」leader election、分散式鎖、原子廣播都歸結到共識。"
 ]' />
 
 ## 9.0 為什麼需要「一致性」這個詞？
@@ -116,7 +116,7 @@ sequenceDiagram
     R2-->>Carol: (x=1, ts=10)
     R3-->>Carol: (x=null, ts=0)
     Note over Carol: 取 max(ts)=10 → 回 x=1 ✓
-    Note over Bob,Carol: 看起來沒事？但若 R2 也 lag、Carol 改讀 R1 又會看到舊值<br/>關鍵：R3 永遠是舊的、其他 reader 撞到它就看到舊
+    Note over Bob,Carol: Bob 沒 write-back → R3 仍持續是舊值<br/>關鍵：每個讀者都讓 R3 落後越久、系統越脆弱（一旦 R1 / R2 之一暫時失聯、新 reader 的 quorum 可能全打到 R3 + 失聯前舊副本）
     end
 
     rect rgba(100,200,150,0.18)
