@@ -96,9 +96,14 @@ def reduce(word, counts):
 
 | 策略 | 條件 | 機制 |
 |---|---|---|
-| **Sort-Merge Join** | 大表 vs 大表 | 兩邊各 sort，merge |
-| **Broadcast Hash Join** | 小表（< RAM）vs 大表 | 小表廣播到所有 mapper，記憶體 hash 查 |
-| **Partitioned Hash Join** | 兩邊都按相同 key 分區 | 同分區內 local join |
+| **Sort-Merge Join** | **預設後備**：兩邊都不滿足 broadcast / bucket 條件時退化此策略（Spark 2.3+ SQL engine 的預設） | 兩邊各 sort by join key、merge 比對 |
+| **Broadcast Hash Join** | 小表（< 廣播閾值、Spark 預設 10MB）vs 任意大小另一邊 | 小表廣播到所有 mapper、記憶體 hash 查 |
+| **Partitioned Hash Join** | 兩邊都已按**相同 key + 相同 bucket 數**事先分區（Hive bucketed table / Spark bucketBy） | 同分區內各自 local hash join、**完全避免 shuffle** |
+| **Reduce-Side Join**（MapReduce 經典 / 已退場） | 通用、無前提 | mapper 標 key + tag、shuffle 全部資料 → reducer 配對 |
+
+::: tip 「Sort-Merge join = 大表 vs 大表」是常見誤解
+讀者常以為「sort-merge 專門做大 vs 大」、其實**現代 Spark / Flink SQL 引擎把 sort-merge 當『預設後備』**——只要不滿足 broadcast（小表 ≤ 廣播閾值）且不滿足 bucketed join（兩邊預先按相同 key bucket）、引擎就退化到 sort-merge。也就是 sort-merge 是「**所有其他策略不適用時的兜底**」、不是「大表 vs 大表的專屬策略」。**真正的「大表 vs 大表最佳解」是 partitioned hash join**（前提是先 bucket 過）。
+:::
 
 ::: tip 實務細節：Spark 場景下三件每個 DE 都會踩的事
 **(1) Broadcast 閾值與 driver OOM**

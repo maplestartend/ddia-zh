@@ -390,6 +390,18 @@ await db.runTransaction(async (tx) => {
 
 <Quiz chapter-id="ch07" :questions='[
   {
+    difficulty: "basic",
+    question: "ACID 的四個字母分別代表什麼？",
+    options: [
+      "Atomicity / Consistency / Isolation / Durability",
+      "Availability / Concurrency / Integrity / Distribution",
+      "Atomicity / Concurrency / Isolation / Distribution",
+      "Availability / Consistency / Integrity / Durability"
+    ],
+    answer: 0,
+    explanation: "ACID = **A**tomicity（原子性、全做或全不做）+ **C**onsistency（一致性、業務不變式不被破壞）+ **I**solation（隔離性、並發交易彼此不干擾）+ **D**urability（持久性、commit 後不丟失）。DDIA Ch7 開宗明義指出「C 是 ACID 中的混入字」——它指業務 invariant、其實主要靠應用層、不像 A/I/D 是 DB 提供的保證。讀本章前先記熟這四個字母分別代表什麼、後續所有 isolation level 討論才不會混亂。"
+  },
+  {
     difficulty: "applied",
     question: "Snapshot Isolation 仍然可能發生下列哪一種異常？",
     options: [

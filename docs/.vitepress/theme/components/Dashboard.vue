@@ -12,6 +12,7 @@
           <div class="ddia-progress-bar" style="margin-top: var(--space-2-5);">
             <div class="ddia-progress-fill" :style="{ width: progressPct + '%' }" />
           </div>
+          <div class="ddia-stat-sub">在章末「標記已讀」按鈕手動勾選</div>
         </div>
 
         <div class="ddia-stat-card">
@@ -22,6 +23,7 @@
           <div class="ddia-progress-bar" style="margin-top: var(--space-2-5);">
             <div class="ddia-progress-fill" :style="{ width: passedPct + '%' }" />
           </div>
+          <div class="ddia-stat-sub">章末測驗首次答 ≥ 60% 自動通關、重做不沖洗</div>
         </div>
 
         <div class="ddia-stat-card">
@@ -109,6 +111,7 @@
           <div class="ddia-progress-bar" style="margin-top: var(--space-2-5);">
             <div class="ddia-progress-fill" :style="{ width: progressPct + '%' }" />
           </div>
+          <div class="ddia-stat-sub">在章末「標記已讀」按鈕手動勾選</div>
         </div>
 
         <div class="ddia-stat-card">
@@ -119,6 +122,7 @@
           <div class="ddia-progress-bar" style="margin-top: var(--space-2-5);">
             <div class="ddia-progress-fill" :style="{ width: passedPct + '%' }" />
           </div>
+          <div class="ddia-stat-sub">章末測驗首次答 ≥ 60% 自動通關、重做不沖洗</div>
         </div>
 
         <div class="ddia-stat-card">

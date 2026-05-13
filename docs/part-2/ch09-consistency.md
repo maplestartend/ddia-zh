@@ -287,10 +287,24 @@ N 個節點，每個提出一個值，要達成（依 DDIA p.365 / "Consensus Al
 - **隨機性**：Ben-Or 1983 的隨機演算法能用機率 1 終止（雖然不是確定性）。
 - **timeout + leader**：Raft 用 randomized election timeout 降低活鎖（livelock）機率，但**不保證消除**——網路若持續不穩仍可能無限選舉。
 
-### 經典演算法
-- **Paxos**（Lamport, 1998；手稿 1989）：嚴謹但極難實作正確
-- **Raft**（Ongaro & Ousterhout, Stanford, 2014）：為易理解而設計，etcd / Consul / TiKV 採用
-- **ZAB**：ZooKeeper 使用
+### 經典演算法家族
+
+| 演算法 | 提出 | 用途 / 代表系統 |
+|---|---|---|
+| **Basic Paxos**（單值共識） | Lamport 1989 手稿 / 1998 publish | 對「一個值」達成共識；教學意義為主、實務罕用 |
+| **Multi-Paxos**（多值 / log 共識） | Lamport 後續 / Google Chubby | **連續多個 log entry 的共識**——選 leader 後 leader 直接 propose，省掉每個 entry 的兩階段。**Google Chubby、Spanner、Cassandra LWT** 內部都是 Multi-Paxos 變體 |
+| **Viewstamped Replication (VSR)** | Oki & Liskov 1988 | 比 Paxos 早 1 年但少被引用；**view = 一段 leader 任期**、view change 時做 leader 切換。**現代 Raft 的精神祖先**（Ongaro 自承受 VSR 啟發） |
+| **Raft** | Ongaro & Ousterhout, Stanford, 2014 | 為**易理解**而設計、把 Multi-Paxos / VSR 的概念重新組織。**etcd / Consul / TiKV / CockroachDB / RethinkDB / Apache Kafka KRaft** 採用 |
+| **ZAB**（ZooKeeper Atomic Broadcast） | Reed & Junqueira 2008 | ZooKeeper 專用、結構接近 Multi-Paxos + atomic broadcast 強化 |
+| **EPaxos**（Egalitarian Paxos） | Moraru et al. 2013 | **去 leader 化**：任何節點都可發起 proposal、衝突時用 dependency graph 排序。理論優雅但實作極複雜 |
+
+### 三者的關係：Multi-Paxos → VSR → Raft
+
+歷史上**並不是 Paxos → Raft 一條線**——VSR 比 Paxos 早 1 年（1988）、想法極接近現代 Raft（**view = 一段 leader 任期**、view change ≈ Raft 的 leader election）。但 Liskov 團隊宣傳少、Paxos 因 Lamport 名氣壟斷話題、結果業界誤以為「分散式共識 = Paxos 一家」。
+
+2014 Ongaro 寫 Raft 時明確說：**Raft 的精神祖先是 VSR、不是 Paxos**——把 leader-based + log-based 的設計組織清楚、用「**term + log index**」當主軸（VSR 用 view、Multi-Paxos 用 ballot number、本質都是「leader 任期計數器」）。
+
+**三者本質上做同一件事**：在不可靠網路 + 節點可能 crash 下、讓 N 個節點對「**一連串決議的順序**」達成共識。只是教學表達方式不同——Paxos 從**證明**出發（理論優雅、實作困難）、VSR 從**replication 視角**出發（直觀但宣傳少）、Raft 從**可實作性**出發（為了讓人寫對寫出來、選擇用清晰的角色分離 + 顯式的 leader）。
 
 ### Raft 的三個核心
 1. **Leader election**：term + 投票 + heartbeat

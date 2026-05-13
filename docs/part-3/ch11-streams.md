@@ -154,6 +154,32 @@ DB → Elasticsearch via CDC。
 
 ## 11.4 串流的 Join
 
+### Window 四種類型對照
+
+串流是無界的、但聚合 / join / 統計都需要「**有限的觀察窗**」——window 就是把無界流切成有限的計算單元。四種典型 window 各有不同的「**事件被算進哪個 window**」規則：
+
+| Window 類型 | 規則 | 一個事件落入幾個 window | 典型用例 | 視覺直覺 |
+|---|---|---|---|---|
+| **Tumbling**（翻滾） | 固定大小、**互不重疊**（如 [10:00-10:05)、[10:05-10:10)、…） | **恰好 1 個** | 「每 5 分鐘總訂單數」、定時聚合 | `[ ][ ][ ][ ]` 連續方塊 |
+| **Hopping**（跳躍 / sliding 的離散版） | 固定大小 + **固定 slide step**（如「5 分鐘 window、每 1 分鐘 hop 一次」 → window 重疊）| **N 個**（N = window-size / hop-step） | 「**滾動 5 分鐘**內的平均」、平滑指標 | `[ ]` 上面再疊 `[ ]` |
+| **Sliding**（滑動 / 連續版） | 「**這個事件之前 N 分鐘內**」—— 每筆事件觸發各自的 window | **任意數**（取決於 buffer 內事件數） | session 防詐分析、「過去 1 分鐘內 5 次失敗登入」報警 | 每事件自己劃一條 |
+| **Session**（會話） | **動態大小**：相同 key 的事件**間隔 < gap** 視為同一 session、間隔 ≥ gap 開新 session | **1 個**（依時間動態決定哪一個） | 使用者瀏覽 session、IoT 設備活躍期 | 不定長方塊、靠空白分界 |
+
+::: tip Tumbling vs Hopping 最容易混淆
+- **Tumbling**：每事件只進**一個** window —— 適合「**互斥**」的時段聚合（這 5 分鐘 vs 那 5 分鐘）
+- **Hopping**：window 之間**重疊**、每事件可能進**多個** window —— 適合「**滾動指標**」（過去 5 分鐘平均、每分鐘更新一次）
+- 數學關係：**Tumbling = Hopping 但 hop-step = window-size**（特例）
+:::
+
+::: warning Session window 的特殊性：watermark 不能直接套
+Session window 的長度**取決於資料本身**（事件分布決定 gap）—— 不像其他三種「**時間到了就關**」。Flink / Beam / Spark Structured Streaming 對 session window 都有特殊路徑：
+- **Flink**：`EventTimeSessionWindows.withGap(...)` —— 動態建立 window、merge 重疊 session
+- **Kafka Streams**：`SessionWindows.with(...)` —— 內部用 session-store 管理 session 邊界
+- **Spark Structured Streaming 3.2+**：才正式支援 session window（早期版本只能自己手刻）
+
+實務踩坑：**user_id = X 的 session 在 watermark 通過後到了一個 late event** → 是要併入「最近的 session」、開新 session、還是丟掉？各框架預設不同、要在設計時明確選擇。
+:::
+
 ### Stream-Stream Join
 兩個事件流（如「點擊事件」JOIN 「曝光事件」）。
 - 需要 window（畢竟流是無界的）
