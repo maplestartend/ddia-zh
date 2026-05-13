@@ -198,11 +198,15 @@ body {
 /* 章末相鄰元件 border 去重：Quiz → InterviewBlock → ChapterNote → Progress → (info callout) → Bridge
    原本 5 個元件各自畫上下 hairline = 200px 內 6 條柵欄。
    修法同章首：相鄰時後者去 border-top + margin 拉開靠空白分隔。 */
-.ddia-quiz + .ddia-interview-block,
-.ddia-interview-block + .ddia-chapter-note,
-.ddia-chapter-note + .ddia-chapter-loop,
+/* 注意：InterviewBlock.vue 真實 class 是 .ddia-interview（非 -block）、ChapterNote.vue 是 .ddia-note（非 .ddia-chapter-note）
+   含 .custom-block（::: info 等 callout）夾在 Progress 與 Bridge 之間時也納入規則 */
+.ddia-quiz + .ddia-interview,
+.ddia-interview + .ddia-note,
+.ddia-note + .ddia-chapter-loop,
+.ddia-chapter-loop + .custom-block,
+.custom-block + .ddia-bridge,
 .ddia-chapter-loop + .ddia-bridge,
-.ddia-quiz + .ddia-chapter-note,
+.ddia-quiz + .ddia-note,
 .ddia-quiz + .ddia-chapter-loop {
   border-top: 0 !important;
   margin-top: 16px !important;
@@ -242,7 +246,7 @@ body {
   text-decoration-color: currentColor;
 }
 .dark .vp-doc a {
-  color: var(--info-fg);
+  color: var(--brand-fg);
   text-decoration-color: rgba(227, 160, 106, 0.55);
 }
 .dark .vp-doc a:hover {

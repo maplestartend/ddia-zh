@@ -83,7 +83,7 @@ const displayTeaser = computed(() => currentChap.value?.teaser)
   color: var(--brand-500);
 }
 :global(.dark) .ddia-bridge:hover .ddia-bridge-title {
-  color: var(--info-fg);
+  color: var(--brand-fg);
 }
 
 .ddia-bridge-eyebrow {
@@ -110,7 +110,7 @@ const displayTeaser = computed(() => currentChap.value?.teaser)
   padding-left: 0.18em;
 }
 :global(.dark) .ddia-bridge-num {
-  color: var(--info-fg);
+  color: var(--brand-fg);
 }
 
 .ddia-bridge-title {

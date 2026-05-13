@@ -81,12 +81,12 @@ onMounted(() => {
 .ddia-chapter-opener-mark {
   font-family: var(--font-display);
   font-feature-settings: "onum" 1, "kern" 1;
-  font-variation-settings: "opsz" 96, "SOFT" 60, "wght" 500;
-  font-size: 56px;
+  font-variation-settings: "opsz" 48, "SOFT" 60, "wght" 500;
+  font-size: var(--type-chapter-mark);
   line-height: 1;
-  color: var(--brand-500);
-  letter-spacing: -0.01em;
-  margin-bottom: 10px;
+  color: var(--brand-fg);
+  letter-spacing: -0.005em;
+  margin-bottom: 8px;
 }
 
 .ddia-chapter-opener-eyebrow {
@@ -145,11 +145,11 @@ onMounted(() => {
 }
 
 .dark .ddia-chapter-opener-mark {
-  color: var(--info-fg);
+  color: var(--brand-fg);   /* dark = 暖橙 brand 替身、非 info-fg 米咖 */
 }
 
 @media (max-width: 640px) {
-  .ddia-chapter-opener-mark { font-size: 40px; }
+  .ddia-chapter-opener-mark { font-size: 28px; }
   .ddia-chapter-opener-title { font-size: var(--type-display-2); }
 }
 </style>

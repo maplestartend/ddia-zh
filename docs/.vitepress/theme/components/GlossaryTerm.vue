@@ -198,8 +198,8 @@ onUnmounted(() => {
   letter-spacing: 0.04em;
 }
 :global(.dark) .ddia-g-tooltip-cta-btn {
-  color: var(--info-fg);
-  border-bottom-color: var(--info-fg);
+  color: var(--brand-fg);
+  border-bottom-color: var(--brand-fg);
 }
 
 .ddia-g-fade-enter-active, .ddia-g-fade-leave-active {
@@ -217,12 +217,12 @@ onUnmounted(() => {
   color: var(--text-primary);
 }
 :global(.dark) .ddia-g {
-  border-bottom-color: var(--info-fg);
+  border-bottom-color: var(--brand-fg);
 }
 :global(.dark) .ddia-g:hover, :global(.dark) .ddia-g:focus-visible {
   background-color: rgba(227, 160, 106, 0.12);
 }
 :global(.dark) .ddia-g-tooltip-en {
-  color: var(--info-fg);
+  color: var(--brand-fg);
 }
 </style>

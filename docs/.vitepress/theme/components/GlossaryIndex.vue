@@ -131,8 +131,8 @@ function scrollToLetter(letter: string, e: MouseEvent) {
 
 :global(.dark) .ddia-glossary-index-link:hover,
 :global(.dark) .ddia-glossary-index-link:focus-visible {
-  color: var(--info-fg);
-  border-bottom-color: var(--info-fg);
+  color: var(--brand-fg);
+  border-bottom-color: var(--brand-fg);
 }
 
 @media (max-width: 600px) {

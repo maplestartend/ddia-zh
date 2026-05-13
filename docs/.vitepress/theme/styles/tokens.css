@@ -98,7 +98,7 @@
   --type-body:      16px;  /* 內文預設 */
   --type-small:     14px;  /* 卡片副文 / 標籤 */
   --type-eyebrow:   12px;  /* italic small caps eyebrow 唯一規格 */
-  --type-chapter-mark: 56px;  /* 章號（比章名小、避免階層倒置） */
+  --type-chapter-mark: 36px;  /* 章號（< h1 42px 避免階層倒置；mark 是「裝飾」、不該大過章名） */
 
   /* Fraunces variation-settings 標準化（從 6 個 SOFT 檔位收斂到 4 套規格） */
   --fvar-display:    "opsz" 72, "SOFT" 60, "wght" 500;  /* 大標題 / 章名 */
@@ -153,6 +153,11 @@
   --info-bg:      #EFE9DF;   /* 淡 taupe、與 cream 紙底拉開 */
   --info-fg:      #4A3F35;   /* 深暖咖、與 brand 紅完全區分 */
   --info-border:  #B5A693;
+
+  /* Wave 26.1：brand 在 light/dark 兩模式有不同顯色（light = mahogany red、dark = warm orange）
+     原本散落用 var(--info-fg) 當 dark brand 替身、Wave 26 拆 info 後破功。
+     凡是「light brand 紅 / dark brand 橙」場景都改用 --brand-fg 取代 --info-fg。 */
+  --brand-fg:     var(--brand-500);
   --success-bg:   #E8EDDD;
   --success-fg:   #3F6630;
   --warning-bg:   #FAEBC8;
@@ -204,6 +209,9 @@
   --info-bg:      rgba(166, 138, 109, 0.16);  /* taupe 微透 */
   --info-fg:      #C9B89D;                     /* 米白偏咖、不是 orange */
   --info-border:  rgba(166, 138, 109, 0.40);
+
+  /* dark 模式 brand 替身（暖橙、非 mahogany 紅）—— 給 dark CTA / hover / active */
+  --brand-fg:     #E3A06A;
   --success-bg:   rgba(126, 175, 95, 0.18);
   --success-fg:   #A8B374;                     /* 從 #9EC97F 螢光綠調成橄欖綠、與暖調協調 */
   --warning-bg:   rgba(217, 138, 0, 0.22);

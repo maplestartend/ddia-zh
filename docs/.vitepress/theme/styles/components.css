@@ -44,7 +44,7 @@
   font-variation-settings: "opsz" 48, "wght" 500;
 }
 .dark .ddia-tldr-title::before {
-  color: var(--info-fg);
+  color: var(--brand-fg);
 }
 
 /* 隱藏 TLDR 標題裡的 Material icon（書腰風不用 lightning bolt） */
@@ -83,7 +83,7 @@
   line-height: 1;
 }
 .dark .ddia-tldr li::before {
-  color: var(--info-fg);
+  color: var(--brand-fg);
 }
 
 /* ---------- ChapterMeta：章首 metadata 列（Editorial：書頁版權頁樣式）---------- */
@@ -130,7 +130,7 @@
   align-items: center;
   padding: 1px 0;
   border: 0;
-  border-bottom: 1px dotted var(--info-fg);
+  border-bottom: 1px dotted var(--brand-fg);
   border-radius: 0;
   background: transparent;
   font-family: var(--font-display);
@@ -139,7 +139,7 @@
   font-size: 12.5px;
   font-weight: 500;
   letter-spacing: 0.04em;
-  color: var(--info-fg);
+  color: var(--brand-fg);
 }
 
 .ddia-badge.accent {
@@ -192,7 +192,7 @@
   line-height: 1;
 }
 .dark .ddia-quiz-header-title::before {
-  color: var(--info-fg);
+  color: var(--brand-fg);
 }
 
 .ddia-quiz-question {
@@ -288,7 +288,7 @@
 }
 
 .dark .ddia-quiz-score {
-  color: var(--info-fg);
+  color: var(--brand-fg);
 }
 
 /* Quiz 重做次數提示（Editorial：italic 譯註） */
@@ -352,8 +352,8 @@
   border-bottom-color: var(--brand-500);
 }
 :global(.dark) .ddia-quiz-anchor-link {
-  color: var(--info-fg);
-  border-bottom-color: var(--info-fg);
+  color: var(--brand-fg);
+  border-bottom-color: var(--brand-fg);
 }
 
 /* ---------- 通用按鈕（Editorial：方正、髮絲線邊、Fraunces SemiBold）---------- */
@@ -406,8 +406,8 @@
 }
 
 .dark .ddia-btn.primary {
-  background: var(--info-fg);
-  border-color: var(--info-fg);
+  background: var(--brand-fg);
+  border-color: var(--brand-fg);
   color: var(--bg-canvas);
 }
 .dark .ddia-btn.primary:hover:not(:disabled) {
@@ -467,7 +467,7 @@
   border-top-color: var(--border-default);
 }
 .dark .ddia-hero-disclaimer a {
-  color: var(--info-fg);
+  color: var(--brand-fg);
 }
 
 /* Hero CTA 下方的 secondary nav（Editorial：去除卡片化、改成單行文字按鈕） */
@@ -866,7 +866,7 @@
 }
 
 .dark .ddia-chapter-card-num {
-  color: var(--info-fg);
+  color: var(--brand-fg);
 }
 
 /* 章節標題：Fraunces + Noto Serif TC + 較大字級 + 行高放開 */
@@ -1114,9 +1114,9 @@
 }
 
 .dark .ddia-cta.primary {
-  background: var(--info-fg);
+  background: var(--brand-fg);
   color: var(--bg-canvas) !important;
-  border-color: var(--info-fg);
+  border-color: var(--brand-fg);
 }
 
 .dark .ddia-cta.primary:hover {
@@ -1131,8 +1131,8 @@
 }
 
 .dark .ddia-cta.ghost:hover {
-  color: var(--info-fg) !important;
-  border-bottom-color: var(--info-fg);
+  color: var(--brand-fg) !important;
+  border-bottom-color: var(--brand-fg);
 }
 
 .dark .ddia-hero {
@@ -1186,8 +1186,8 @@
   padding: 16px 20px;
 }
 
-.dark .custom-block.tip { border-left-color: var(--info-fg); }
-.dark .custom-block.tip .custom-block-title { color: var(--info-fg); }
+.dark .custom-block.tip { border-left-color: var(--brand-fg); }
+.dark .custom-block.tip .custom-block-title { color: var(--brand-fg); }
 .dark .custom-block.info { border-left-color: var(--accent-200); }
 .dark .custom-block.info .custom-block-title { color: var(--accent-200); }
 
@@ -1283,10 +1283,10 @@ button.DocSearch.DocSearch-Button:hover {
 /* focus-visible 用 brand 色 outline 取代 VP 預設可能露出來的藍框 */
 .VPNavBarSearch .DocSearch-Button:focus-visible,
 button.DocSearch.DocSearch-Button:focus-visible {
-  border-color: var(--brand-500) !important;
-  color: var(--brand-500) !important;
-  outline: 2px solid var(--brand-500) !important;
-  outline-offset: 2px !important;
+  border-color: var(--focus-ring-color) !important;
+  color: var(--focus-ring-color) !important;
+  outline: var(--focus-ring-width) solid var(--focus-ring-color) !important;
+  outline-offset: var(--focus-ring-offset) !important;
   box-shadow: none !important;
 }
 .DocSearch-Button .DocSearch-Search-Icon {
@@ -1353,7 +1353,7 @@ button.DocSearch.DocSearch-Button:focus-visible {
 /* Dark 模式：顯示 ☀（提示「點此切換到亮色」） */
 .dark .VPSwitchAppearance::before {
   content: "☀";
-  color: var(--info-fg);
+  color: var(--brand-fg);
 }
 
 /* Hover：字符變主色 + 淡 tint 背景 + 微微旋轉（書頁翻動感） */
@@ -1661,11 +1661,11 @@ button.DocSearch.DocSearch-Button:focus-visible {
   color: var(--text-tertiary);
 }
 .dark .ddia-dashboard-resume-num {
-  color: var(--info-fg);
+  color: var(--brand-fg);
 }
 .dark .ddia-dashboard-resume-link:hover {
-  color: var(--info-fg);
-  border-bottom-color: var(--info-fg);
+  color: var(--brand-fg);
+  border-bottom-color: var(--brand-fg);
 }
 
 /* ---------- Dashboard 完成 Ceremony：12 章全讀完換結語 + 三個延伸選項（F2） ---------- */
@@ -1730,8 +1730,8 @@ button.DocSearch.DocSearch-Button:focus-visible {
   border-bottom-style: solid;
 }
 .dark .ddia-dashboard-ceremony-link:hover {
-  color: var(--info-fg);
-  border-bottom-color: var(--info-fg);
+  color: var(--brand-fg);
+  border-bottom-color: var(--brand-fg);
 }
 
 /* ---------- Reading progress 髮絲線：頂部 fixed 1px 線 ----------
@@ -1748,7 +1748,7 @@ button.DocSearch.DocSearch-Button:focus-visible {
   transition: width 0.15s ease-out;
 }
 .dark .ddia-reading-progress {
-  background: var(--info-fg);
+  background: var(--brand-fg);
 }
 
 /* ---------- Quiz 答完 inline next bridge ----------
@@ -1805,9 +1805,9 @@ button.DocSearch.DocSearch-Button:focus-visible {
   color: var(--text-tertiary);
 }
 .dark .ddia-quiz-next-num {
-  color: var(--info-fg);
+  color: var(--brand-fg);
 }
 .dark .ddia-quiz-next-link:hover {
-  color: var(--info-fg);
-  border-bottom-color: var(--info-fg);
+  color: var(--brand-fg);
+  border-bottom-color: var(--brand-fg);
 }

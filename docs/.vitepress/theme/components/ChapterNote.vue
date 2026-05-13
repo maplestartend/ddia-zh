@@ -120,8 +120,8 @@ watch(content, () => {
   padding: 1px 0;
   background: transparent;
   border: 0;
-  border-bottom: 1px dotted var(--info-fg);
-  color: var(--info-fg);
+  border-bottom: 1px dotted var(--brand-fg);
+  color: var(--brand-fg);
   border-radius: 0;
   font-family: var(--font-display);
   font-style: italic;

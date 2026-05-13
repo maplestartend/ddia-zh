@@ -205,13 +205,13 @@ onUnmounted(() => {
   opacity: 0.75;
 }
 :global(.dark) .ddia-loop-btn.is-done {
-  color: var(--info-fg);
+  color: var(--brand-fg);
 }
 :global(.dark) .ddia-loop-btn.is-done::before {
-  background: var(--info-fg);
+  background: var(--brand-fg);
 }
 :global(.dark) .ddia-loop-btn.is-done .ddia-loop-btn-sub {
-  color: var(--info-fg);
+  color: var(--brand-fg);
 }
 
 /* 下一章 primary CTA */
@@ -232,7 +232,7 @@ onUnmounted(() => {
   font-size: 18px;
 }
 :global(.dark) .ddia-loop-btn.is-next {
-  background: var(--info-fg);
+  background: var(--brand-fg);
   color: var(--bg-canvas);
 }
 :global(.dark) .ddia-loop-btn.is-next:hover {

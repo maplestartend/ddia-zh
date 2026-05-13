@@ -118,10 +118,10 @@ const recommendations = computed(() => items.filter(i => !checked.value[i.id]))
   color: var(--brand-500);
 }
 :global(.dark) .ddia-self-assess-header {
-  color: var(--info-fg);
+  color: var(--brand-fg);
 }
 :global(.dark) .ddia-self-assess-header::before {
-  color: var(--info-fg);
+  color: var(--brand-fg);
 }
 .ddia-self-assess-header h3 {
   margin: 0;
