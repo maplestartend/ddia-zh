@@ -3,13 +3,92 @@
    依賴 tokens.css 與 components.css
    ========================================================================== */
 
-@media (max-width: 640px) {
-  .ddia-hero { padding: 32px 16px 16px; }
-  .ddia-hero h1 { font-size: 28px; }
-  .vp-doc { font-size: 15.5px; }
-  .ddia-meta { gap: 10px; }
+/* Mermaid SVG 不要溢出 viewport（mobile + 一些寬流程圖在桌面也會溢出） */
+.vp-doc div[class*="mermaid"],
+.vp-doc .mermaid,
+.vp-doc svg[role="graphics-document"],
+.vp-doc svg[id*="mermaid"] {
+  max-width: 100% !important;
+  height: auto !important;
 }
 
+.vp-doc .mermaid {
+  overflow-x: auto;
+  text-align: center;
+}
+
+/* ----- Tablet / Mobile（≤ 768px） ----- */
+@media (max-width: 768px) {
+  .ddia-hero h1 { font-size: 36px; }
+  .ddia-dashboard {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ----- Mobile（≤ 640px） ----- */
+@media (max-width: 640px) {
+  .ddia-hero { padding: 36px 16px; }
+  .ddia-hero h1 { font-size: 28px; }
+  .vp-doc { font-size: 15.5px; }
+  .ddia-meta { gap: 10px 16px; }
+
+  /* 連體網格 fallback：mobile 一欄堆疊
+     原桌面的 grid border 邏輯（外框 top+left + 每張卡 right+bottom）在 1 欄時 right 邊浪費
+     改成單欄純上下髮絲線堆疊 */
+  .ddia-chapter-grid {
+    grid-template-columns: 1fr;
+    border-top: 1px solid var(--rule-hairline);
+    border-left: 0;
+  }
+  .ddia-chapter-card {
+    border-right: 0;
+    border-bottom: 1px solid var(--rule-hairline);
+  }
+
+  /* Dashboard stat card 在 mobile：2x2 仍可接受，或單欄 */
+  .ddia-dashboard {
+    grid-template-columns: 1fr 1fr;
+    border-left: 0;
+    border-top: 1px solid var(--rule-hairline);
+  }
+  .ddia-stat-card {
+    border-right: 1px solid var(--rule-hairline);
+    border-bottom: 1px solid var(--rule-hairline);
+  }
+  .ddia-stat-card:nth-child(2n) {
+    border-right: 0;
+  }
+
+  /* Progress 章末連體按鈕 grid：mobile 一欄堆疊 */
+  .ddia-chapter-loop-actions {
+    grid-template-columns: 1fr;
+    border-top: 1px solid var(--rule-hairline);
+    border-left: 0;
+  }
+  .ddia-loop-btn {
+    border-right: 0;
+    border-bottom: 1px solid var(--rule-hairline);
+  }
+
+  /* Hero CTA mobile 堆疊 */
+  .ddia-cta-row {
+    flex-direction: column;
+    gap: 16px;
+  }
+  .ddia-cta.primary { width: 100%; justify-content: center; }
+
+  /* secondary nav mobile gap 縮 */
+  .ddia-secondary-nav { gap: 14px; padding: 14px 16px; }
+}
+
+/* ----- 超窄（≤ 380px）：詞彙表 A-Z bar、表格不溢出 ----- */
+@media (max-width: 380px) {
+  .vp-doc { font-size: 15px; }
+  .ddia-hero h1 { font-size: 26px; }
+  .vp-doc table { font-size: 13px; }
+}
+
+/* ----- Reduced motion ----- */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;

@@ -149,10 +149,12 @@ onUnmounted(() => {
 .ddia-loop-btn :deep(.material-symbols-rounded) {
   display: none;
 }
-.ddia-loop-btn:hover,
+.ddia-loop-btn:hover {
+  background: var(--bg-surface);
+}
+/* :focus-visible 保留全域 outline 規則（base.css），加上 hover 同樣的背景反饋 */
 .ddia-loop-btn:focus-visible {
   background: var(--bg-surface);
-  outline: none;
 }
 
 .ddia-loop-btn-text {

@@ -21,18 +21,50 @@ import SectionDivider from './components/SectionDivider.vue'
 import BaseLink from './components/BaseLink.vue'
 import PrereqBox from './components/PrereqBox.vue'
 import ChapterNote from './components/ChapterNote.vue'
+import ChapterOpener from './components/ChapterOpener.vue'
 import CheatSheetExport from './components/CheatSheetExport.vue'
 import Part0SelfAssessment from './components/Part0SelfAssessment.vue'
 import ReviewDue from './components/ReviewDue.vue'
 import InterviewBlock from './components/InterviewBlock.vue'
 
-// FOUT 防護：Material Symbols 字型載入完成後才顯示圖示文字，
-// 避免首屏短暫露出「schedule」「menu_book」這類字面 fallback。
-// 必須包 typeof document 檢查以避免 SSG build 時報錯。
-if (typeof document !== 'undefined' && 'fonts' in document) {
-  document.fonts.ready.then(() => {
-    document.documentElement.classList.add('fonts-loaded')
-  })
+// Editorial 模式不再載 Material Symbols、不再需要 FOUT 防護 hook
+// 字型載入由 font-display: swap 處理（Fraunces / Noto Serif TC / Noto Sans TC / JetBrains Mono）
+
+// Reading progress 髮絲線：在章節頁頂部 fixed 1px 線、隨 scroll 變寬
+// 只在 layout: doc 的長頁（章節 / Part 概覽 / 詞彙表 / paths）出現；layout: page 首頁不出現
+if (typeof window !== 'undefined') {
+  let bar: HTMLDivElement | null = null
+  let rafId = 0
+  const update = () => {
+    if (!bar) return
+    const main = document.querySelector('.vp-doc') as HTMLElement | null
+    if (!main) { bar.style.width = '0%'; return }
+    const h = document.documentElement
+    const scrollable = h.scrollHeight - h.clientHeight
+    if (scrollable < 100) { bar.style.width = '0%'; return }
+    const pct = Math.min(100, (h.scrollTop / scrollable) * 100)
+    bar.style.width = pct + '%'
+  }
+  const onScroll = () => {
+    cancelAnimationFrame(rafId)
+    rafId = requestAnimationFrame(update)
+  }
+  const ensureBar = () => {
+    if (!bar) {
+      bar = document.createElement('div')
+      bar.className = 'ddia-reading-progress'
+      document.body.appendChild(bar)
+    }
+    update()
+  }
+  // 等 DOM ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', ensureBar)
+  } else {
+    ensureBar()
+  }
+  window.addEventListener('scroll', onScroll, { passive: true })
+  window.addEventListener('resize', onScroll, { passive: true })
 }
 
 export default {
@@ -55,6 +87,7 @@ export default {
     app.component('BaseLink', BaseLink)
     app.component('PrereqBox', PrereqBox)
     app.component('ChapterNote', ChapterNote)
+    app.component('ChapterOpener', ChapterOpener)
     app.component('CheatSheetExport', CheatSheetExport)
     app.component('Part0SelfAssessment', Part0SelfAssessment)
     app.component('ReviewDue', ReviewDue)

@@ -16,10 +16,11 @@ body {
   -moz-osx-font-smoothing: grayscale;
   /* 中文 typography：
      - text-wrap: pretty 末行平衡、避免孤行字
-     - line-break: strict 中文標點避頭尾 */
+     - line-break: strict 中文標點避頭尾
+     - text-spacing-trim: trim-start 修正中文標點（「」（）等）段首突出 0.5em 空隙 */
   text-wrap: pretty;
   line-break: strict;
-  /* 中文無詞間距，微微撐開可讀性 */
+  text-spacing-trim: trim-start;
   letter-spacing: 0.01em;
 }
 
@@ -51,35 +52,27 @@ body {
   font-variation-settings: "opsz" 144, "SOFT" 50, "wght" 600;
 }
 
+/* Focus ring：用 box-shadow 作雙環視覺，但同時保留 outline 給 Windows forced-colors 模式
+   不能全靠 box-shadow（forced-colors active 時 shadow 會被瀏覽器強制 none） */
 :focus-visible {
-  outline: 2px solid transparent;
+  outline: 2px solid var(--brand-500);
   outline-offset: 2px;
   box-shadow: var(--focus-ring);
 }
 
-/* Material Symbols Rounded：FOUT 防護 */
-.material-symbols-rounded {
-  font-family: "Material Symbols Rounded";
-  font-weight: normal;
-  font-style: normal;
-  line-height: 1;
-  letter-spacing: normal;
-  text-transform: none;
-  display: inline-block;
-  white-space: nowrap;
-  word-wrap: normal;
-  direction: ltr;
-  font-feature-settings: "liga";
-  -webkit-font-feature-settings: "liga";
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
-  user-select: none;
-  overflow: hidden;
-  color: transparent;
+@media (forced-colors: active) {
+  :focus-visible {
+    outline: 2px solid Highlight;
+    outline-offset: 3px;
+    box-shadow: none;
+  }
 }
 
-.fonts-loaded .material-symbols-rounded {
-  color: inherit;
+/* Editorial 模式：Material Symbols 全站隱藏（已替換成 typographic mark：§ · ◆ →）
+   Icon.vue 元件機制保留、但 render 出來的 span 完全 hide。Font Awesome / Material Symbols
+   stylesheet 也已從 config.mts 移除、不再吃 ~150KB payload */
+.material-symbols-rounded {
+  display: none !important;
 }
 
 /* ---------- Prose typography（VitePress .vp-doc 內的文章） ----------
@@ -89,14 +82,16 @@ body {
 .vp-doc {
   font-size: 16.5px;
   line-height: 1.85;
-  letter-spacing: 0.015em;
-  /* 收一點欄寬讓閱讀更聚焦（書本感）；VitePress 預設 .content-container 已限寬，這裡微調 */
+  letter-spacing: 0.02em;  /* 中文 body 提到 0.02em — 共識區間（Noto Sans TC 16.5px） */
 }
 
+/* opsz 對齊實際字級（Fraunces 建議 opsz≈字級 pt 值）：
+   h1 42px ≈ opsz 72、h2 26px ≈ opsz 48、h3 22px ≈ opsz 36
+   SOFT 提到 60-80 取得更印刷味的圓潤襯線 */
 .vp-doc h1 {
   font-family: var(--font-display);
   font-feature-settings: "onum" 1, "kern" 1, "calt" 1;
-  font-variation-settings: "opsz" 144, "SOFT" 50, "wght" 500;
+  font-variation-settings: "opsz" 72, "SOFT" 80, "wght" 480;
   font-size: 42px;
   font-weight: 500;
   letter-spacing: -0.008em;
@@ -109,18 +104,16 @@ body {
   text-wrap: balance;
 }
 
-/* Editorial 章首儀式：h1 大字 + 底部髮絲線。不加 eyebrow（避免 Part 概覽 / 詞彙表等頁面誤標 Chapter） */
-
 .vp-doc h2 {
   font-family: var(--font-display);
   font-feature-settings: "onum" 1, "kern" 1, "calt" 1;
-  font-variation-settings: "opsz" 96, "SOFT" 30, "wght" 600;
+  font-variation-settings: "opsz" 48, "SOFT" 60, "wght" 580;
   font-size: 26px;
   font-weight: 600;
   border-top: 1px solid var(--rule-hairline);
-  padding-top: 32px;
-  margin-top: 56px;
-  letter-spacing: 0;
+  padding-top: 28px;
+  margin-top: 48px;  /* 從 56px 縮回 48 — padding-top 32→28 + margin 48 仍夠 chunk */
+  letter-spacing: 0.005em;
   line-height: 1.3;
 }
 
@@ -130,7 +123,7 @@ body {
   content: "§";
   font-family: var(--font-display);
   font-style: italic;
-  font-variation-settings: "opsz" 48, "SOFT" 50, "wght" 500;
+  font-variation-settings: "opsz" 36, "SOFT" 60, "wght" 500;
   font-size: 28px;
   color: var(--brand-500);
   margin-right: 14px;
@@ -143,29 +136,40 @@ body {
   color: var(--info-fg);
 }
 
-/* 隱藏 icon-* class 字面 fallback（這些 class 仍會在 markdown 標記中存在、但不再 render Material Symbols） */
-.vp-doc h2.icon-code::before,
-.vp-doc h2.icon-analytics::before,
-.vp-doc h2.icon-account_tree::before,
-.vp-doc h2.icon-bolt::before,
-.vp-doc h2.icon-library_books::before,
-.vp-doc h2.icon-menu_book::before,
-.vp-doc h2.icon-rocket_launch::before { content: "§"; }
 
 .vp-doc h3 {
   font-family: var(--font-display);
   font-feature-settings: "onum" 1;
-  font-variation-settings: "opsz" 48, "SOFT" 20, "wght" 600;
+  font-variation-settings: "opsz" 36, "SOFT" 40, "wght" 620;
   font-weight: 600;
-  font-size: 20px;
-  margin-top: 36px;
-  letter-spacing: 0;
+  font-size: 22px;
+  margin-top: 44px;  /* 拉大 h3 上方留白避免黏 body */
+  letter-spacing: 0.005em;
   color: var(--text-primary);
 }
 
 .vp-doc p {
-  margin: 18px 0;
+  margin: 22px 0;  /* 段距拉開 — line-height 1.85 配段距 22px = book-paragraph 韻律 */
   color: var(--text-primary);
+}
+
+/* Editorial drop cap：章首（h1 之後的第一個 p）首字大寫 — 書本書頁感
+   中文吃首字漢字、英文吃首字母。`text-wrap: nowrap` 防 drop cap 換行斷字 */
+.vp-doc > h1:first-of-type + p::first-letter,
+.vp-doc > div:first-of-type > h1 + p::first-letter {
+  font-family: var(--font-display);
+  font-feature-settings: "onum" 1;
+  font-variation-settings: "opsz" 144, "SOFT" 60, "wght" 600;
+  float: left;
+  font-size: 3.6em;
+  line-height: 0.88;
+  margin: 0.06em 0.08em -0.04em 0;
+  padding-right: 0.04em;
+  color: var(--brand-500);
+}
+.dark .vp-doc > h1:first-of-type + p::first-letter,
+.dark .vp-doc > div:first-of-type > h1 + p::first-letter {
+  color: var(--info-fg);
 }
 
 /* Editorial：強調連結用 manuscript orange、底線細實線（不是 VP 預設粗虛底線） */
@@ -173,26 +177,29 @@ body {
   color: var(--accent-500);
   text-decoration: underline;
   text-decoration-thickness: 1px;
-  text-underline-offset: 0.18em;
-  text-decoration-color: rgba(196, 90, 27, 0.4);
-  transition: text-decoration-color 0.15s, color 0.15s;
+  text-underline-offset: 0.22em;
+  text-decoration-color: var(--accent-tint-rule);
+  transition: text-decoration-color 0.15s, text-decoration-thickness 0.15s, color 0.15s;
 }
 .vp-doc a:hover {
   color: var(--brand-500);
+  text-decoration-thickness: 2px;
   text-decoration-color: currentColor;
 }
 .dark .vp-doc a {
   color: var(--info-fg);
-  text-decoration-color: rgba(227, 160, 106, 0.4);
+  text-decoration-color: rgba(227, 160, 106, 0.55);
 }
 .dark .vp-doc a:hover {
   color: var(--accent-200);
 }
 
 .vp-doc div[class*='language-'] {
-  border-radius: 4px;
+  border-radius: 0;
   font-size: 13.5px;
-  border: 1px solid var(--border-default);
+  border: 0;
+  border-left: 3px solid var(--rule-soft);
+  background: var(--bg-surface);
 }
 
 /* Editorial：blockquote 走 pull-quote — Fraunces italic + 左 3px ink 實線、無圓角、無背景 */
@@ -231,39 +238,60 @@ body {
   padding-left: 1em;
 }
 
+/* Editorial 表格：印刷感「線」表格 — 無色塊填底、只用髮絲線分隔 */
 .vp-doc table {
   font-size: 14.5px;
   border-collapse: collapse;
+  width: 100%;
+  margin: 24px 0;
 }
 
 .vp-doc thead {
-  background: var(--bg-subtle);
+  background: transparent;
   font-family: var(--font-display);
-  font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 600;
+  font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 500;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+
+.vp-doc thead th {
+  border-top: 0;
+  border-left: 0;
+  border-right: 0;
+  border-bottom: 2px solid var(--rule-hairline);
+  text-align: left;
+}
+
+.vp-doc tbody tr {
+  border-bottom: 1px solid var(--rule-soft);
 }
 
 .vp-doc th, .vp-doc td {
-  border-color: var(--border-default);
+  border-color: var(--rule-soft);
+  padding: 10px 14px;
 }
 
-/* Editorial：行內 code 用 mono、無背景塊、改成淡 oxblood 著色 */
+/* Editorial：行內 code 用 mono、極淡 mahogany tint 背景、直角邊
+   dark 模式飽和度砍半 — 避免「螢光標籤」搶過內文 */
 .vp-doc :not(pre) > code {
   font-family: var(--font-mono);
-  font-size: 0.9em;
+  font-size: 0.88em;
   padding: 0 4px;
   background: var(--brand-tint-soft);
   color: var(--brand-500);
-  border-radius: 3px;
-  border: 1px solid var(--brand-tint-border);
+  border-radius: 0;
+  border: 0;
+  border-bottom: 1px dotted var(--brand-tint-border);
 }
 .dark .vp-doc :not(pre) > code {
-  color: var(--info-fg);
-  border-color: var(--brand-tint-border);
+  color: #D4B896;
+  background: rgba(227, 160, 106, 0.06);
+  border-bottom-color: rgba(227, 160, 106, 0.18);
 }
 
 /* Editorial：mark / 強調 用 manuscript orange highlight（不是螢光黃） */
 .vp-doc mark {
-  background: linear-gradient(180deg, transparent 60%, rgba(196, 90, 27, 0.35) 60%);
+  background: linear-gradient(180deg, transparent 60%, var(--accent-tint-mark) 60%);
   color: inherit;
   padding: 0 2px;
 }

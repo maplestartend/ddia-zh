@@ -89,25 +89,26 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+/* Editorial 詞彙連結：dotted underline + tooltip 書頁譯註樣式 */
 .ddia-g {
   position: relative;
   display: inline;
   color: inherit;
   text-decoration: none;
-  border-bottom: 1px dotted var(--brand-500, #2F4A80);
+  border-bottom: 1px dotted var(--accent-500);
   cursor: help;
   padding-bottom: 1px;
   transition: background-color 0.15s ease, color 0.15s ease;
 }
 .ddia-g:hover, .ddia-g:focus-visible {
-  background-color: color-mix(in srgb, var(--brand-500, #2F4A80) 8%, transparent);
+  background-color: var(--accent-tint-soft);
   border-bottom-style: solid;
-  outline: none;
+  /* 不再 outline: none — :focus-visible 由 base.css 全域 outline 處理 */
 }
 
 .ddia-g-missing {
-  background: color-mix(in srgb, orange 15%, transparent);
-  border-bottom: 1px dashed orange;
+  background: var(--warning-bg);
+  border-bottom: 1px dashed var(--warning-fg);
   cursor: help;
 }
 
@@ -115,42 +116,46 @@ onUnmounted(() => {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  bottom: calc(100% + 8px);
+  bottom: calc(100% + 10px);
   z-index: 50;
   width: max-content;
   max-width: min(320px, 90vw);
-  padding: 10px 12px;
-  background: var(--vp-c-bg-soft, #f6f6f7);
-  border: 1px solid var(--vp-c-divider, #e2e2e3);
-  border-radius: 10px;
-  box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.18);
+  padding: 12px 14px;
+  background: var(--bg-surface);
+  border: 0;
+  border-top: 1px solid var(--rule-hairline);
+  border-bottom: 1px solid var(--rule-hairline);
+  border-radius: 0;
+  box-shadow: 0 8px 24px -8px rgba(28, 26, 23, 0.18);
+  font-family: var(--font-body);
   font-size: 13px;
-  line-height: 1.55;
-  color: var(--vp-c-text-1, #213547);
+  line-height: 1.65;
+  color: var(--text-primary);
   text-align: left;
   white-space: normal;
-  /* 允許 tooltip 內可點：chip 看起來像按鈕、實際靠 anchor 冒泡跳轉。
-     pointer-events: auto 也讓 cursor 移到 tooltip 上時 hover 狀態維持 */
   pointer-events: auto;
 }
 
 .ddia-g-tooltip-head {
   display: flex;
-  gap: 6px;
+  gap: 8px;
   align-items: baseline;
-  margin-bottom: 4px;
-  padding-bottom: 4px;
-  border-bottom: 1px solid var(--vp-c-divider, #e2e2e3);
+  margin-bottom: 6px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border-default);
 }
 .ddia-g-tooltip-en {
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-family: var(--font-mono);
   font-weight: 600;
   font-size: 12px;
-  color: var(--brand-500, #2F4A80);
+  color: var(--brand-500);
 }
 .ddia-g-tooltip-zh {
+  font-family: var(--font-display);
+  font-style: italic;
   font-size: 12px;
-  color: var(--vp-c-text-2, #5c6066);
+  color: var(--text-tertiary);
+  letter-spacing: 0.04em;
 }
 .ddia-g-tooltip-def {
   display: block;
@@ -161,32 +166,40 @@ onUnmounted(() => {
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  margin-top: 8px;
+  margin-top: 10px;
   padding-top: 8px;
-  border-top: 1px dashed var(--vp-c-divider, #e2e2e3);
+  border-top: 1px dotted var(--border-default);
 }
 .ddia-g-tooltip-cta-btn {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  padding: 2px 8px;
-  background: color-mix(in srgb, var(--brand-500, #2F4A80) 12%, transparent);
-  border-radius: 4px;
-  font-size: 11.5px;
+  padding: 1px 0;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--accent-500);
+  border-radius: 0;
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 600;
+  font-size: 12px;
   font-weight: 600;
-  color: var(--brand-500, #2F4A80);
+  letter-spacing: 0.04em;
+  color: var(--accent-500);
 }
 .ddia-g-arrow {
   font-weight: 700;
 }
 .ddia-g-tooltip-chapter {
-  font-size: 10.5px;
-  color: var(--vp-c-text-3, #999);
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 11px;
+  color: var(--text-tertiary);
   white-space: nowrap;
+  letter-spacing: 0.04em;
 }
 :global(.dark) .ddia-g-tooltip-cta-btn {
-  background: color-mix(in srgb, var(--brand-300, #7E93BE) 18%, transparent);
-  color: var(--brand-300, #7E93BE);
+  color: var(--info-fg);
+  border-bottom-color: var(--info-fg);
 }
 
 .ddia-g-fade-enter-active, .ddia-g-fade-leave-active {
@@ -197,16 +210,19 @@ onUnmounted(() => {
   transform: translateX(-50%) translateY(2px);
 }
 
-/* 暗色模式 */
 :global(.dark) .ddia-g-tooltip {
-  background: var(--vp-c-bg-elv, #202127);
-  border-color: var(--vp-c-divider, #2e2e32);
-  color: var(--vp-c-text-1, #dfdfd6);
+  background: var(--bg-surface);
+  border-top-color: var(--rule-hairline);
+  border-bottom-color: var(--rule-hairline);
+  color: var(--text-primary);
 }
 :global(.dark) .ddia-g {
-  border-bottom-color: color-mix(in srgb, var(--brand-500, #2F4A80) 70%, white);
+  border-bottom-color: var(--info-fg);
 }
 :global(.dark) .ddia-g:hover, :global(.dark) .ddia-g:focus-visible {
-  background-color: color-mix(in srgb, var(--brand-500, #2F4A80) 25%, transparent);
+  background-color: rgba(227, 160, 106, 0.12);
+}
+:global(.dark) .ddia-g-tooltip-en {
+  color: var(--info-fg);
 }
 </style>

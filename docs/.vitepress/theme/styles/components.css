@@ -452,8 +452,8 @@
 .ddia-hero-disclaimer a {
   color: var(--accent-500);
   text-decoration: underline;
-  text-underline-offset: 0.2em;
-  text-decoration-color: rgba(196, 90, 27, 0.4);
+  text-underline-offset: 0.22em;
+  text-decoration-color: var(--accent-tint-rule);
 }
 .dark .ddia-hero-disclaimer {
   border-top-color: var(--border-default);
@@ -522,20 +522,22 @@
 /* ---------- Progress / Chapter loop（learning loop 元件 scoped 樣式在 Vue 內） ---------- */
 .ddia-progress-wrapper {
   margin: 32px 0 16px;
-  padding: 14px 18px;
-  background: var(--bg-surface);
-  border: 1px solid var(--border-default);
-  border-radius: 12px;
+  padding: 16px 0;
+  background: transparent;
+  border: 0;
+  border-top: 1px solid var(--rule-hairline);
+  border-bottom: 1px solid var(--rule-hairline);
+  border-radius: 0;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
   flex-wrap: wrap;
 }
 
 .ddia-progress-bar {
-  height: 8px;
+  height: 4px;
   background: var(--bg-subtle);
-  border-radius: 999px;
+  border-radius: 0;
   overflow: hidden;
   margin: 8px 0;
   border: 1px solid var(--border-default);
@@ -628,8 +630,6 @@
 
 .ddia-stat-card:hover {
   background: var(--bg-surface);
-  border-color: var(--rule-hairline);
-  box-shadow: none;
 }
 
 .ddia-stat-label {
@@ -806,7 +806,7 @@
   background: var(--bg-surface);
 }
 
-/* 細微的 hover 標示：左邊出現 3px oxblood 印記 */
+/* 細微的 hover 標示：左邊出現 3px oxblood 印記。鍵盤 :focus-visible 也觸發 */
 .ddia-chapter-card::before {
   content: "";
   position: absolute;
@@ -818,7 +818,8 @@
   opacity: 0;
   transition: opacity 0.18s;
 }
-.ddia-chapter-card:hover::before {
+.ddia-chapter-card:hover::before,
+.ddia-chapter-card:focus-visible::before {
   opacity: 1;
 }
 
@@ -948,10 +949,9 @@
   font-size: 13px;
   font-weight: 500;
   color: var(--text-tertiary);
-  letter-spacing: 0.18em;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
   margin-bottom: 6px;
-  font-style: normal;
 }
 
 .ddia-part-header p {
@@ -1205,4 +1205,378 @@
 .ddia-chapter-card-status-tag:last-child::before {
   content: ""; /* 第二個 tag 不要 dot prefix */
   margin-right: 0;
+}
+
+/* ==========================================================================
+   VitePress chrome Editorial 覆寫
+   覆蓋 VP 內建 sidebar / outline TOC / top nav / search modal / footer 等
+   讓整站視覺一致進入 Editorial Manuscript
+   ========================================================================== */
+
+/* ----- Top Nav Bar：移除圓角 SaaS 感、對齊 Editorial ----- */
+.VPNavBar {
+  background: var(--bg-canvas) !important;
+}
+.VPNavBar.has-sidebar .content {
+  background: var(--bg-canvas);
+  backdrop-filter: none;
+}
+.VPNavBar:not(.has-sidebar):not(.top) .wrapper {
+  padding: 0;
+}
+.VPNavBarTitle .title {
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 600;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+.VPNavBar .divider-line {
+  background: var(--rule-hairline);
+}
+.VPNavBarMenuLink,
+.VPNavBarMenuGroup .text {
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 500;
+  font-size: 14px;
+  letter-spacing: 0.02em;
+}
+
+/* 搜尋框：方框去圓角、髮絲線邊 */
+.VPNavBarSearch .DocSearch-Button {
+  border-radius: 0 !important;
+  background: transparent !important;
+  border: 1px solid var(--rule-hairline) !important;
+  box-shadow: none !important;
+  font-family: var(--font-display);
+  font-style: italic;
+}
+.DocSearch-Button .DocSearch-Search-Icon {
+  color: var(--text-tertiary);
+}
+/* VP local search button 也覆寫 */
+.VPLocalSearchBox .DocSearch-Button,
+button.DocSearch.DocSearch-Button {
+  border-radius: 0 !important;
+}
+
+/* Light/Dark toggle 改 italic 文字感 */
+.VPSwitch {
+  border-radius: 0 !important;
+  border: 1px solid var(--rule-hairline) !important;
+}
+
+/* ----- Sidebar：Editorial 化字型 + 移除圓角 + active 印記 ----- */
+.VPSidebar {
+  background: var(--bg-canvas) !important;
+  border-right: 1px solid var(--rule-hairline);
+  padding-top: 32px;
+}
+.VPSidebarGroup .title .title-text {
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 24, "SOFT" 50, "wght" 600;
+  font-size: 13px;
+  font-style: italic;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+.VPSidebarItem .link {
+  border-radius: 0;
+  font-family: var(--font-body);
+  font-size: 14px;
+  letter-spacing: 0.01em;
+}
+.VPSidebarItem .link .text {
+  color: var(--text-secondary);
+}
+.VPSidebarItem .link:hover .text {
+  color: var(--text-primary);
+}
+.VPSidebarItem.is-active > .item .link .text {
+  color: var(--brand-500) !important;
+  font-weight: 600;
+}
+.VPSidebarItem.is-active > .item {
+  position: relative;
+}
+.VPSidebarItem.is-active > .item::before {
+  content: "";
+  position: absolute;
+  left: -16px;
+  top: 4px;
+  bottom: 4px;
+  width: 2px;
+  background: var(--brand-500);
+}
+
+/* ----- Outline TOC（右側）：Editorial 化 ----- */
+.VPDocAsideOutline {
+  font-family: var(--font-body);
+}
+.VPDocAsideOutline .outline-title {
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 24, "SOFT" 60, "wght" 500;
+  font-style: italic;
+  font-size: 12px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  border-bottom: 1px solid var(--rule-hairline);
+  padding-bottom: 8px;
+  margin-bottom: 12px;
+}
+.VPDocAsideOutline .outline-link {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text-tertiary);
+  border-radius: 0;
+  padding: 4px 0 4px 8px;
+  border-left: 1px solid transparent;
+  transition: color 0.15s, border-left-color 0.15s;
+}
+.VPDocAsideOutline .outline-link:hover {
+  color: var(--text-primary);
+  border-left-color: var(--rule-soft);
+}
+.VPDocAsideOutline .outline-link.active {
+  color: var(--brand-500);
+  border-left-color: var(--brand-500);
+  font-weight: 500;
+}
+/* outline marker：移除 VP 預設左 vertical line（用我們的 border-left 代替） */
+.VPDocAsideOutline .outline-marker {
+  display: none;
+}
+/* outline 整欄左邊改髮絲線 */
+.VPDocAside .root {
+  border-left: 1px solid var(--rule-hairline);
+  padding-left: 16px;
+}
+
+/* ----- Local Search Modal：去圓角 + Editorial 字 ----- */
+.VPLocalSearchBox .shell {
+  border-radius: 0 !important;
+  background: var(--bg-canvas) !important;
+  border: 1px solid var(--rule-hairline) !important;
+}
+.VPLocalSearchBox .search-bar {
+  border-bottom: 1px solid var(--rule-hairline) !important;
+}
+.VPLocalSearchBox input {
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 36, "SOFT" 50, "wght" 500;
+}
+.VPLocalSearchBox .result {
+  border-radius: 0 !important;
+  border-bottom: 1px solid var(--border-default);
+}
+
+/* ----- Footer：Editorial 化 ----- */
+.VPFooter {
+  background: var(--bg-canvas) !important;
+  border-top: 1px solid var(--rule-hairline);
+  padding: 32px 24px;
+}
+.VPFooter .container {
+  text-align: center;
+}
+.VPFooter .message,
+.VPFooter .copyright {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-variation-settings: "opsz" 24, "SOFT" 60, "wght" 400;
+  font-size: 12.5px;
+  color: var(--text-tertiary);
+  letter-spacing: 0.04em;
+  line-height: 1.8;
+}
+.VPFooter .container::before {
+  content: "◆";
+  display: block;
+  font-family: var(--font-display);
+  font-size: 12px;
+  color: var(--brand-500);
+  margin-bottom: 14px;
+}
+
+/* ----- Doc footer prev/next：Editorial 化 ----- */
+.VPDocFooter,
+.pager {
+  border-top: 1px solid var(--rule-hairline);
+  margin-top: 56px;
+  padding-top: 24px;
+}
+.pager-link {
+  border-radius: 0 !important;
+  border: 0 !important;
+  border-top: 1px solid var(--rule-hairline) !important;
+  padding: 16px 0 !important;
+}
+.pager-link .desc {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-variation-settings: "opsz" 24, "SOFT" 60, "wght" 400;
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+.pager-link .title {
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 600;
+  font-size: 15px;
+  letter-spacing: 0.01em;
+}
+
+/* ----- Mermaid SVG nodes：去圓角 + 字型 ----- */
+.vp-doc svg[id*="mermaid"] g rect,
+.vp-doc svg[id*="mermaid"] g polygon,
+.vp-doc div[class*="mermaid"] rect,
+.vp-doc div[class*="mermaid"] polygon {
+  rx: 0 !important;
+  ry: 0 !important;
+}
+.vp-doc svg[id*="mermaid"] text,
+.vp-doc div[class*="mermaid"] text {
+  font-family: var(--font-display) !important;
+}
+
+/* ---------- Dashboard resume link：returning user 看見的「繼續讀」入口 ---------- */
+.ddia-dashboard-resume {
+  margin: 28px auto 36px;
+  padding: 20px 0;
+  max-width: 640px;
+  text-align: center;
+  border-top: 1px solid var(--rule-hairline);
+  border-bottom: 1px solid var(--rule-hairline);
+}
+.ddia-dashboard-resume-eyebrow {
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 24, "SOFT" 60, "wght" 500;
+  font-style: italic;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: 14px;
+}
+.ddia-dashboard-resume-link {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 16px;
+  text-decoration: none;
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--rule-hairline);
+  padding: 4px 4px;
+  transition: color 0.15s, border-bottom-color 0.15s;
+}
+.ddia-dashboard-resume-link:hover {
+  color: var(--brand-500);
+  border-bottom-color: var(--brand-500);
+}
+.ddia-dashboard-resume-num {
+  font-family: var(--font-display);
+  font-feature-settings: "onum" 1, "smcp" 1;
+  font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 600;
+  font-size: 13px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--brand-500);
+}
+.ddia-dashboard-resume-title {
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 36, "SOFT" 30, "wght" 600;
+  font-size: 20px;
+  letter-spacing: 0.01em;
+}
+.ddia-dashboard-resume-arrow {
+  font-family: var(--font-display);
+  font-size: 18px;
+  color: var(--text-tertiary);
+}
+.dark .ddia-dashboard-resume-num {
+  color: var(--info-fg);
+}
+.dark .ddia-dashboard-resume-link:hover {
+  color: var(--info-fg);
+  border-bottom-color: var(--info-fg);
+}
+
+/* ---------- Reading progress 髮絲線：頂部 fixed 1px 線 ----------
+   JS 在 theme/index.ts 控制 width。長頁（章節 / 詞彙表 / paths）才顯示足夠長度 */
+.ddia-reading-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2px;
+  background: var(--brand-500);
+  width: 0%;
+  z-index: 999;
+  pointer-events: none;
+  transition: width 0.15s ease-out;
+}
+.dark .ddia-reading-progress {
+  background: var(--info-fg);
+}
+
+/* ---------- Quiz 答完 inline next bridge ----------
+   把成就感熱度導向下一章 — 取代過去需要 scroll 到 footer prev/next */
+.ddia-quiz-next {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid var(--rule-hairline);
+  text-align: center;
+}
+.ddia-quiz-next-eyebrow {
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 24, "SOFT" 60, "wght" 500;
+  font-style: italic;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: 12px;
+}
+.ddia-quiz-next-link {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 16px;
+  text-decoration: none;
+  color: var(--text-primary);
+  padding: 4px 8px 6px;
+  border-bottom: 1px solid var(--rule-hairline);
+  transition: color 0.15s, border-bottom-color 0.15s;
+}
+.ddia-quiz-next-link:hover {
+  color: var(--brand-500);
+  border-bottom-color: var(--brand-500);
+}
+.ddia-quiz-next-num {
+  font-family: var(--font-display);
+  font-feature-settings: "onum" 1;
+  font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 600;
+  font-size: 13px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--brand-500);
+}
+.ddia-quiz-next-title {
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 48, "SOFT" 50, "wght" 500;
+  font-size: 22px;
+  letter-spacing: 0.01em;
+}
+.ddia-quiz-next-arrow {
+  font-family: var(--font-display);
+  font-size: 18px;
+  color: var(--text-tertiary);
+}
+.dark .ddia-quiz-next-num {
+  color: var(--info-fg);
+}
+.dark .ddia-quiz-next-link:hover {
+  color: var(--info-fg);
+  border-bottom-color: var(--info-fg);
 }

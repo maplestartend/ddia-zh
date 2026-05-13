@@ -21,14 +21,17 @@
   --brand-800: #38130C;
   --brand-900: #200A06;
 
-  /* manuscript orange · 連結色 / sharp accent */
+  /* manuscript orange · 連結色 / sharp accent
+     accent-500 從原 #C45A1B 改 #A24612：在米黃紙 #F4EFE6 上 contrast 從 4.0 → 6.0:1
+     滿足 WCAG AA 4.5:1（body 文字 / 連結色） */
   --accent-50:  #FBEFE3;
   --accent-100: #F4D8B8;
   --accent-200: #EBB87F;
   --accent-300: #DC9148;
   --accent-400: #C45A1B;
-  --accent-500: #C45A1B;
-  --accent-600: #A24612;
+  --accent-500: #A24612;
+  --accent-600: #8A3B0E;
+  --accent-700: #6E2E0A;
 
   /* ---------- Primitive · Neutral（暖灰偏米色，不是冷藍灰）---------- */
   --neutral-50:  #F8F4EA;
@@ -74,11 +77,11 @@
   color-scheme: light;
 
   --bg-canvas:    #F4EFE6;   /* 米黃紙 */
-  --bg-surface:   #FBF7EF;   /* 卡片 / hero 內襯 · 比 canvas 略亮 */
-  --bg-subtle:    #ECE6D6;   /* 較深米色 · TLDR 書腰 / inset 背景 */
-  --bg-muted:     #E2DAC4;
-  --bg-secondary: #ECE6D6;   /* 補上原本沒定義的 token */
-  --bg-elevated:  #FBF7EF;
+  --bg-surface:   #FDF9F1;   /* 卡片 / hero 內襯 · 比 canvas 亮 5-6% 拉開層次 */
+  --bg-subtle:    #E8E0CC;   /* 較深米色 · TLDR 書腰 / inset 背景（拉深、與 surface 拉開） */
+  --bg-muted:     #DACFB6;
+  --bg-secondary: #E8E0CC;
+  --bg-elevated:  #FDF9F1;
 
   --border-default: #D8CFBE; /* 鉛筆灰邊 */
   --border-strong:  #1C1A17; /* 全黑髮絲線 · section rule */
@@ -107,22 +110,28 @@
 
   --focus-ring: 0 0 0 3px rgb(107 29 29 / 0.25);
 
-  --brand-tint-soft:   rgba(107, 29, 29, 0.04);
-  --brand-tint:        rgba(107, 29, 29, 0.08);
-  --brand-tint-strong: rgba(107, 29, 29, 0.14);
-  --brand-tint-border: rgba(107, 29, 29, 0.25);
+  --brand-tint-soft:   rgba(140, 58, 42, 0.05);
+  --brand-tint:        rgba(140, 58, 42, 0.10);
+  --brand-tint-strong: rgba(140, 58, 42, 0.16);
+  --brand-tint-border: rgba(140, 58, 42, 0.28);
+
+  /* accent (manuscript orange) tint family — 取代 hardcoded rgba */
+  --accent-tint-soft:  rgba(162, 70, 18, 0.10);
+  --accent-tint:       rgba(162, 70, 18, 0.20);
+  --accent-tint-mark:  rgba(162, 70, 18, 0.35);  /* mark / highlight 用 */
+  --accent-tint-rule:  rgba(162, 70, 18, 0.55);  /* link underline 用 */
 }
 
 /* ---------- Semantic · Dark（暖炭 + 米白）---------- */
 .dark {
   color-scheme: dark;
 
-  --bg-canvas:    #171311;   /* 暖炭墨 · 不是純黑、不是冷藍黑 */
-  --bg-surface:   #1F1A17;
-  --bg-subtle:    #261F1A;
-  --bg-muted:     #2E2620;
-  --bg-secondary: #261F1A;
-  --bg-elevated:  #1F1A17;
+  --bg-canvas:    #1C1714;   /* 暖炭墨 · 抬亮 3-4 L* 避免 OLED 黑洞 + 暖橙對比過大 */
+  --bg-surface:   #241E1A;
+  --bg-subtle:    #2C251F;
+  --bg-muted:     #342C25;
+  --bg-secondary: #2C251F;
+  --bg-elevated:  #241E1A;
 
   --border-default: #3A332C;
   --border-strong:  #E3D9BF; /* dark 模式：髮絲線轉米白 */

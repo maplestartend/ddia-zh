@@ -16,22 +16,15 @@ title: 首頁
   </div>
 </div>
 
-<div class="ddia-secondary-nav">
-  <span class="ddia-secondary-nav-label">不確定從哪開始？</span>
-  <BaseLink to="/part-0/" variant="ghost">Part 0 自評</BaseLink>
-  <BaseLink to="/paths/" variant="ghost">學習路徑</BaseLink>
-  <BaseLink to="/glossary/" variant="ghost">詞彙表</BaseLink>
-</div>
-
 <div style="max-width: 1100px; margin: 0 auto; padding: 0 24px;">
+
+<Dashboard />
 
 ::: tip 第一次接觸資料系統？
 DDIA 假設讀者已熟悉 SQL、後端服務、作業系統與網路基礎。如果你對「P99 延遲、JOIN、fsync、TCP partial failure、race condition」**其中任兩個以上**感到陌生，建議先看 **[Part 0 前置知識](/part-0/)**（選讀，但能省下後續每章 30% 的卡關時間）。**完全沒寫過後端？** 直接從 [**0.0 三分鐘看懂後端**](/part-0/basics) 起步、不會卡住。
 
 已熟悉？直接從下方 Ch1 開始。
 :::
-
-<Dashboard />
 
 <div class="ddia-part-header">
   <div class="ddia-part-header-title">

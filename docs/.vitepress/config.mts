@@ -44,16 +44,16 @@ export default withMermaid(defineConfig({
   head: [
     ['link', { rel: 'preconnect', href: 'https://fonts.googleapis.com' }],
     ['link', { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' }],
-    // Material Symbols Rounded：縮窄 axis 範圍降低字型 payload（過去全範圍 ~7 個字重 × 全 FILL × 全 GRAD）
-    // 實際只用：opsz=20、wght=400 / 500、FILL=0 / 1、GRAD=0；axis range 縮到剛好覆蓋
-    ['link', { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..24,400..500,0..1,0&display=swap' }],
+    // Editorial 模式不使用 Material Symbols（典型 icon 已替換成 typographic mark：§ · ◆ →）
+    // Icon.vue 元件保留但全站 .material-symbols-rounded { display: none }（base.css），
+    // 不再從 Google Fonts 載入 ~150KB 字型 payload
     // 字型分三層：
-    //   Display（標題 / hero / 章節編號）：Fraunces + Noto Serif TC
-    //   Body（內文）：Noto Sans TC（保留 — 中文長文螢幕閱讀仍以 sans 最舒服）
-    //   Mono（數字 / 程式碼）：JetBrains Mono
-    // Fraunces 軸：opsz 9-144、wght 300-900、SOFT 0-100。打開 SOFT 100 取得最印刷味的字形
-    ['link', { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,300..900,0..100&family=Noto+Serif+TC:wght@500;600;700&family=Noto+Sans+TC:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap' }],
-    ['meta', { name: 'theme-color', content: '#6B1D1D' }]
+    //   Display（標題 / hero / 章節編號）：Fraunces + Noto Serif TC（單一 weight 600）
+    //   Body（內文）：Noto Sans TC weight 400 / 500（700 由瀏覽器合成 — 省 ~600KB CJK）
+    //   Mono（數字 / 程式碼）：JetBrains Mono weight 400 / 500
+    // Fraunces 軸：opsz 9-144、wght 400-700、SOFT 0-100
+    ['link', { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,400..700,0..100&family=Noto+Serif+TC:wght@600&family=Noto+Sans+TC:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap' }],
+    ['meta', { name: 'theme-color', content: '#8C3A2A' }]
   ],
 
   themeConfig: {
@@ -145,36 +145,32 @@ export default withMermaid(defineConfig({
   },
 
   mermaid: {
-    // Editorial：對齊 mahogany clay + 米黃紙底（取代 mermaid 預設藍 / 紫色票）
     theme: 'base',
     themeVariables: {
-      // Primary（節點背景）：淡 mahogany tint
-      primaryColor: '#F6ECE7',
+      // Light：mahogany clay + 米黃紙
+      primaryColor: '#FDF9F1',
       primaryTextColor: '#1C1A17',
       primaryBorderColor: '#8C3A2A',
-      // Lines（流程線 / arrow）：深 ink 灰
       lineColor: '#4A4640',
-      // Secondary（次要節點）：米黃紙
-      secondaryColor: '#FBF7EF',
+      secondaryColor: '#F4EFE6',
       secondaryTextColor: '#1C1A17',
-      secondaryBorderColor: '#D8CFBE',
-      // Tertiary（特殊強調）：手稿橙
+      secondaryBorderColor: '#B5AC97',
       tertiaryColor: '#FBEFE3',
       tertiaryTextColor: '#1C1A17',
-      tertiaryBorderColor: '#C45A1B',
-      // Background
+      tertiaryBorderColor: '#A24612',
       background: '#F4EFE6',
-      mainBkg: '#FBF7EF',
-      // Sequence diagram actor
-      actorBkg: '#FBF7EF',
+      mainBkg: '#FDF9F1',
+      actorBkg: '#FDF9F1',
       actorBorder: '#8C3A2A',
       actorTextColor: '#1C1A17',
       noteBkgColor: '#FBEFE3',
       noteTextColor: '#1C1A17',
-      noteBorderColor: '#C45A1B',
-      // 字型對齊 Editorial（mermaid 用 SVG text，可以指定 fontFamily）
+      noteBorderColor: '#A24612',
       fontFamily: '"Fraunces", "Noto Serif TC", Georgia, serif',
       fontSize: '14px'
     }
+    // 註：vitepress-plugin-mermaid 不支援 darkThemeVariables；
+    // 暗色模式的 mermaid 圖會用 light theme variables，視覺與暗色頁面有色溫落差。
+    // 已知限制，列入 BACKLOG（若關鍵則改用 mermaid-js 動態 theme switch hook）
   }
 }))

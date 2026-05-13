@@ -1,24 +1,25 @@
 <template>
   <div>
-    <!-- 全新訪客：顯示歡迎卡而非「4 個零」的成績單空格（負向回饋） -->
+    <!-- 全新訪客：顯示書頁暖身段落（不顯示 0/12 stat 空格 — 避免新讀者第一眼挫敗） -->
     <div v-if="isFresh" class="ddia-dashboard-welcome">
-      <div class="ddia-dashboard-welcome-eyebrow">
-        <Icon name="waving_hand" :size="16" filled />
-        歡迎！從這裡起步
-      </div>
+      <div class="ddia-dashboard-welcome-eyebrow">扉頁 · 從這裡開始</div>
       <p class="ddia-dashboard-welcome-text">
-        讀完任一章後，這裡會變成你的閱讀進度儀表板，追蹤已讀章節、測驗成績與下一個入口。
+        你還沒讀過任何章節。讀完任一章後，這裡會變成你的閱讀進度紀錄。
       </p>
       <div class="ddia-dashboard-welcome-cta">
-        <a :href="withBase('/part-0/basics')" class="ddia-cta primary">
-          <Icon name="foundation" :size="18" filled />
-          新手起步 · 0.0 三分鐘看懂後端
-        </a>
-        <a :href="withBase('/part-1/ch01-reliable')" class="ddia-cta ghost">
-          <Icon name="arrow_forward" :size="18" />
-          直接讀 Ch1
-        </a>
+        <a :href="withBase('/part-0/basics')" class="ddia-cta primary">新手起步 · 0.0 三分鐘看懂後端</a>
+        <a :href="withBase('/part-1/ch01-reliable')" class="ddia-cta ghost">已熟悉 SQL／後端 · 直接讀 Ch 1 →</a>
       </div>
+    </div>
+
+    <!-- 已讀過的讀者：顯示 resume link 提示繼續閱讀 -->
+    <div v-else-if="lastRead" class="ddia-dashboard-resume">
+      <div class="ddia-dashboard-resume-eyebrow">繼續閱讀</div>
+      <a :href="withBase(lastRead.link)" class="ddia-dashboard-resume-link">
+        <span class="ddia-dashboard-resume-num">{{ lastRead.num }}</span>
+        <span class="ddia-dashboard-resume-title">{{ lastRead.shortTitle }}</span>
+        <span class="ddia-dashboard-resume-arrow">→</span>
+      </a>
     </div>
 
     <template v-else>
@@ -85,12 +86,6 @@
         </ul>
       </details>
 
-      <div v-if="lastRead" style="text-align: center; margin: 24px 0;">
-        <a :href="withBase(lastRead.link)" class="ddia-cta primary">
-          <Icon name="arrow_forward" :size="18" filled />
-          繼續閱讀 · {{ lastRead.shortTitle }}
-        </a>
-      </div>
     </template>
   </div>
 </template>

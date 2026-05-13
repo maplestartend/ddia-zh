@@ -66,26 +66,42 @@ watch(content, () => {
 </script>
 
 <style scoped>
+/* Editorial 章節筆記：書頁批註欄樣式 */
 .ddia-note {
-  margin: 24px 0;
-  padding: 14px 18px;
-  background: var(--bg-surface);
-  border: 1px solid var(--border-default);
-  border-radius: 12px;
+  margin: 28px 0;
+  padding: 16px 0;
+  background: transparent;
+  border: 0;
+  border-top: 1px solid var(--rule-hairline);
+  border-bottom: 1px solid var(--rule-hairline);
+  border-radius: 0;
 }
 .ddia-note[open] {
-  border-color: var(--brand-300);
+  border-color: var(--rule-hairline);
 }
 .ddia-note-summary {
   display: flex;
-  align-items: center;
-  gap: 8px;
+  align-items: baseline;
+  gap: 10px;
   cursor: pointer;
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 600;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 15px;
   color: var(--text-primary);
   user-select: none;
   list-style: none;
+  letter-spacing: 0.01em;
+}
+.ddia-note-summary :deep(.material-symbols-rounded) {
+  display: none;
+}
+.ddia-note-summary::before {
+  content: "§";
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 16px;
+  color: var(--brand-500);
 }
 .ddia-note-summary::-webkit-details-marker {
   display: none;
@@ -94,22 +110,29 @@ watch(content, () => {
   content: '▾';
   margin-left: auto;
   color: var(--text-tertiary);
-  font-size: 12px;
+  font-size: 11px;
   transition: transform 0.15s;
 }
 .ddia-note[open] .ddia-note-summary::after {
   transform: rotate(180deg);
 }
 .ddia-note-badge {
-  padding: 1px 8px;
-  background: var(--info-bg);
+  padding: 1px 0;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px dotted var(--info-fg);
   color: var(--info-fg);
-  border-radius: 999px;
-  font-size: 11px;
+  border-radius: 0;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 11.5px;
   font-weight: 500;
+  letter-spacing: 0.06em;
 }
 .ddia-note-hint {
-  font-size: 11px;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 11.5px;
   color: var(--text-tertiary);
   font-weight: 400;
 }
@@ -117,30 +140,35 @@ watch(content, () => {
   width: 100%;
   min-height: 120px;
   max-height: 600px;
-  margin-top: 12px;
+  margin-top: 14px;
   padding: 12px 14px;
-  background: var(--bg-canvas);
-  border: 1px solid var(--border-default);
-  border-radius: 8px;
-  font-family: var(--vp-font-family-base);
+  background: var(--bg-surface);
+  border: 0;
+  border-bottom: 1px solid var(--rule-hairline);
+  border-radius: 0;
+  font-family: var(--font-body);
   font-size: 14px;
-  line-height: 1.7;
+  line-height: 1.75;
   color: var(--text-primary);
   resize: vertical;
   outline: none;
-  transition: border-color 0.15s;
+  transition: background 0.15s, border-bottom-color 0.15s;
+  letter-spacing: 0.01em;
 }
 .ddia-note-textarea:focus {
-  border-color: var(--brand-500);
+  border-bottom-color: var(--brand-500);
+  background: var(--bg-subtle);
 }
 .ddia-note-actions {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 10px;
+  margin-top: 12px;
 }
 .ddia-note-meta {
-  font-size: 11px;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 11.5px;
   color: var(--text-tertiary);
   margin-left: auto;
 }
