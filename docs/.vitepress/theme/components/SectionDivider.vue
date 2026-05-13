@@ -41,7 +41,7 @@ const isCjk = computed(() => /[一-鿿]/.test(props.label ?? ''))
   font-family: var(--font-display);
   font-size: var(--type-eyebrow);
   color: var(--rule-soft);
-  letter-spacing: 0.8em;
+  letter-spacing: 0.8em;  /* lint-typography-allow: section dinkus ◆ ◆ ◆ 印刷分隔寬距 */
   padding-left: 0.8em;
   line-height: 1;
 }

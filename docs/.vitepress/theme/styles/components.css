@@ -115,7 +115,7 @@
   font-variation-settings: var(--fvar-section-tight);
   color: var(--text-primary);
   font-weight: 600;
-  letter-spacing: 0.02em;
+  letter-spacing: var(--ls-body-cn);
 }
 
 /* ddia-badge：Editorial 化（無圓角、印刷感 italic） */
@@ -304,7 +304,7 @@
   font-variation-settings: var(--fvar-eyebrow-warm);
   font-size: var(--type-eyebrow);
   font-weight: 500;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.12em;  /* lint-typography-allow: quiz-difficulty tag small-caps 設計值（basic/applied/interview）*/
   text-transform: uppercase;
   vertical-align: 1px;
   background: transparent;
@@ -888,7 +888,7 @@
 
 .ddia-chapter-card-summary {
   font-family: var(--font-body);
-  font-size: 13.5px;
+  font-size: 13.5px;  /* lint-typography-allow: chapter card summary 中文小字、特化字級 */
   color: var(--text-secondary);
   line-height: 1.7;
   flex: 1;
@@ -1209,7 +1209,7 @@
 /* done 狀態的 dot 改實心 oxblood */
 .ddia-chapter-card.done .ddia-chapter-card-status-tag::before {
   content: "●";
-  font-size: 9px;
+  font-size: 9px;  /* lint-typography-allow: 已讀 dot indicator 視覺尺寸、非 body 字級 */
   color: var(--status-done-fg);
   vertical-align: middle;
 }
@@ -1255,7 +1255,7 @@
   font-family: var(--font-display);
   font-variation-settings: var(--fvar-section-mid);
   font-size: var(--type-small);
-  letter-spacing: 0.02em;
+  letter-spacing: var(--ls-body-cn);
 }
 
 /* 搜尋框：方框去圓角、淡灰邊（不用 ink black 太重）+ hover/focus 反饋 */
@@ -1671,7 +1671,7 @@ button.DocSearch.DocSearch-Button:focus-visible {
 .ddia-dashboard-ceremony-dinkus {
   font-family: var(--font-display);
   font-size: var(--type-small);
-  letter-spacing: 0.6em;
+  letter-spacing: 0.6em;  /* lint-typography-allow: ceremony dinkus 寬距、印刷儀式設計 */
   color: var(--text-tertiary);
   margin-bottom: var(--space-3);
   padding-left: 0.6em;

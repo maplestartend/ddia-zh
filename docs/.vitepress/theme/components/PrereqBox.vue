@@ -119,7 +119,7 @@ defineProps<{
   border: 0;
   border-bottom: 1px dotted var(--border-default);
   border-radius: 0;
-  font-size: 13.5px;
+  font-size: 13.5px;  /* lint-typography-allow: prereq item 中文小字 */
   color: var(--text-secondary);
 }
 @media (max-width: 640px) {

@@ -47,14 +47,51 @@ npm install
 npm run dev      # http://localhost:5173
 
 # 部署前驗證
-npm run type-check        # vue-tsc 嚴格、會擋 build
-npm run build             # production SSG
-npm run lint:glossary     # 詞彙表內文標記檢查（non-blocking）
-npm run lint:tldr         # TLDR 用詞檢查（non-blocking）
-npm run screenshot        # Playwright 拍快照（dev server 須先開）
+npm run type-check             # vue-tsc 嚴格、會擋 build
+npm run build                  # production SSG
+npm run lint:glossary          # 詞彙表內文標記檢查（non-blocking）
+npm run lint:tldr              # TLDR 用詞檢查（non-blocking）
+npm run lint:base              # hard-coded base path 偵測（CI BLOCKING）
+npm run lint:typography        # raw font-size / letter-spacing 偵測
+npm run lint:spacing           # raw margin / padding 偵測
+npm run lint:dark-patch        # alias-redundant .dark patch 偵測（CI BLOCKING）
+npm run lint:chapter-sequence  # 章末元件序列驗證（CI BLOCKING）
+npm run screenshot             # Playwright 拍快照（dev server 須先開）
 ```
 
 詳細寫作守則見 [CLAUDE.md](CLAUDE.md)，架構說明見 [ARCHITECTURE.md](ARCHITECTURE.md)。
+
+## 章末元件序列規約
+
+如果你打算修改章末元件結構（新增章節 / 改順序），下列 5 種序列模式是 [docs/.vitepress/theme/styles/base.css](docs/.vitepress/theme/styles/base.css) adjacency 規則的對應 contract、**新章節必須符合其中一種**，否則 `lint:chapter-sequence --strict` 會擋 PR：
+
+| 模式 | 序列 | 對應章節 |
+|---|---|---|
+| **A** · Part 0 短序列 | Quiz → Bridge | Part 0 七章（intro/metrics/sql/os/network/data-structures/concurrency） |
+| **B** · 主課省 Interview + callout | Quiz → Note → Progress → Bridge | ch02/04/06/08/10/12（6 章） |
+| **C** · 主課省 Interview | Quiz → Note → Progress → Callout → Bridge | ch03 |
+| **D** · 主課完整 | Quiz → Interview → Note → Progress → Callout → Bridge | ch01/05/07/09/11（5 章） |
+| **E** · 暖身導讀（無 Quiz） | Callout → Bridge | Part 0 basics（章首暖身、無測驗） |
+
+**新增第 6 種模式 SOP**：
+1. 在 [scripts/lint-chapter-sequence.mjs](scripts/lint-chapter-sequence.mjs) `ALLOWED` 陣列補新模式
+2. 在 base.css 章末 adjacency 區補對應 `.foo + .bar` 規則
+3. 在本 CONTRIBUTING.md 表格補新模式
+4. 跑 `npm run lint:chapter-sequence` 確認所有章節全 match
+
+避免 Wave 30e 那種「憑印象判定死代碼」的 regression。
+
+## 設計級值白名單
+
+整站 [`lint:typography`](scripts/lint-typography.mjs) 偵測 raw `font-size`/`letter-spacing`、`lint:spacing` 偵測 raw `margin`/`padding`。某些印刷設計級值（dinkus 字距、ceremony 寬距、code block 字級、quiz-difficulty tag spacing 等）有意保留為 raw、使用 inline 註解 skip：
+
+```css
+.ddia-section-divider::before {
+  letter-spacing: 0.8em;  /* lint-typography-allow: section dinkus 印刷寬距 */
+}
+```
+
+格式：`/* lint-typography-allow: <reason> */`。註解必須在 raw value 同一行。
 
 ## 版權與授權
 

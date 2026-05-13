@@ -66,18 +66,18 @@ function extractSequence(text) {
     const m = re.exec(text)
     if (m) positions.push({ tag, pos: m.index })
   }
-  // 找最後一個章末 callout（::: info / ::: warning ...）位置 — 必須在 Quiz 之後且在 Bridge 之前
+  // 找 Quiz↔Bridge 之間最早的章末 callout 位置（必須在 Quiz 之後且在 Bridge 之前）
+  // 註：Wave 33c 修正 — 原註解寫「找最後一個」與實作 `break` 第一個矛盾、實際語意是「最早」
   const quizPos = positions.find(p => p.tag === 'Quiz')?.pos ?? -1
   const bridgePos = positions.find(p => p.tag === 'Bridge')?.pos ?? Infinity
-  // ::: 開頭、且 ::: 後不是緊接 :::（避免結尾 :::）
-  const calloutRe = /^:::\s*(?:info|tip|warning|danger)\b/gm
+  // ::: 開頭（含 info / tip / warning / danger / details / note / caution 完整 VP custom-block 集）
+  const calloutRe = /^:::\s*(?:info|tip|warning|danger|details|note|caution)\b/gm
   let callout = null
   let cm
   while ((cm = calloutRe.exec(text)) !== null) {
     if (cm.index > quizPos && cm.index < bridgePos) {
       callout = { tag: 'Callout', pos: cm.index }
-      // 不 break：找到 quiz<→bridge 之間最早的 callout
-      break
+      break  // Quiz↔Bridge 之間最早一個
     }
   }
   if (callout) positions.push(callout)

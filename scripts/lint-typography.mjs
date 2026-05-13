@@ -43,6 +43,18 @@ async function walk(dir) {
 
 const FONT_SIZE_RE = /font-size:\s*(\d+(?:\.\d+)?)px/g
 const LS_RE = /letter-spacing:\s*0\.\d+em/g
+// Wave 33d allowlist：行內 `/* lint-typography-allow: reason */` 註解 skip 該行
+// 用於：書本印刷設計級值（dinkus 0.8em / ceremony 0.6em / quiz-difficulty 0.12em / 9px dot 等）
+const ALLOW_RE = /\/\*\s*lint-typography-allow\b/
+
+function lineOf(text, idx) {
+  return text.slice(0, idx).split('\n').length
+}
+function lineText(text, idx) {
+  const start = text.lastIndexOf('\n', idx) + 1
+  const end = text.indexOf('\n', idx)
+  return text.slice(start, end === -1 ? text.length : end)
+}
 
 const findings = []
 for (const r of ROOTS) {
@@ -51,13 +63,12 @@ for (const r of ROOTS) {
     const rel = relative(ROOT, file).split(sep).join('/')
     let m
     while ((m = FONT_SIZE_RE.exec(text)) !== null) {
-      // 行號
-      const line = text.slice(0, m.index).split('\n').length
-      findings.push({ file: rel, line, type: 'font-size', match: m[0] })
+      if (ALLOW_RE.test(lineText(text, m.index))) continue
+      findings.push({ file: rel, line: lineOf(text, m.index), type: 'font-size', match: m[0] })
     }
     while ((m = LS_RE.exec(text)) !== null) {
-      const line = text.slice(0, m.index).split('\n').length
-      findings.push({ file: rel, line, type: 'letter-spacing', match: m[0] })
+      if (ALLOW_RE.test(lineText(text, m.index))) continue
+      findings.push({ file: rel, line: lineOf(text, m.index), type: 'letter-spacing', match: m[0] })
     }
   }
 }

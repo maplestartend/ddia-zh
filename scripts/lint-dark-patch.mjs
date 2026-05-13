@@ -39,8 +39,9 @@ async function walk(dir) {
 }
 
 // 偵測 selector 含 .dark + body 用 alias 之一
-// 容忍 :global(.dark) 包裝（Vue scoped style）
-const RULE_RE = /(?:^|\n)([^{}\n]*?(?::global\()?\.dark[^{}\n]*?)\{([^{}]*?)\}/g
+// 容忍 :global(.dark) 包裝（Vue scoped style）+ 跨行 selector（comma list 或 descendant 折行）
+// Wave 33a：selector 內允許 `\n`、涵蓋 `.dark,\n.foo { var(--mark-fg) }` 這種寫法
+const RULE_RE = /(?:^|\n)([^{}]*?(?::global\()?\.dark[^{}]*?)\{([^{}]*?)\}/g
 const ALIAS_RE = /var\(--(mark-fg|rule-active|cta-bg)\)/g
 
 const findings = []

@@ -101,9 +101,10 @@
   --space-5-5: 56px;  /* Wave 30b：章末→Bridge 半儀式間距（5 處 raw → token；非 5↔6 數學中點 52） */
   --space-6: 64px;    /* 章節級分隔 / h2 大段 / 儀式區塊 */
 
-  /* Wave 32：h2/h3 chunked break 專用 token（介於 40 過場 與 64 章節之間）
-     Wave 31d 將 h2/h3 同 round 到 var(--space-5) 40 後失去章/節層級差、本 token 還原 chunk 節奏 */
-  --space-chapter-break: 48px;  /* h2 margin-top 專用、書本章節 chunk 韻律 */
+  /* Wave 32 加 + Wave 33e 重命名：h2 上方 chunk break 專用（介於 40 過場 與 64 章節之間）
+     Wave 31d 將 h2/h3 同 round 到 var(--space-5) 40 後失去章/節層級差、本 token 還原 chunk 節奏
+     原名 --space-chapter-break 改為 --space-h2-break 避免「chapter」隱喻 h1 級的混淆 */
+  --space-h2-break: 48px;  /* h2 margin-top 專用、書本節級 chunk 韻律 */
 
   /* Wave 32 語意 alias — 給「我要章末儀式間距」這種設計直覺的呼叫名、底層數字 token 不動 */
   --space-transition:  var(--space-5);    /* 過場：callout / blockquote / 區塊分隔 */
@@ -155,6 +156,7 @@
      ls-eyebrow 從 0.22em 收緊到 0.18em — 書本印刷感（過 0.20em 就有「廣告字距」氣味）。
      --ls-chapter-mark 刪除（0 處實際使用、值與 --ls-eyebrow 同 0.18em）。 */
   --ls-tight:    0.01em;  /* 中文 body micro-spacing（19 處 raw） */
+  --ls-body-cn:  0.02em;  /* Wave 33d：中文 body 共識區間（vp-doc / meta strong / nav text，Wave 26b 明定） */
   --ls-loose:    0.04em;  /* h2 / 表頭 / 區塊小標 mid spacing（17 處 raw） */
   --ls-mid:      0.08em;  /* Wave 31c：tag / dt / quiz-q-tag mid-wide（2-3 處 raw） */
   --ls-wide:     0.16em;  /* Wave 31c：stat-label / glossary-index-label wide spacing（2 處 raw） */
@@ -170,6 +172,9 @@
   --focus-ring-color:  var(--brand-500);  /* Wave 26：3 套 outline 顏色統一 */
   --focus-ring-width:  2px;
   --focus-ring-offset: 2px;
+  /* Wave 33b：forced-colors (Windows 高對比) 模式 outline-offset 統一為 0
+     避免 fixed reading-progress bar / nav 邊緣裁切（box-shadow 在此模式被強制 none） */
+  --focus-ring-offset-forced: 0;
 
   /* ---------- Ink scale（Wave 3：取代「brand-500 兼任 ink 重點」的散落用法） ---------- */
   --ink-strong: var(--text-primary);   /* 印刷符號 § · ◆ 用這個、不用 brand-500 */

@@ -63,7 +63,7 @@ body {
 @media (forced-colors: active) {
   :focus-visible {
     outline: 2px solid Highlight;
-    outline-offset: 3px;
+    outline-offset: var(--focus-ring-offset-forced);
     box-shadow: none;
   }
 }
@@ -88,7 +88,7 @@ body {
 @media (forced-colors: active) {
   .ddia-click-flash {
     outline: 2px dashed Highlight;
-    outline-offset: 0;
+    outline-offset: var(--focus-ring-offset-forced);
     box-shadow: none;
   }
   /* skip link 在高對比模式也補：避免 --cta-bg / --text-inverse 被瀏覽器覆寫成 Canvas 文字消失 */
@@ -96,7 +96,7 @@ body {
     background: Canvas;
     color: CanvasText;
     outline: 2px solid Highlight;
-    outline-offset: 0;
+    outline-offset: var(--focus-ring-offset-forced);
   }
 }
 
@@ -112,9 +112,9 @@ body {
    Body 段落保留 sans（中文長文螢幕閱讀首選），line-height 1.85（寬於慣例）
 */
 .vp-doc {
-  font-size: 16.5px;
+  font-size: 16.5px;  /* lint-typography-allow: vp-doc body 中文閱讀字級 */
   line-height: 1.85;
-  letter-spacing: 0.02em;  /* 中文 body 提到 0.02em — 共識區間（Noto Sans TC 16.5px） */
+  letter-spacing: var(--ls-body-cn);  /* 中文 body 共識區間（Wave 26b、Noto Sans TC 16.5px） */
 }
 
 /* opsz 對齊實際字級（Fraunces 建議 opsz≈字級 pt 值）：
@@ -144,7 +144,7 @@ body {
   font-weight: 600;
   border-top: 1px solid var(--rule-hairline);
   padding-top: var(--space-4-5);
-  margin-top: var(--space-chapter-break);  /* Wave 32：48 還原章節 chunk 節奏（Wave 31d 誤 round 到 40 失去章/節層級差） */
+  margin-top: var(--space-h2-break);  /* Wave 32：48 還原章節 chunk 節奏（Wave 31d 誤 round 到 40 失去章/節層級差） */
   line-height: 1.3;
 }
 
@@ -317,7 +317,7 @@ body {
 
 .vp-doc div[class*='language-'] {
   border-radius: 0;
-  font-size: 13.5px;
+  font-size: 13.5px;  /* lint-typography-allow: code-block 字級（不該縮到 type-small 14、code 字符顯示有 cap） */
   border: 0;
   border-left: 3px solid var(--rule-soft);
   background: var(--bg-surface);
