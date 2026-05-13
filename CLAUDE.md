@@ -27,7 +27,6 @@ VitePress 個人學習網站，將《Designing Data-Intensive Applications》(Ma
 - 內容：`docs/part-{0,1,2,3}/*.md`（Part 0 = 0.0 basics + 0.1-0.7 前置）
 - 工具腳本：[scripts/](scripts/) — lint-glossary / lint-tldr / lint-hardcoded-base / screenshot
 - 公開資源：[LICENSE](LICENSE) / [LICENSE-CONTENT.md](LICENSE-CONTENT.md) / [NOTICE.md](NOTICE.md) / [CONTRIBUTING.md](CONTRIBUTING.md) / [SECURITY.md](SECURITY.md) / [.github/ISSUE_TEMPLATE/](.github/ISSUE_TEMPLATE/) / [.github/workflows/](.github/workflows/)
-- **待辦清單**：[BACKLOG.md](BACKLOG.md) — Wave 10-21 後剩餘的內容擴充 / 學習產品功能 / 微觀修正 / 長期項目、按來源（5 位專業 agent + 5 位學習者 agent）與優先級分類
 
 ## 必踩才會記得的地雷
 

@@ -232,21 +232,28 @@ body {
    - 過場（Note/Chapter-loop→callout）= var(--space-5) 40px — 中度
    - 儀式封頂（→Bridge）= var(--space-6) 64px — 鬆散終結
    重現原本各元件自帶 28/40/56 的呼吸節奏、不再機械等距 */
-/* Wave 30e 移除死代碼：.ddia-quiz + .ddia-note / .ddia-quiz + .ddia-chapter-loop
-   實測 12 章 + Part 0 章末永遠是 Quiz → InterviewBlock → Note → Chapter-loop → Bridge 順序，
-   Quiz 不會直接接 Note、也不會直接接 Chapter-loop。 */
+/* Wave 30.1 hotfix：Wave 30e 誤刪了活代碼、本次恢復 + 補 Part 0 缺口。
+   實測 grep 12 章 + Part 0 markdown 序列：
+   - Part 0 七章（intro/metrics/sql/os/network/data-structures/concurrency）：Quiz → Bridge（無 Interview/Note/Progress）
+   - ch02/04/10/12：Quiz → Note → Progress → Bridge（無 Interview / callout）
+   - ch03：Quiz → Note → Progress → callout → Bridge（無 Interview）
+   - ch01/ch11：Quiz → Interview → Note → Progress → callout → Bridge（完整序列）
+   三階節奏：內容延續 28 / 過場 40 / 儀式封頂 64。 */
 .ddia-quiz + .ddia-interview,
-.ddia-interview + .ddia-note {
+.ddia-interview + .ddia-note,
+.ddia-quiz + .ddia-note {  /* Part 1+ 多數：Quiz 跳過 Interview 接 Note */
   border-top: 0 !important;
   margin-top: var(--space-4-5) !important;  /* 28px 內容延續 */
 }
 .ddia-note + .ddia-chapter-loop,
-.ddia-chapter-loop + .custom-block {
+.ddia-chapter-loop + .custom-block,
+.ddia-quiz + .ddia-chapter-loop {  /* defensive：未來章節若 Quiz 直接接 Progress */
   border-top: 0 !important;
   margin-top: var(--space-5) !important;  /* 40px 過場 */
 }
 .ddia-chapter-loop + .ddia-bridge,
-.custom-block + .ddia-bridge {
+.custom-block + .ddia-bridge,
+.ddia-quiz + .ddia-bridge {  /* Part 0：Quiz 直接接 Bridge（無 Interview/Note/Progress） */
   border-top: 0 !important;
   margin-top: var(--space-6) !important;  /* 64px 儀式封頂 */
 }
