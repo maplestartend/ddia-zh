@@ -427,6 +427,19 @@ UPDATE orders SET status = 'paid', paid_at = now()
     ],
     answer: 1,
     explanation: "Event Sourcing 把「歷史」當主資料，現狀是衍生的。代價是查詢當前狀態貴（要 replay 或維護快照），但換來完整的審計歷史、bug 回放、隨時衍生新 view 的能力。"
+  },
+  {
+    difficulty: "interview",
+    question: "你用 event time 做 1 小時的 tumbling window 統計、但事件因手機離線排隊偶爾遲到 30 分鐘到達。下列描述何者最準確？",
+    options: [
+      "只能改用 processing time 開窗、否則無法處理遲到事件",
+      "Watermark 機制宣告「event time T 之前的事件大致到齊」、視窗在 watermark 通過後關閉；遲到事件可選擇丟棄、累計到 side output、或觸發 late firing 更新結果",
+      "Flink 與 Kafka Streams 在這個場景行為完全相同、無差異",
+      "Tumbling window 不支援 event time、必須用 sliding window"
+    ],
+    answer: 1,
+    explanation: "**Watermark** 是 event-time stream processing 的核心抽象：宣告「event time ≤ T 的事件大致到齊」、觸發視窗計算與關閉。遲到事件（watermark 已通過、事件才到）的處理選擇：(1) **丟棄**（最簡單）；(2) **side output**（Flink）路到另一條流另外處理；(3) **late firing**（Beam / Flink）觸發視窗重算並輸出 update。各框架預設策略不同——Flink 給選項、Kafka Streams 在 2.6+ 支援 grace period 後直接丟棄、Spark Structured Streaming 用 watermark + delay。**選型題重點**：「容忍多少遲到」是業務決定、不是框架預設能搞定。",
+    sectionAnchor: "windowing-section"
   }
 ]' />
 

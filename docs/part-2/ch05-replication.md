@@ -187,10 +187,10 @@ B 並發寫 v=2, vector=[B:1]   ← 兩者無法比較，是衝突
 
 ::: tip Version Vector ≠ Vector Clock
 兩者形式相似但用途不同：
-- **Vector Clock**（Lamport）：每個 **process** 一個計數器，用於分散式系統的因果序判定。
-- **Version Vector**（Dynamo）：每個 **replica** 一個計數器，用於 KV store 的並發寫衝突偵測。
+- **Vector Clock**（Fidge 1988 / Mattern 1989 各自獨立提出）：每個 **process** 一個計數器，用於分散式系統的因果序判定。常被誤掛在 Lamport 名下——Lamport 1978 那篇是 scalar **Lamport timestamp**（純量時鐘）、不是 vector clock。
+- **Version Vector**（Parker 1983；Dynamo 後普及）：每個 **replica** 一個計數器，用於 KV store 的並發寫衝突偵測。
 
-DDIA 提到的「版本向量」指後者。實務上的 Dynamo 系列文獻幾乎都用 version vector，但口語常被簡稱為「vector clock」造成混淆。
+DDIA Ch5 §5.4 的「版本向量」指後者。實務上 Dynamo / Riak / Voldemort 文獻幾乎都用 version vector，但口語常被簡稱為「vector clock」造成混淆。Ch9 §9.3 會回來談 causal order。
 :::
 
 ---

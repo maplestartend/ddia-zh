@@ -73,7 +73,11 @@ CPU 提供 atomic instruction—— 一條指令完成「比較並交換」（CA
 atomic_counter.fetch_add(1)
 ```
 
-Redis 的 `INCR`、Java 的 `AtomicInteger`、Go 的 `sync/atomic`—— 都建立在 CPU atomic instruction 上。
+Java 的 `AtomicInteger`、Go 的 `sync/atomic`、C++ 的 `std::atomic`—— 都建立在 CPU atomic instruction（`LOCK CMPXCHG`、`LOCK XADD` 等）上。
+
+::: warning Redis INCR 的原子性來源不一樣
+Redis 的 `INCR`、`INCRBY`、`LPUSH`、`MULTI/EXEC` 不是靠 CPU atomic instruction，而是靠 **single-threaded event loop**——Redis 主執行緒一次只跑一條命令、根本不存在 race。這在語意層提供「執行緒安全」、但**並非 ACID serializable transaction**（`MULTI/EXEC` 中途錯誤不會 rollback、其他命令照樣繼續）。把 Redis 當「真正可序列化 KV」是常見誤解、Ch7 §7.3 會再回來談。
+:::
 
 ::: tip 與 ACID 的 A 的關聯
 ACID 的 atomicity 是「**交易層級**的不可分割」（多個 SQL 全做或全不做）；CPU atomic instruction 是「**單一指令層級**的不可分割」。兩個層次、相同精神。
@@ -101,8 +105,12 @@ T1 與 T2 彼此能看見對方的中間狀態嗎？這由**隔離級別**決定
 | **Read Uncommitted** | （什麼都擋不住） | 髒讀、髒寫… |
 | **Read Committed** | 髒讀、髒寫 | 不可重複讀、phantom |
 | **Repeatable Read** | + 不可重複讀 | phantom（依實作）、write skew |
-| **<G term="snapshot-isolation">Snapshot Isolation</G>** | + phantom（部分） | write skew |
+| **<G term="snapshot-isolation">Snapshot Isolation</G>** | + phantom 純讀 | write skew（phantom 變種寫入） |
 | **<G term="serializability">Serializable</G>** | 全部 | （效能代價最高） |
+
+::: tip SI「擋 phantom」要分純讀 vs 寫入
+SI 用 MVCC + first-committer-wins 對「**phantom 純讀**」（同交易兩次同條件查 → 結果集變大）能擋住——讀的是 snapshot、後來別人插入不影響當前 snapshot。但 SI **擋不住 write skew**——兩個交易各自讀 snapshot、各自做決策、各自寫不同列（如雙醫師同時請假、信箱重複註冊），DDIA Ch7 把這類定義為「**phantom 的寫入變種**」。要擋 write skew 必須升到 Serializable（PG SSI 用 SIREAD 偵測 rw-cycle、MySQL 用 next-key lock）。
+:::
 
 ::: warning DDIA Ch7 的核心訊息
 **很多人以為自己用了 "Serializable"，其實只用到 RR 或 SI。** 預設級別各家 DB 不同：

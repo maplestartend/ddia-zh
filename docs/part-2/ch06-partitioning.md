@@ -69,6 +69,25 @@ Partition 3: [Leader on N3] [Follower on N1]
 - 讀：直接查索引分區 → **便宜**
 - 例：DynamoDB Global Secondary Index
 
+### 兩種次級索引的一致性權衡
+
+DDIA 在這節埋的關鍵 caveat（讀者最易漏）：**全域索引的更新通常是非同步的**——主資料寫入成功 → **索引更新晚一拍** → 讀者用索引查可能讀到**舊 state**（甚至查不到剛寫入的列）。
+
+| 一致性面向 | Document-partitioned（local） | Term-partitioned（global） |
+|---|---|---|
+| **同分區內** | 主資料 + local index 在**同一個寫入交易**裡 → 一致 | N/A |
+| **跨分區** | scatter-gather 讀時各分區內各自一致 → 整體呈現一致 | 索引可能落後主資料數十毫秒到秒級（async update） |
+| **讀寫競態** | 寫成功立刻 query → 自己分區能讀到（強一致） | 寫成功立刻 query → 索引可能還沒更新（讀不到剛寫的）|
+| **要做強一致全域索引** | N/A | 需 2PC 或同步 quorum write → 寫延遲極高，DynamoDB / Cassandra 都選擇放棄 |
+
+::: warning DynamoDB GSI 的 eventual consistency 陷阱
+DynamoDB 的 Global Secondary Index 預設**最終一致**——寫入 base table 成功後，GSI 可能延遲 ~100ms 到數秒才更新。實務踩坑：
+1. 表單送出 → API 寫 user 成功 → 立刻 redirect 到「user 列表（用 GSI 查）」→ 看不到剛建的 user
+2. 解法：**強制查 base table**（用 primary key）、或在 client 端 optimistic update
+
+LSI（Local Secondary Index）能強一致但限制多（partition key 必須相同）。**設計時要把這個非同步當前提、不要事後補救**。
+:::
+
 ---
 
 ## 6.5 Rebalancing 策略
@@ -87,26 +106,44 @@ N 變了，所有資料都要重新計算位置 → 災難。
 ### 3. Dynamic Partitioning
 分區太大就 split，太小就 merge。BigTable / HBase 的做法。
 
-### 4. Proportional to Nodes
-分區數 = 節點數 × 固定倍數。Cassandra 預設。
+### 4. Proportional to Nodes（**注意 Cassandra 不是這類**）
+分區數 = 節點數 × 固定倍數——意指「**節點加入時自動拆出新分區**」的設計。原書範例是 **Couchbase**：節點數從 4 加到 5、總分區數同步從 4×N 變 5×N。
+
+::: warning Cassandra vnodes 不是「proportional to nodes」
+讀者常把 Cassandra 歸這類、其實**錯了**。Cassandra 用 **fixed vnodes per node**（每個實體節點預先配給固定數量 token、預設 256 個 vnode）——加節點時是「**從現有節點偷一部分 vnode 過來**」、總分區數**並不隨節點數線性增加**。
+
+從分類角度：Cassandra 比較接近 **fixed number of partitions**（只是分區單位 = vnode、不是固定整數）+ consistent hashing。**這個誤分類在中英文教材中非常普遍、DDIA 原書第 3 印才修正措辭**。
+:::
 
 ### 一致性雜湊（Consistent Hashing）
 節點和 key 都映射到雜湊環上，每個 key 由「順時針第一個節點」負責。加減節點只影響相鄰節點。
 
-Karger 原始版本確實有負載不均勻的問題，但加上 **virtual nodes**（每個實體節點對應雜湊環上多個虛擬點）後，至今仍是 Dynamo、Cassandra、ScyllaDB、Discord 後端、CDN、memcached client、L7 load balancer 等大量系統的基礎方案。範圍查詢友善度差是它真正的限制。
+Karger 1997 原始版本有負載不均問題（key 分布看運氣）、實務系統一律加 **virtual nodes / vnodes**：每個實體節點對應雜湊環上**多個虛擬點**（Cassandra 預設 256、Dynamo 數十、Riak 64）→ 拉平負載 + 加減節點時影響更分散。
+
+代表系統：Dynamo、Cassandra、ScyllaDB、Discord 後端、CDN edge routing、memcached client、L7 load balancer。範圍查詢友善度差是它的真實限制（hash 後 key 順序被打亂）。
 
 ---
 
 ## 6.6 請求路由
 
-Client 怎麼知道某 key 該打哪個節點？
+Client 怎麼知道某 key 該打哪個節點？這個看似小問題、決定整個 cluster 的**運維複雜度**與**failure mode**：
 
-1. **任意節點接收，內部轉發**（Cassandra）
-2. **路由層（routing tier）**（很多 DB 用 ZooKeeper 維護映射）
-3. **Client 自己查 metadata**
+### 三種模型對照
+
+| 模型 | 怎麼運作 | 代表系統 | 路由表更新傳播 | Failure mode |
+|---|---|---|---|---|
+| **1. 任意節點接收、內部轉發** | Client 隨便打哪台、節點收到後自己決定要不要轉給對的 owner | Cassandra、ScyllaDB | **Gossip protocol**（節點間互傳成員狀態，最終一致） | 路由短暫過時 → 多一跳轉發、極端 case 轉錯後 client retry |
+| **2. 獨立路由層** | 前面架一層 router / coordinator、它知道 ownership map | MongoDB（mongos）、Kafka（Controller）、Vitess、HBase（HMaster） | Router 監看**外部 coordinator**（ZooKeeper / etcd）變化 | Coordinator 失聯時 router 用舊 map；新增分區需 coordinator |
+| **3. Client 自己查 metadata** | Client library 啟動時拿一份路由表、之後直接打對的節點 | DynamoDB SDK、Riak、新版 Cassandra Java driver | Client **訂閱 metadata change**（push）或定期 poll | Client 端 cache 過時 → 打錯節點 → 收到 redirect 後更新 |
+
+### 三種模型背後的取捨
+
+- **模型 1**：運維最簡單（沒有 router 也沒有 ZooKeeper 依賴）、代價是節點負擔 gossip 流量、極大叢集 gossip 收斂變慢
+- **模型 2**：路由邏輯集中、易監控與升級、代價是 router 是新的 single point of failure（需自己做 HA）
+- **模型 3**：路徑最短（無中介轉發）、效能最佳、代價是 client library 變胖、版本升級擴散到所有 service
 
 ::: tip ZooKeeper 在分散式系統中的角色
-不存業務資料，專門維護**少量**元資料 + 提供強一致的觀察介面：節點清單、分區歸屬、leader 選舉、設定變更。
+模型 2 的標配。它不存業務資料、專門維護**少量**元資料 + 提供強一致的觀察介面：節點清單、分區歸屬、leader 選舉、設定變更。**Kafka 2.8+ 推出 KRaft 模式**（用 Raft 取代 ZooKeeper），是「**少一個依賴**」的趨勢一部分——但 ZooKeeper 仍是 HBase、Solr、Druid、Pinot、傳統 Hadoop 生態的底座。
 :::
 
 ---
@@ -155,6 +192,30 @@ Client 怎麼知道某 key 該打哪個節點？
     ],
     answer: 1,
     explanation: "時間戳是單調遞增的，永遠寫入「最新」那個分區。其他分區只有舊資料的零星更新。對策：複合 key（先 hash user_id，再 timestamp）。"
+  },
+  {
+    difficulty: "interview",
+    question: "你用 DynamoDB 寫一筆 user 到 base table、立刻 query GSI 想查剛建的 user——結果查不到。最可能的原因是？",
+    options: [
+      "GSI 索引設定錯誤",
+      "DynamoDB 預設 GSI 是 eventually consistent——base table 寫入成功不保證 GSI 同時更新，需數十毫秒到秒級延遲",
+      "需要 DynamoDB Stream 才能看到新資料",
+      "base table 寫入失敗、只是沒回報錯誤"
+    ],
+    answer: 1,
+    explanation: "Global Secondary Index 的本質是 term-partitioned index——索引項可能在**另一個分區/節點**上，DynamoDB 為了寫入效能選擇**非同步更新 GSI**（也是 Cassandra global index、Elasticsearch refresh 都做的事）。讀剛寫入的資料時要**直接查 base table**（用 primary key、是 local index 的強一致路徑），或在 client 端做 optimistic update。這是 DDIA Ch6 §6.3 埋的關鍵 caveat、實務踩坑率極高。"
+  },
+  {
+    difficulty: "interview",
+    question: "下列哪個敘述「最精確」描述 Cassandra 的分區/rebalancing 策略？",
+    options: [
+      "Proportional to nodes——分區總數隨節點數線性成長",
+      "Fixed vnodes per node + consistent hashing——每節點固定 token 數（預設 256 vnodes），加節點時從現有節點偷 vnode 過來",
+      "Dynamic partitioning——分區太大會自動 split，類似 HBase",
+      "Hash mod N——靠 partition key 雜湊後對節點數取餘數"
+    ],
+    answer: 1,
+    explanation: "Cassandra 是 **fixed vnodes per node + consistent hashing on token ring**：每節點預設 256 個 vnode（也可手動配 token）、key 用 partitioner（Murmur3、預設）映射到 token ring 上、由「順時針第一個 vnode owner」負責。加節點時新節點認領 token、現有節點把對應 vnode 的資料移過去、總分區數**並不隨節點數線性增加**。選項 A 是普遍誤解（中英文教材都常錯）、選項 C 是 HBase 風格、選項 D 是「絕對不能用」的策略。"
   }
 ]' />
 

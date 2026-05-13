@@ -124,7 +124,19 @@ MapReduce 強迫每階段都寫 HDFS → 多階段管線極慢。
 Dataflow 引擎把整個工作流看成 **DAG**：
 - 中間結果可留記憶體
 - 連續的 map 可融合（pipelining）
-- 失敗時用 **lineage**（記住怎麼算出來的）重新計算，而非寫 checkpoint
+- 失敗時的恢復策略**因引擎而異**（見下方對照）
+
+::: warning 失敗恢復：lineage vs distributed checkpoint
+不同引擎走兩條完全不同的恢復路線、不要混為一談：
+
+| 引擎 | 恢復機制 | 代價 |
+|---|---|---|
+| **Spark RDD** | **Lineage**（記住怎麼算出來的）→ 失敗時從上游 partition 重算 | 確定性運算才可行；非確定性（含 random / current_time）會失準。寬依賴 shuffle 失敗仍需重算前一階段 |
+| **Flink** | **Chandy-Lamport distributed checkpoint**（barrier 在資料流中傳播、定期儲存 operator state） | 引入 checkpoint overhead；但天生支援有狀態運算、exactly-once、event-time window |
+| **Tez** | 中間階段可選擇 checkpoint 或重算 | 通常被 Spark / Flink 取代 |
+
+DDIA Ch10 描述以 Spark / MapReduce 視角為主；Ch11 stream processing 會詳述 Flink checkpoint。
+:::
 
 ### Spark RDD 範例
 ```scala
@@ -193,6 +205,30 @@ sc.textFile("hdfs://logs")
     ],
     answer: 1,
     explanation: "若小表足以放入每個 worker 的 RAM，廣播後本地查 hash 表極快 —— 完全避開 shuffle。實務上「事實表 JOIN 維度表」常用此法。"
+  },
+  {
+    difficulty: "applied",
+    question: "兩個大表（事實 + 事實）做 JOIN、且兩邊都已按 join key 預先分區（bucketed by key）。最合理的 join 策略是？",
+    options: [
+      "Broadcast hash join——把一邊全部廣播",
+      "Partitioned hash join——同分區 hash 對 hash 直接 join、完全避免 shuffle，前提是兩邊**按相同 key + 相同分區數** bucket 過",
+      "Sort-merge join——必須先全域排序再 merge",
+      "Reduce-side join——先 shuffle 全部資料再 reducer 處理"
+    ],
+    answer: 1,
+    explanation: "**Partitioned hash join**（Hive 的 bucketed join、Spark 的 bucketBy）的前提是「兩邊都已**按相同 join key + 相同 bucket 數**事先分區」——這在初次插入時付出成本、但後續所有 join 都不必 shuffle（同 bucket 對同 bucket 做本地 hash join）。比 broadcast hash join 更適合「兩邊都大」、比 reduce-side join 快數倍。代價：bucket schema 改變成本高（要重寫資料）、bucket 數要預估好。DDIA Ch10 §10.4 把這個策略列為 batch join 的最佳實踐。"
+  },
+  {
+    difficulty: "interview",
+    question: "Spark RDD 與 Flink 在「失敗恢復」上是兩種完全不同的策略。下列描述何者正確？",
+    options: [
+      "兩者都用 lineage（記住計算 DAG）重算失敗的 partition",
+      "兩者都用 Chandy-Lamport distributed checkpoint",
+      "Spark 用 lineage（從上游 partition 重算）、Flink 用 Chandy-Lamport distributed checkpoint（barrier 在資料流中傳播、定期儲存 operator state）",
+      "Spark 不支援失敗恢復、必須完全重跑整個 job"
+    ],
+    answer: 2,
+    explanation: "**Spark RDD = lineage**（記住 DAG、失敗時從上游重算）—— 適合**確定性**運算、寬依賴 shuffle 失敗仍需重算前一階段；**Flink = Chandy-Lamport distributed checkpoint**（barrier 在資料流中傳播、定期儲存 operator state）—— 引入 checkpoint overhead 但**天生支援有狀態 + exactly-once + event-time window**。兩種策略各自決定了 Spark / Flink 的長處：Spark 適合 batch + 偶爾 stream、Flink 適合 true streaming + 大型 stateful job。Ch11 streams 章會深入講 Flink checkpoint。"
   }
 ]' />
 
