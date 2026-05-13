@@ -28,7 +28,7 @@
   align-items: center;
   gap: var(--space-2);
   margin: 0 0 var(--space-3);
-  letter-spacing: 0.18em;
+  letter-spacing: var(--ls-eyebrow);
   text-transform: uppercase;
 }
 
@@ -92,7 +92,7 @@
   flex-wrap: wrap;
   gap: 20px var(--space-4);
   margin: var(--space-3) 0 32px;
-  padding: 14px 0;
+  padding: var(--space-3) 0;
   background: transparent;
   border: 0;
   border-top: 1px solid var(--border-default);
@@ -101,8 +101,8 @@
   font-family: var(--font-display);
   font-style: italic;
   font-variation-settings: var(--fvar-italic-note);
-  font-size: 13px;
-  letter-spacing: 0.04em;
+  font-size: var(--type-small-tight);
+  letter-spacing: var(--ls-loose);
 }
 
 .ddia-meta-item {
@@ -138,7 +138,7 @@
   font-variation-settings: var(--fvar-eyebrow-warm);
   font-size: var(--type-meta);
   font-weight: 500;
-  letter-spacing: 0.04em;
+  letter-spacing: var(--ls-loose);
   color: var(--brand-fg);
 }
 
@@ -164,7 +164,7 @@
   font-variation-settings: "opsz" 48, "SOFT" 30, "wght" 600;
   font-size: var(--type-h2-tight);
   font-weight: 600;
-  margin-bottom: 18px;
+  margin-bottom: var(--space-3-5);
   display: flex;
   justify-content: space-between;
   align-items: baseline;
@@ -199,7 +199,7 @@
   font-family: var(--font-display);
   font-variation-settings: var(--fvar-section-tight);
   font-weight: 600;
-  font-size: 17px;
+  font-size: var(--type-section);
   margin: var(--space-4) 0 12px;
   color: var(--text-primary);
   line-height: 1.55;
@@ -209,7 +209,7 @@
   display: flex;
   align-items: flex-start;
   gap: var(--space-2-5);
-  padding: 10px 14px 10px 14px;
+  padding: var(--space-2-5) var(--space-3) var(--space-2-5) var(--space-3);
   margin: var(--space-1) 0;
   border: 0;
   border-left: 2px solid transparent;
@@ -224,20 +224,20 @@
 }
 
 .ddia-quiz-option:hover {
-  border-left-color: var(--mark-fg);
+  border-left-color: var(--rule-active);  /* Wave 30c：左印記 = rule-active alias */
   background: var(--brand-tint-soft);
 }
 
 /* 鍵盤導航：label 內含 radio、focus 從 input 傳到 label 父元素 — 用 :focus-within 包整行 */
 .ddia-quiz-option:focus-within {
-  border-left-color: var(--mark-fg);
+  border-left-color: var(--rule-active);  /* Wave 30c：同上 */
   background: var(--brand-tint-soft);
   outline: var(--focus-ring-width) solid var(--focus-ring-color);
   outline-offset: var(--focus-ring-offset);
 }
 
 .ddia-quiz-option.selected {
-  border-left-color: var(--mark-fg);
+  border-left-color: var(--rule-active);  /* Wave 30c：同上 */
   background: var(--brand-tint);
 }
 
@@ -296,14 +296,14 @@
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  margin: -var(--space-2) 0 18px;
+  margin: -var(--space-2) 0 var(--space-3-5);
   padding: 0;
   background: transparent;
   border-radius: 0;
   font-family: var(--font-display);
   font-style: italic;
   font-variation-settings: var(--fvar-italic-warm);
-  font-size: 13px;
+  font-size: var(--type-small-tight);
   color: var(--text-tertiary);
 }
 
@@ -311,7 +311,7 @@
 .ddia-quiz-difficulty {
   display: inline-block;
   padding: 0;
-  margin-right: 10px;
+  margin-right: var(--space-2-5);
   font-family: var(--font-display);
   font-style: italic;
   font-variation-settings: var(--fvar-eyebrow-warm);
@@ -342,7 +342,7 @@
   font-family: var(--font-display);
   font-style: italic;
   font-variation-settings: var(--fvar-eyebrow-warm);
-  font-size: 13px;
+  font-size: var(--type-small-tight);
   color: var(--accent-500);
   text-decoration: none;
   transition: color 0.15s, border-color 0.15s;
@@ -361,13 +361,13 @@
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  padding: 10px var(--space-3-5);
+  padding: var(--space-2-5) var(--space-3-5);
   border-radius: 0;
   font-family: var(--font-display);
   font-variation-settings: var(--fvar-section-tight);
   font-weight: 600;
   font-size: var(--type-small);
-  letter-spacing: 0.04em;
+  letter-spacing: var(--ls-loose);
   cursor: pointer;
   border: 1px solid var(--text-primary);
   background: transparent;
@@ -460,11 +460,11 @@
   font-family: var(--font-display);
   font-style: italic;
   font-variation-settings: var(--fvar-italic-warm);
-  font-size: 13px;
+  font-size: var(--type-small-tight);
   line-height: 1.7;
   color: var(--text-tertiary);
   text-align: center;
-  letter-spacing: 0.01em;
+  letter-spacing: var(--ls-tight);
 }
 .ddia-hero-disclaimer strong {
   color: var(--text-secondary);
@@ -494,12 +494,12 @@
   align-items: center;
   justify-content: center;
   max-width: 900px;
-  margin: 32px auto 56px;
-  padding: 18px var(--space-4);
+  margin: 32px auto var(--space-5-5);
+  padding: var(--space-3-5) var(--space-4);
   border-top: 1px solid var(--border-default);
   border-bottom: 1px solid var(--border-default);
   font-family: var(--font-display);
-  font-size: 13px;
+  font-size: var(--type-small-tight);
   color: var(--text-tertiary);
 }
 .ddia-secondary-nav-label {
@@ -508,7 +508,7 @@
   font-weight: 400;
   margin-right: var(--space-1);
   color: var(--text-tertiary);
-  letter-spacing: 0.04em;
+  letter-spacing: var(--ls-loose);
 }
 
 /* ---------- Scenario badge：ch07 三情境 A/B/C 視覺錨點 ----------
@@ -517,8 +517,8 @@
 .ddia-scenario-badge {
   display: inline-flex;
   align-items: baseline;
-  padding: 0 0 0 10px;
-  margin-right: 10px;
+  padding: 0 0 0 var(--space-2-5);
+  margin-right: var(--space-2-5);
   border-radius: 0;
   border: 0;
   border-left: 2px solid var(--rule-hairline);
@@ -558,7 +558,7 @@
   border-radius: 0;
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: var(--space-3);
   flex-wrap: wrap;
 }
 
@@ -626,7 +626,7 @@
   font-size: var(--type-body);
   line-height: 1.75;
   color: var(--text-secondary);
-  letter-spacing: 0.01em;
+  letter-spacing: var(--ls-tight);
 }
 .ddia-dashboard-welcome-cta {
   display: inline-flex;
@@ -682,7 +682,7 @@
   font-family: var(--font-display);
   font-feature-settings: "onum" 1, "kern" 1;
   font-variation-settings: "opsz" 144, "SOFT" 30, "wght" 500;
-  font-size: 38px;
+  font-size: var(--type-feature);
   font-weight: 500;
   color: var(--text-primary);
   line-height: 1.1;
@@ -714,7 +714,7 @@
   border-radius: 0;
   font-family: var(--font-display);
   font-style: italic;
-  font-size: 11.5px;
+  font-size: var(--type-tiny);
   font-weight: 500;
   letter-spacing: 0.05em;
   vertical-align: baseline;
@@ -728,14 +728,14 @@
 }
 .ddia-stat-sub {
   margin-top: var(--space-1);
-  font-size: 11.5px;
+  font-size: var(--type-tiny);
   color: var(--text-tertiary);
 }
 
 /* 錯題本（Editorial：書末 errata 表格） */
 .ddia-incorrect-book {
   margin: var(--space-4) 0 var(--space-5);
-  padding: 18px 0;
+  padding: var(--space-3-5) 0;
   background: transparent;
   border: 0;
   border-top: 1px solid var(--rule-hairline);
@@ -745,7 +745,7 @@
 .ddia-incorrect-summary {
   display: flex;
   align-items: baseline;
-  gap: 10px;
+  gap: var(--space-2-5);
   cursor: pointer;
   font-family: var(--font-display);
   font-variation-settings: var(--fvar-section-tight);
@@ -753,7 +753,7 @@
   font-size: 15px;
   color: var(--text-primary);
   list-style: none;
-  letter-spacing: 0.01em;
+  letter-spacing: var(--ls-tight);
 }
 .ddia-incorrect-summary .material-symbols-rounded {
   display: none;
@@ -771,7 +771,7 @@
   content: '▾';
   margin-left: auto;
   color: var(--text-tertiary);
-  font-size: 11px;
+  font-size: var(--type-mini);
   transition: transform 0.15s;
 }
 .ddia-incorrect-book[open] .ddia-incorrect-summary::after {
@@ -783,7 +783,7 @@
   font-weight: 400;
 }
 .ddia-incorrect-list {
-  margin: 10px 0 0;
+  margin: var(--space-2-5) 0 0;
   padding: 0;
   list-style: none;
 }
@@ -815,7 +815,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 0;
-  margin: var(--space-4) 0 56px;
+  margin: var(--space-4) 0 var(--space-5-5);
   align-items: stretch;
   /* 用 grid 自己的 border 構成連體髮絲線：每張卡只畫 right + bottom，最外層補 top + left */
   border-top: 1px solid var(--rule-hairline);
@@ -825,7 +825,7 @@
 .ddia-chapter-card {
   display: flex;
   flex-direction: column;
-  padding: 22px var(--space-4) 18px;
+  padding: 22px var(--space-4) var(--space-3-5);
   background: transparent;
   border: 0;
   border-right: 1px solid var(--rule-hairline);
@@ -860,7 +860,7 @@
   right: 0;
   top: 0;
   height: 3px;
-  background: var(--cta-bg);
+  background: var(--rule-active);  /* Wave 30c：top 印記是 hover indicator、走 rule-active */
   opacity: 0;
   transition: opacity 0.18s;
 }
@@ -873,8 +873,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 10px;
-  padding-bottom: 10px;
+  margin-bottom: var(--space-2-5);
+  padding-bottom: var(--space-2-5);
   border-bottom: 1px solid var(--border-default);
 }
 
@@ -883,7 +883,7 @@
   font-family: var(--font-display);
   font-feature-settings: "onum" 1, "smcp" 1;
   font-variation-settings: var(--fvar-section-tight);
-  font-size: 11.5px;
+  font-size: var(--type-tiny);
   color: var(--mark-fg);
   font-weight: 600;
   letter-spacing: var(--ls-eyebrow);
@@ -912,14 +912,14 @@
   color: var(--text-secondary);
   line-height: 1.7;
   flex: 1;
-  letter-spacing: 0.01em;
+  letter-spacing: var(--ls-tight);
 }
 
 .ddia-chapter-card-status {
   margin-top: var(--space-3);
   padding-top: var(--space-2-5);
   border-top: 1px solid var(--border-default);
-  font-size: 11.5px;
+  font-size: var(--type-tiny);
   color: var(--text-tertiary);
   display: flex;
   justify-content: space-between;
@@ -950,7 +950,7 @@
 /* Part header（首頁 Part I / II / III · Editorial 雜誌 section 開場頁）*/
 .ddia-part-header {
   margin: 72px 0 var(--space-1);
-  padding-bottom: 18px;
+  padding-bottom: var(--space-3-5);
   border-bottom: 1px solid var(--rule-hairline);
   display: flex;
   align-items: flex-end;
@@ -961,7 +961,7 @@
 .ddia-part-header-title {
   display: flex;
   align-items: baseline;
-  gap: 14px;
+  gap: var(--space-3);
 }
 
 /* 章節區段大寫小標：「PART · I」走 Fraunces SemiBold 全大寫
@@ -992,7 +992,7 @@
   font-family: var(--font-display);
   font-style: italic;
   font-variation-settings: var(--fvar-eyebrow-warm);
-  font-size: 13px;
+  font-size: var(--type-small-tight);
   font-weight: 500;
   color: var(--text-tertiary);
   letter-spacing: var(--ls-eyebrow);
@@ -1005,7 +1005,7 @@
   color: var(--text-secondary);
   font-size: 14.5px;
   font-family: var(--font-body);
-  letter-spacing: 0.01em;
+  letter-spacing: var(--ls-tight);
   line-height: 1.7;
   max-width: 540px;
 }
@@ -1027,11 +1027,11 @@
   gap: var(--space-2);
   font-family: var(--font-display);
   font-variation-settings: var(--fvar-eyebrow-warm);
-  font-size: 11.5px;
+  font-size: var(--type-tiny);
   font-weight: 500;
   font-style: italic;
   text-transform: uppercase;
-  letter-spacing: 0.28em;
+  letter-spacing: var(--ls-display);
   color: var(--text-tertiary);
   padding: 0;
   background: none;
@@ -1068,8 +1068,8 @@
   font-variation-settings: "opsz" 36, "SOFT" 50, "wght" 400;
   font-size: var(--type-h3);
   color: var(--text-secondary);
-  margin: 0 0 14px;
-  letter-spacing: 0.01em;
+  margin: 0 0 var(--space-3);
+  letter-spacing: var(--ls-tight);
 }
 
 .ddia-hero-meta {
@@ -1078,7 +1078,7 @@
   font-feature-settings: "smcp" 1, "onum" 1;
   font-size: var(--type-eyebrow);
   color: var(--text-tertiary);
-  letter-spacing: 0.18em;
+  letter-spacing: var(--ls-eyebrow);
   text-transform: uppercase;
 }
 
@@ -1096,13 +1096,13 @@
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  padding: 10px 0;
+  padding: var(--space-2-5) 0;
   border-radius: 0;
   font-family: var(--font-display);
   font-variation-settings: var(--fvar-section-tight);
   font-weight: 600;
   font-size: 15px;
-  letter-spacing: 0.04em;
+  letter-spacing: var(--ls-loose);
   text-decoration: none !important;
   transition: all 0.18s;
   border: 0;
@@ -1115,7 +1115,7 @@
 .ddia-cta.primary {
   background: var(--cta-bg);
   color: var(--text-inverse) !important;
-  border: 1px solid var(--brand-500);
+  border: 1px solid var(--cta-bg);  /* Wave 30c：與 bg 同 alias、未來改主色一行切換 */
   border-radius: 0;
   padding: 12px var(--space-4);
 }
@@ -1130,11 +1130,11 @@
   border-bottom: 1.5px solid var(--text-primary);
   color: var(--text-primary) !important;
   background: transparent;
-  padding: 10px var(--space-1);
+  padding: var(--space-2-5) var(--space-1);
 }
 
 .ddia-cta.ghost:hover {
-  color: var(--brand-500) !important;
+  color: var(--mark-fg) !important;  /* Wave 30c：hover indicator semantic */
   border-bottom-color: var(--mark-fg);
 }
 
@@ -1182,9 +1182,9 @@
   font-family: var(--font-display);
   font-variation-settings: var(--fvar-section-tight);
   font-style: italic;
-  font-size: 13px;
+  font-size: var(--type-small-tight);
   font-weight: 600;
-  letter-spacing: 0.18em;
+  letter-spacing: var(--ls-eyebrow);
   text-transform: uppercase;
   color: var(--text-primary);
   margin: 0 0 var(--space-1-5);
@@ -1273,7 +1273,7 @@
   font-family: var(--font-display);
   font-variation-settings: var(--fvar-section-tight);
   font-weight: 600;
-  letter-spacing: 0.04em;
+  letter-spacing: var(--ls-loose);
 }
 .VPNavBar .divider-line {
   background: var(--rule-hairline);
@@ -1301,8 +1301,8 @@ button.DocSearch.DocSearch-Button {
 }
 .VPNavBarSearch .DocSearch-Button:hover,
 button.DocSearch.DocSearch-Button:hover {
-  border-color: var(--brand-500) !important;
-  color: var(--brand-500) !important;
+  border-color: var(--mark-fg) !important;  /* Wave 30c：hover indicator semantic */
+  color: var(--mark-fg) !important;
   background: transparent !important;
 }
 /* focus-visible 用 brand 色 outline 取代 VP 預設可能露出來的藍框 */
@@ -1330,7 +1330,7 @@ button.DocSearch.DocSearch-Button:focus-visible {
   border: 0 !important;
   color: var(--text-tertiary) !important;
   font-family: var(--font-mono) !important;
-  font-size: 11px !important;
+  font-size: var(--type-mini) !important;
   padding: 0 2px !important;
   min-width: 0 !important;
 }
@@ -1348,7 +1348,7 @@ button.DocSearch.DocSearch-Button:focus-visible {
   border: 0 !important;
   background: transparent !important;
   box-shadow: none !important;
-  padding: 10px var(--space-2-5) !important;
+  padding: var(--space-2-5) var(--space-2-5) !important;
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
@@ -1368,7 +1368,7 @@ button.DocSearch.DocSearch-Button:focus-visible {
 .VPSwitchAppearance::before {
   content: "☾";
   font-family: var(--font-display);
-  font-size: 17px;
+  font-size: var(--type-section);
   line-height: 1;
   color: var(--text-secondary);
   transition: color 0.15s, transform 0.15s;
@@ -1409,9 +1409,9 @@ button.DocSearch.DocSearch-Button:focus-visible {
 .VPSidebarGroup .title .title-text {
   font-family: var(--font-display);
   font-variation-settings: "opsz" 24, "SOFT" 50, "wght" 600;
-  font-size: 13px;
+  font-size: var(--type-small-tight);
   font-style: italic;
-  letter-spacing: 0.18em;
+  letter-spacing: var(--ls-eyebrow);
   text-transform: uppercase;
   color: var(--text-tertiary);
 }
@@ -1419,7 +1419,7 @@ button.DocSearch.DocSearch-Button:focus-visible {
   border-radius: 0;
   font-family: var(--font-body);
   font-size: var(--type-small);
-  letter-spacing: 0.01em;
+  letter-spacing: var(--ls-tight);
 }
 .VPSidebarItem .link .text {
   color: var(--text-secondary);
@@ -1428,7 +1428,7 @@ button.DocSearch.DocSearch-Button:focus-visible {
   color: var(--text-primary);
 }
 .VPSidebarItem.is-active > .item .link .text {
-  color: var(--brand-500) !important;
+  color: var(--rule-active) !important;  /* Wave 30c：sidebar active 走 rule-active alias */
   font-weight: 600;
 }
 .VPSidebarItem.is-active > .item {
@@ -1441,7 +1441,7 @@ button.DocSearch.DocSearch-Button:focus-visible {
   top: 4px;
   bottom: 4px;
   width: 2px;
-  background: var(--cta-bg);
+  background: var(--rule-active);  /* Wave 30c：sidebar active 左印記 = rule-active */
 }
 
 /* ----- Outline TOC（右側）：Editorial 化 ----- */
@@ -1461,7 +1461,7 @@ button.DocSearch.DocSearch-Button:focus-visible {
   margin-bottom: var(--space-2-5);
 }
 .VPDocAsideOutline .outline-link {
-  font-size: 13px;
+  font-size: var(--type-small-tight);
   line-height: 1.6;
   color: var(--text-tertiary);
   border-radius: 0;
@@ -1522,7 +1522,7 @@ button.DocSearch.DocSearch-Button:focus-visible {
   font-variation-settings: var(--fvar-italic-warm);
   font-size: var(--type-meta);
   color: var(--text-tertiary);
-  letter-spacing: 0.04em;
+  letter-spacing: var(--ls-loose);
   line-height: 1.8;
 }
 .VPFooter .container::before {
@@ -1531,14 +1531,14 @@ button.DocSearch.DocSearch-Button:focus-visible {
   font-family: var(--font-display);
   font-size: var(--type-eyebrow);
   color: var(--text-tertiary);  /* 印刷符號 ◆ 改 ink、不用 brand：頁尾不該搶 attention */
-  margin-bottom: 14px;
+  margin-bottom: var(--space-3);
 }
 
 /* ----- Doc footer prev/next：Editorial 化 ----- */
 .VPDocFooter,
 .pager {
   border-top: 1px solid var(--rule-hairline);
-  margin-top: 56px;
+  margin-top: var(--space-5-5);
   padding-top: var(--space-4);
 }
 /* pager-link 不再畫 border-top — 上面 .pager 已有外框 hairline、
@@ -1558,7 +1558,7 @@ button.DocSearch.DocSearch-Button:focus-visible {
   font-family: var(--font-display);
   font-style: italic;
   font-variation-settings: var(--fvar-italic-warm);
-  font-size: 11px;
+  font-size: var(--type-mini);
   letter-spacing: var(--ls-eyebrow);
   text-transform: uppercase;
   color: var(--text-tertiary);
@@ -1567,7 +1567,7 @@ button.DocSearch.DocSearch-Button:focus-visible {
   font-family: var(--font-display);
   font-variation-settings: var(--fvar-section-tight);
   font-size: 15px;
-  letter-spacing: 0.01em;
+  letter-spacing: var(--ls-tight);
 }
 
 /* ----- Mermaid SVG nodes：去圓角 + 字型 ----- */
@@ -1649,7 +1649,7 @@ button.DocSearch.DocSearch-Button:focus-visible {
   letter-spacing: var(--ls-eyebrow);
   text-transform: uppercase;
   color: var(--text-tertiary);
-  margin-bottom: 14px;
+  margin-bottom: var(--space-3);
 }
 .ddia-dashboard-resume-link {
   display: inline-flex;
@@ -1669,7 +1669,7 @@ button.DocSearch.DocSearch-Button:focus-visible {
   font-family: var(--font-display);
   font-feature-settings: "onum" 1, "smcp" 1;
   font-variation-settings: var(--fvar-section-tight);
-  font-size: 13px;
+  font-size: var(--type-small-tight);
   letter-spacing: var(--ls-eyebrow);
   text-transform: uppercase;
   color: var(--mark-fg);
@@ -1678,7 +1678,7 @@ button.DocSearch.DocSearch-Button:focus-visible {
   font-family: var(--font-display);
   font-variation-settings: "opsz" 36, "SOFT" 30, "wght" 600;
   font-size: var(--type-h3);
-  letter-spacing: 0.01em;
+  letter-spacing: var(--ls-tight);
 }
 .ddia-dashboard-resume-arrow {
   font-family: var(--font-display);
@@ -1719,7 +1719,7 @@ button.DocSearch.DocSearch-Button:focus-visible {
   letter-spacing: var(--ls-eyebrow);
   text-transform: uppercase;
   color: var(--text-tertiary);
-  margin-bottom: 18px;
+  margin-bottom: var(--space-3-5);
   padding-left: 0.3em;
 }
 .ddia-dashboard-ceremony-text {
@@ -1742,7 +1742,7 @@ button.DocSearch.DocSearch-Button:focus-visible {
   font-family: var(--font-display);
   font-variation-settings: var(--fvar-eyebrow);
   font-size: var(--type-small);
-  letter-spacing: 0.04em;
+  letter-spacing: var(--ls-loose);
   color: var(--text-secondary);
   text-decoration: none;
   border-bottom: 1px dotted var(--border-default);
@@ -1813,7 +1813,7 @@ button.DocSearch.DocSearch-Button:focus-visible {
   font-family: var(--font-display);
   font-feature-settings: "onum" 1;
   font-variation-settings: var(--fvar-section-tight);
-  font-size: 13px;
+  font-size: var(--type-small-tight);
   letter-spacing: var(--ls-eyebrow);
   text-transform: uppercase;
   color: var(--mark-fg);
@@ -1822,7 +1822,7 @@ button.DocSearch.DocSearch-Button:focus-visible {
   font-family: var(--font-display);
   font-variation-settings: "opsz" 48, "SOFT" 50, "wght" 500;
   font-size: var(--type-h2-tight);
-  letter-spacing: 0.01em;
+  letter-spacing: var(--ls-tight);
 }
 .ddia-quiz-next-arrow {
   font-family: var(--font-display);

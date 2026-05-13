@@ -88,6 +88,7 @@
   --space-4: 24px;    /* 段距 / 表格 margin / 一般元件 margin */
   --space-4-5: 28px;  /* Wave 29a：章末元件 mid gap、blockquote */
   --space-5: 40px;    /* 區塊分隔 / callout / blockquote */
+  --space-5-5: 56px;  /* Wave 30b：章末→Bridge 儀式間距（介於 40 區塊與 64 章節之間、5 處 raw） */
   --space-6: 64px;    /* 章節級分隔 / h2 / 儀式區塊 */
 
   --gap-paragraph: var(--space-3);   /* <p> margin */
@@ -109,6 +110,12 @@
   --type-h2-tight:  22px;  /* h3 / Quiz header / 元件中標（8 處 raw） */
   --type-body-lg:   18px;  /* 內文加大 / Quiz question / Hero subtitle（7 處 raw） */
   --type-meta:    12.5px;  /* badge / cite / meta / hint（6 處 raw） */
+  /* Wave 30a 新增：再補 5 階對映實際中間值 raw（總共占 ~70 處 raw font-size 殘留） */
+  --type-mini:        11px;  /* footer ✦ / sticker / pager pip 等極小印記（5 處 raw） */
+  --type-tiny:      11.5px;  /* table sub-label / breadcrumb / very-meta（6 處 raw） */
+  --type-small-tight: 13px;  /* table / cite / button mid / progress bar text（17 處 raw 最大宗） */
+  --type-section:     17px;  /* 元件 section header / Quiz radio label（3 處 raw） */
+  --type-feature:     38px;  /* hero numeral / dashboard big stat（1 處 raw） */
 
   /* Fraunces variation-settings 標準化（Wave 28a：加 4 套覆蓋常見實際使用 pattern） */
   --fvar-display:    "opsz" 72, "SOFT" 60, "wght" 500;  /* 大標題 / 章名 */
@@ -121,9 +128,13 @@
   --fvar-italic-warm: "opsz" 24, "SOFT" 60, "wght" 400;  /* 暖色 italic body（8 處）*/
   --fvar-section-mid: "opsz" 24, "SOFT" 30, "wght" 500;  /* 小字級 mid-weight（6 處）*/
 
-  /* letter-spacing 標準（從 0.18/0.22/0.28/0.32 四套收斂到 1 個） */
-  --ls-eyebrow: 0.22em;  /* italic uppercase small caps eyebrow 全站唯一 */
-  --ls-chapter-mark: 0.18em;  /* CH·01 之類章號 spacing */
+  /* letter-spacing 4-token scale（Wave 30a：原 1 token --ls-eyebrow 拆成 4 階）
+     ls-eyebrow 從 0.22em 收緊到 0.18em — 書本印刷感（過 0.20em 就有「廣告字距」氣味）。
+     --ls-chapter-mark 刪除（0 處實際使用、值與 --ls-eyebrow 同 0.18em）。 */
+  --ls-tight:    0.01em;  /* 中文 body micro-spacing（19 處 raw） */
+  --ls-loose:    0.04em;  /* h2 / 表頭 / 區塊小標 mid spacing（17 處 raw） */
+  --ls-eyebrow:  0.18em;  /* italic uppercase small caps eyebrow / CH·01 章號（24 處 raw + var 用量） */
+  --ls-display:  0.28em;  /* 大型 display 寬距（dinkus / 章首 oeuvre title、1 處 raw） */
 
   /* ---------- Interactive state（Wave 3：hover/active/focus 統一規則） ---------- */
   --interactive-hover-bg:   var(--bg-surface);
@@ -139,7 +150,7 @@
   --ink-strong: var(--text-primary);   /* 印刷符號 § · ◆ 用這個、不用 brand-500 */
   --ink-mid:    var(--text-secondary);
   --ink-soft:   var(--text-tertiary);
-  --ink-mark:   var(--brand-500);       /* 只保留給「真品牌印記」場合 */
+  /* Wave 30c 刪除 --ink-mark：與 --mark-fg 同值同語意、0 處實際使用、token 重複 */
 
   /* ---------- Wave 29c：brand-500 semantic alias（語意化、批次收斂用）
      之前 brand-500 在 components.css 散落 40+ 處、用途混雜（CTA / mark / hover / active）。
@@ -293,4 +304,17 @@
 
   --vp-c-divider: var(--border-default);
   --vp-c-gutter:  var(--border-default);
+}
+
+/* ==========================================================================
+   VitePress i18n 修正：code-copy button toast 的「已複製」改回繁體
+   ==========================================================================
+   VP 內建（vars.css）有 `:lang(zh) { --vp-code-copy-copied-text-content: '已复制' }`，
+   而我們 config 用 `lang: 'zh-TW'` 會被 prefix `:lang(zh)` 命中、按下 code copy 後顯示簡體。
+   tokens.css 後於 VP CSS 載入，同 specificity 後到者勝 → override 成功。
+   ========================================================================== */
+:lang(zh),
+:lang(zh-Hant),
+:lang(zh-TW) {
+  --vp-code-copy-copied-text-content: '已複製';
 }

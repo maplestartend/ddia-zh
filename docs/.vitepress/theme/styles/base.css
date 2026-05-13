@@ -21,7 +21,7 @@ body {
   text-wrap: pretty;
   line-break: strict;
   text-spacing-trim: trim-start;
-  letter-spacing: 0.01em;
+  letter-spacing: var(--ls-tight);
 }
 
 /* 中文段落的 wrap 策略：
@@ -66,6 +66,20 @@ body {
     outline-offset: 3px;
     box-shadow: none;
   }
+}
+
+/* Wave 30d：keyboard Enter / Space 視覺回饋
+   瀏覽器 :active 在 Enter / Space 觸發 click 時持續 <50ms 難看到。
+   theme/index.ts onKeyFlash 在按鍵時加 .ddia-click-flash class、180ms 後移除。
+   效果：用 inset box-shadow 疊一層 brand-tint，不擾動底層 bg / border / focus ring。 */
+.ddia-click-flash {
+  box-shadow:
+    var(--focus-ring, 0 0 #0000),
+    inset 0 0 0 9999px var(--brand-tint-soft);
+  transition: box-shadow 180ms ease-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ddia-click-flash { transition: none; }
 }
 
 /* Editorial 模式：Material Symbols 全站隱藏（已替換成 typographic mark：§ · ◆ →）
@@ -123,7 +137,7 @@ body {
   top: -100px;
   left: 16px;
   z-index: 10000;
-  padding: var(--space-2-5) 18px;
+  padding: var(--space-2-5) var(--space-3-5);
   background: var(--cta-bg);
   color: var(--text-inverse);
   text-decoration: none;
@@ -157,7 +171,7 @@ body {
   font-variation-settings: "opsz" 36, "SOFT" 60, "wght" 500;
   font-size: var(--type-display-2);
   color: var(--text-secondary);  /* 印刷符號用 ink、不用 brand：避免 brand 雜訊 */
-  margin-right: 14px;
+  margin-right: var(--space-3);
   vertical-align: baseline;
   display: inline-block;
   line-height: 1;
@@ -180,7 +194,7 @@ body {
 }
 
 .vp-doc p {
-  margin: 18px 0;  /* 中文段距 18px + line-height 1.85 — 改回正常書頁韻律（22px 對中文過鬆） */
+  margin: var(--space-3-5) 0;  /* Wave 30b：中文段距 20px（從 var(--space-3-5) 微升、化 raw token）+ line-height 1.85 維持書頁韻律（22px 對中文過鬆） */
   color: var(--text-primary);
 }
 
@@ -218,15 +232,16 @@ body {
    - 過場（Note/Chapter-loop→callout）= var(--space-5) 40px — 中度
    - 儀式封頂（→Bridge）= var(--space-6) 64px — 鬆散終結
    重現原本各元件自帶 28/40/56 的呼吸節奏、不再機械等距 */
+/* Wave 30e 移除死代碼：.ddia-quiz + .ddia-note / .ddia-quiz + .ddia-chapter-loop
+   實測 12 章 + Part 0 章末永遠是 Quiz → InterviewBlock → Note → Chapter-loop → Bridge 順序，
+   Quiz 不會直接接 Note、也不會直接接 Chapter-loop。 */
 .ddia-quiz + .ddia-interview,
-.ddia-interview + .ddia-note,
-.ddia-quiz + .ddia-note {
+.ddia-interview + .ddia-note {
   border-top: 0 !important;
   margin-top: var(--space-4-5) !important;  /* 28px 內容延續 */
 }
 .ddia-note + .ddia-chapter-loop,
-.ddia-chapter-loop + .custom-block,
-.ddia-quiz + .ddia-chapter-loop {
+.ddia-chapter-loop + .custom-block {
   border-top: 0 !important;
   margin-top: var(--space-5) !important;  /* 40px 過場 */
 }
@@ -335,7 +350,7 @@ body {
   font-family: var(--font-display);
   font-variation-settings: var(--fvar-section-mid);
   font-weight: 500;
-  letter-spacing: 0.04em;
+  letter-spacing: var(--ls-loose);
 }
 
 .vp-doc thead th {
@@ -352,7 +367,7 @@ body {
 
 .vp-doc th, .vp-doc td {
   border-color: var(--rule-soft);
-  padding: 10px 14px;
+  padding: var(--space-2-5) var(--space-3);
 }
 
 /* Editorial：行內 code 用 mono、極淡 mahogany tint 背景、直角邊

@@ -40,7 +40,7 @@ defineProps<{
 /* Editorial 讀前須知：書頁譯註欄樣式 */
 .ddia-prereq {
   margin: var(--space-4) 0 36px;
-  padding: 18px 0;
+  padding: var(--space-3-5) 0;
   background: transparent;
   border: 0;
   border-top: 1px solid var(--rule-hairline);
@@ -69,7 +69,7 @@ defineProps<{
   margin: 0;
   display: grid;
   grid-template-columns: minmax(160px, auto) 1fr;
-  gap: 10px var(--space-4);
+  gap: var(--space-2-5) var(--space-4);
   font-family: var(--font-body);
   font-size: var(--type-small);
   line-height: 1.7;
@@ -84,7 +84,7 @@ defineProps<{
   color: var(--text-secondary);
   font-weight: 500;
   white-space: nowrap;
-  letter-spacing: 0.04em;
+  letter-spacing: var(--ls-loose);
 }
 .ddia-prereq-list dt :deep(.material-symbols-rounded) {
   display: none;
@@ -128,7 +128,7 @@ defineProps<{
     gap: var(--space-1) 0;
   }
   .ddia-prereq-list dt {
-    margin-top: 10px;
+    margin-top: var(--space-2-5);
   }
 }
 </style>

@@ -103,9 +103,9 @@ const recommendations = computed(() => items.filter(i => !checked.value[i.id]))
 .ddia-self-assess-header {
   display: flex;
   align-items: baseline;
-  gap: 10px;
+  gap: var(--space-2-5);
   color: var(--mark-fg);
-  margin-bottom: 10px;
+  margin-bottom: var(--space-2-5);
 }
 .ddia-self-assess-header :deep(.material-symbols-rounded) {
   display: none;
@@ -134,7 +134,7 @@ const recommendations = computed(() => items.filter(i => !checked.value[i.id]))
 .ddia-self-assess-desc {
   margin: 0 0 var(--space-3-5);
   font-family: var(--font-display);
-  font-style: italic;
+  /* Wave 30a：功能性 desc 去 italic（保留 fvar-italic-note 變體只控 wght/SOFT） */
   font-variation-settings: var(--fvar-italic-note);
   font-size: 14.5px;
   color: var(--text-secondary);
@@ -147,7 +147,7 @@ const recommendations = computed(() => items.filter(i => !checked.value[i.id]))
 }
 .ddia-self-assess-item {
   margin: var(--space-1-5) 0;
-  padding: 10px 14px;
+  padding: var(--space-2-5) var(--space-3);
   background: transparent;
   border: 0;
   border-left: 2px solid transparent;
@@ -171,7 +171,7 @@ const recommendations = computed(() => items.filter(i => !checked.value[i.id]))
   font-family: var(--font-body);
   font-size: 14.5px;
   line-height: 1.7;
-  letter-spacing: 0.01em;
+  letter-spacing: var(--ls-tight);
 }
 .ddia-self-assess-item input[type='checkbox'] {
   margin-top: 5px;
@@ -194,7 +194,7 @@ const recommendations = computed(() => items.filter(i => !checked.value[i.id]))
 .ddia-self-assess-pass {
   display: flex;
   align-items: baseline;
-  gap: 10px;
+  gap: var(--space-2-5);
   background: transparent;
   border-left: 3px solid var(--success-fg);
   color: var(--success-fg);
@@ -237,8 +237,8 @@ const recommendations = computed(() => items.filter(i => !checked.value[i.id]))
   font-family: var(--font-display);
   font-variation-settings: var(--fvar-section-tight);
   color: var(--accent-500);
-  margin-bottom: 10px;
-  letter-spacing: 0.04em;
+  margin-bottom: var(--space-2-5);
+  letter-spacing: var(--ls-loose);
 }
 .ddia-self-assess-todo-head :deep(.material-symbols-rounded) {
   display: none;
@@ -250,7 +250,7 @@ const recommendations = computed(() => items.filter(i => !checked.value[i.id]))
   border-left-color: var(--accent-200);
 }
 .ddia-self-assess-todo ul {
-  margin: 0 0 10px;
+  margin: 0 0 var(--space-2-5);
   padding-left: 1.2em;
   list-style: none;
 }
@@ -270,13 +270,13 @@ const recommendations = computed(() => items.filter(i => !checked.value[i.id]))
 .ddia-self-assess-reason {
   color: var(--text-tertiary);
   font-family: var(--font-display);
-  font-style: italic;
-  font-size: 13px;
+  /* Wave 30a：功能性 reason 去 italic */
+  font-size: var(--type-small-tight);
 }
 .ddia-self-assess-hint {
   margin: var(--space-1-5) 0 0;
   font-family: var(--font-display);
-  font-style: italic;
+  /* Wave 30a：功能性 hint 去 italic */
   font-size: var(--type-meta);
   color: var(--text-tertiary);
 }

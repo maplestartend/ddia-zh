@@ -82,7 +82,7 @@ watch(answers, (v) => {
   gap: var(--space-1-5);
   font-family: var(--font-display);
   font-variation-settings: var(--fvar-eyebrow-warm);
-  font-style: italic;
+  /* Wave 30a：功能性元件 eyebrow 去 italic（italic 留給儀式：Hero/ChapterOpener/Bridge/TLDR/Quiz） */
   font-size: var(--type-eyebrow);
   font-weight: 500;
   text-transform: uppercase;
@@ -94,9 +94,9 @@ watch(answers, (v) => {
   display: none;
 }
 .ddia-interview-intro {
-  margin: 0 0 18px;
+  margin: 0 0 var(--space-3-5);
   font-family: var(--font-display);
-  font-style: italic;
+  /* Wave 30a：功能性元件 intro 去 italic（fvar-italic-note 保留 — 控制 wght/SOFT，視覺仍偏柔軟） */
   font-variation-settings: var(--fvar-italic-note);
   font-size: 14.5px;
   color: var(--text-secondary);
@@ -121,8 +121,8 @@ watch(answers, (v) => {
   font-family: var(--font-display);
   font-variation-settings: "opsz" 24, "wght" 600;
   font-feature-settings: "onum" 1;
-  font-size: 13px;
-  letter-spacing: 0.04em;
+  font-size: var(--type-small-tight);
+  letter-spacing: var(--ls-loose);
   color: var(--warning-fg);
 }
 .ddia-interview-q-head {
@@ -143,7 +143,7 @@ watch(answers, (v) => {
   border-bottom: 1px dotted var(--warning-fg);
   border-radius: 0;
   font-family: var(--font-display);
-  font-style: italic;
+  /* Wave 30a：功能性 tag 去 italic */
   font-variation-settings: var(--fvar-eyebrow-warm);
   font-size: var(--type-eyebrow);
   font-weight: 500;
@@ -152,7 +152,7 @@ watch(answers, (v) => {
 }
 .ddia-interview-textarea {
   width: 100%;
-  padding: 10px 14px;
+  padding: var(--space-2-5) var(--space-3);
   background: var(--bg-surface);
   border: 0;
   border-bottom: 1px solid var(--rule-hairline);
@@ -163,7 +163,7 @@ watch(answers, (v) => {
   color: var(--text-primary);
   resize: vertical;
   outline: none;  /* :focus 用 border-bottom 變色當滑鼠 affordance；:focus-visible 走鍵盤 outline */
-  letter-spacing: 0.01em;
+  letter-spacing: var(--ls-tight);
 }
 .ddia-interview-textarea:focus {
   border-bottom-color: var(--warning-fg);

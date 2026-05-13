@@ -83,7 +83,7 @@ function onForgotten(chapterId: string) {
   text-transform: uppercase;
   letter-spacing: var(--ls-eyebrow);
   color: var(--text-tertiary);
-  margin-bottom: 14px;
+  margin-bottom: var(--space-3);
 }
 .ddia-review-eyebrow :deep(.material-symbols-rounded) {
   display: none;
@@ -91,7 +91,7 @@ function onForgotten(chapterId: string) {
 .ddia-review-empty {
   display: flex;
   align-items: baseline;
-  gap: 10px;
+  gap: var(--space-2-5);
   flex-wrap: wrap;
   color: var(--text-secondary);
   font-family: var(--font-display);
@@ -122,7 +122,7 @@ function onForgotten(chapterId: string) {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 14px;
+  gap: var(--space-3);
   padding: var(--space-2-5) 0;
   border-top: 1px solid var(--border-default);
   flex-wrap: wrap;
@@ -144,7 +144,7 @@ function onForgotten(chapterId: string) {
 }
 .ddia-review-item-title:hover {
   color: var(--mark-fg);
-  border-bottom: 1px solid var(--brand-500);
+  border-bottom: 1px solid var(--mark-fg);  /* Wave 30c：hover indicator 與 color 同 alias */
 }
 :global(.dark) .ddia-review-item-title:hover {
   color: var(--brand-fg);
@@ -157,11 +157,11 @@ function onForgotten(chapterId: string) {
   font-size: var(--type-meta);
   color: var(--text-tertiary);
   margin-top: var(--space-1);
-  letter-spacing: 0.01em;
+  letter-spacing: var(--ls-tight);
 }
 .ddia-review-item-actions {
   display: inline-flex;
-  gap: 14px;
+  gap: var(--space-3);
 }
 .ddia-review-btn {
   display: inline-flex;
@@ -174,7 +174,7 @@ function onForgotten(chapterId: string) {
   font-family: var(--font-display);
   font-variation-settings: var(--fvar-section-tight);
   font-size: var(--type-meta);
-  letter-spacing: 0.04em;
+  letter-spacing: var(--ls-loose);
   color: var(--text-primary);
   cursor: pointer;
   transition: background 0.15s, color 0.15s;

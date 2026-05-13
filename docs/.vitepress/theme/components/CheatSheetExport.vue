@@ -246,7 +246,7 @@ function resetAll() {
   display: none;
 }
 .ddia-export-text {
-  margin: 0 0 18px;
+  margin: 0 0 var(--space-3-5);
   font-family: var(--font-display);
   font-variation-settings: var(--fvar-italic-note);
   font-size: 15px;
@@ -262,7 +262,7 @@ function resetAll() {
 /* 危險區：摺疊式 details、italic 印刷感 + / − 印記取代 ▾ 三角箭頭 */
 .ddia-export-danger {
   margin-top: var(--space-4-5);
-  padding-top: 18px;
+  padding-top: var(--space-3-5);
   border-top: 1px dashed var(--rule-hairline);
 }
 .ddia-export-danger summary {
@@ -273,9 +273,9 @@ function resetAll() {
   gap: var(--space-2);
   font-family: var(--font-display);
   font-variation-settings: var(--fvar-eyebrow);
-  font-size: 13px;
+  font-size: var(--type-small-tight);
   text-transform: uppercase;
-  letter-spacing: 0.18em;
+  letter-spacing: var(--ls-eyebrow);
   color: var(--text-tertiary);
 }
 .ddia-export-danger summary::-webkit-details-marker {
@@ -309,7 +309,7 @@ function resetAll() {
   right: 0;
 }
 .ddia-export-danger-text {
-  margin: var(--space-2-5) 0 14px;
+  margin: var(--space-2-5) 0 var(--space-3);
   font-family: var(--font-body);
   font-size: var(--type-small);
   line-height: 1.75;

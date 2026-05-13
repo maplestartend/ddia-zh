@@ -86,8 +86,8 @@ function scrollToLetter(letter: string, e: MouseEvent) {
   display: inline-flex;
   align-items: baseline;
   gap: var(--space-1);
-  margin-right: 14px;
-  padding-right: 14px;
+  margin-right: var(--space-3);
+  padding-right: var(--space-3);
   border-right: 1px solid var(--border-default);
   font-family: var(--font-display);
   font-variation-settings: var(--fvar-eyebrow-warm);
@@ -140,7 +140,7 @@ function scrollToLetter(letter: string, e: MouseEvent) {
 
 @media (max-width: 600px) {
   .ddia-glossary-index {
-    padding: var(--space-2) 10px;
+    padding: var(--space-2) var(--space-2-5);
     gap: 2px;
   }
   .ddia-glossary-index-label {
@@ -153,7 +153,7 @@ function scrollToLetter(letter: string, e: MouseEvent) {
   .ddia-glossary-index-link {
     min-width: 22px;
     height: 22px;
-    font-size: 11px;
+    font-size: var(--type-mini);
   }
 }
 </style>

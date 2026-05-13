@@ -116,11 +116,11 @@ onUnmounted(() => {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  bottom: calc(100% + 10px);
+  bottom: calc(100% + var(--space-2-5));
   z-index: 50;
   width: max-content;
   max-width: min(320px, 90vw);
-  padding: var(--space-2-5) 14px;
+  padding: var(--space-2-5) var(--space-3);
   background: var(--bg-surface);
   border: 0;
   border-top: 1px solid var(--rule-hairline);
@@ -128,7 +128,7 @@ onUnmounted(() => {
   border-radius: 0;
   box-shadow: 0 8px 24px -8px rgba(28, 26, 23, 0.18);
   font-family: var(--font-body);
-  font-size: 13px;
+  font-size: var(--type-small-tight);
   line-height: 1.65;
   color: var(--text-primary);
   text-align: left;
@@ -154,18 +154,18 @@ onUnmounted(() => {
   font-family: var(--font-display);
   font-size: var(--type-eyebrow);
   color: var(--text-tertiary);
-  letter-spacing: 0.04em;
+  letter-spacing: var(--ls-loose);
 }
 .ddia-g-tooltip-def {
   display: block;
-  font-size: 13px;
+  font-size: var(--type-small-tight);
 }
 .ddia-g-tooltip-cta-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--space-2);
-  margin-top: 10px;
+  margin-top: var(--space-2-5);
   padding-top: var(--space-2);
   border-top: 1px dotted var(--border-default);
 }
@@ -182,7 +182,7 @@ onUnmounted(() => {
   font-variation-settings: var(--fvar-section-tight);
   font-size: var(--type-eyebrow);
   font-weight: 600;
-  letter-spacing: 0.04em;
+  letter-spacing: var(--ls-loose);
   color: var(--accent-500);
 }
 .ddia-g-arrow {
@@ -190,10 +190,10 @@ onUnmounted(() => {
 }
 .ddia-g-tooltip-chapter {
   font-family: var(--font-display);
-  font-size: 11px;
+  font-size: var(--type-mini);
   color: var(--text-tertiary);
   white-space: nowrap;
-  letter-spacing: 0.04em;
+  letter-spacing: var(--ls-loose);
 }
 :global(.dark) .ddia-g-tooltip-cta-btn {
   color: var(--brand-fg);

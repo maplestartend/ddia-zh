@@ -64,7 +64,7 @@ const displayTeaser = computed(() => currentChap.value?.teaser)
    整塊可點、不靠按鈕；觸發 hover 用左 3px 印記取代 lift shadow */
 .ddia-bridge {
   display: block;
-  margin: 56px 0 32px;
+  margin: var(--space-5-5) 0 32px;
   padding: var(--space-4-5) 0 32px;
   text-align: center;
   background: transparent;
@@ -104,7 +104,7 @@ const displayTeaser = computed(() => currentChap.value?.teaser)
   text-transform: uppercase;
   letter-spacing: var(--ls-eyebrow);
   color: var(--text-tertiary);
-  margin-bottom: 14px;
+  margin-bottom: var(--space-3);
   padding-left: 0.3em;
 }
 
@@ -113,7 +113,7 @@ const displayTeaser = computed(() => currentChap.value?.teaser)
   font-feature-settings: "onum" 1;
   font-variation-settings: "opsz" 48, "SOFT" 60, "wght" 500;
   font-size: var(--type-display-2);
-  letter-spacing: 0.18em;
+  letter-spacing: var(--ls-eyebrow);
   color: var(--mark-fg);
   margin-bottom: var(--space-1-5);
   padding-left: 0.18em;
@@ -129,7 +129,7 @@ const displayTeaser = computed(() => currentChap.value?.teaser)
   font-weight: 500;
   line-height: 1.25;
   color: var(--text-primary);
-  margin: 0 0 14px;
+  margin: 0 0 var(--space-3);
   transition: color 0.2s ease;
   text-wrap: balance;
 }

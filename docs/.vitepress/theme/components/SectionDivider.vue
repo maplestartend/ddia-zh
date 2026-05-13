@@ -69,7 +69,7 @@ const isCjk = computed(() => /[一-鿿]/.test(props.label ?? ''))
 .ddia-section-divider.is-cjk .ddia-section-divider-label {
   text-transform: none;
   letter-spacing: 0.08em;
-  font-size: 13px;
+  font-size: var(--type-small-tight);
   font-style: normal;
 }
 </style>

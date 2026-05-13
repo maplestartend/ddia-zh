@@ -82,7 +82,7 @@ watch(content, () => {
 .ddia-note-summary {
   display: flex;
   align-items: baseline;
-  gap: 10px;
+  gap: var(--space-2-5);
   cursor: pointer;
   font-family: var(--font-display);
   font-variation-settings: var(--fvar-section-tight);
@@ -91,7 +91,7 @@ watch(content, () => {
   color: var(--text-primary);
   user-select: none;
   list-style: none;
-  letter-spacing: 0.01em;
+  letter-spacing: var(--ls-tight);
 }
 .ddia-note-summary :deep(.material-symbols-rounded) {
   display: none;
@@ -109,7 +109,7 @@ watch(content, () => {
   content: '▾';
   margin-left: auto;
   color: var(--text-tertiary);
-  font-size: 11px;
+  font-size: var(--type-mini);
   transition: transform 0.15s;
 }
 .ddia-note[open] .ddia-note-summary::after {
@@ -123,13 +123,13 @@ watch(content, () => {
   color: var(--brand-fg);
   border-radius: 0;
   font-family: var(--font-display);
-  font-size: 11.5px;
+  font-size: var(--type-tiny);
   font-weight: 500;
   letter-spacing: 0.06em;
 }
 .ddia-note-hint {
   font-family: var(--font-display);
-  font-size: 11.5px;
+  font-size: var(--type-tiny);
   color: var(--text-tertiary);
   font-weight: 400;
 }
@@ -137,8 +137,8 @@ watch(content, () => {
   width: 100%;
   min-height: 120px;
   max-height: 600px;
-  margin-top: 14px;
-  padding: var(--space-2-5) 14px;
+  margin-top: var(--space-3);
+  padding: var(--space-2-5) var(--space-3);
   background: var(--bg-surface);
   border: 0;
   border-bottom: 1px solid var(--rule-hairline);
@@ -150,7 +150,7 @@ watch(content, () => {
   resize: vertical;
   outline: none;  /* :focus 用 border-bottom 變色當滑鼠 affordance；:focus-visible 走鍵盤 outline */
   transition: background 0.15s, border-bottom-color 0.15s;
-  letter-spacing: 0.01em;
+  letter-spacing: var(--ls-tight);
 }
 .ddia-note-textarea:focus {
   border-bottom-color: var(--mark-fg);
@@ -168,7 +168,7 @@ watch(content, () => {
 }
 .ddia-note-meta {
   font-family: var(--font-display);
-  font-size: 11.5px;
+  font-size: var(--type-tiny);
   color: var(--text-tertiary);
   margin-left: auto;
 }

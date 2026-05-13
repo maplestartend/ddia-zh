@@ -93,7 +93,7 @@ onUnmounted(() => {
 <style scoped>
 /* Editorial 章末學習循環：書末頁腳列（髮絲線分隔 + 連體按鈕格） */
 .ddia-chapter-loop {
-  margin: 56px 0 32px;
+  margin: var(--space-5-5) 0 32px;
   padding: var(--space-4) 0;
   background: transparent;
   border: 0;
@@ -130,8 +130,8 @@ onUnmounted(() => {
 .ddia-loop-btn {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  padding: var(--space-3) 18px;
+  gap: var(--space-2-5);
+  padding: var(--space-3) var(--space-3-5);
   background: transparent;
   border: 0;
   border-right: 1px solid var(--rule-hairline);
@@ -170,7 +170,7 @@ onUnmounted(() => {
   font-weight: 600;
   font-size: 15px;
   line-height: 1.3;
-  letter-spacing: 0.01em;
+  letter-spacing: var(--ls-tight);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -180,7 +180,7 @@ onUnmounted(() => {
   font-variation-settings: var(--fvar-italic-warm);
   font-size: var(--type-eyebrow);
   color: var(--text-tertiary);
-  letter-spacing: 0.04em;
+  letter-spacing: var(--ls-loose);
 }
 
 /* 已讀狀態：左邊 3px brand 印記 */

@@ -30,7 +30,7 @@
   .ddia-hero { padding: 36px 16px; }
   .ddia-hero h1 { font-size: 28px; }
   .vp-doc { font-size: 15.5px; }
-  .ddia-meta { gap: 10px 16px; }
+  .ddia-meta { gap: var(--space-2-5) 16px; }
 
   /* 連體網格 fallback：mobile 一欄堆疊
      原桌面的 grid border 邏輯（外框 top+left + 每張卡 right+bottom）在 1 欄時 right 邊浪費
@@ -78,14 +78,14 @@
   .ddia-cta.primary { width: 100%; justify-content: center; }
 
   /* secondary nav mobile gap 縮 */
-  .ddia-secondary-nav { gap: 14px; padding: 14px 16px; }
+  .ddia-secondary-nav { gap: var(--space-3); padding: var(--space-3) 16px; }
 }
 
 /* ----- 超窄（≤ 380px）：詞彙表 A-Z bar、表格不溢出 ----- */
 @media (max-width: 380px) {
   .vp-doc { font-size: 15px; }
   .ddia-hero h1 { font-size: 26px; }
-  .vp-doc table { font-size: 13px; }
+  .vp-doc table { font-size: var(--type-small-tight); }
 }
 
 /* ----- Reduced motion ----- */

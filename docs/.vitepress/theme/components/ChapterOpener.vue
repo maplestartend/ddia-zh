@@ -93,12 +93,12 @@ onMounted(() => {
   font-family: var(--font-display);
   font-style: italic;
   font-variation-settings: var(--fvar-eyebrow-warm);
-  font-size: 13px;
+  font-size: var(--type-small-tight);
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: var(--ls-eyebrow);
   color: var(--text-tertiary);
-  margin-bottom: 18px;
+  margin-bottom: var(--space-3-5);
 }
 
 .ddia-chapter-opener-title {
@@ -128,7 +128,7 @@ onMounted(() => {
   font-family: var(--font-display);
   font-style: italic;
   font-variation-settings: "opsz" 48, "SOFT" 60, "wght" 400;
-  font-size: 17px;
+  font-size: var(--type-section);
   line-height: 1.7;
   color: var(--text-secondary);
   margin: 0 0 var(--space-2);
@@ -139,7 +139,7 @@ onMounted(() => {
   font-style: normal;
   font-variation-settings: var(--fvar-section-mid);
   font-size: var(--type-meta);
-  letter-spacing: 0.18em;
+  letter-spacing: var(--ls-eyebrow);
   text-transform: uppercase;
   color: var(--text-tertiary);
 }
