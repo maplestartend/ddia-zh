@@ -1,6 +1,5 @@
 <template>
   <a v-if="resolvedHref" :href="resolvedHref" class="ddia-bridge">
-    <div class="ddia-bridge-dinkus" aria-hidden="true">◆ ◆ ◆</div>
     <div class="ddia-bridge-eyebrow">The Next Chapter</div>
     <div class="ddia-bridge-num" v-if="displayNum">{{ displayNum }}</div>
     <div class="ddia-bridge-title" v-if="displayTitle">{{ displayTitle }}</div>
@@ -85,15 +84,6 @@ const displayTeaser = computed(() => currentChap.value?.teaser)
 }
 :global(.dark) .ddia-bridge:hover .ddia-bridge-title {
   color: var(--info-fg);
-}
-
-.ddia-bridge-dinkus {
-  font-family: var(--font-display);
-  font-size: 14px;
-  letter-spacing: 0.6em;
-  color: var(--text-tertiary);
-  margin-bottom: 18px;
-  padding-left: 0.6em;  /* compensate for letter-spacing pushing things right */
 }
 
 .ddia-bridge-eyebrow {
