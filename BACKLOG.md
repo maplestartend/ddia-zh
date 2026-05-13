@@ -223,4 +223,57 @@
 
 ---
 
-*最後更新：Wave 21 後（commit 875ed8e）*
+## F. Phase 3 後剩餘的視覺 / UX 加分項（Wave 23 之後）
+
+來自 Wave 23 commit `5272991` 後的 6 agent 二次審視（AI-slop 二次 + 學習網站對標二次 + 字型配色二次 + 改造盤點二次 + 資深前端 + UI/UX）。P0 已收齊在 Wave 23 內；以下為 P1/P2 候選。
+
+### F1. Marginalia `<Aside>` 邊註系統（P1、學習網站對標 agent）
+- **現況**：12 章內文偶爾有「（譯註：…）」括號內容、現在都 inline 在段落裡
+- **要做**：新建 `<Aside>` Vue 元件，桌面（>1024px）右側 margin 偏移 240px / 寬度 200px、italic Fraunces 12px + 左 hairline 印記；mobile fallback 變內聯 callout
+- **用途**：譯註、台灣化用詞對照（process → 行程 的補充直接做 marginalia 而非 footnote）、「Ch5 會再講」前導註
+- **工作量**：~2 小時新元件 + ~2 小時把 12 章內既有譯註括號內容轉成 Aside
+
+### F2. 12 章完成 Ceremony（P1、UI/UX agent）
+- **現況**：Dashboard `progressPct === 100` 時還是顯示 4 個 stat card
+- **要做**：12 章全讀完時切換 Dashboard 內容：italic Fraunces 結語 `你已讀完《設計資料密集型應用》全 12 章 · 接下來呢？` + 3 個延伸選項（重讀 / 跳 Ch12 未來 / 分享筆記到 GitHub）
+- **同時做**：ChapterCard 加 `data-completed="true"` 視覺差異化（章號旁加 ◆ 已讀 / · 未讀），讓網格本身就是「閱讀地圖」
+- **工作量**：~3 小時
+
+### F3. lastVisitedChapter + scrollY 精細 resume（P1、UI/UX agent）
+- **現況**：Dashboard returning user 顯示「下一個未讀章節」、不一定是「上次讀到的地方」
+- **要做**：useProgress 加 `lastVisited: { chapterId, scrollY, timestamp }` 欄位、進章節頁時更新、首頁顯示 `繼續 · Ch 07 §x.x →` + click 跳到上次 scroll 位置
+- **工作量**：~2 小時
+
+### F4. ChapterCard hover 印記方向（P2、UI/UX agent）
+- **現況**：連體網格 hover 印記在左、視線往左拉但讀者要往右進內文
+- **要做**：印記改 top 3px 跨卡頂部、更像 paperback chapter heading 標籤
+- **工作量**：~30 分鐘 CSS 改動
+
+### F5. Mermaid dark theme 獨立配色（P2、資深前端 agent）
+- **現況**：vitepress-plugin-mermaid 不支援 darkThemeVariables、暗色模式下 mermaid 圖底色仍是米黃紙、跟 `--bg-canvas: #1C1714` 形成高反差不協調塊
+- **要做**：自訂 mermaid theme switch hook（監聽 .dark class 動態 re-render）或在 dark 模式下覆寫 SVG 內部 fill / stroke 屬性
+- **工作量**：~3 小時（含驗證）
+
+### F6. 字型 self-hosting（P2、資深前端 agent）
+- **現況**：Fraunces / Noto Serif TC / Noto Sans TC / JetBrains Mono 都從 Google Fonts CDN 載；無法 preload 具體字型檔（Google URL 帶 hash 不穩定）
+- **要做**：透過 [Fontsource](https://fontsource.org/) 或手動 self-host、加 `<link rel="preload" as="font">` 對首屏 critical 字型；加 `@font-face` size-adjust / ascent-override fallback 緩解 FOUT layout shift
+- **工作量**：~4-6 小時（含 build pipeline 改動）
+
+### F7. ChapterOpener 推進 12 章（P2、學習網站對標 agent）
+- **現況**：ChapterOpener.vue 已存在但 12 章 markdown 都還沒採用、章首仍是 h1 + TLDR 直接進
+- **要做**：12 章 markdown 最上方加 `<ChapterOpener>`、chapters.ts 加 epigraph 欄位（Kleppmann 原書每章開頭都有 epigraph、可從 dataintensive.net 抄）
+- **工作量**：每章 ~10 分鐘 + chapters.ts 更新 = ~3 小時
+
+### F8. 章末「下一章橋」儀式深化（P2、學習網站對標 agent）
+- **現況**：NextChapterBridge 仍是「卡」感、不是書頁感
+- **要做**：改成置中 ◆◆◆ dinkus → italic `THE NEXT CHAPTER` eyebrow → Fraunces `CHAPTER · VI` → 章名 → 一句下章 teaser → 髮絲線收尾；整塊可點、不要按鈕
+- **工作量**：~1 小時 + chapters.ts 加 `teaser` 欄位（可選）
+
+### F9. Figure / 表格 caption Editorial 化（P2、學習網站對標 agent）
+- **現況**：表格已 Editorial（無背景、髮絲線分隔）但**無 caption 系統**
+- **要做**：表格上加 italic Fraunces uppercase eyebrow `TABLE 5·2 · WRITE AMPLIFICATION`、code block 同理 `LISTING 1`
+- **工作量**：~2 小時 + 視內容是否值得補
+
+---
+
+*最後更新：Wave 23 後（commit 5272991）*

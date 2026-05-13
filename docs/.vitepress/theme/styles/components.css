@@ -1241,28 +1241,73 @@
   letter-spacing: 0.02em;
 }
 
-/* 搜尋框：方框去圓角、髮絲線邊 */
-.VPNavBarSearch .DocSearch-Button {
+/* 搜尋框：方框去圓角、淡灰邊（不用 ink black 太重）+ hover/focus 反饋 */
+.VPNavBarSearch .DocSearch-Button,
+button.DocSearch.DocSearch-Button {
   border-radius: 0 !important;
   background: transparent !important;
-  border: 1px solid var(--rule-hairline) !important;
+  border: 1px solid var(--border-default) !important;
   box-shadow: none !important;
   font-family: var(--font-display);
   font-style: italic;
+  color: var(--text-tertiary) !important;
+  padding: 6px 12px !important;
+  transition: border-color 0.15s, color 0.15s, background-color 0.15s !important;
+}
+.VPNavBarSearch .DocSearch-Button:hover,
+button.DocSearch.DocSearch-Button:hover {
+  border-color: var(--brand-500) !important;
+  color: var(--brand-500) !important;
+  background: transparent !important;
+}
+/* focus-visible 用 brand 色 outline 取代 VP 預設可能露出來的藍框 */
+.VPNavBarSearch .DocSearch-Button:focus-visible,
+button.DocSearch.DocSearch-Button:focus-visible {
+  border-color: var(--brand-500) !important;
+  color: var(--brand-500) !important;
+  outline: 2px solid var(--brand-500) !important;
+  outline-offset: 2px !important;
+  box-shadow: none !important;
 }
 .DocSearch-Button .DocSearch-Search-Icon {
   color: var(--text-tertiary);
+  transition: color 0.15s;
 }
-/* VP local search button 也覆寫 */
-.VPLocalSearchBox .DocSearch-Button,
-button.DocSearch.DocSearch-Button {
-  border-radius: 0 !important;
+.DocSearch-Button:hover .DocSearch-Search-Icon,
+.DocSearch-Button:focus-visible .DocSearch-Search-Icon {
+  color: var(--brand-500);
+}
+/* ⌘K 鍵盤提示：預設樣式太重（陰影 + 圓角 + 灰底），改成單純 mono 字 */
+.DocSearch-Button-Keys,
+.DocSearch-Button-Key {
+  background: transparent !important;
+  box-shadow: none !important;
+  border: 0 !important;
+  color: var(--text-tertiary) !important;
+  font-family: var(--font-mono) !important;
+  font-size: 11px !important;
+  padding: 0 2px !important;
+  min-width: 0 !important;
 }
 
-/* Light/Dark toggle 改 italic 文字感 */
+/* Light/Dark toggle：完全去掉外框、保留 VP 預設 pill 內部圓圈、hover 才出現淡 tint */
 .VPSwitch {
   border-radius: 0 !important;
-  border: 1px solid var(--rule-hairline) !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+.VPSwitch:hover {
+  background: var(--brand-tint-soft) !important;
+}
+/* VP toggle 內部的圓底（.check）也去掉重邊框、改淡灰 */
+.VPSwitchAppearance .check {
+  background-color: transparent !important;
+  border: 1px solid var(--border-default) !important;
+  box-shadow: none !important;
+}
+.VPSwitchAppearance:hover .check {
+  border-color: var(--brand-500) !important;
 }
 
 /* ----- Sidebar：Editorial 化字型 + 移除圓角 + active 印記 ----- */
