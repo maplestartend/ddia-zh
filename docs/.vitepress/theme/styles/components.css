@@ -1290,24 +1290,68 @@ button.DocSearch.DocSearch-Button:focus-visible {
   min-width: 0 !important;
 }
 
-/* Light/Dark toggle：完全去掉外框、保留 VP 預設 pill 內部圓圈、hover 才出現淡 tint */
-.VPSwitch {
+/* Light/Dark toggle：徹底替換 VP 預設 iOS pill 為 Editorial 書籤字符按鈕
+   策略：隱藏所有 VP 內部 markup（.check / .vpi-sun / .vpi-moon）
+        用 ::before content 渲染當前「目的地」的字符（light → ☾、dark → ☀）
+   click 行為 VP 已綁在 button 上、不動 JS */
+.VPSwitchAppearance {
+  width: auto !important;
+  height: auto !important;
+  min-width: 36px !important;
   border-radius: 0 !important;
   border: 0 !important;
   background: transparent !important;
   box-shadow: none !important;
+  padding: 6px 10px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  transition: background-color 0.15s !important;
 }
-.VPSwitch:hover {
+
+/* 隱藏 VP 預設的 pill 滑塊 + sun/moon SVG */
+.VPSwitchAppearance > .check,
+.VPSwitchAppearance .check .icon,
+.VPSwitchAppearance .vpi-sun,
+.VPSwitchAppearance .vpi-moon {
+  display: none !important;
+}
+
+/* Light 模式：顯示 ☾（提示「點此切換到暗色」） */
+.VPSwitchAppearance::before {
+  content: "☾";
+  font-family: var(--font-display);
+  font-size: 17px;
+  line-height: 1;
+  color: var(--text-secondary);
+  transition: color 0.15s, transform 0.15s;
+  display: inline-block;
+}
+
+/* Dark 模式：顯示 ☀（提示「點此切換到亮色」） */
+.dark .VPSwitchAppearance::before {
+  content: "☀";
+  color: var(--info-fg);
+}
+
+/* Hover：字符變主色 + 淡 tint 背景 + 微微旋轉（書頁翻動感） */
+.VPSwitchAppearance:hover {
   background: var(--brand-tint-soft) !important;
 }
-/* VP toggle 內部的圓底（.check）也去掉重邊框、改淡灰 */
-.VPSwitchAppearance .check {
-  background-color: transparent !important;
-  border: 1px solid var(--border-default) !important;
-  box-shadow: none !important;
+.VPSwitchAppearance:hover::before {
+  color: var(--brand-500);
+  transform: rotate(-12deg);
 }
-.VPSwitchAppearance:hover .check {
-  border-color: var(--brand-500) !important;
+.dark .VPSwitchAppearance:hover::before {
+  color: var(--accent-200);
+  transform: rotate(12deg);
+}
+
+/* focus-visible 用全域 outline 規則 */
+.VPSwitchAppearance:focus-visible {
+  outline: 2px solid var(--brand-500) !important;
+  outline-offset: 2px !important;
 }
 
 /* ----- Sidebar：Editorial 化字型 + 移除圓角 + active 印記 ----- */
