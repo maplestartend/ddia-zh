@@ -83,10 +83,10 @@ watch(answers, (v) => {
   font-family: var(--font-display);
   font-variation-settings: "opsz" 24, "SOFT" 60, "wght" 500;
   font-style: italic;
-  font-size: 12px;
+  font-size: var(--type-eyebrow);
   font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.22em;
+  letter-spacing: var(--ls-eyebrow);
   color: var(--warning-fg);
   margin-bottom: 12px;
 }
@@ -145,7 +145,7 @@ watch(answers, (v) => {
   font-family: var(--font-display);
   font-style: italic;
   font-variation-settings: "opsz" 24, "SOFT" 60, "wght" 500;
-  font-size: 12px;
+  font-size: var(--type-eyebrow);
   font-weight: 500;
   letter-spacing: 0.08em;
   color: var(--warning-fg);
@@ -158,7 +158,7 @@ watch(answers, (v) => {
   border-bottom: 1px solid var(--rule-hairline);
   border-radius: 0;
   font-family: var(--font-body);
-  font-size: 14px;
+  font-size: var(--type-small);
   line-height: 1.75;
   color: var(--text-primary);
   resize: vertical;

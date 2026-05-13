@@ -147,13 +147,13 @@ onUnmounted(() => {
 .ddia-g-tooltip-en {
   font-family: var(--font-mono);
   font-weight: 600;
-  font-size: 12px;
+  font-size: var(--type-eyebrow);
   color: var(--brand-500);
 }
 .ddia-g-tooltip-zh {
   font-family: var(--font-display);
   font-style: italic;
-  font-size: 12px;
+  font-size: var(--type-eyebrow);
   color: var(--text-tertiary);
   letter-spacing: 0.04em;
 }
@@ -181,7 +181,7 @@ onUnmounted(() => {
   border-radius: 0;
   font-family: var(--font-display);
   font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 600;
-  font-size: 12px;
+  font-size: var(--type-eyebrow);
   font-weight: 600;
   letter-spacing: 0.04em;
   color: var(--accent-500);

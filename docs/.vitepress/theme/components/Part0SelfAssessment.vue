@@ -114,7 +114,7 @@ const recommendations = computed(() => items.filter(i => !checked.value[i.id]))
   content: "§";
   font-family: var(--font-display);
   font-style: italic;
-  font-size: 20px;
+  font-size: var(--type-h3);
   color: var(--brand-500);
 }
 :global(.dark) .ddia-self-assess-header {
@@ -127,7 +127,7 @@ const recommendations = computed(() => items.filter(i => !checked.value[i.id]))
   margin: 0;
   font-family: var(--font-display);
   font-variation-settings: "opsz" 48, "SOFT" 30, "wght" 600;
-  font-size: 20px;
+  font-size: var(--type-h3);
   font-weight: 600;
   letter-spacing: -0.005em;
 }
@@ -211,7 +211,7 @@ const recommendations = computed(() => items.filter(i => !checked.value[i.id]))
 }
 .ddia-self-assess-pass::before {
   content: "·";
-  font-size: 20px;
+  font-size: var(--type-h3);
   font-weight: 700;
   margin-right: 2px;
 }

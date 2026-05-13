@@ -46,10 +46,15 @@
   --neutral-900: #14110D;
   --neutral-950: #0A0806;
 
-  --info-500:   var(--brand-500);
+  /* Wave 26：拆 info / error / brand 三 semantic 同色（原本三個都指 brand-500、語意失效）
+     info = warm taupe（資訊提示、不需要 alarm）
+     error = brand mahogany（保留 urgent 用最強色）
+     warning = 焦糖橙
+     success = 苔綠 */
+  --info-500:    #6C5D4F;  /* 深暖咖：與 brand red 區分、不引入冷藍 */
   --success-500: #4E7F3A;  /* 苔綠：與米黃紙協調，避免螢光綠 */
   --warning-500: #B07410;  /* 焦糖橙：與 oxblood 同色溫 */
-  --error-500:   var(--brand-500);
+  --error-500:   var(--brand-500);  /* 保留 brand：alarm 場合 */
 
   /* ---------- 字型 stack ---------- */
   /* 顯示字（標題 / hero / 章節編號 / pull-quote）：Fraunces + Noto Serif TC */
@@ -111,6 +116,9 @@
   --interactive-active-bg:  rgba(140, 58, 42, 0.10);  /* brand-tint 同色 */
   --interactive-focus-outline-width: 2px;
   --interactive-focus-outline-offset: 2px;
+  --focus-ring-color:  var(--brand-500);  /* Wave 26：3 套 outline 顏色統一 */
+  --focus-ring-width:  2px;
+  --focus-ring-offset: 2px;
 
   /* ---------- Ink scale（Wave 3：取代「brand-500 兼任 ink 重點」的散落用法） ---------- */
   --ink-strong: var(--text-primary);   /* 印刷符號 § · ◆ 用這個、不用 brand-500 */
@@ -141,9 +149,10 @@
   --text-disabled:  #B4ADA0;
   --text-inverse:   #FBF7EF;
 
-  --info-bg:      #F6ECE7;   /* 淡 mahogany */
-  --info-fg:      var(--brand-700);
-  --info-border:  #DBAE9C;
+  /* Wave 26 拆 semantic 同色：info 走 warm taupe（不是 brand） */
+  --info-bg:      #EFE9DF;   /* 淡 taupe、與 cream 紙底拉開 */
+  --info-fg:      #4A3F35;   /* 深暖咖、與 brand 紅完全區分 */
+  --info-border:  #B5A693;
   --success-bg:   #E8EDDD;
   --success-fg:   #3F6630;
   --warning-bg:   #FAEBC8;
@@ -191,12 +200,12 @@
   --text-disabled:  #6F6759;
   --text-inverse:   #1C1A17;
 
-  /* dark 模式：oxblood 在暗底會顯髒，主 accent 轉成暖橙 */
-  --info-bg:      rgba(199, 122, 58, 0.16);
-  --info-fg:      #E3A06A;
-  --info-border:  rgba(199, 122, 58, 0.40);
+  /* dark 模式：oxblood 在暗底會顯髒、保留 brand accent 在 error；info 拆獨立 taupe */
+  --info-bg:      rgba(166, 138, 109, 0.16);  /* taupe 微透 */
+  --info-fg:      #C9B89D;                     /* 米白偏咖、不是 orange */
+  --info-border:  rgba(166, 138, 109, 0.40);
   --success-bg:   rgba(126, 175, 95, 0.18);
-  --success-fg:   #9EC97F;
+  --success-fg:   #A8B374;                     /* 從 #9EC97F 螢光綠調成橄欖綠、與暖調協調 */
   --warning-bg:   rgba(217, 138, 0, 0.22);
   --warning-fg:   #E8B656;
   --error-bg:     rgba(199, 90, 58, 0.22);

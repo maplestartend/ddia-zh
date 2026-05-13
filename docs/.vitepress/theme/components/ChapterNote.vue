@@ -100,7 +100,7 @@ watch(content, () => {
   content: "§";
   font-family: var(--font-display);
   font-style: italic;
-  font-size: 16px;
+  font-size: var(--type-body);
   color: var(--brand-500);
 }
 .ddia-note-summary::-webkit-details-marker {
@@ -147,7 +147,7 @@ watch(content, () => {
   border-bottom: 1px solid var(--rule-hairline);
   border-radius: 0;
   font-family: var(--font-body);
-  font-size: 14px;
+  font-size: var(--type-small);
   line-height: 1.75;
   color: var(--text-primary);
   resize: vertical;

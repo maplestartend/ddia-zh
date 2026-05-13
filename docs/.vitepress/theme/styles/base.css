@@ -5,7 +5,7 @@
    ========================================================================== */
 
 html {
-  font-size: 16px;
+  font-size: var(--type-body);
 }
 
 body {
@@ -55,8 +55,8 @@ body {
 /* Focus ring：用 box-shadow 作雙環視覺，但同時保留 outline 給 Windows forced-colors 模式
    不能全靠 box-shadow（forced-colors active 時 shadow 會被瀏覽器強制 none） */
 :focus-visible {
-  outline: 2px solid var(--brand-500);
-  outline-offset: 2px;
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
   box-shadow: var(--focus-ring);
 }
 
@@ -92,7 +92,7 @@ body {
   font-family: var(--font-display);
   font-feature-settings: "onum" 1, "kern" 1, "calt" 1;
   font-variation-settings: "opsz" 72, "SOFT" 80, "wght" 480;
-  font-size: 42px;
+  font-size: var(--type-h1);
   font-weight: 500;
   letter-spacing: -0.008em;
   line-height: 1.18;
@@ -108,7 +108,7 @@ body {
   font-family: var(--font-display);
   font-feature-settings: "onum" 1, "kern" 1, "calt" 1;
   font-variation-settings: "opsz" 48, "SOFT" 60, "wght" 580;
-  font-size: 26px;
+  font-size: var(--type-h2);
   font-weight: 600;
   border-top: 1px solid var(--rule-hairline);
   padding-top: 28px;
@@ -128,7 +128,7 @@ body {
   color: var(--text-inverse);
   text-decoration: none;
   font-family: var(--font-display);
-  font-size: 14px;
+  font-size: var(--type-small);
   font-weight: 500;
   border-radius: 0;
   transition: top 0.15s;
@@ -136,8 +136,8 @@ body {
 .ddia-skip-link:focus,
 .ddia-skip-link:focus-visible {
   top: 16px;
-  outline: 2px solid var(--text-primary);
-  outline-offset: 2px;
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
 }
 
 /* SectionDivider 緊接 h2 時、h2 抑制自己的 border-top + padding-top —— 避免 dinkus 撞跨頁 hairline。
@@ -155,7 +155,7 @@ body {
   font-family: var(--font-display);
   font-style: italic;
   font-variation-settings: "opsz" 36, "SOFT" 60, "wght" 500;
-  font-size: 28px;
+  font-size: var(--type-display-2);
   color: var(--text-secondary);  /* 印刷符號用 ink、不用 brand：避免 brand 雜訊 */
   margin-right: 14px;
   vertical-align: baseline;
@@ -193,6 +193,19 @@ body {
 .ddia-meta + .ddia-tldr {
   border-top: 0 !important;
   margin-top: 12px !important;
+}
+
+/* 章末相鄰元件 border 去重：Quiz → InterviewBlock → ChapterNote → Progress → (info callout) → Bridge
+   原本 5 個元件各自畫上下 hairline = 200px 內 6 條柵欄。
+   修法同章首：相鄰時後者去 border-top + margin 拉開靠空白分隔。 */
+.ddia-quiz + .ddia-interview-block,
+.ddia-interview-block + .ddia-chapter-note,
+.ddia-chapter-note + .ddia-chapter-loop,
+.ddia-chapter-loop + .ddia-bridge,
+.ddia-quiz + .ddia-chapter-note,
+.ddia-quiz + .ddia-chapter-loop {
+  border-top: 0 !important;
+  margin-top: 16px !important;
 }
 
 /* Editorial drop cap：章首（h1 之後的第一個 p）首字大寫 — 書本書頁感

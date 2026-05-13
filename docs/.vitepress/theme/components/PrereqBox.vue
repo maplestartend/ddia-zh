@@ -54,10 +54,10 @@ defineProps<{
   font-family: var(--font-display);
   font-variation-settings: "opsz" 24, "SOFT" 60, "wght" 500;
   font-style: italic;
-  font-size: 12px;
+  font-size: var(--type-eyebrow);
   font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.22em;
+  letter-spacing: var(--ls-eyebrow);
   color: var(--text-tertiary);
   margin-bottom: 12px;
 }
@@ -70,7 +70,7 @@ defineProps<{
   grid-template-columns: minmax(160px, auto) 1fr;
   gap: 10px 24px;
   font-family: var(--font-body);
-  font-size: 14px;
+  font-size: var(--type-small);
   line-height: 1.7;
 }
 .ddia-prereq-list dt {

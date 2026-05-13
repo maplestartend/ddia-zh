@@ -96,7 +96,7 @@ onMounted(() => {
   font-size: 13px;
   font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.22em;
+  letter-spacing: var(--ls-eyebrow);
   color: var(--text-tertiary);
   margin-bottom: 18px;
 }
@@ -105,7 +105,7 @@ onMounted(() => {
   font-family: var(--font-display);
   font-feature-settings: "onum" 1, "kern" 1, "calt" 1;
   font-variation-settings: "opsz" 72, "SOFT" 70, "wght" 500;
-  font-size: 42px;
+  font-size: var(--type-h1);
   font-weight: 500;
   line-height: 1.18;
   letter-spacing: -0.008em;
@@ -150,6 +150,6 @@ onMounted(() => {
 
 @media (max-width: 640px) {
   .ddia-chapter-opener-mark { font-size: 40px; }
-  .ddia-chapter-opener-title { font-size: 28px; }
+  .ddia-chapter-opener-title { font-size: var(--type-display-2); }
 }
 </style>

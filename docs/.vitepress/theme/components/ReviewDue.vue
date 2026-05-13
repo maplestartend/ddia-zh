@@ -79,10 +79,10 @@ function onForgotten(chapterId: string) {
   font-family: var(--font-display);
   font-variation-settings: "opsz" 24, "SOFT" 60, "wght" 500;
   font-style: italic;
-  font-size: 12px;
+  font-size: var(--type-eyebrow);
   font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.22em;
+  letter-spacing: var(--ls-eyebrow);
   color: var(--text-tertiary);
   margin-bottom: 14px;
 }

@@ -90,10 +90,10 @@ const displayTeaser = computed(() => currentChap.value?.teaser)
   font-family: var(--font-display);
   font-variation-settings: "opsz" 24, "SOFT" 60, "wght" 500;
   font-style: italic;
-  font-size: 12px;
+  font-size: var(--type-eyebrow);
   font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.22em;
+  letter-spacing: var(--ls-eyebrow);
   color: var(--text-tertiary);
   margin-bottom: 14px;
   padding-left: 0.3em;
@@ -103,7 +103,7 @@ const displayTeaser = computed(() => currentChap.value?.teaser)
   font-family: var(--font-display);
   font-feature-settings: "onum" 1;
   font-variation-settings: "opsz" 48, "SOFT" 60, "wght" 500;
-  font-size: 28px;
+  font-size: var(--type-display-2);
   letter-spacing: 0.18em;
   color: var(--brand-500);
   margin-bottom: 6px;
@@ -116,7 +116,7 @@ const displayTeaser = computed(() => currentChap.value?.teaser)
 .ddia-bridge-title {
   font-family: var(--font-display);
   font-variation-settings: "opsz" 48, "SOFT" 70, "wght" 500;
-  font-size: 26px;
+  font-size: var(--type-h2);
   font-weight: 500;
   line-height: 1.25;
   color: var(--text-primary);

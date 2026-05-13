@@ -12,7 +12,9 @@
     "screenshot": "node scripts/screenshot.mjs",
     "lint:glossary": "node scripts/lint-glossary.mjs",
     "lint:tldr": "node scripts/lint-tldr.mjs",
-    "lint:base": "node scripts/lint-hardcoded-base.mjs"
+    "lint:base": "node scripts/lint-hardcoded-base.mjs",
+    "lint:typography": "node scripts/lint-typography.mjs",
+    "lint:spacing": "node scripts/lint-spacing.mjs"
   },
   "keywords": [
     "ddia",

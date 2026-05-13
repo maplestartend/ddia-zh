@@ -39,7 +39,7 @@ const isCjk = computed(() => /[一-鿿]/.test(props.label ?? ''))
 .ddia-section-divider::before {
   content: "◆ ◆ ◆";
   font-family: var(--font-display);
-  font-size: 12px;
+  font-size: var(--type-eyebrow);
   color: var(--rule-soft);
   letter-spacing: 0.8em;
   padding-left: 0.8em;
@@ -59,9 +59,9 @@ const isCjk = computed(() => /[一-鿿]/.test(props.label ?? ''))
   font-style: italic;
   font-variation-settings: "opsz" 24, "SOFT" 60, "wght" 500;
   text-transform: uppercase;
-  font-size: 12px;
+  font-size: var(--type-eyebrow);
   font-weight: 500;
-  letter-spacing: 0.22em;
+  letter-spacing: var(--ls-eyebrow);
   color: var(--text-tertiary);
 }
 

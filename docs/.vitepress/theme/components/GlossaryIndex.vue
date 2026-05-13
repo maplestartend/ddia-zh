@@ -93,7 +93,7 @@ function scrollToLetter(letter: string, e: MouseEvent) {
   font-style: italic;
   font-variation-settings: "opsz" 24, "SOFT" 60, "wght" 500;
   color: var(--text-tertiary);
-  font-size: 12px;
+  font-size: var(--type-eyebrow);
   font-weight: 500;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -112,7 +112,7 @@ function scrollToLetter(letter: string, e: MouseEvent) {
   font-family: var(--font-display);
   font-feature-settings: "onum" 1;
   font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 500;
-  font-size: 14px;
+  font-size: var(--type-small);
   font-weight: 500;
   color: var(--text-secondary);
   text-decoration: none;
