@@ -219,23 +219,24 @@ body {
 
 .vp-doc blockquote > p { margin: 6px 0; }
 
-/* Editorial：水平分隔線改成置中 dinkus（◆ ◆ ◆）取代 hr 細灰線 */
+/* Editorial：水平分隔線 = 短置中髮絲線（書本 typography section break 標準）
+   原本把每個 hr 都升級成 ◆ ◆ ◆ dinkus 太重——書頁上 dinkus 是「儀式級」分隔（章節大轉折），
+   markdown 內的 `---` 多數只是小節間 breath、用 hairline 才對。
+   想要 dinkus 儀式請改用 <SectionDivider /> 元件、或在 Dashboard ceremony 100% 處顯示。 */
 .vp-doc hr {
   border: 0;
-  margin: 48px 0;
+  margin: 40px auto;
+  height: auto;
   text-align: center;
-  height: 1em;
   overflow: visible;
 }
 .vp-doc hr::before {
-  content: "◆ ◆ ◆";
-  display: inline-block;
-  color: var(--rule-soft);
-  font-family: var(--font-display);
-  font-size: 14px;
-  letter-spacing: 1em;
-  /* dinkus 字距偏右、視覺中心需要往左微推 */
-  padding-left: 1em;
+  content: "";
+  display: block;
+  width: 4em;
+  height: 1px;
+  margin: 0 auto;
+  background: var(--rule-soft);
 }
 
 /* Editorial 表格：印刷感「線」表格 — 無色塊填底、只用髮絲線分隔 */

@@ -106,8 +106,6 @@ while (true) {
 
 → **不能假設 wall-clock time 在程式碼之間恆等於行程的進度**。
 
----
-
 <SectionDivider icon="psychology" label="心智模型" />
 
 ## 8.5 知識、真相與謊言

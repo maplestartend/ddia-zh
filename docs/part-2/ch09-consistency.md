@@ -264,8 +264,6 @@ DDIA 寫於 2017、聚焦在 2PC 的學術 / DB 視角。但 fintech / 電商實
 **參考**：[microservices.io patterns](https://microservices.io/patterns/data/saga.html)（Chris Richardson 整理）。Saga compensating action 不是 rollback——是「**邏輯上**的取消」（例：訂單成立失敗、要發退款而不是 `DELETE` 已 commit 的記錄）。
 :::
 
----
-
 <SectionDivider icon="hub" label="核心機制" />
 
 ## 9.5 <G term="consensus">共識（Consensus）</G> {#consensus-section}

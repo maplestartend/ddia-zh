@@ -223,8 +223,6 @@ sequenceDiagram
 ### Table-Table Join
 兩個 changelog 的 join（CDC 流 + CDC 流），維護的 materialized view 同步更新。
 
----
-
 <SectionDivider icon="verified" label="正確性真相" />
 
 ## 11.5 容錯：Exactly-Once 的真相 {#exactly-once-section}

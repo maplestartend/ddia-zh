@@ -151,8 +151,6 @@ LSM 寫入（順序寫）：
 - **全文索引**：倒排索引（inverted index），Lucene/Elasticsearch
 - **記憶體 DB**：Redis、Memcached —— 不是因為「跑得快」（OS page cache 已經很好用），而是因為可以實現磁碟上難做的資料結構（如 sorted set）
 
----
-
 <SectionDivider icon="compare_arrows" label="兩種世界" />
 
 ## 3.6 OLTP vs OLAP
