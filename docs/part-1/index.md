@@ -42,6 +42,10 @@ Ch1 可靠/可擴展/可維護（理論基礎）
 
 ## 讀完這部分，你應該能做的決策 {.role-h2 .icon-account_tree}
 
+Part I 四章對應三類「**該怎麼選**」的決策。下面 3 棵獨立決策樹分別對應——
+
+### 1. 新專案要選什麼 DB?（Ch2）
+
 ```mermaid
 flowchart TD
     A[新專案要選什麼 DB?] --> B{資料是樹狀且整份讀寫?}
@@ -51,11 +55,21 @@ flowchart TD
     D -- 否 --> F{關係是查詢主體?<br/>如社交圖譜}
     F -- 是 --> G[Graph DB<br/>Neo4j / TigerGraph]
     F -- 否 --> E
+```
 
+### 2. 新表很大時要選什麼儲存引擎?（Ch3）
+
+```mermaid
+flowchart TD
     H[新表很大時要選什麼引擎?] --> I{寫多 or 讀多?}
     I -- 寫密集 --> J[LSM-Tree<br/>RocksDB / Cassandra]
     I -- 讀密集 --> K[B-Tree<br/>PostgreSQL / MySQL]
+```
 
+### 3. 要做分析報表?（Ch3）
+
+```mermaid
+flowchart TD
     L[要做分析報表?] --> M[列轉欄式儲存<br/>Redshift / BigQuery / ClickHouse]
 ```
 

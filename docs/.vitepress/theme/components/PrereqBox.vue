@@ -8,18 +8,18 @@
       <template v-if="prereq && prereq.length">
         <dt><Icon name="checklist" :size="14" /> 需要先會</dt>
         <dd>
-          <span v-for="(p, i) in prereq" :key="i" class="ddia-prereq-item">{{ p }}</span>
+          <span v-for="(p, i) in prereq" :key="i" class="ddia-prereq-item" v-html="renderInline(p)" />
         </dd>
       </template>
       <template v-if="firstReadHint">
         <dt><Icon name="schedule" :size="14" /> 第一次讀預估</dt>
-        <dd>{{ firstReadHint }}</dd>
+        <dd v-html="renderInline(firstReadHint)" />
       </template>
       <template v-if="skippable && skippable.length">
         <dt><Icon name="fast_forward" :size="14" /> 可跳過的小節</dt>
         <dd>
           <ul>
-            <li v-for="(s, i) in skippable" :key="i">{{ s }}</li>
+            <li v-for="(s, i) in skippable" :key="i" v-html="renderInline(s)" />
           </ul>
         </dd>
       </template>
@@ -34,6 +34,29 @@ defineProps<{
   firstReadHint?: string
   skippable?: string[]
 }>()
+
+// 安全的 inline markdown 解析：只支援 **bold** / [text](url) / `code`
+// 流程：先 HTML escape 避免 XSS、再用 regex 把 markdown 符號轉成 tag
+function escapeHtml(s: string): string {
+  return s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+}
+
+function renderInline(raw: string): string {
+  if (!raw) return ''
+  let s = escapeHtml(raw)
+  // `code` → <code>
+  s = s.replace(/`([^`]+)`/g, '<code>$1</code>')
+  // [text](url) → <a> — text 與 url 已 HTML-escape 過、不會有 XSS
+  s = s.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>')
+  // **bold** → <strong>（要在 link 之後處理避免破壞 link 內 ** 標記）
+  s = s.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+  return s
+}
 </script>
 
 <style scoped>

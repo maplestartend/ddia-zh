@@ -190,26 +190,27 @@ city: [Taipei, Tokyo, NYC]
 ```mermaid
 graph TD
     Start[要存什麼 / 怎麼用？] --> Q1{讀寫比例？}
-    Q1 -- 讀遠多於寫<br/>每筆改少、查詢多 --> BTree[B-Tree 派<br/>PG / MySQL / SQLite]
-    Q1 -- 寫遠多於讀<br/>大量 ingest / 時序 / IoT --> Q2{需要範圍查詢？}
-    Q1 -- 讀寫接近 --> Q3{資料量 vs 記憶體？}
+    Q1 -- 讀遠多於寫 --> BTree[B-Tree 派]
+    Q1 -- 寫遠多於讀 --> Q2{需要範圍查詢？}
+    Q1 -- 讀寫接近 --> Q3{資料量 vs RAM？}
 
-    Q2 -- 是 / 純 KV 也常用 --> LSM[LSM 派<br/>RocksDB / Cassandra / ScyllaDB]
-    Q2 -- 不需排序、純點查 --> Q4{需要持久化？}
-    Q4 -- 全在記憶體 OK --> Redis[Redis / Memcached]
-    Q4 -- 要持久 --> Hash[Bitcask 風格<br/>Hash index + log]
+    Q2 -- 是 / 純 KV --> LSM[LSM 派]
+    Q2 -- 純點查 --> Q4{需要持久化？}
+    Q4 -- 全在記憶體 --> Redis[Redis 系]
+    Q4 -- 要持久 --> Hash[Bitcask 系]
 
-    Q3 -- 索引塞得進 RAM --> BTree
-    Q3 -- 索引塞不進、需大量歷史 --> Q5{是 OLTP 還是 OLAP？}
-    Q5 -- OLTP<br/>少欄多列、隨機改 --> LSM
-    Q5 -- OLAP<br/>多欄少列、聚合 --> Column[欄式儲存<br/>Parquet / ClickHouse /<br/>Redshift / BigQuery]
+    Q3 -- 塞得進 RAM --> BTree
+    Q3 -- 塞不進 --> Q5{OLTP 還是 OLAP？}
+    Q5 -- OLTP --> LSM
+    Q5 -- OLAP --> Column[欄式儲存]
 ```
 
-**決策樹快速結論**：
-- 預設 PG / MySQL（B-Tree）——多數 web app 適用
-- 寫密集 / 時序 / IoT → RocksDB / Cassandra（LSM）
-- 純快取 → Redis；持久 KV 且要單機極快 → Bitcask 系
-- 資料分析 / 倉儲 → 欄式（Parquet on S3 + DuckDB / ClickHouse / BigQuery）
+**決策樹快速結論 + 工具對應**：
+- **B-Tree 派**（讀遠多於寫 / 每筆改少 / 查詢多）→ PG / MySQL / SQLite，多數 web app 預設適用
+- **LSM 派**（寫遠多於讀 / 大量 ingest / 時序 / IoT）→ RocksDB / Cassandra / ScyllaDB
+- **Redis 系**（純點查 / 全在記憶體）→ Redis / Memcached
+- **Bitcask 系**（純 KV / 要持久 / 單機極快）→ Bitcask、LevelDB 早期
+- **欄式儲存**（OLAP / 多欄少列 / 聚合）→ Parquet on S3 + DuckDB / ClickHouse / Redshift / BigQuery
 
 ::: warning 多數應用不在這個樹的決策節點上
 **實務上 90% 工程師「選什麼 DB」的決策權都不在他手上**——公司有的就用、團隊熟的就用。這張樹的價值是**讓你判斷「現有 DB 對我的負載合不合適」**，而不是「在白紙上挑」。看到效能問題時，回頭看樹判斷：是不是用 B-Tree 跑了 LSM 該跑的負載？

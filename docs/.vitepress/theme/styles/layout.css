@@ -79,7 +79,7 @@
     border-bottom: 1px solid var(--rule-hairline);
   }
 
-  /* Dashboard stat card 在 mobile：2x2 仍可接受，或單欄 */
+  /* Dashboard stat card 在 mobile：≤ 640 改 2x2 */
   .ddia-dashboard {
     grid-template-columns: 1fr 1fr;
     border-left: 0;
@@ -113,6 +113,19 @@
 
   /* secondary nav mobile gap 縮 */
   .ddia-secondary-nav { gap: var(--space-3); padding: var(--space-3) 16px; }
+}
+
+/* ----- Mobile（≤ 480px）：Dashboard stat card 改 1 欄
+   2x2 在 375 寬下 stat-label「已通關章節」+ stat-tag「· Quiz 首次 ≥ 60%」擠到 4 行不規則九宮格、
+   讀者第一眼看不出主標（Wave 35c agent 重審抓出的 P0）。
+   ≤ 480 改 1 欄、每張卡寬 ~360px 可舒適容納完整 label + tag + sub。 */
+@media (max-width: 480px) {
+  .ddia-dashboard {
+    grid-template-columns: 1fr;
+  }
+  .ddia-stat-card {
+    border-right: 0 !important;        /* 覆蓋 ≤ 640px 的 2n 規則 */
+  }
 }
 
 /* ----- 超窄（≤ 380px）：詞彙表 A-Z bar、表格不溢出 ----- */

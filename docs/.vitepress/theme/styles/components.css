@@ -713,7 +713,9 @@
 .ddia-stat-sub {
   margin-top: var(--space-1);
   font-size: var(--type-tiny);
+  font-style: italic;
   color: var(--text-tertiary);
+  opacity: 0.85;
 }
 
 /* 錯題本（Editorial：書末 errata 表格） */
