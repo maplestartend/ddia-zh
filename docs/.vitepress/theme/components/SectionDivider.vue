@@ -29,7 +29,7 @@ const isCjk = computed(() => /[一-鿿]/.test(props.label ?? ''))
   flex-direction: column;
   align-items: center;
   gap: var(--space-1-5);
-  margin: 48px 0 32px;
+  margin: var(--space-5) 0 var(--space-4-5);
   text-align: center;
   border: 0;
   padding: 0;
@@ -68,7 +68,7 @@ const isCjk = computed(() => /[一-鿿]/.test(props.label ?? ''))
 /* 中文 label 不套 uppercase */
 .ddia-section-divider.is-cjk .ddia-section-divider-label {
   text-transform: none;
-  letter-spacing: 0.08em;
+  letter-spacing: var(--ls-mid);
   font-size: var(--type-small-tight);
   font-style: normal;
 }

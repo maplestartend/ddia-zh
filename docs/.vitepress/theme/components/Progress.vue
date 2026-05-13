@@ -168,7 +168,7 @@ onUnmounted(() => {
   font-family: var(--font-display);
   font-variation-settings: var(--fvar-section-tight);
   font-weight: 600;
-  font-size: 15px;
+  font-size: var(--type-body-mid);
   line-height: 1.3;
   letter-spacing: var(--ls-tight);
   overflow: hidden;
@@ -202,15 +202,6 @@ onUnmounted(() => {
   color: var(--mark-fg);
   opacity: 0.75;
 }
-:global(.dark) .ddia-loop-btn.is-done {
-  color: var(--brand-fg);
-}
-:global(.dark) .ddia-loop-btn.is-done::before {
-  background: var(--brand-fg);
-}
-:global(.dark) .ddia-loop-btn.is-done .ddia-loop-btn-sub {
-  color: var(--brand-fg);
-}
 
 /* 下一章 primary CTA */
 .ddia-loop-btn.is-next {
@@ -228,10 +219,6 @@ onUnmounted(() => {
   content: "→";
   margin-left: auto;
   font-size: var(--type-body-lg);
-}
-:global(.dark) .ddia-loop-btn.is-next {
-  background: var(--brand-fg);
-  color: var(--bg-canvas);
 }
 :global(.dark) .ddia-loop-btn.is-next:hover {
   background: var(--accent-200);

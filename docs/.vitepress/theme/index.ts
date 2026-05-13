@@ -133,8 +133,9 @@ export default {
     if (typeof window === 'undefined') return  // SSG safe（Node build 時 router 為 undefined）
 
     let mermaidObserver: MutationObserver | null = null
-    // 純裝飾性短字（dinkus 符號 / hr / 空白）：不可作朗讀 title
-    const DECORATIVE_RE = /^[\s\-—–◆·§→·•．。、，\.\*]+$/u
+    // 純裝飾性短字（dinkus / hr / 空白 / 全形破折號 / box-drawing chars）：不可作朗讀 title
+    // Wave 31b 擴充：補 box-drawing `─━│┃` + 全形破折號 `─━` + 雙引號 `「」『』` 開頭噪音
+    const DECORATIVE_RE = /^[\s\-—–◆·§→·•．。、，\.\*─━│┃「」『』〈〉《》【】「」]+$/u
 
     const injectMermaidTitles = () => {
       const root = document.querySelector('.vp-doc')
@@ -168,7 +169,14 @@ export default {
 
     // SPA navigation：VP 在 route change 後會 unmount/remount .vp-doc
     // onAfterRouteChanged 在新 page hydrate 完才觸發，此時可安全 query 新的 .vp-doc
-    if (router) {
+    //
+    // Wave 31b：加 guard flag 防 HMR / dev hot reload 反覆執行 enhanceApp 時 prevHook chain
+    // 無限延長（每次 reload 都會把舊 onAfterRouteChanged 包進 prevHook、最終 N 次 reload 後一次
+    // route change 會觸發 N 次 attachObserver。雖然每次 attach 都 disconnect 舊的不會 leak observer，
+    // 但 prevHook closure chain 會堆積 memory）。
+    const routerWithGuard = router as unknown as Record<string, unknown>
+    if (router && !routerWithGuard.__ddiaMermaidHooked) {
+      routerWithGuard.__ddiaMermaidHooked = true
       const prevHook = router.onAfterRouteChanged
       router.onAfterRouteChanged = (to: string) => {
         attachObserver()

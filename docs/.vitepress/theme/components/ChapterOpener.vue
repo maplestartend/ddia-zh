@@ -71,7 +71,7 @@ onMounted(() => {
 <style scoped>
 .ddia-chapter-opener {
   margin: var(--space-4) 0 48px;
-  padding-bottom: 32px;
+  padding-bottom: var(--space-4-5);
   border-bottom: 1px solid var(--rule-hairline);
   text-align: left;
 }
@@ -144,12 +144,8 @@ onMounted(() => {
   color: var(--text-tertiary);
 }
 
-.dark .ddia-chapter-opener-mark {
-  color: var(--brand-fg);   /* dark = 暖橙 brand 替身、非 info-fg 米咖 */
-}
-
 @media (max-width: 640px) {
-  .ddia-chapter-opener-mark { font-size: 28px; }
+  .ddia-chapter-opener-mark { font-size: var(--type-display-2); }
   .ddia-chapter-opener-title { font-size: var(--type-display-2); }
 }
 </style>

@@ -13,8 +13,8 @@
   border-top: 1px solid var(--rule-hairline);
   border-bottom: 1px solid var(--rule-hairline);
   border-radius: 0;
-  padding: 22px 0 26px;
-  margin: var(--space-4-5) 0 36px;
+  padding: var(--space-3-5) 0 26px;
+  margin: var(--space-4-5) 0 var(--space-5);
   position: relative;
 }
 
@@ -42,9 +42,6 @@
   color: var(--mark-fg);
   margin-right: var(--space-1);
   font-variation-settings: "opsz" 48, "wght" 500;
-}
-.dark .ddia-tldr-title::before {
-  color: var(--brand-fg);
 }
 
 /* 隱藏 TLDR 標題裡的 Material icon（書腰風不用 lightning bolt） */
@@ -82,16 +79,13 @@
   color: var(--mark-fg);
   line-height: 1;
 }
-.dark .ddia-tldr li::before {
-  color: var(--brand-fg);
-}
 
 /* ---------- ChapterMeta：章首 metadata 列（Editorial：書頁版權頁樣式）---------- */
 .ddia-meta {
   display: flex;
   flex-wrap: wrap;
   gap: 20px var(--space-4);
-  margin: var(--space-3) 0 32px;
+  margin: var(--space-3) 0 var(--space-4-5);
   padding: var(--space-3) 0;
   background: transparent;
   border: 0;
@@ -156,7 +150,7 @@
   border-bottom: 1px solid var(--rule-hairline);
   border-radius: 0;
   padding: 28px 0 var(--space-4);
-  margin: 48px 0;
+  margin: var(--space-5) 0;
 }
 
 .ddia-quiz-header {
@@ -191,9 +185,6 @@
   margin-right: var(--space-1);
   line-height: 1;
 }
-.dark .ddia-quiz-header-title::before {
-  color: var(--brand-fg);
-}
 
 .ddia-quiz-question {
   font-family: var(--font-display);
@@ -218,7 +209,7 @@
   transition: border-left-color 0.15s, background 0.15s;
   background: transparent;
   font-family: var(--font-body);
-  font-size: 14.5px;
+  font-size: var(--type-body-tight);
   line-height: 1.65;
   color: var(--text-primary);
 }
@@ -271,7 +262,7 @@
   font-family: var(--font-display);
   font-style: italic;
   font-variation-settings: var(--fvar-italic-note);
-  font-size: 15px;
+  font-size: var(--type-body-mid);
   line-height: 1.75;
   border-left: 3px solid var(--rule-hairline);
   color: var(--text-secondary);
@@ -285,10 +276,6 @@
   font-size: var(--type-body-lg);
   color: var(--mark-fg);
   letter-spacing: 0;
-}
-
-.dark .ddia-quiz-score {
-  color: var(--brand-fg);
 }
 
 /* Quiz 重做次數提示（Editorial：italic 譯註） */
@@ -405,11 +392,8 @@
   color: var(--bg-canvas);
 }
 
-.dark .ddia-btn.primary {
-  background: var(--brand-fg);
-  border-color: var(--brand-fg);
-  color: var(--bg-canvas);
-}
+/* Wave 31a：.dark .ddia-btn.primary base rebind 已由 tokens.css .dark alias 重綁接管（bg/border/color 全 cascade 對齊）。
+   :hover 改用 --accent-200 是獨立配色決策、保留 */
 .dark .ddia-btn.primary:hover:not(:disabled) {
   background: var(--accent-200);
   border-color: var(--accent-200);
@@ -451,7 +435,7 @@
 /* ---------- Hero disclaimer：首頁版權聲明（Editorial 譯註樣式 — italic + 上方髮絲線）---------- */
 .ddia-hero-disclaimer {
   max-width: 580px;
-  margin: 36px auto 0;
+  margin: var(--space-5) auto 0;
   padding: var(--space-3) 0 0;
   background: transparent;
   border: 0;
@@ -494,7 +478,7 @@
   align-items: center;
   justify-content: center;
   max-width: 900px;
-  margin: 32px auto var(--space-5-5);
+  margin: var(--space-4-5) auto var(--space-5-5);
   padding: var(--space-3-5) var(--space-4);
   border-top: 1px solid var(--border-default);
   border-bottom: 1px solid var(--border-default);
@@ -549,7 +533,7 @@
 
 /* ---------- Progress / Chapter loop（learning loop 元件 scoped 樣式在 Vue 內） ---------- */
 .ddia-progress-wrapper {
-  margin: 32px 0 var(--space-3);
+  margin: var(--space-4-5) 0 var(--space-3);
   padding: var(--space-3) 0;
   background: transparent;
   border: 0;
@@ -587,7 +571,7 @@
 
 /* Dashboard 全新訪客歡迎卡（Editorial：書頁段落而非 SaaS 卡）*/
 .ddia-dashboard-welcome {
-  margin: 36px auto;
+  margin: var(--space-5) auto;
   padding: var(--space-4-5) 0;
   max-width: 640px;
   background: transparent;
@@ -618,7 +602,7 @@
   color: var(--text-tertiary);
 }
 .ddia-dashboard-welcome-text {
-  margin: 0 auto 22px;
+  margin: 0 auto var(--space-3-5);
   max-width: 520px;
   font-family: var(--font-display);
   font-variation-settings: var(--fvar-italic-note);
@@ -652,7 +636,7 @@
   border-right: 1px solid var(--rule-hairline);
   border-bottom: 1px solid var(--rule-hairline);
   border-radius: 0;
-  padding: 22px var(--space-4);
+  padding: var(--space-3-5) var(--space-4);
   transition: background-color 0.15s;
 }
 
@@ -667,7 +651,7 @@
   font-size: var(--type-eyebrow);
   color: var(--text-tertiary);
   font-weight: 500;
-  letter-spacing: 0.16em;
+  letter-spacing: var(--ls-wide);
   text-transform: uppercase;
   display: inline-flex;
   align-items: center;
@@ -716,7 +700,7 @@
   font-style: italic;
   font-size: var(--type-tiny);
   font-weight: 500;
-  letter-spacing: 0.05em;
+  letter-spacing: var(--ls-loose);
   vertical-align: baseline;
   cursor: help;
 }
@@ -750,7 +734,7 @@
   font-family: var(--font-display);
   font-variation-settings: var(--fvar-section-tight);
   font-weight: 600;
-  font-size: 15px;
+  font-size: var(--type-body-mid);
   color: var(--text-primary);
   list-style: none;
   letter-spacing: var(--ls-tight);
@@ -825,7 +809,7 @@
 .ddia-chapter-card {
   display: flex;
   flex-direction: column;
-  padding: 22px var(--space-4) var(--space-3-5);
+  padding: var(--space-3-5) var(--space-4) var(--space-3-5);
   background: transparent;
   border: 0;
   border-right: 1px solid var(--rule-hairline);
@@ -890,10 +874,6 @@
   text-transform: uppercase;
 }
 
-.dark .ddia-chapter-card-num {
-  color: var(--brand-fg);
-}
-
 /* 章節標題：Fraunces + Noto Serif TC + 較大字級 + 行高放開 */
 .ddia-chapter-card-title {
   font-family: var(--font-display);
@@ -926,7 +906,7 @@
   align-items: center;
   font-family: var(--font-display);
   font-variation-settings: "opsz" 24, "wght" 500;
-  letter-spacing: 0.06em;
+  letter-spacing: var(--ls-loose);
   text-transform: uppercase;
 }
 
@@ -1003,7 +983,7 @@
 .ddia-part-header p {
   margin: 0;
   color: var(--text-secondary);
-  font-size: 14.5px;
+  font-size: var(--type-body-tight);
   font-family: var(--font-body);
   letter-spacing: var(--ls-tight);
   line-height: 1.7;
@@ -1086,7 +1066,7 @@
   display: inline-flex;
   gap: var(--space-4-5);
   justify-content: center;
-  margin-top: 32px;
+  margin-top: var(--space-4-5);
   flex-wrap: wrap;
   align-items: center;
 }
@@ -1101,7 +1081,7 @@
   font-family: var(--font-display);
   font-variation-settings: var(--fvar-section-tight);
   font-weight: 600;
-  font-size: 15px;
+  font-size: var(--type-body-mid);
   letter-spacing: var(--ls-loose);
   text-decoration: none !important;
   transition: all 0.18s;
@@ -1138,12 +1118,8 @@
   border-bottom-color: var(--mark-fg);
 }
 
-.dark .ddia-cta.primary {
-  background: var(--brand-fg);
-  color: var(--bg-canvas) !important;
-  border-color: var(--brand-fg);
-}
-
+/* Wave 31a：.dark .ddia-cta.primary base rebind 已由 tokens.css .dark alias 重綁接管。
+   :hover 改用 --accent-200 是獨立配色決策、保留 */
 .dark .ddia-cta.primary:hover {
   background: var(--accent-200);
   border-color: var(--accent-200);
@@ -1155,10 +1131,7 @@
   background: transparent;
 }
 
-.dark .ddia-cta.ghost:hover {
-  color: var(--brand-fg) !important;
-  border-bottom-color: var(--brand-fg);
-}
+/* Wave 31a：.dark .ddia-cta.ghost:hover 已由 alias 重綁接管 */
 
 .dark .ddia-hero {
   border-bottom-color: var(--rule-hairline);
@@ -1173,7 +1146,7 @@
   border-radius: 0;
   padding: var(--space-2) 0 var(--space-2) 20px;
   margin: var(--space-4-5) 0;
-  font-size: 15px;
+  font-size: var(--type-body-mid);
   line-height: 1.75;
   color: var(--text-secondary);
 }
@@ -1211,8 +1184,7 @@
   padding: var(--space-3) 20px;
 }
 
-.dark .custom-block.tip { border-left-color: var(--brand-fg); }
-.dark .custom-block.tip .custom-block-title { color: var(--brand-fg); }
+/* Wave 31a：.dark .custom-block.tip 已由 alias 重綁接管（light 用 --mark-fg、dark cascade 暖橙） */
 .dark .custom-block.info { border-left-color: var(--accent-200); }
 .dark .custom-block.info .custom-block-title { color: var(--accent-200); }
 
@@ -1404,7 +1376,7 @@ button.DocSearch.DocSearch-Button:focus-visible {
 .VPSidebar {
   background: var(--bg-canvas) !important;
   border-right: 1px solid var(--rule-hairline);
-  padding-top: 32px;
+  padding-top: var(--space-4-5);
 }
 .VPSidebarGroup .title .title-text {
   font-family: var(--font-display);
@@ -1510,7 +1482,7 @@ button.DocSearch.DocSearch-Button:focus-visible {
 .VPFooter {
   background: var(--bg-canvas) !important;
   border-top: 1px solid var(--rule-hairline);
-  padding: 32px var(--space-4);
+  padding: var(--space-4-5) var(--space-4);
 }
 .VPFooter .container {
   text-align: center;
@@ -1566,7 +1538,7 @@ button.DocSearch.DocSearch-Button:focus-visible {
 .pager-link .title {
   font-family: var(--font-display);
   font-variation-settings: var(--fvar-section-tight);
-  font-size: 15px;
+  font-size: var(--type-body-mid);
   letter-spacing: var(--ls-tight);
 }
 
@@ -1633,7 +1605,7 @@ button.DocSearch.DocSearch-Button:focus-visible {
 
 /* ---------- Dashboard resume link：returning user 看見的「繼續讀」入口 ---------- */
 .ddia-dashboard-resume {
-  margin: var(--space-4-5) auto 36px;
+  margin: var(--space-4-5) auto var(--space-5);
   padding: var(--space-3-5) 0;
   max-width: 640px;
   text-align: center;
@@ -1685,18 +1657,12 @@ button.DocSearch.DocSearch-Button:focus-visible {
   font-size: var(--type-body-lg);
   color: var(--text-tertiary);
 }
-.dark .ddia-dashboard-resume-num {
-  color: var(--brand-fg);
-}
-.dark .ddia-dashboard-resume-link:hover {
-  color: var(--brand-fg);
-  border-bottom-color: var(--brand-fg);
-}
+/* Wave 31a：dashboard-resume dark patches 已由 alias 重綁接管 */
 
 /* ---------- Dashboard 完成 Ceremony：12 章全讀完換結語 + 三個延伸選項（F2） ---------- */
 .ddia-dashboard-ceremony {
-  margin: 36px auto 48px;
-  padding: 32px 0 36px;
+  margin: var(--space-5) auto var(--space-5);
+  padding: var(--space-4-5) 0 var(--space-5);
   max-width: 640px;
   text-align: center;
   border-top: 1px solid var(--rule-hairline);
@@ -1754,10 +1720,7 @@ button.DocSearch.DocSearch-Button:focus-visible {
   border-bottom-color: var(--mark-fg);
   border-bottom-style: solid;
 }
-.dark .ddia-dashboard-ceremony-link:hover {
-  color: var(--brand-fg);
-  border-bottom-color: var(--brand-fg);
-}
+/* Wave 31a：ceremony-link:hover dark patch 已由 alias 重綁接管 */
 
 /* ---------- Reading progress 髮絲線：頂部 fixed 1px 線 ----------
    JS 在 theme/index.ts 控制 width。長頁（章節 / 詞彙表 / paths）才顯示足夠長度 */
@@ -1772,14 +1735,12 @@ button.DocSearch.DocSearch-Button:focus-visible {
   pointer-events: none;
   transition: width 0.15s ease-out;
 }
-.dark .ddia-reading-progress {
-  background: var(--brand-fg);
-}
+/* Wave 31a：reading-progress dark bg 已由 cta-bg alias 重綁接管 */
 
 /* ---------- Quiz 答完 inline next bridge ----------
    把成就感熱度導向下一章 — 取代過去需要 scroll 到 footer prev/next */
 .ddia-quiz-next {
-  margin-top: 32px;
+  margin-top: var(--space-4-5);
   padding-top: var(--space-4);
   border-top: 1px solid var(--rule-hairline);
   text-align: center;
@@ -1829,10 +1790,4 @@ button.DocSearch.DocSearch-Button:focus-visible {
   font-size: var(--type-body-lg);
   color: var(--text-tertiary);
 }
-.dark .ddia-quiz-next-num {
-  color: var(--brand-fg);
-}
-.dark .ddia-quiz-next-link:hover {
-  color: var(--brand-fg);
-  border-bottom-color: var(--brand-fg);
-}
+/* Wave 31a：quiz-next dark patches 已由 alias 重綁接管 */

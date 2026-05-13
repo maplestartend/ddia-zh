@@ -87,7 +87,7 @@ watch(content, () => {
   font-family: var(--font-display);
   font-variation-settings: var(--fvar-section-tight);
   font-weight: 600;
-  font-size: 15px;
+  font-size: var(--type-body-mid);
   color: var(--text-primary);
   user-select: none;
   list-style: none;
@@ -125,7 +125,7 @@ watch(content, () => {
   font-family: var(--font-display);
   font-size: var(--type-tiny);
   font-weight: 500;
-  letter-spacing: 0.06em;
+  letter-spacing: var(--ls-loose);
 }
 .ddia-note-hint {
   font-family: var(--font-display);

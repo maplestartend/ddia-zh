@@ -94,7 +94,7 @@ function scrollToLetter(letter: string, e: MouseEvent) {
   color: var(--text-tertiary);
   font-size: var(--type-eyebrow);
   font-weight: 500;
-  letter-spacing: 0.16em;
+  letter-spacing: var(--ls-wide);
   text-transform: uppercase;
 }
 .ddia-glossary-index-label :deep(.material-symbols-rounded) {
@@ -130,12 +130,6 @@ function scrollToLetter(letter: string, e: MouseEvent) {
 .ddia-glossary-index-link:focus-visible {
   outline: var(--focus-ring-width) solid var(--focus-ring-color);
   outline-offset: var(--focus-ring-offset);
-}
-
-:global(.dark) .ddia-glossary-index-link:hover,
-:global(.dark) .ddia-glossary-index-link:focus-visible {
-  color: var(--brand-fg);
-  border-bottom-color: var(--brand-fg);
 }
 
 @media (max-width: 600px) {

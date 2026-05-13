@@ -19,7 +19,7 @@
 
 /* ----- Tablet / Mobile（≤ 768px） ----- */
 @media (max-width: 768px) {
-  .ddia-hero h1 { font-size: 36px; }
+  .ddia-hero h1 { font-size: var(--type-chapter-mark); }
   .ddia-dashboard {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -27,9 +27,9 @@
 
 /* ----- Mobile（≤ 640px） ----- */
 @media (max-width: 640px) {
-  .ddia-hero { padding: 36px 16px; }
-  .ddia-hero h1 { font-size: 28px; }
-  .vp-doc { font-size: 15.5px; }
+  .ddia-hero { padding: 36px var(--space-3); }
+  .ddia-hero h1 { font-size: var(--type-display-2); }
+  .vp-doc { font-size: var(--type-body-sm); }
   .ddia-meta { gap: var(--space-2-5) 16px; }
 
   /* 連體網格 fallback：mobile 一欄堆疊
@@ -83,8 +83,8 @@
 
 /* ----- 超窄（≤ 380px）：詞彙表 A-Z bar、表格不溢出 ----- */
 @media (max-width: 380px) {
-  .vp-doc { font-size: 15px; }
-  .ddia-hero h1 { font-size: 26px; }
+  .vp-doc { font-size: var(--type-body-mid); }
+  .ddia-hero h1 { font-size: var(--type-h2); }
   .vp-doc table { font-size: var(--type-small-tight); }
 }
 

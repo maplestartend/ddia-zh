@@ -76,9 +76,19 @@
     "JetBrains Mono", "SF Mono", "Consolas",
     ui-monospace, "Noto Sans Mono CJK TC", monospace;
 
-  /* ---------- Spacing scale（Wave 3 加入、Wave 29a 補 0.5 階）
-     原本 6 階跳距 4→8→16→24→40→64 留下 12/20/28 等中間值無 token、佔殘留 80%
-     補 4 個 0.5 階 token 解問題 */
+  /* ---------- Spacing scale（11 階）
+     spacing language（書頁節奏隱喻、Wave 31d 文檔化）：
+       4-6        = 縫線      icon gap / bullet 對齊微縫
+       8-12       = 段內      行內 padding / list item gap / 短水平 gap
+       16-20      = 段距      <p> margin / 元件 padding / mid 區塊
+       24-28      = 段組      表格 margin / 章末元件內 gap / blockquote
+       40         = 過場      callout / blockquote 區塊分隔 / hr
+       56         = 半儀式    章末→Bridge 印記（介於過場 40 與儀式 64 之間）
+       64         = 儀式      h2 / 章首 / 章節級分隔
+
+     命名一致性附註：
+       --space-X-5 並非「X 跟 X+1 的數學中點」（4-5=6 ≠ 8 的中點 6 ✓ 但 5-5=56 ≠ 52 的中點）
+       本套用「上半段折半」名稱、不嚴格遵守算術中點。優先順序：採用率 + 視覺直覺 > 命名數學。 */
   --space-1: 4px;     /* 微縫：dot / icon gap */
   --space-1-5: 6px;   /* Wave 29a：微縫升一階 */
   --space-2: 8px;     /* 元件內元素 */
@@ -87,9 +97,9 @@
   --space-3-5: 20px;  /* Wave 29a：list padding-left、行內 mid spacing */
   --space-4: 24px;    /* 段距 / 表格 margin / 一般元件 margin */
   --space-4-5: 28px;  /* Wave 29a：章末元件 mid gap、blockquote */
-  --space-5: 40px;    /* 區塊分隔 / callout / blockquote */
-  --space-5-5: 56px;  /* Wave 30b：章末→Bridge 儀式間距（介於 40 區塊與 64 章節之間、5 處 raw） */
-  --space-6: 64px;    /* 章節級分隔 / h2 / 儀式區塊 */
+  --space-5: 40px;    /* 區塊分隔 / callout / blockquote / hr / h2 chunked margin */
+  --space-5-5: 56px;  /* Wave 30b：章末→Bridge 半儀式間距（5 處 raw → token；非 5↔6 數學中點 52） */
+  --space-6: 64px;    /* 章節級分隔 / h2 大段 / 儀式區塊 */
 
   --gap-paragraph: var(--space-3);   /* <p> margin */
   --gap-block:     var(--space-4);   /* table / callout / 普通元件 */
@@ -116,6 +126,10 @@
   --type-small-tight: 13px;  /* table / cite / button mid / progress bar text（17 處 raw 最大宗） */
   --type-section:     17px;  /* 元件 section header / Quiz radio label（3 處 raw） */
   --type-feature:     38px;  /* hero numeral / dashboard big stat（1 處 raw） */
+  /* Wave 31c 新增：14.5 / 15 / 15.5 三個高頻中間值 */
+  --type-body-tight: 14.5px; /* Quiz option / table cite / Q&A body / Part0 self-assess（7 處 raw 最大宗） */
+  --type-body-mid:   15px;   /* CTA / pager / loop-btn / chapter-opener-cite / mobile vp-doc（11 處 raw） */
+  --type-body-sm:    15.5px; /* InterviewBlock q-head / ReviewDue item-title / mobile vp-doc（3 處 raw） */
 
   /* Fraunces variation-settings 標準化（Wave 28a：加 4 套覆蓋常見實際使用 pattern） */
   --fvar-display:    "opsz" 72, "SOFT" 60, "wght" 500;  /* 大標題 / 章名 */
@@ -128,11 +142,13 @@
   --fvar-italic-warm: "opsz" 24, "SOFT" 60, "wght" 400;  /* 暖色 italic body（8 處）*/
   --fvar-section-mid: "opsz" 24, "SOFT" 30, "wght" 500;  /* 小字級 mid-weight（6 處）*/
 
-  /* letter-spacing 4-token scale（Wave 30a：原 1 token --ls-eyebrow 拆成 4 階）
+  /* letter-spacing 6-token scale（Wave 30a 4 階 + Wave 31c 2 階）
      ls-eyebrow 從 0.22em 收緊到 0.18em — 書本印刷感（過 0.20em 就有「廣告字距」氣味）。
      --ls-chapter-mark 刪除（0 處實際使用、值與 --ls-eyebrow 同 0.18em）。 */
   --ls-tight:    0.01em;  /* 中文 body micro-spacing（19 處 raw） */
   --ls-loose:    0.04em;  /* h2 / 表頭 / 區塊小標 mid spacing（17 處 raw） */
+  --ls-mid:      0.08em;  /* Wave 31c：tag / dt / quiz-q-tag mid-wide（2-3 處 raw） */
+  --ls-wide:     0.16em;  /* Wave 31c：stat-label / glossary-index-label wide spacing（2 處 raw） */
   --ls-eyebrow:  0.18em;  /* italic uppercase small caps eyebrow / CH·01 章號（24 處 raw + var 用量） */
   --ls-display:  0.28em;  /* 大型 display 寬距（dinkus / 章首 oeuvre title、1 處 raw） */
 
@@ -304,6 +320,14 @@
 
   --vp-c-divider: var(--border-default);
   --vp-c-gutter:  var(--border-default);
+
+  /* Wave 31a：dark 模式 alias 重綁 — 把印記 / 連結 / 按鈕 alias 切到暖橙 brand-fg。
+     在 light 模式這三個 alias 都指向 --brand-500（mahogany 紅），dark 模式需切到 --brand-fg
+     （#E3A06A 暖橙）才不會在暗底顯髒紫。重綁後可消除 ~25 處 `.dark .xxx { color: var(--brand-fg) }`
+     補釘規則，未來改 brand 色階只動 tokens.css 一處。 */
+  --mark-fg:     var(--brand-fg);  /* 印記 § · ◆ / drop cap / bullet：dark = 暖橙 */
+  --rule-active: var(--brand-fg);  /* hover indicator / sidebar / ChapterCard top：dark = 暖橙 */
+  --cta-bg:      var(--brand-fg);  /* CTA filled bg / Quiz score：dark = 暖橙 */
 }
 
 /* ==========================================================================

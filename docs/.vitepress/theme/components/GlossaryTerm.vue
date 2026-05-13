@@ -220,7 +220,4 @@ onUnmounted(() => {
 :global(.dark) .ddia-g:hover, :global(.dark) .ddia-g:focus-visible {
   background-color: rgba(227, 160, 106, 0.12);
 }
-:global(.dark) .ddia-g-tooltip-en {
-  color: var(--brand-fg);
-}
 </style>

@@ -96,7 +96,7 @@ function onForgotten(chapterId: string) {
   color: var(--text-secondary);
   font-family: var(--font-display);
   font-variation-settings: var(--fvar-italic-note);
-  font-size: 14.5px;
+  font-size: var(--type-body-tight);
 }
 .ddia-review-empty :deep(.material-symbols-rounded) {
   display: none;
@@ -138,17 +138,13 @@ function onForgotten(chapterId: string) {
   font-family: var(--font-display);
   font-variation-settings: var(--fvar-section-tight);
   font-weight: 600;
-  font-size: 15.5px;
+  font-size: var(--type-body-sm);
   color: var(--text-primary);
   text-decoration: none;
 }
 .ddia-review-item-title:hover {
   color: var(--mark-fg);
   border-bottom: 1px solid var(--mark-fg);  /* Wave 30c：hover indicator 與 color 同 alias */
-}
-:global(.dark) .ddia-review-item-title:hover {
-  color: var(--brand-fg);
-  border-bottom-color: var(--brand-fg);
 }
 .ddia-review-item-meta {
   display: block;
@@ -195,12 +191,7 @@ function onForgotten(chapterId: string) {
   background: var(--brand-700);
   border-color: var(--brand-700);
 }
-/* dark mode：brand-500 mahogany 在暗底會顯髒、改用 brand-fg 暖橙 */
-:global(.dark) .ddia-review-btn.primary {
-  background: var(--brand-fg);
-  border-color: var(--brand-fg);
-  color: var(--bg-canvas);
-}
+/* Wave 31a：review-btn.primary base 由 tokens.css .dark alias 重綁接管。:hover 用 --accent-200 是獨立配色決策、保留 */
 :global(.dark) .ddia-review-btn.primary:hover {
   background: var(--accent-200);
   border-color: var(--accent-200);

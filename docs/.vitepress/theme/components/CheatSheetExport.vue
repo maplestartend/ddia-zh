@@ -221,8 +221,8 @@ function resetAll() {
 <style scoped>
 /* Editorial CheatSheet 匯出區：書末附錄樣式 */
 .ddia-export {
-  margin: 32px 0;
-  padding: 22px 0;
+  margin: var(--space-4-5) 0;
+  padding: var(--space-3-5) 0;
   background: transparent;
   border: 0;
   border-top: 1px solid var(--rule-hairline);
@@ -249,7 +249,7 @@ function resetAll() {
   margin: 0 0 var(--space-3-5);
   font-family: var(--font-display);
   font-variation-settings: var(--fvar-italic-note);
-  font-size: 15px;
+  font-size: var(--type-body-mid);
   line-height: 1.75;
   color: var(--text-secondary);
 }

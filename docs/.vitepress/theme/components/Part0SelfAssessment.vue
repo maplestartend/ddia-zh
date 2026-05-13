@@ -92,7 +92,7 @@ const recommendations = computed(() => items.filter(i => !checked.value[i.id]))
 <style scoped>
 /* Editorial Part 0 自評：書末讀者測驗樣式 */
 .ddia-self-assess {
-  margin: 32px 0;
+  margin: var(--space-4-5) 0;
   padding: var(--space-4) 0;
   background: transparent;
   border: 0;
@@ -117,12 +117,6 @@ const recommendations = computed(() => items.filter(i => !checked.value[i.id]))
   font-size: var(--type-h3);
   color: var(--mark-fg);
 }
-:global(.dark) .ddia-self-assess-header {
-  color: var(--brand-fg);
-}
-:global(.dark) .ddia-self-assess-header::before {
-  color: var(--brand-fg);
-}
 .ddia-self-assess-header h3 {
   margin: 0;
   font-family: var(--font-display);
@@ -136,12 +130,12 @@ const recommendations = computed(() => items.filter(i => !checked.value[i.id]))
   font-family: var(--font-display);
   /* Wave 30a：功能性 desc 去 italic（保留 fvar-italic-note 變體只控 wght/SOFT） */
   font-variation-settings: var(--fvar-italic-note);
-  font-size: 14.5px;
+  font-size: var(--type-body-tight);
   color: var(--text-secondary);
   line-height: 1.75;
 }
 .ddia-self-assess-list {
-  margin: 0 0 22px;
+  margin: 0 0 var(--space-3-5);
   padding-left: 0;
   list-style: none;
 }
@@ -169,12 +163,12 @@ const recommendations = computed(() => items.filter(i => !checked.value[i.id]))
   gap: var(--space-2-5);
   cursor: pointer;
   font-family: var(--font-body);
-  font-size: 14.5px;
+  font-size: var(--type-body-tight);
   line-height: 1.7;
   letter-spacing: var(--ls-tight);
 }
 .ddia-self-assess-item input[type='checkbox'] {
-  margin-top: 5px;
+  margin-top: var(--space-1);  /* Wave 31d：5→4 checkbox baseline align（1px 差人眼不可辨） */
   accent-color: var(--mark-fg);
   cursor: pointer;
 }
@@ -189,7 +183,7 @@ const recommendations = computed(() => items.filter(i => !checked.value[i.id]))
 }
 
 .ddia-self-assess-result {
-  margin-top: 22px;
+  margin-top: var(--space-3-5);
 }
 .ddia-self-assess-pass {
   display: flex;
@@ -203,7 +197,7 @@ const recommendations = computed(() => items.filter(i => !checked.value[i.id]))
   font-family: var(--font-display);
   font-style: italic;
   font-variation-settings: var(--fvar-eyebrow);
-  font-size: 15px;
+  font-size: var(--type-body-mid);
   line-height: 1.75;
 }
 .ddia-self-assess-pass :deep(.material-symbols-rounded) {

@@ -81,6 +81,15 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .ddia-click-flash { transition: none; }
 }
+/* Wave 31b：Windows 高對比模式 box-shadow 會被瀏覽器強制 none、按鍵視覺消失。
+   用 outline dashed Highlight 提供平台原生對比色後備。 */
+@media (forced-colors: active) {
+  .ddia-click-flash {
+    outline: 2px dashed Highlight;
+    outline-offset: -2px;
+    box-shadow: none;
+  }
+}
 
 /* Editorial 模式：Material Symbols 全站隱藏（已替換成 typographic mark：§ · ◆ →）
    Icon.vue 元件機制保留、但 render 出來的 span 完全 hide。Font Awesome / Material Symbols
@@ -126,7 +135,7 @@ body {
   font-weight: 600;
   border-top: 1px solid var(--rule-hairline);
   padding-top: var(--space-4-5);
-  margin-top: 48px;  /* 從 56px 縮回 48 — padding-top 32→28 + margin 48 仍夠 chunk */
+  margin-top: var(--space-5);  /* 從 56px 縮回 48 — padding-top 32→28 + margin 48 仍夠 chunk */
   letter-spacing: 0.005em;
   line-height: 1.3;
 }
@@ -188,7 +197,7 @@ body {
   font-variation-settings: "opsz" 36, "SOFT" 40, "wght" 620;
   font-weight: 600;
   font-size: var(--type-h2-tight);
-  margin-top: 44px;  /* 拉大 h3 上方留白避免黏 body */
+  margin-top: var(--space-5);  /* 拉大 h3 上方留白避免黏 body */
   letter-spacing: 0.005em;
   color: var(--text-primary);
 }
@@ -346,7 +355,7 @@ body {
 
 /* Editorial 表格：印刷感「線」表格 — 無色塊填底、只用髮絲線分隔 */
 .vp-doc table {
-  font-size: 14.5px;
+  font-size: var(--type-body-tight);
   border-collapse: collapse;
   width: 100%;
   margin: var(--space-4) 0;

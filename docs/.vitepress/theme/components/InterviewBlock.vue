@@ -68,8 +68,8 @@ watch(answers, (v) => {
 <style scoped>
 /* Editorial 面試題：書末練習題排版 + 手稿質感答題格 */
 .ddia-interview {
-  margin: 36px 0;
-  padding: 22px 0;
+  margin: var(--space-5) 0;
+  padding: var(--space-3-5) 0;
   background: transparent;
   border: 0;
   border-top: 1px solid var(--rule-hairline);
@@ -98,7 +98,7 @@ watch(answers, (v) => {
   font-family: var(--font-display);
   /* Wave 30a：功能性元件 intro 去 italic（fvar-italic-note 保留 — 控制 wght/SOFT，視覺仍偏柔軟） */
   font-variation-settings: var(--fvar-italic-note);
-  font-size: 14.5px;
+  font-size: var(--type-body-tight);
   color: var(--text-secondary);
   line-height: 1.75;
 }
@@ -130,7 +130,7 @@ watch(answers, (v) => {
   font-family: var(--font-display);
   font-variation-settings: var(--fvar-section-tight);
   font-weight: 600;
-  font-size: 15.5px;
+  font-size: var(--type-body-sm);
   line-height: 1.6;
   color: var(--text-primary);
 }
@@ -147,7 +147,7 @@ watch(answers, (v) => {
   font-variation-settings: var(--fvar-eyebrow-warm);
   font-size: var(--type-eyebrow);
   font-weight: 500;
-  letter-spacing: 0.08em;
+  letter-spacing: var(--ls-mid);
   color: var(--warning-fg);
 }
 .ddia-interview-textarea {

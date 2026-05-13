@@ -91,9 +91,6 @@ const displayTeaser = computed(() => currentChap.value?.teaser)
 .ddia-bridge:hover .ddia-bridge-title {
   color: var(--mark-fg);
 }
-:global(.dark) .ddia-bridge:hover .ddia-bridge-title {
-  color: var(--brand-fg);
-}
 
 .ddia-bridge-eyebrow {
   font-family: var(--font-display);
@@ -118,9 +115,6 @@ const displayTeaser = computed(() => currentChap.value?.teaser)
   margin-bottom: var(--space-1-5);
   padding-left: 0.18em;
 }
-:global(.dark) .ddia-bridge-num {
-  color: var(--brand-fg);
-}
 
 .ddia-bridge-title {
   font-family: var(--font-display);
@@ -140,7 +134,7 @@ const displayTeaser = computed(() => currentChap.value?.teaser)
   font-family: var(--font-display);
   font-style: italic;
   font-variation-settings: var(--fvar-italic-note);
-  font-size: 15px;
+  font-size: var(--type-body-mid);
   line-height: 1.7;
   color: var(--text-secondary);
 }
