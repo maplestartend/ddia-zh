@@ -85,7 +85,7 @@ function scrollToLetter(letter: string, e: MouseEvent) {
 .ddia-glossary-index-label {
   display: inline-flex;
   align-items: baseline;
-  gap: 4px;
+  gap: var(--space-1);
   margin-right: 14px;
   padding-right: 14px;
   border-right: 1px solid var(--border-default);
@@ -126,7 +126,11 @@ function scrollToLetter(letter: string, e: MouseEvent) {
   background: transparent;
   color: var(--brand-500);
   border-bottom-color: var(--brand-500);
-  outline: none;
+}
+/* 鍵盤導航 outline 走全站 token；不要 outline: none 蓋掉 base.css 全域規則 */
+.ddia-glossary-index-link:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
 }
 
 :global(.dark) .ddia-glossary-index-link:hover,

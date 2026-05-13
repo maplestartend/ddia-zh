@@ -250,7 +250,7 @@ function resetAll() {
   margin: 0 0 18px;
   font-family: var(--font-display);
   font-style: italic;
-  font-variation-settings: "opsz" 24, "SOFT" 50, "wght" 400;
+  font-variation-settings: var(--fvar-italic-note);
   font-size: 15px;
   line-height: 1.75;
   color: var(--text-secondary);
@@ -258,7 +258,7 @@ function resetAll() {
 .ddia-export-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 16px;
+  gap: var(--space-3);
 }
 
 /* 危險區：摺疊式 details、italic 印刷感 + / − 印記取代 ▾ 三角箭頭 */
@@ -272,10 +272,10 @@ function resetAll() {
   cursor: pointer;
   display: inline-flex;
   align-items: baseline;
-  gap: 8px;
+  gap: var(--space-2);
   font-family: var(--font-display);
   font-style: italic;
-  font-variation-settings: "opsz" 24, "SOFT" 50, "wght" 500;
+  font-variation-settings: var(--fvar-eyebrow);
   font-size: 13px;
   text-transform: uppercase;
   letter-spacing: 0.18em;

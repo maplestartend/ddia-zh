@@ -138,7 +138,7 @@ onUnmounted(() => {
 
 .ddia-g-tooltip-head {
   display: flex;
-  gap: 8px;
+  gap: var(--space-2);
   align-items: baseline;
   margin-bottom: 6px;
   padding-bottom: 6px;
@@ -165,7 +165,7 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
+  gap: var(--space-2);
   margin-top: 10px;
   padding-top: 8px;
   border-top: 1px dotted var(--border-default);
@@ -173,7 +173,7 @@ onUnmounted(() => {
 .ddia-g-tooltip-cta-btn {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--space-1);
   padding: 1px 0;
   background: transparent;
   border: 0;

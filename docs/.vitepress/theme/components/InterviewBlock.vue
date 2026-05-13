@@ -97,7 +97,7 @@ watch(answers, (v) => {
   margin: 0 0 18px;
   font-family: var(--font-display);
   font-style: italic;
-  font-variation-settings: "opsz" 24, "SOFT" 50, "wght" 400;
+  font-variation-settings: var(--fvar-italic-note);
   font-size: 14.5px;
   color: var(--text-secondary);
   line-height: 1.75;
@@ -162,11 +162,15 @@ watch(answers, (v) => {
   line-height: 1.75;
   color: var(--text-primary);
   resize: vertical;
-  outline: none;
+  outline: none;  /* :focus 用 border-bottom 變色當滑鼠 affordance；:focus-visible 走鍵盤 outline */
   letter-spacing: 0.01em;
 }
 .ddia-interview-textarea:focus {
   border-bottom-color: var(--warning-fg);
   background: var(--bg-subtle);
+}
+.ddia-interview-textarea:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: -2px;
 }
 </style>

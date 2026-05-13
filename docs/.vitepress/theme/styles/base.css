@@ -184,15 +184,25 @@ body {
   color: var(--text-primary);
 }
 
-/* 章首相鄰元件 border 去重：ChapterOpener → ChapterMeta → PrereqBox → TLDR 連續堆疊時、
-   每個元件都有上下 hairline 會造成 100px 內 7 條水平線、書頁不會這樣堆。
-   策略：後者去掉自己的 border-top、靠前者的 border-bottom 共用一條線。 */
+/* Wave 27b 章首 4 元件合併為「章首頁 (front-matter sheet)」一個整體：
+   - ChapterOpener 的 border-bottom 是「章首頁」上沿
+   - TLDR 的 border-bottom 是「章首頁」下沿
+   - 中間 ChapterMeta / PrereqBox 全部去掉自己的上下 border、共用空白與 italic eyebrow 分段
+   - margin 用 var(--space-2) = 8px（儀式緊密）、與章末 var(--space-4) 24px 形成 3× 節奏對比
+   結果：4 元件視覺合成一張章首頁、不再是 4 張獨立卡片 */
 .ddia-chapter-opener + .ddia-meta,
 .ddia-meta + .ddia-prereq,
 .ddia-prereq + .ddia-tldr,
 .ddia-meta + .ddia-tldr {
   border-top: 0 !important;
-  margin-top: 12px !important;
+  margin-top: var(--space-2) !important;
+}
+/* 移除中間元件的 border-bottom（用 :has 鎖定「後面還有章首元件」的情境）
+   只有最後一個元件（通常 TLDR）保留自己的 bottom rule、當章首頁下沿 */
+.ddia-meta:has(+ .ddia-prereq),
+.ddia-meta:has(+ .ddia-tldr),
+.ddia-prereq:has(+ .ddia-tldr) {
+  border-bottom: 0 !important;
 }
 
 /* 章末相鄰元件 border 去重：Quiz → InterviewBlock → ChapterNote → Progress → (info callout) → Bridge
@@ -209,7 +219,7 @@ body {
 .ddia-quiz + .ddia-note,
 .ddia-quiz + .ddia-chapter-loop {
   border-top: 0 !important;
-  margin-top: 16px !important;
+  margin-top: var(--space-4) !important;  /* 24px、章末鬆散；與章首 var(--space-2) 8px 形成 3× 對比 */
 }
 
 /* Editorial drop cap：章首（h1 之後的第一個 p）首字大寫 — 書本書頁感
@@ -303,7 +313,7 @@ body {
   font-size: 14.5px;
   border-collapse: collapse;
   width: 100%;
-  margin: 24px 0;
+  margin: var(--space-4) 0;
 }
 
 .vp-doc thead {

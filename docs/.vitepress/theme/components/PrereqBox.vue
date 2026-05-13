@@ -79,7 +79,7 @@ defineProps<{
   gap: 5px;
   font-family: var(--font-display);
   font-style: italic;
-  font-variation-settings: "opsz" 24, "SOFT" 50, "wght" 500;
+  font-variation-settings: var(--fvar-eyebrow);
   color: var(--text-secondary);
   font-weight: 500;
   white-space: nowrap;
@@ -98,7 +98,7 @@ defineProps<{
   list-style: none;
 }
 .ddia-prereq-list dd ul li {
-  margin: 4px 0;
+  margin: var(--space-1) 0;
   position: relative;
 }
 .ddia-prereq-list dd ul li::before {

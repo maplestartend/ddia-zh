@@ -26,7 +26,7 @@
   color: var(--text-tertiary);
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-2);
   margin: 0 0 16px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -63,7 +63,7 @@
 }
 
 .ddia-tldr li {
-  margin: 8px 0;
+  margin: var(--space-2) 0;
   line-height: 1.75;
   color: var(--text-primary);
   position: relative;
@@ -100,7 +100,7 @@
   border-radius: 0;
   font-family: var(--font-display);
   font-style: italic;
-  font-variation-settings: "opsz" 24, "SOFT" 50, "wght" 400;
+  font-variation-settings: var(--fvar-italic-note);
   font-size: 13px;
   letter-spacing: 0.04em;
 }
@@ -108,7 +108,7 @@
 .ddia-meta-item {
   display: inline-flex;
   align-items: baseline;
-  gap: 8px;
+  gap: var(--space-2);
   color: var(--text-tertiary);
 }
 .ddia-meta-item .material-symbols-rounded {
@@ -210,7 +210,7 @@
   align-items: flex-start;
   gap: 12px;
   padding: 10px 14px 10px 14px;
-  margin: 4px 0;
+  margin: var(--space-1) 0;
   border: 0;
   border-left: 2px solid transparent;
   border-radius: 0;
@@ -258,7 +258,7 @@
 
 .ddia-quiz-actions {
   display: flex;
-  gap: 24px;
+  gap: var(--space-4);
   margin-top: 24px;
   align-items: center;
 }
@@ -270,7 +270,7 @@
   border-radius: 0;
   font-family: var(--font-display);
   font-style: italic;
-  font-variation-settings: "opsz" 24, "SOFT" 50, "wght" 400;
+  font-variation-settings: var(--fvar-italic-note);
   font-size: 15px;
   line-height: 1.75;
   border-left: 3px solid var(--rule-hairline);
@@ -360,7 +360,7 @@
 .ddia-btn {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-2);
   padding: 10px 20px;
   border-radius: 0;
   font-family: var(--font-display);
@@ -474,7 +474,7 @@
 .ddia-secondary-nav {
   display: flex;
   flex-wrap: wrap;
-  gap: 24px;
+  gap: var(--space-4);
   align-items: center;
   justify-content: center;
   max-width: 900px;
@@ -509,7 +509,7 @@
   background: transparent;
   font-family: var(--font-display);
   font-style: italic;
-  font-variation-settings: "opsz" 24, "SOFT" 50, "wght" 500;
+  font-variation-settings: var(--fvar-eyebrow);
   font-size: var(--type-eyebrow);
   font-weight: 500;
   text-transform: uppercase;
@@ -551,7 +551,7 @@
   background: var(--bg-subtle);
   border-radius: 0;
   overflow: hidden;
-  margin: 8px 0;
+  margin: var(--space-2) 0;
   border: 0;
 }
 
@@ -565,7 +565,7 @@
 .ddia-dashboard {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 16px;
+  gap: var(--space-3);
   margin: 28px 0;
 }
 
@@ -605,7 +605,7 @@
   margin: 0 auto 22px;
   max-width: 520px;
   font-family: var(--font-display);
-  font-variation-settings: "opsz" 24, "SOFT" 50, "wght" 400;
+  font-variation-settings: var(--fvar-italic-note);
   font-style: italic;
   font-size: var(--type-body);
   line-height: 1.75;
@@ -908,7 +908,7 @@
 .ddia-chapter-card-status-tag {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--space-1);
 }
 
 .ddia-chapter-card.done .ddia-chapter-card-status-tag {
@@ -930,7 +930,7 @@
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  gap: 24px;
+  gap: var(--space-4);
 }
 
 .ddia-part-header-title {
@@ -999,7 +999,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: var(--space-2);
   font-family: var(--font-display);
   font-variation-settings: "opsz" 24, "SOFT" 60, "wght" 500;
   font-size: 11.5px;
@@ -1070,7 +1070,7 @@
 .ddia-cta {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-2);
   padding: 10px 0;
   border-radius: 0;
   font-family: var(--font-display);
@@ -1629,7 +1629,7 @@ button.DocSearch.DocSearch-Button:focus-visible {
 .ddia-dashboard-resume-link {
   display: inline-flex;
   align-items: baseline;
-  gap: 16px;
+  gap: var(--space-3);
   text-decoration: none;
   color: var(--text-primary);
   border-bottom: 1px solid var(--rule-hairline);
@@ -1715,7 +1715,7 @@ button.DocSearch.DocSearch-Button:focus-visible {
 }
 .ddia-dashboard-ceremony-link {
   font-family: var(--font-display);
-  font-variation-settings: "opsz" 24, "SOFT" 50, "wght" 500;
+  font-variation-settings: var(--fvar-eyebrow);
   font-size: var(--type-small);
   letter-spacing: 0.04em;
   color: var(--text-secondary);
@@ -1773,7 +1773,7 @@ button.DocSearch.DocSearch-Button:focus-visible {
 .ddia-quiz-next-link {
   display: inline-flex;
   align-items: baseline;
-  gap: 16px;
+  gap: var(--space-3);
   text-decoration: none;
   color: var(--text-primary);
   padding: 4px 8px 6px;

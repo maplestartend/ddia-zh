@@ -97,7 +97,7 @@ function onForgotten(chapterId: string) {
   color: var(--text-secondary);
   font-family: var(--font-display);
   font-style: italic;
-  font-variation-settings: "opsz" 24, "SOFT" 50, "wght" 400;
+  font-variation-settings: var(--fvar-italic-note);
   font-size: 14.5px;
 }
 .ddia-review-empty :deep(.material-symbols-rounded) {
@@ -149,6 +149,10 @@ function onForgotten(chapterId: string) {
   color: var(--brand-500);
   border-bottom: 1px solid var(--brand-500);
 }
+:global(.dark) .ddia-review-item-title:hover {
+  color: var(--brand-fg);
+  border-bottom-color: var(--brand-fg);
+}
 .ddia-review-item-meta {
   display: block;
   font-family: var(--font-display);
@@ -166,7 +170,7 @@ function onForgotten(chapterId: string) {
 .ddia-review-btn {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--space-1);
   padding: 6px 12px;
   background: transparent;
   border: 1px solid var(--text-primary);
@@ -194,5 +198,15 @@ function onForgotten(chapterId: string) {
 .ddia-review-btn.primary:hover {
   background: var(--brand-700);
   border-color: var(--brand-700);
+}
+/* dark mode：brand-500 mahogany 在暗底會顯髒、改用 brand-fg 暖橙 */
+:global(.dark) .ddia-review-btn.primary {
+  background: var(--brand-fg);
+  border-color: var(--brand-fg);
+  color: var(--bg-canvas);
+}
+:global(.dark) .ddia-review-btn.primary:hover {
+  background: var(--accent-200);
+  border-color: var(--accent-200);
 }
 </style>

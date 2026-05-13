@@ -130,7 +130,7 @@ const displayTeaser = computed(() => currentChap.value?.teaser)
   max-width: 38em;
   font-family: var(--font-display);
   font-style: italic;
-  font-variation-settings: "opsz" 24, "SOFT" 50, "wght" 400;
+  font-variation-settings: var(--fvar-italic-note);
   font-size: 15px;
   line-height: 1.7;
   color: var(--text-secondary);

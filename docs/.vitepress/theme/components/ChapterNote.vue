@@ -151,13 +151,17 @@ watch(content, () => {
   line-height: 1.75;
   color: var(--text-primary);
   resize: vertical;
-  outline: none;
+  outline: none;  /* :focus 用 border-bottom 變色當滑鼠 affordance；:focus-visible 走鍵盤 outline */
   transition: background 0.15s, border-bottom-color 0.15s;
   letter-spacing: 0.01em;
 }
 .ddia-note-textarea:focus {
   border-bottom-color: var(--brand-500);
   background: var(--bg-subtle);
+}
+.ddia-note-textarea:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: -2px;
 }
 .ddia-note-actions {
   display: flex;

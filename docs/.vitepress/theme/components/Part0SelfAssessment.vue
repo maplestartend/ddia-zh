@@ -135,7 +135,7 @@ const recommendations = computed(() => items.filter(i => !checked.value[i.id]))
   margin: 0 0 20px;
   font-family: var(--font-display);
   font-style: italic;
-  font-variation-settings: "opsz" 24, "SOFT" 50, "wght" 400;
+  font-variation-settings: var(--fvar-italic-note);
   font-size: 14.5px;
   color: var(--text-secondary);
   line-height: 1.75;
@@ -202,7 +202,7 @@ const recommendations = computed(() => items.filter(i => !checked.value[i.id]))
   border-radius: 0;
   font-family: var(--font-display);
   font-style: italic;
-  font-variation-settings: "opsz" 24, "SOFT" 50, "wght" 500;
+  font-variation-settings: var(--fvar-eyebrow);
   font-size: 15px;
   line-height: 1.75;
 }
@@ -255,7 +255,7 @@ const recommendations = computed(() => items.filter(i => !checked.value[i.id]))
   list-style: none;
 }
 .ddia-self-assess-todo li {
-  margin: 8px 0;
+  margin: var(--space-2) 0;
   line-height: 1.75;
   position: relative;
 }
