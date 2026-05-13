@@ -234,7 +234,7 @@ function resetAll() {
   align-items: center;
   gap: 6px;
   font-family: var(--font-display);
-  font-variation-settings: "opsz" 24, "SOFT" 60, "wght" 500;
+  font-variation-settings: var(--fvar-eyebrow-warm);
   font-style: italic;
   font-size: var(--type-eyebrow);
   font-weight: 500;

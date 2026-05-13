@@ -81,7 +81,7 @@ watch(answers, (v) => {
   align-items: center;
   gap: 6px;
   font-family: var(--font-display);
-  font-variation-settings: "opsz" 24, "SOFT" 60, "wght" 500;
+  font-variation-settings: var(--fvar-eyebrow-warm);
   font-style: italic;
   font-size: var(--type-eyebrow);
   font-weight: 500;
@@ -126,9 +126,9 @@ watch(answers, (v) => {
   color: var(--warning-fg);
 }
 .ddia-interview-q-head {
-  margin-bottom: 8px;
+  margin-bottom: var(--space-2);
   font-family: var(--font-display);
-  font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 600;
+  font-variation-settings: var(--fvar-section-tight);
   font-weight: 600;
   font-size: 15.5px;
   line-height: 1.6;
@@ -136,7 +136,7 @@ watch(answers, (v) => {
 }
 .ddia-interview-q-tag {
   display: inline-block;
-  margin-right: 8px;
+  margin-right: var(--space-2);
   padding: 0;
   background: transparent;
   border: 0;
@@ -144,7 +144,7 @@ watch(answers, (v) => {
   border-radius: 0;
   font-family: var(--font-display);
   font-style: italic;
-  font-variation-settings: "opsz" 24, "SOFT" 60, "wght" 500;
+  font-variation-settings: var(--fvar-eyebrow-warm);
   font-size: var(--type-eyebrow);
   font-weight: 500;
   letter-spacing: 0.08em;

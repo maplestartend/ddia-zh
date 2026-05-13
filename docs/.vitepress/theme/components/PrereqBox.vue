@@ -39,7 +39,7 @@ defineProps<{
 <style scoped>
 /* Editorial 讀前須知：書頁譯註欄樣式 */
 .ddia-prereq {
-  margin: 24px 0 36px;
+  margin: var(--space-4) 0 36px;
   padding: 18px 0;
   background: transparent;
   border: 0;
@@ -52,8 +52,9 @@ defineProps<{
   align-items: center;
   gap: 6px;
   font-family: var(--font-display);
-  font-variation-settings: "opsz" 24, "SOFT" 60, "wght" 500;
-  font-style: italic;
+  font-variation-settings: var(--fvar-eyebrow-warm);
+  /* Wave 28f：功能性元件 eyebrow 去 italic、保留 uppercase + letter-spacing 撐 small-caps 感
+     italic 留給儀式點位（Hero / ChapterOpener / NextChapterBridge / TLDR / Quiz） */
   font-size: var(--type-eyebrow);
   font-weight: 500;
   text-transform: uppercase;
@@ -68,7 +69,7 @@ defineProps<{
   margin: 0;
   display: grid;
   grid-template-columns: minmax(160px, auto) 1fr;
-  gap: 10px 24px;
+  gap: 10px var(--space-4);
   font-family: var(--font-body);
   font-size: var(--type-small);
   line-height: 1.7;
@@ -113,7 +114,7 @@ defineProps<{
 .ddia-prereq-item {
   display: inline-block;
   padding: 1px 0;
-  margin: 0 14px 4px 0;
+  margin: 0 14px var(--space-1) 0;
   background: transparent;
   border: 0;
   border-bottom: 1px dotted var(--border-default);
@@ -124,7 +125,7 @@ defineProps<{
 @media (max-width: 640px) {
   .ddia-prereq-list {
     grid-template-columns: 1fr;
-    gap: 4px 0;
+    gap: var(--space-1) 0;
   }
   .ddia-prereq-list dt {
     margin-top: 10px;

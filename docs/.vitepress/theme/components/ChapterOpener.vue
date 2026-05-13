@@ -70,7 +70,7 @@ onMounted(() => {
 
 <style scoped>
 .ddia-chapter-opener {
-  margin: 24px 0 48px;
+  margin: var(--space-4) 0 48px;
   padding-bottom: 32px;
   border-bottom: 1px solid var(--rule-hairline);
   text-align: left;
@@ -86,13 +86,13 @@ onMounted(() => {
   line-height: 1;
   color: var(--brand-fg);
   letter-spacing: -0.005em;
-  margin-bottom: 8px;
+  margin-bottom: var(--space-2);
 }
 
 .ddia-chapter-opener-eyebrow {
   font-family: var(--font-display);
   font-style: italic;
-  font-variation-settings: "opsz" 24, "SOFT" 60, "wght" 500;
+  font-variation-settings: var(--fvar-eyebrow-warm);
   font-size: 13px;
   font-weight: 500;
   text-transform: uppercase;
@@ -110,7 +110,7 @@ onMounted(() => {
   line-height: 1.18;
   letter-spacing: -0.008em;
   color: var(--text-primary);
-  margin: 0 0 24px;
+  margin: 0 0 var(--space-4);
   text-wrap: balance;
   /* override base.css 的 h1 規則 — 不要重複底部 hairline rule */
   border-bottom: 0;
@@ -119,7 +119,7 @@ onMounted(() => {
 
 .ddia-chapter-opener-epigraph {
   margin: 28px 0 0;
-  padding: 6px 0 6px 24px;
+  padding: 6px 0 6px var(--space-4);
   border: 0;
   border-left: 3px solid var(--rule-hairline);
   background: transparent;
@@ -131,13 +131,13 @@ onMounted(() => {
   font-size: 17px;
   line-height: 1.7;
   color: var(--text-secondary);
-  margin: 0 0 8px;
+  margin: 0 0 var(--space-2);
 }
 .ddia-chapter-opener-cite {
   display: block;
   font-family: var(--font-display);
   font-style: normal;
-  font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 500;
+  font-variation-settings: var(--fvar-section-mid);
   font-size: 12.5px;
   letter-spacing: 0.18em;
   text-transform: uppercase;

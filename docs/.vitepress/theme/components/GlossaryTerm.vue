@@ -167,7 +167,7 @@ onUnmounted(() => {
   justify-content: space-between;
   gap: var(--space-2);
   margin-top: 10px;
-  padding-top: 8px;
+  padding-top: var(--space-2);
   border-top: 1px dotted var(--border-default);
 }
 .ddia-g-tooltip-cta-btn {
@@ -180,7 +180,7 @@ onUnmounted(() => {
   border-bottom: 1px solid var(--accent-500);
   border-radius: 0;
   font-family: var(--font-display);
-  font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 600;
+  font-variation-settings: var(--fvar-section-tight);
   font-size: var(--type-eyebrow);
   font-weight: 600;
   letter-spacing: 0.04em;

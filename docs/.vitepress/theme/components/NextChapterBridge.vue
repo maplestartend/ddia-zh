@@ -79,6 +79,9 @@ const displayTeaser = computed(() => currentChap.value?.teaser)
 .ddia-bridge:hover {
   background-color: var(--bg-surface);
 }
+.ddia-bridge:active {
+  background-color: var(--brand-tint-soft);  /* Wave 28d：按下瞬間壓凹 */
+}
 .ddia-bridge:hover .ddia-bridge-title {
   color: var(--brand-500);
 }
@@ -88,7 +91,7 @@ const displayTeaser = computed(() => currentChap.value?.teaser)
 
 .ddia-bridge-eyebrow {
   font-family: var(--font-display);
-  font-variation-settings: "opsz" 24, "SOFT" 60, "wght" 500;
+  font-variation-settings: var(--fvar-eyebrow-warm);
   font-style: italic;
   font-size: var(--type-eyebrow);
   font-weight: 500;
@@ -144,7 +147,7 @@ const displayTeaser = computed(() => currentChap.value?.teaser)
 }
 
 @media (max-width: 640px) {
-  .ddia-bridge { padding: 22px 0 24px; }
+  .ddia-bridge { padding: 22px 0 var(--space-4); }
   .ddia-bridge-num { font-size: 22px; }
   .ddia-bridge-title { font-size: 22px; }
 }

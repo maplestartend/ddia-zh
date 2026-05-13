@@ -68,7 +68,7 @@ function scrollToLetter(letter: string, e: MouseEvent) {
   align-items: baseline;
   gap: 6px;
   padding: 12px 0;
-  margin: 16px 0 32px;
+  margin: var(--space-3) 0 32px;
   background: var(--bg-canvas);
   border: 0;
   border-top: 1px solid var(--rule-hairline);
@@ -91,7 +91,7 @@ function scrollToLetter(letter: string, e: MouseEvent) {
   border-right: 1px solid var(--border-default);
   font-family: var(--font-display);
   font-style: italic;
-  font-variation-settings: "opsz" 24, "SOFT" 60, "wght" 500;
+  font-variation-settings: var(--fvar-eyebrow-warm);
   color: var(--text-tertiary);
   font-size: var(--type-eyebrow);
   font-weight: 500;
@@ -111,7 +111,7 @@ function scrollToLetter(letter: string, e: MouseEvent) {
   padding: 0 2px;
   font-family: var(--font-display);
   font-feature-settings: "onum" 1;
-  font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 500;
+  font-variation-settings: var(--fvar-section-mid);
   font-size: var(--type-small);
   font-weight: 500;
   color: var(--text-secondary);
@@ -141,13 +141,13 @@ function scrollToLetter(letter: string, e: MouseEvent) {
 
 @media (max-width: 600px) {
   .ddia-glossary-index {
-    padding: 8px 10px;
+    padding: var(--space-2) 10px;
     gap: 2px;
   }
   .ddia-glossary-index-label {
     width: 100%;
-    margin: 0 0 4px;
-    padding: 0 0 4px;
+    margin: 0 0 var(--space-1);
+    padding: 0 0 var(--space-1);
     border-right: none;
     border-bottom: 1px solid var(--border-default);
   }

@@ -93,7 +93,7 @@ const recommendations = computed(() => items.filter(i => !checked.value[i.id]))
 /* Editorial Part 0 自評：書末讀者測驗樣式 */
 .ddia-self-assess {
   margin: 32px 0;
-  padding: 24px 0;
+  padding: var(--space-4) 0;
   background: transparent;
   border: 0;
   border-top: 1px solid var(--rule-hairline);
@@ -181,7 +181,7 @@ const recommendations = computed(() => items.filter(i => !checked.value[i.id]))
 .ddia-self-assess-q :deep(code) {
   font-family: var(--font-mono);
   font-size: 0.9em;
-  padding: 0 4px;
+  padding: 0 var(--space-1);
   background: var(--brand-tint-soft);
   border: 1px solid var(--brand-tint-border);
   color: var(--brand-500);
@@ -235,7 +235,7 @@ const recommendations = computed(() => items.filter(i => !checked.value[i.id]))
   align-items: baseline;
   gap: 6px;
   font-family: var(--font-display);
-  font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 600;
+  font-variation-settings: var(--fvar-section-tight);
   color: var(--accent-500);
   margin-bottom: 10px;
   letter-spacing: 0.04em;

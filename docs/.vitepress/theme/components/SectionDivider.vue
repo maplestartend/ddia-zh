@@ -57,7 +57,7 @@ const isCjk = computed(() => /[一-鿿]/.test(props.label ?? ''))
 .ddia-section-divider-label {
   font-family: var(--font-display);
   font-style: italic;
-  font-variation-settings: "opsz" 24, "SOFT" 60, "wght" 500;
+  font-variation-settings: var(--fvar-eyebrow-warm);
   text-transform: uppercase;
   font-size: var(--type-eyebrow);
   font-weight: 500;

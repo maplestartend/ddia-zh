@@ -69,7 +69,7 @@ watch(content, () => {
 /* Editorial 章節筆記：書頁批註欄樣式 */
 .ddia-note {
   margin: 28px 0;
-  padding: 16px 0;
+  padding: var(--space-3) 0;
   background: transparent;
   border: 0;
   border-top: 1px solid var(--rule-hairline);
@@ -85,7 +85,7 @@ watch(content, () => {
   gap: 10px;
   cursor: pointer;
   font-family: var(--font-display);
-  font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 600;
+  font-variation-settings: var(--fvar-section-tight);
   font-weight: 600;
   font-size: 15px;
   color: var(--text-primary);

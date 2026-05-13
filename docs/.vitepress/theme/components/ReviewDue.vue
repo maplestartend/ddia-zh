@@ -77,7 +77,7 @@ function onForgotten(chapterId: string) {
   align-items: center;
   gap: 6px;
   font-family: var(--font-display);
-  font-variation-settings: "opsz" 24, "SOFT" 60, "wght" 500;
+  font-variation-settings: var(--fvar-eyebrow-warm);
   font-style: italic;
   font-size: var(--type-eyebrow);
   font-weight: 500;
@@ -139,7 +139,7 @@ function onForgotten(chapterId: string) {
 }
 .ddia-review-item-title {
   font-family: var(--font-display);
-  font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 600;
+  font-variation-settings: var(--fvar-section-tight);
   font-weight: 600;
   font-size: 15.5px;
   color: var(--text-primary);
@@ -157,10 +157,10 @@ function onForgotten(chapterId: string) {
   display: block;
   font-family: var(--font-display);
   font-style: italic;
-  font-variation-settings: "opsz" 24, "SOFT" 60, "wght" 400;
+  font-variation-settings: var(--fvar-italic-warm);
   font-size: 12.5px;
   color: var(--text-tertiary);
-  margin-top: 4px;
+  margin-top: var(--space-1);
   letter-spacing: 0.01em;
 }
 .ddia-review-item-actions {
@@ -176,7 +176,7 @@ function onForgotten(chapterId: string) {
   border: 1px solid var(--text-primary);
   border-radius: 0;
   font-family: var(--font-display);
-  font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 600;
+  font-variation-settings: var(--fvar-section-tight);
   font-size: 12.5px;
   letter-spacing: 0.04em;
   color: var(--text-primary);

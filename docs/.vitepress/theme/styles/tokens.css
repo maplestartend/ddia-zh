@@ -100,11 +100,16 @@
   --type-eyebrow:   12px;  /* italic small caps eyebrow 唯一規格 */
   --type-chapter-mark: 36px;  /* 章號（< h1 42px 避免階層倒置；mark 是「裝飾」、不該大過章名） */
 
-  /* Fraunces variation-settings 標準化（從 6 個 SOFT 檔位收斂到 4 套規格） */
+  /* Fraunces variation-settings 標準化（Wave 28a：加 4 套覆蓋常見實際使用 pattern） */
   --fvar-display:    "opsz" 72, "SOFT" 60, "wght" 500;  /* 大標題 / 章名 */
   --fvar-section:    "opsz" 36, "SOFT" 50, "wght" 600;  /* h2 / h3 / 元件 section */
   --fvar-eyebrow:    "opsz" 24, "SOFT" 50, "wght" 500;  /* italic eyebrow / cite / pager */
   --fvar-italic-note:"opsz" 24, "SOFT" 50, "wght" 400;  /* italic 引言段落 */
+  /* Wave 28a 新增：實測高頻 pattern (20+20+8+6 占 54 處) */
+  --fvar-eyebrow-warm: "opsz" 24, "SOFT" 60, "wght" 500;  /* eyebrow + 60 SOFT 圓潤襯線（20 處）*/
+  --fvar-section-tight:"opsz" 24, "SOFT" 30, "wght" 600;  /* 小字級 section header（20 處）*/
+  --fvar-italic-warm: "opsz" 24, "SOFT" 60, "wght" 400;  /* 暖色 italic body（8 處）*/
+  --fvar-section-mid: "opsz" 24, "SOFT" 30, "wght" 500;  /* 小字級 mid-weight（6 處）*/
 
   /* letter-spacing 標準（從 0.18/0.22/0.28/0.32 四套收斂到 1 個） */
   --ls-eyebrow: 0.22em;  /* italic uppercase small caps eyebrow 全站唯一 */
@@ -176,10 +181,11 @@
   --brand-tint-border: rgba(140, 58, 42, 0.28);
 
   /* accent (manuscript orange) tint family — 取代 hardcoded rgba */
-  --accent-tint-soft:  rgba(162, 70, 18, 0.10);
-  --accent-tint:       rgba(162, 70, 18, 0.20);
-  --accent-tint-mark:  rgba(162, 70, 18, 0.35);  /* mark / highlight 用 */
-  --accent-tint-rule:  rgba(162, 70, 18, 0.55);  /* link underline 用 */
+  /* Wave 28c：同步到新 --accent-500 #93521A (147, 82, 26) — 原本仍是舊 hex #A24612 (162, 70, 18) */
+  --accent-tint-soft:  rgba(147, 82, 26, 0.10);
+  --accent-tint:       rgba(147, 82, 26, 0.20);
+  --accent-tint-mark:  rgba(147, 82, 26, 0.35);  /* mark / highlight 用 */
+  --accent-tint-rule:  rgba(147, 82, 26, 0.55);  /* link underline 用 */
 }
 
 /* ---------- Semantic · Dark（暖炭 + 米白）---------- */

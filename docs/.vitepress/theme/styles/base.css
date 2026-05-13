@@ -97,7 +97,7 @@ body {
   letter-spacing: -0.008em;
   line-height: 1.18;
   margin: 12px 0 32px;
-  padding-bottom: 24px;
+  padding-bottom: var(--space-4);
   border-bottom: 1px solid var(--rule-hairline);
   color: var(--text-primary);
   position: relative;
@@ -191,6 +191,8 @@ body {
    - margin 用 var(--space-2) = 8px（儀式緊密）、與章末 var(--space-4) 24px 形成 3× 節奏對比
    結果：4 元件視覺合成一張章首頁、不再是 4 張獨立卡片 */
 .ddia-chapter-opener + .ddia-meta,
+.ddia-chapter-opener + .ddia-prereq,
+.ddia-chapter-opener + .ddia-tldr,
 .ddia-meta + .ddia-prereq,
 .ddia-prereq + .ddia-tldr,
 .ddia-meta + .ddia-tldr {
@@ -198,7 +200,11 @@ body {
   margin-top: var(--space-2) !important;
 }
 /* 移除中間元件的 border-bottom（用 :has 鎖定「後面還有章首元件」的情境）
-   只有最後一個元件（通常 TLDR）保留自己的 bottom rule、當章首頁下沿 */
+   只有最後一個元件（通常 TLDR）保留自己的 bottom rule、當章首頁下沿
+   Wave 28e：補 ChapterOpener 直接接 prereq/tldr 的 fallback（無 meta 章節） */
+.ddia-chapter-opener:has(+ .ddia-meta),
+.ddia-chapter-opener:has(+ .ddia-prereq),
+.ddia-chapter-opener:has(+ .ddia-tldr),
 .ddia-meta:has(+ .ddia-prereq),
 .ddia-meta:has(+ .ddia-tldr),
 .ddia-prereq:has(+ .ddia-tldr) {
@@ -219,7 +225,7 @@ body {
 .ddia-quiz + .ddia-note,
 .ddia-quiz + .ddia-chapter-loop {
   border-top: 0 !important;
-  margin-top: var(--space-4) !important;  /* 24px、章末鬆散；與章首 var(--space-2) 8px 形成 3× 對比 */
+  margin-top: var(--space-5) !important;  /* Wave 28e：40px、章末鬆散；章首 8 vs 章末 40 = 5:1 對比、書頁節奏感清楚 */
 }
 
 /* Editorial drop cap：章首（h1 之後的第一個 p）首字大寫 — 書本書頁感
@@ -275,7 +281,7 @@ body {
 .vp-doc blockquote {
   border-left: 3px solid var(--rule-hairline);
   background: transparent;
-  padding: 6px 0 6px 24px;
+  padding: 6px 0 6px var(--space-4);
   border-radius: 0;
   margin: 28px 0;
   color: var(--text-secondary);
@@ -294,7 +300,7 @@ body {
    想要 dinkus 儀式請改用 <SectionDivider /> 元件、或在 Dashboard ceremony 100% 處顯示。 */
 .vp-doc hr {
   border: 0;
-  margin: 40px auto;
+  margin: var(--space-5) auto;
   height: auto;
   text-align: center;
   overflow: visible;
@@ -319,7 +325,7 @@ body {
 .vp-doc thead {
   background: transparent;
   font-family: var(--font-display);
-  font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 500;
+  font-variation-settings: var(--fvar-section-mid);
   font-weight: 500;
   letter-spacing: 0.04em;
 }
@@ -346,7 +352,7 @@ body {
 .vp-doc :not(pre) > code {
   font-family: var(--font-mono);
   font-size: 0.88em;
-  padding: 0 4px;
+  padding: 0 var(--space-1);
   background: var(--brand-tint-soft);
   color: var(--text-primary);   /* 內文行內 code 改 ink、不用 brand：避免 brand 雜訊 */
   border-radius: 0;

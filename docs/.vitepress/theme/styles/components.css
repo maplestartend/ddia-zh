@@ -20,14 +20,14 @@
 
 .ddia-tldr-title {
   font-family: var(--font-display);
-  font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 600;
+  font-variation-settings: var(--fvar-section-tight);
   font-weight: 600;
   font-size: var(--type-eyebrow);
   color: var(--text-tertiary);
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  margin: 0 0 16px;
+  margin: 0 0 var(--space-3);
   letter-spacing: 0.18em;
   text-transform: uppercase;
 }
@@ -40,7 +40,7 @@
   font-style: italic;
   letter-spacing: 0;
   color: var(--brand-500);
-  margin-right: 4px;
+  margin-right: var(--space-1);
   font-variation-settings: "opsz" 48, "wght" 500;
 }
 .dark .ddia-tldr-title::before {
@@ -67,7 +67,7 @@
   line-height: 1.75;
   color: var(--text-primary);
   position: relative;
-  padding-left: 4px;
+  padding-left: var(--space-1);
 }
 
 /* 列表 bullet 用 dot operator · 取代圓點 — 印刷感 */
@@ -90,8 +90,8 @@
 .ddia-meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px 24px;
-  margin: 16px 0 32px;
+  gap: 20px var(--space-4);
+  margin: var(--space-3) 0 32px;
   padding: 14px 0;
   background: transparent;
   border: 0;
@@ -118,7 +118,7 @@
 .ddia-meta-item strong {
   font-family: var(--font-display);
   font-style: normal;
-  font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 600;
+  font-variation-settings: var(--fvar-section-tight);
   color: var(--text-primary);
   font-weight: 600;
   letter-spacing: 0.02em;
@@ -135,7 +135,7 @@
   background: transparent;
   font-family: var(--font-display);
   font-style: italic;
-  font-variation-settings: "opsz" 24, "SOFT" 60, "wght" 500;
+  font-variation-settings: var(--fvar-eyebrow-warm);
   font-size: 12.5px;
   font-weight: 500;
   letter-spacing: 0.04em;
@@ -155,7 +155,7 @@
   border-top: 1px solid var(--rule-hairline);
   border-bottom: 1px solid var(--rule-hairline);
   border-radius: 0;
-  padding: 28px 0 24px;
+  padding: 28px 0 var(--space-4);
   margin: 48px 0;
 }
 
@@ -188,7 +188,7 @@
   font-variation-settings: "opsz" 48, "wght" 500;
   font-size: var(--type-h2);
   color: var(--brand-500);
-  margin-right: 4px;
+  margin-right: var(--space-1);
   line-height: 1;
 }
 .dark .ddia-quiz-header-title::before {
@@ -197,10 +197,10 @@
 
 .ddia-quiz-question {
   font-family: var(--font-display);
-  font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 600;
+  font-variation-settings: var(--fvar-section-tight);
   font-weight: 600;
   font-size: 17px;
-  margin: 24px 0 12px;
+  margin: var(--space-4) 0 12px;
   color: var(--text-primary);
   line-height: 1.55;
 }
@@ -252,19 +252,19 @@
 }
 
 .ddia-quiz-option input[type='radio'] {
-  margin-top: 4px;
+  margin-top: var(--space-1);
   accent-color: var(--brand-500);
 }
 
 .ddia-quiz-actions {
   display: flex;
   gap: var(--space-4);
-  margin-top: 24px;
+  margin-top: var(--space-4);
   align-items: center;
 }
 
 .ddia-quiz-explanation {
-  margin-top: 16px;
+  margin-top: var(--space-3);
   padding: 6px 0 6px 20px;
   background: transparent;
   border-radius: 0;
@@ -296,13 +296,13 @@
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  margin: -8px 0 18px;
+  margin: -var(--space-2) 0 18px;
   padding: 0;
   background: transparent;
   border-radius: 0;
   font-family: var(--font-display);
   font-style: italic;
-  font-variation-settings: "opsz" 24, "SOFT" 60, "wght" 400;
+  font-variation-settings: var(--fvar-italic-warm);
   font-size: 13px;
   color: var(--text-tertiary);
 }
@@ -314,7 +314,7 @@
   margin-right: 10px;
   font-family: var(--font-display);
   font-style: italic;
-  font-variation-settings: "opsz" 24, "SOFT" 60, "wght" 500;
+  font-variation-settings: var(--fvar-eyebrow-warm);
   font-size: var(--type-eyebrow);
   font-weight: 500;
   letter-spacing: 0.12em;
@@ -341,7 +341,7 @@
   border-radius: 0;
   font-family: var(--font-display);
   font-style: italic;
-  font-variation-settings: "opsz" 24, "SOFT" 60, "wght" 500;
+  font-variation-settings: var(--fvar-eyebrow-warm);
   font-size: 13px;
   color: var(--accent-500);
   text-decoration: none;
@@ -364,7 +364,7 @@
   padding: 10px 20px;
   border-radius: 0;
   font-family: var(--font-display);
-  font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 600;
+  font-variation-settings: var(--fvar-section-tight);
   font-weight: 600;
   font-size: var(--type-small);
   letter-spacing: 0.04em;
@@ -421,6 +421,22 @@
   cursor: not-allowed;
 }
 
+/* Wave 28d：btn focus-visible 用 token outline 覆蓋 base.css 全域 box-shadow、給 btn 更銳利環
+   .primary 自己就是 brand 底色、focus-ring 用 accent 對比避免自撞 */
+.ddia-btn:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+  box-shadow: none;
+}
+.ddia-btn.primary:focus-visible {
+  outline-color: var(--accent-500);
+}
+
+/* Wave 28d：active state 全站 — 按下瞬間視覺壓凹回饋 */
+.ddia-btn:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
 /* Wave 21.1：destructive 動作 ghost 變體（如 Quiz「徹底清空」） */
 .ddia-btn-ghost-danger {
   color: var(--error-fg);
@@ -436,14 +452,14 @@
 .ddia-hero-disclaimer {
   max-width: 580px;
   margin: 36px auto 0;
-  padding: 16px 0 0;
+  padding: var(--space-3) 0 0;
   background: transparent;
   border: 0;
   border-top: 1px solid var(--border-default);
   border-radius: 0;
   font-family: var(--font-display);
   font-style: italic;
-  font-variation-settings: "opsz" 24, "SOFT" 60, "wght" 400;
+  font-variation-settings: var(--fvar-italic-warm);
   font-size: 13px;
   line-height: 1.7;
   color: var(--text-tertiary);
@@ -455,7 +471,7 @@
   font-weight: 600;
   font-style: normal;
   font-family: var(--font-display);
-  font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 600;
+  font-variation-settings: var(--fvar-section-tight);
 }
 .ddia-hero-disclaimer a {
   color: var(--accent-500);
@@ -479,7 +495,7 @@
   justify-content: center;
   max-width: 900px;
   margin: 32px auto 56px;
-  padding: 18px 24px;
+  padding: 18px var(--space-4);
   border-top: 1px solid var(--border-default);
   border-bottom: 1px solid var(--border-default);
   font-family: var(--font-display);
@@ -488,9 +504,9 @@
 }
 .ddia-secondary-nav-label {
   font-style: italic;
-  font-variation-settings: "opsz" 24, "SOFT" 60, "wght" 400;
+  font-variation-settings: var(--fvar-italic-warm);
   font-weight: 400;
-  margin-right: 4px;
+  margin-right: var(--space-1);
   color: var(--text-tertiary);
   letter-spacing: 0.04em;
 }
@@ -533,8 +549,8 @@
 
 /* ---------- Progress / Chapter loop（learning loop 元件 scoped 樣式在 Vue 內） ---------- */
 .ddia-progress-wrapper {
-  margin: 32px 0 16px;
-  padding: 16px 0;
+  margin: 32px 0 var(--space-3);
+  padding: var(--space-3) 0;
   background: transparent;
   border: 0;
   border-top: 1px solid var(--rule-hairline);
@@ -586,7 +602,7 @@
   align-items: center;
   gap: 6px;
   font-family: var(--font-display);
-  font-variation-settings: "opsz" 24, "SOFT" 60, "wght" 500;
+  font-variation-settings: var(--fvar-eyebrow-warm);
   font-style: italic;
   font-size: var(--type-eyebrow);
   font-weight: 500;
@@ -636,7 +652,7 @@
   border-right: 1px solid var(--rule-hairline);
   border-bottom: 1px solid var(--rule-hairline);
   border-radius: 0;
-  padding: 22px 24px;
+  padding: 22px var(--space-4);
   transition: background-color 0.15s;
 }
 
@@ -646,7 +662,7 @@
 
 .ddia-stat-label {
   font-family: var(--font-display);
-  font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 500;
+  font-variation-settings: var(--fvar-section-mid);
   font-style: italic;
   font-size: var(--type-eyebrow);
   color: var(--text-tertiary);
@@ -670,7 +686,7 @@
   font-weight: 500;
   color: var(--text-primary);
   line-height: 1.1;
-  margin-top: 8px;
+  margin-top: var(--space-2);
   letter-spacing: -0.01em;
 }
 
@@ -711,14 +727,14 @@
   font-style: normal;
 }
 .ddia-stat-sub {
-  margin-top: 4px;
+  margin-top: var(--space-1);
   font-size: 11.5px;
   color: var(--text-tertiary);
 }
 
 /* 錯題本（Editorial：書末 errata 表格） */
 .ddia-incorrect-book {
-  margin: 24px 0 40px;
+  margin: var(--space-4) 0 var(--space-5);
   padding: 18px 0;
   background: transparent;
   border: 0;
@@ -732,7 +748,7 @@
   gap: 10px;
   cursor: pointer;
   font-family: var(--font-display);
-  font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 600;
+  font-variation-settings: var(--fvar-section-tight);
   font-weight: 600;
   font-size: 15px;
   color: var(--text-primary);
@@ -772,7 +788,7 @@
   list-style: none;
 }
 .ddia-incorrect-item {
-  padding: 8px 0;
+  padding: var(--space-2) 0;
   border-top: 1px solid var(--border-default);
 }
 .ddia-incorrect-item:first-child { border-top: none; }
@@ -799,7 +815,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 0;
-  margin: 24px 0 56px;
+  margin: var(--space-4) 0 56px;
   align-items: stretch;
   /* 用 grid 自己的 border 構成連體髮絲線：每張卡只畫 right + bottom，最外層補 top + left */
   border-top: 1px solid var(--rule-hairline);
@@ -809,7 +825,7 @@
 .ddia-chapter-card {
   display: flex;
   flex-direction: column;
-  padding: 22px 24px 18px;
+  padding: 22px var(--space-4) 18px;
   background: transparent;
   border: 0;
   border-right: 1px solid var(--rule-hairline);
@@ -824,6 +840,9 @@
 
 .ddia-chapter-card:hover {
   background: var(--bg-surface);
+}
+.ddia-chapter-card:active {
+  background: var(--brand-tint-soft);  /* Wave 28d：按下瞬間視覺壓凹 */
 }
 
 /* Editorial hover 標示：頂部出現 3px brand 印記（像 paperback chapter heading 標籤）
@@ -857,7 +876,7 @@
 .ddia-chapter-card-num {
   font-family: var(--font-display);
   font-feature-settings: "onum" 1, "smcp" 1;
-  font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 600;
+  font-variation-settings: var(--fvar-section-tight);
   font-size: 11.5px;
   color: var(--brand-500);
   font-weight: 600;
@@ -891,7 +910,7 @@
 }
 
 .ddia-chapter-card-status {
-  margin-top: 16px;
+  margin-top: var(--space-3);
   padding-top: 12px;
   border-top: 1px solid var(--border-default);
   font-size: 11.5px;
@@ -924,7 +943,7 @@
 
 /* Part header（首頁 Part I / II / III · Editorial 雜誌 section 開場頁）*/
 .ddia-part-header {
-  margin: 72px 0 4px;
+  margin: 72px 0 var(--space-1);
   padding-bottom: 18px;
   border-bottom: 1px solid var(--rule-hairline);
   display: flex;
@@ -966,7 +985,7 @@
   display: block;
   font-family: var(--font-display);
   font-style: italic;
-  font-variation-settings: "opsz" 24, "SOFT" 60, "wght" 500;
+  font-variation-settings: var(--fvar-eyebrow-warm);
   font-size: 13px;
   font-weight: 500;
   color: var(--text-tertiary);
@@ -987,8 +1006,8 @@
 
 /* ---------- Hero：首頁 hero 區（Editorial 扉頁 / frontispiece）---------- */
 .ddia-hero {
-  padding: 72px 24px;
-  margin-bottom: 8px;
+  padding: 72px var(--space-4);
+  margin-bottom: var(--space-2);
   text-align: center;
   border-bottom: 1px solid var(--rule-hairline);
   position: relative;
@@ -1001,7 +1020,7 @@
   justify-content: center;
   gap: var(--space-2);
   font-family: var(--font-display);
-  font-variation-settings: "opsz" 24, "SOFT" 60, "wght" 500;
+  font-variation-settings: var(--fvar-eyebrow-warm);
   font-size: 11.5px;
   font-weight: 500;
   font-style: italic;
@@ -1030,7 +1049,7 @@
   font-size: var(--type-display-1);
   font-weight: 500;
   letter-spacing: -0.012em;
-  margin: 0 auto 16px;
+  margin: 0 auto var(--space-3);
   max-width: 720px;
   color: var(--text-primary);
   line-height: 1.15;
@@ -1074,7 +1093,7 @@
   padding: 10px 0;
   border-radius: 0;
   font-family: var(--font-display);
-  font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 600;
+  font-variation-settings: var(--fvar-section-tight);
   font-weight: 600;
   font-size: 15px;
   letter-spacing: 0.04em;
@@ -1092,7 +1111,7 @@
   color: var(--text-inverse) !important;
   border: 1px solid var(--brand-500);
   border-radius: 0;
-  padding: 12px 24px;
+  padding: 12px var(--space-4);
 }
 
 .ddia-cta.primary:hover {
@@ -1105,7 +1124,7 @@
   border-bottom: 1.5px solid var(--text-primary);
   color: var(--text-primary) !important;
   background: transparent;
-  padding: 10px 4px;
+  padding: 10px var(--space-1);
 }
 
 .ddia-cta.ghost:hover {
@@ -1146,7 +1165,7 @@
   border: 0;
   border-left: 3px solid var(--rule-hairline);
   border-radius: 0;
-  padding: 8px 0 8px 20px;
+  padding: var(--space-2) 0 var(--space-2) 20px;
   margin: 28px 0;
   font-size: 15px;
   line-height: 1.75;
@@ -1155,7 +1174,7 @@
 
 .custom-block .custom-block-title {
   font-family: var(--font-display);
-  font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 600;
+  font-variation-settings: var(--fvar-section-tight);
   font-style: italic;
   font-size: 13px;
   font-weight: 600;
@@ -1183,7 +1202,7 @@
 
 .custom-block.details {
   background: var(--bg-subtle);
-  padding: 16px 20px;
+  padding: var(--space-3) 20px;
 }
 
 .dark .custom-block.tip { border-left-color: var(--brand-fg); }
@@ -1203,7 +1222,7 @@
   font-size: var(--type-body);
   font-weight: 700;
   color: var(--text-tertiary);
-  margin-right: 4px;
+  margin-right: var(--space-1);
   line-height: 1;
   transform: translateY(-1px);
   display: inline-block;
@@ -1220,7 +1239,7 @@
 /* 時間 tag（第二個）用 italic 數字 + 「min」單位 */
 .ddia-chapter-card-status-tag:last-child {
   font-style: italic;
-  font-variation-settings: "opsz" 24, "SOFT" 60, "wght" 400;
+  font-variation-settings: var(--fvar-italic-warm);
 }
 .ddia-chapter-card-status-tag:last-child::before {
   content: ""; /* 第二個 tag 不要 dot prefix */
@@ -1246,7 +1265,7 @@
 }
 .VPNavBarTitle .title {
   font-family: var(--font-display);
-  font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 600;
+  font-variation-settings: var(--fvar-section-tight);
   font-weight: 600;
   letter-spacing: 0.04em;
 }
@@ -1256,7 +1275,7 @@
 .VPNavBarMenuLink,
 .VPNavBarMenuGroup .text {
   font-family: var(--font-display);
-  font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 500;
+  font-variation-settings: var(--fvar-section-mid);
   font-size: var(--type-small);
   letter-spacing: 0.02em;
 }
@@ -1425,14 +1444,14 @@ button.DocSearch.DocSearch-Button:focus-visible {
 }
 .VPDocAsideOutline .outline-title {
   font-family: var(--font-display);
-  font-variation-settings: "opsz" 24, "SOFT" 60, "wght" 500;
+  font-variation-settings: var(--fvar-eyebrow-warm);
   font-style: italic;
   font-size: var(--type-eyebrow);
   letter-spacing: var(--ls-eyebrow);
   text-transform: uppercase;
   color: var(--text-tertiary);
   border-bottom: 1px solid var(--rule-hairline);
-  padding-bottom: 8px;
+  padding-bottom: var(--space-2);
   margin-bottom: 12px;
 }
 .VPDocAsideOutline .outline-link {
@@ -1440,7 +1459,7 @@ button.DocSearch.DocSearch-Button:focus-visible {
   line-height: 1.6;
   color: var(--text-tertiary);
   border-radius: 0;
-  padding: 4px 0 4px 8px;
+  padding: var(--space-1) 0 var(--space-1) var(--space-2);
   border-left: 1px solid transparent;
   transition: color 0.15s, border-left-color 0.15s;
 }
@@ -1460,7 +1479,7 @@ button.DocSearch.DocSearch-Button:focus-visible {
 /* outline 整欄左邊改髮絲線 */
 .VPDocAside .root {
   border-left: 1px solid var(--rule-hairline);
-  padding-left: 16px;
+  padding-left: var(--space-3);
 }
 
 /* ----- Local Search Modal：去圓角 + Editorial 字 ----- */
@@ -1485,7 +1504,7 @@ button.DocSearch.DocSearch-Button:focus-visible {
 .VPFooter {
   background: var(--bg-canvas) !important;
   border-top: 1px solid var(--rule-hairline);
-  padding: 32px 24px;
+  padding: 32px var(--space-4);
 }
 .VPFooter .container {
   text-align: center;
@@ -1494,7 +1513,7 @@ button.DocSearch.DocSearch-Button:focus-visible {
 .VPFooter .copyright {
   font-family: var(--font-display);
   font-style: italic;
-  font-variation-settings: "opsz" 24, "SOFT" 60, "wght" 400;
+  font-variation-settings: var(--fvar-italic-warm);
   font-size: 12.5px;
   color: var(--text-tertiary);
   letter-spacing: 0.04em;
@@ -1514,25 +1533,25 @@ button.DocSearch.DocSearch-Button:focus-visible {
 .pager {
   border-top: 1px solid var(--rule-hairline);
   margin-top: 56px;
-  padding-top: 24px;
+  padding-top: var(--space-4);
 }
 /* pager-link 不再畫 border-top — 上面 .pager 已有外框 hairline、
    原本 pager-link 自己又畫一條 = 兩條重疊 */
 .pager-link {
   border-radius: 0 !important;
   border: 0 !important;
-  padding: 16px 0 !important;
+  padding: var(--space-3) 0 !important;
 }
 /* Bridge 後緊接 VPDocFooter / .pager 時、外框 border-top 移除（Bridge 已是章末儀式封頂） */
 .ddia-bridge + .VPDocFooter,
 .ddia-bridge + .pager {
   border-top: 0 !important;
-  margin-top: 24px !important;
+  margin-top: var(--space-4) !important;
 }
 .pager-link .desc {
   font-family: var(--font-display);
   font-style: italic;
-  font-variation-settings: "opsz" 24, "SOFT" 60, "wght" 400;
+  font-variation-settings: var(--fvar-italic-warm);
   font-size: 11px;
   letter-spacing: var(--ls-eyebrow);
   text-transform: uppercase;
@@ -1540,7 +1559,7 @@ button.DocSearch.DocSearch-Button:focus-visible {
 }
 .pager-link .title {
   font-family: var(--font-display);
-  font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 600;
+  font-variation-settings: var(--fvar-section-tight);
   font-size: 15px;
   letter-spacing: 0.01em;
 }
@@ -1617,7 +1636,7 @@ button.DocSearch.DocSearch-Button:focus-visible {
 }
 .ddia-dashboard-resume-eyebrow {
   font-family: var(--font-display);
-  font-variation-settings: "opsz" 24, "SOFT" 60, "wght" 500;
+  font-variation-settings: var(--fvar-eyebrow-warm);
   font-style: italic;
   font-size: var(--type-eyebrow);
   font-weight: 500;
@@ -1633,7 +1652,7 @@ button.DocSearch.DocSearch-Button:focus-visible {
   text-decoration: none;
   color: var(--text-primary);
   border-bottom: 1px solid var(--rule-hairline);
-  padding: 4px 4px;
+  padding: var(--space-1) var(--space-1);
   transition: color 0.15s, border-bottom-color 0.15s;
 }
 .ddia-dashboard-resume-link:hover {
@@ -1643,7 +1662,7 @@ button.DocSearch.DocSearch-Button:focus-visible {
 .ddia-dashboard-resume-num {
   font-family: var(--font-display);
   font-feature-settings: "onum" 1, "smcp" 1;
-  font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 600;
+  font-variation-settings: var(--fvar-section-tight);
   font-size: 13px;
   letter-spacing: var(--ls-eyebrow);
   text-transform: uppercase;
@@ -1682,12 +1701,12 @@ button.DocSearch.DocSearch-Button:focus-visible {
   font-size: var(--type-small);
   letter-spacing: 0.6em;
   color: var(--text-tertiary);
-  margin-bottom: 16px;
+  margin-bottom: var(--space-3);
   padding-left: 0.6em;
 }
 .ddia-dashboard-ceremony-eyebrow {
   font-family: var(--font-display);
-  font-variation-settings: "opsz" 24, "SOFT" 60, "wght" 500;
+  font-variation-settings: var(--fvar-eyebrow-warm);
   font-style: italic;
   font-size: var(--type-eyebrow);
   font-weight: 500;
@@ -1721,7 +1740,7 @@ button.DocSearch.DocSearch-Button:focus-visible {
   color: var(--text-secondary);
   text-decoration: none;
   border-bottom: 1px dotted var(--border-default);
-  padding: 4px 2px;
+  padding: var(--space-1) 2px;
   transition: color 0.15s, border-bottom-color 0.15s;
 }
 .ddia-dashboard-ceremony-link:hover {
@@ -1755,13 +1774,13 @@ button.DocSearch.DocSearch-Button:focus-visible {
    把成就感熱度導向下一章 — 取代過去需要 scroll 到 footer prev/next */
 .ddia-quiz-next {
   margin-top: 32px;
-  padding-top: 24px;
+  padding-top: var(--space-4);
   border-top: 1px solid var(--rule-hairline);
   text-align: center;
 }
 .ddia-quiz-next-eyebrow {
   font-family: var(--font-display);
-  font-variation-settings: "opsz" 24, "SOFT" 60, "wght" 500;
+  font-variation-settings: var(--fvar-eyebrow-warm);
   font-style: italic;
   font-size: var(--type-eyebrow);
   font-weight: 500;
@@ -1776,7 +1795,7 @@ button.DocSearch.DocSearch-Button:focus-visible {
   gap: var(--space-3);
   text-decoration: none;
   color: var(--text-primary);
-  padding: 4px 8px 6px;
+  padding: var(--space-1) var(--space-2) 6px;
   border-bottom: 1px solid var(--rule-hairline);
   transition: color 0.15s, border-bottom-color 0.15s;
 }
@@ -1787,7 +1806,7 @@ button.DocSearch.DocSearch-Button:focus-visible {
 .ddia-quiz-next-num {
   font-family: var(--font-display);
   font-feature-settings: "onum" 1;
-  font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 600;
+  font-variation-settings: var(--fvar-section-tight);
   font-size: 13px;
   letter-spacing: var(--ls-eyebrow);
   text-transform: uppercase;

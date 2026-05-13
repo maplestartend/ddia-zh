@@ -94,7 +94,7 @@ onUnmounted(() => {
 /* Editorial 章末學習循環：書末頁腳列（髮絲線分隔 + 連體按鈕格） */
 .ddia-chapter-loop {
   margin: 56px 0 32px;
-  padding: 24px 0;
+  padding: var(--space-4) 0;
   background: transparent;
   border: 0;
   border-top: 1px solid var(--rule-hairline);
@@ -107,14 +107,14 @@ onUnmounted(() => {
   align-items: center;
   gap: 6px;
   font-family: var(--font-display);
-  font-variation-settings: "opsz" 24, "SOFT" 60, "wght" 500;
+  font-variation-settings: var(--fvar-eyebrow-warm);
   font-style: italic;
   font-size: var(--type-eyebrow);
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: var(--ls-eyebrow);
   color: var(--text-tertiary);
-  margin-bottom: 16px;
+  margin-bottom: var(--space-3);
 }
 .ddia-chapter-loop-eyebrow :deep(.material-symbols-rounded) {
   display: none;
@@ -132,14 +132,14 @@ onUnmounted(() => {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  padding: 16px 18px;
+  padding: var(--space-3) 18px;
   background: transparent;
   border: 0;
   border-right: 1px solid var(--rule-hairline);
   border-bottom: 1px solid var(--rule-hairline);
   border-radius: 0;
   font-family: var(--font-display);
-  font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 500;
+  font-variation-settings: var(--fvar-section-mid);
   font-size: var(--type-small);
   color: var(--text-primary);
   text-decoration: none;
@@ -167,7 +167,7 @@ onUnmounted(() => {
 }
 .ddia-loop-btn-label {
   font-family: var(--font-display);
-  font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 600;
+  font-variation-settings: var(--fvar-section-tight);
   font-weight: 600;
   font-size: 15px;
   line-height: 1.3;
@@ -179,7 +179,7 @@ onUnmounted(() => {
 .ddia-loop-btn-sub {
   font-family: var(--font-display);
   font-style: italic;
-  font-variation-settings: "opsz" 24, "SOFT" 60, "wght" 400;
+  font-variation-settings: var(--fvar-italic-warm);
   font-size: var(--type-eyebrow);
   color: var(--text-tertiary);
   letter-spacing: 0.04em;
