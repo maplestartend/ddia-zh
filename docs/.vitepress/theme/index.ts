@@ -26,6 +26,7 @@ import CheatSheetExport from './components/CheatSheetExport.vue'
 import Part0SelfAssessment from './components/Part0SelfAssessment.vue'
 import ReviewDue from './components/ReviewDue.vue'
 import InterviewBlock from './components/InterviewBlock.vue'
+import FirstReadShortcut from './components/FirstReadShortcut.vue'
 // Wave 38：DecisionTree / SequenceFlow 取代 mermaid（CJK + 624px 容器跑版痼疾）
 import DecisionTree from './components/DecisionTree.vue'
 import DecisionTreeNode from './components/DecisionTreeNode.vue'
@@ -117,6 +118,7 @@ export default {
     app.component('Part0SelfAssessment', Part0SelfAssessment)
     app.component('ReviewDue', ReviewDue)
     app.component('InterviewBlock', InterviewBlock)
+    app.component('FirstReadShortcut', FirstReadShortcut)
     app.component('DecisionTree', DecisionTree)
     app.component('DecisionTreeNode', DecisionTreeNode)
     app.component('SequenceFlow', SequenceFlow)

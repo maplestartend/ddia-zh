@@ -14,6 +14,17 @@ title: Ch8 分散式系統的麻煩
   "<strong>「真相由多數決定」</strong>：單一節點不能信任自己（可能已被孤立）；分散式系統用 quorum、fencing token 等機制讓多數決定誰是 leader。"
 ]' />
 
+<FirstReadShortcut>
+
+這章名字叫「分散式系統的麻煩」、但實際是「**讓你產生對分散式 bug 的直覺**」。**第一次讀建議聚焦三節**：
+
+- **必讀核心**：§8.1 部分失效 + §8.2 不可靠網路 + §8.3 不可靠時鐘
+- **第一次可跳**：§8.4 Process pause 的 lease 例子細節（抓住「GC / cgroup throttling 會讓你的時間感覺被偷走」即可）+ §8.5 拜占庭故障（多數工程師職涯不會碰到、抓住「為什麼多數系統假設非拜占庭」即可）
+
+讀完核心三節你會**開始懷疑網路和時鐘**——這是讀 Ch9 共識前必須的心態切換。
+
+</FirstReadShortcut>
+
 ::: tip 先備名詞速查（本章會密集出現）
 | 名詞 | 一句話 |
 |---|---|
@@ -82,7 +93,12 @@ LWW → x=1（保留 T1），但實際上 T2 是「後發生」的
 **結論**：時間戳不能用來決定事件順序（除非有特殊機制如 TrueTime）。
 
 ### Google TrueTime
-給每個時間戳一個**信賴區間** `[earliest, latest]`，比較時若兩個區間不重疊才能定序，重疊就等待。Spanner 用它做全球一致交易。
+給每個時間戳一個**信賴區間** `[earliest, latest]`，保證真實時間在這區間內。Spanner 用它做全球一致交易，關鍵機制是 **commit-wait**：
+
+- **write-side（不是 read-side）等待**：交易 commit 時主動 sleep 到 `TT.now().latest > 自己的 commit timestamp` 才回傳給 client，確保「我 commit 後、任何下次的 `TT.now()` 都比我大」
+- **讀不需等**：reader 只要 `TT.now().earliest > s` 就能確認 s 對應的交易已成為過去
+
+這把「時鐘不確定性」搬到 write 那一側、用延遲換 external consistency。詳細推導見 [Ch9 §9.6](/part-2/ch09-consistency#spanner-truetime-與-commit-wait)。
 
 ---
 

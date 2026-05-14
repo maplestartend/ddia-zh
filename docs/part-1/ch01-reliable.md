@@ -100,6 +100,15 @@ WHERE follows.follower_id = current_user;
 
 > 這個例子告訴我們：**負載的描述參數選錯了，整個擴展策略就會錯**。Twitter 的關鍵參數不是 QPS，而是「每位使用者的粉絲數分布」。
 
+::: tip 本土場景：蝦皮雙 11 直播
+**蝦皮雙 11 0 點開賣**是台灣電商最大 fan-out 場景：
+- **瞬時 30 萬+ QPS 寫入**（搶購下單）+ **百萬+ QPS 讀取**（庫存查詢、訂單狀態、即時聊天）
+- 直播間「點愛心」「搶優惠券」是經典 broadcast：1 個主播動作 → fan-out 到數十萬觀眾畫面
+- **大客戶（賣家數萬筆訂單）通常落在 P999**——因為訂單列表查詢的資料量更大、必然查得更慢（這就是 Ch1 講的 tail latency 來源）
+
+DDIA 原書用 Twitter timeline 解釋同樣的問題，本站讀者熟悉的是蝦皮——但底層的 **「讀寫負載特性決定架構選擇」** 是同一套：要選 push（寫入時就 fan-out 到每個 follower 的 inbox）還是 pull（讀取時才聚合所有 following 的最新訊息）。
+:::
+
 ### 描述性能：使用 Percentile
 
 平均值會被極端值拉動，無法反映**最差的使用者體驗**。應使用 <G term="percentile">percentile</G>：

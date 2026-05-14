@@ -20,6 +20,17 @@ title: Ch7 交易
   "<strong>真正的 Serializable 有三種實作</strong>：Actual Serial Execution（VoltDB 單執行緒）、2PL（傳統鎖）、SSI（樂觀並發、PostgreSQL 9.1+）。"
 ]' />
 
+<FirstReadShortcut>
+
+這章資訊密度全書最高（90-120 分鐘）。**第一次讀建議走「最小可用版」路徑**——讀完就能繼續往 Ch8/10/11 推進：
+
+- **必讀核心**：§7.1 ACID 真相 + §7.2 前半（Read Committed / Snapshot Isolation / Lost Update）+ §7.3 三種 serializable 簡介
+- **第一次可跳**：§7.2 末「Phantom-based write skew 兩種變形」+ §7.3 SSI rw-antidependency 環細節——等實際撞到並發 bug 再回頭精讀
+
+讀完核心三節（約 50 分鐘）你就能：**看懂 PG / MySQL / Oracle 隔離級別的真實差異**、**知道為什麼 InnoDB RR 不偵測 lost update**、**把 ACID 從口號變成可選的工程選項**。
+
+</FirstReadShortcut>
+
 ## 7.0 為什麼需要交易？
 
 ::: tip 從一個具體場景出發
@@ -40,6 +51,17 @@ BEGIN;
 COMMIT;
 -- 如果中途失敗，自動 ROLLBACK
 ```
+:::
+
+::: tip 你已經踩過這章的痛點：街口 / Line Pay 轉帳
+你開街口轉 300 元給朋友、按下確認那刻、手機畫面卡住、過了 3 秒跳「網路錯誤」——但你帳戶餘額**已經扣了 300**，朋友卻**還沒收到**。重試一次後雙方都正常、但帳戶被扣兩次。
+
+這個畫面就是這章在解的問題：
+- **錢不能憑空消失也不能憑空生出**（Atomicity / Durability）
+- **同時兩個人轉同一筆帳餘額不能算錯**（Isolation / lost update）
+- **手機網路斷一半時、server 怎麼知道我有沒有真的扣成功**（partial failure → idempotency key + 對帳）
+
+DDIA 原書用 Alice 轉帳給 Bob 當範例、本站用街口 / Line Pay 重講同一個故事——但底層的 **ACID 四個字母** 跟金融科技公司每天面對的設計選擇是同一套。
 :::
 
 如果你寫的 CRUD 都靠 ORM 一行 `User.create()` 解決，**沒手動下過 BEGIN/COMMIT** —— 那這章會打開你的視野。即使你沒明寫，框架底下也在替你做這件事。
@@ -69,7 +91,7 @@ COMMIT;
 ::: warning 命名地獄：REPEATABLE READ 在各家 DB 是不同東西
 SQL 標準的 REPEATABLE READ 並未要求防止 phantom，且各家詮釋差異極大：
 - **PostgreSQL** 的 REPEATABLE READ = 完整的 Snapshot Isolation（純 MVCC、commit 時 first-committer-wins 偵測寫衝突）
-- **MySQL InnoDB** 的 REPEATABLE READ **嚴格說不是 SI**——是「**MVCC consistent read + locking read 混合**」：純 `SELECT` 用 MVCC 走 snapshot；但 `SELECT ... FOR UPDATE` / `UPDATE` / `DELETE` 用 next-key lock 鎖最新版（不是 snapshot）→ 同一交易內讀到自己改完的列，**但其他人改的列在 snapshot 中看不見**、且不會像 PG 那樣 commit 時 `40001` abort
+- **MySQL InnoDB** 的 REPEATABLE READ **嚴格說不是 SI**——是「**MVCC consistent read + locking read 混合**」：純 `SELECT` 用 MVCC 走 snapshot；但 `SELECT ... FOR UPDATE` / `UPDATE` / `DELETE` 用 **next-key lock**、會**繞過 MVCC snapshot 直接讀最新已 commit 版本**再對該列加鎖 → 同一個 RR 交易內可能 `SELECT` 看到 A 值、`SELECT ... FOR UPDATE` 同一列看到 B 值（B 是別人已 commit 但比我 snapshot 新的版本）；且不會像 PG 那樣 commit 時 `40001` abort
 - **Oracle** 沒有真正的 REPEATABLE READ；它的「Serializable」其實是 SI
 
 讀文件看到「REPEATABLE READ」時，**永遠先查具體 DB 的實際語意**。
@@ -378,7 +400,7 @@ Redis 是 single-threaded event loop、執行命令也是序列的——但 `MUL
 
 ### 2. Two-Phase Locking (2PL) {#two-phase-locking}
 讀加共享鎖、寫加排他鎖。
-- **Strict 2PL**（實務上幾乎都這版本）：鎖**到 commit 才釋放**，避免 cascade abort（另一交易若讀了未 commit 的值、跟著 commit、然後原交易 rollback → 連鎖回滾）
+- **Strict 2PL**（實務上幾乎都這版本）：寫鎖押**到 commit 才釋放**——其他交易因此**讀不到 uncommitted 寫**、根本不會發生 cascade abort（cascade abort 的場景：T2 讀了 T1 的 uncommitted 寫、T2 commit、T1 rollback → 必須連鎖 abort T2；Strict 2PL 從源頭擋掉「讀 uncommitted」這一步）
 - 普通 2PL 只要求「**取鎖階段**結束才能進**釋鎖階段**」、釋鎖後不能再取鎖，但這不阻擋 cascade abort
 - ✓ 真正可序列化
 - ✗ 死鎖頻繁、效能差（讀也會被阻塞）
@@ -398,7 +420,7 @@ Redis 是 single-threaded event loop、執行命令也是序列的——但 `MUL
 ### 3. Serializable Snapshot Isolation (SSI)
 2008 後的學術成果，PostgreSQL 9.1 採用。
 - 樂觀執行（用 SI）+ 提交時偵測衝突 → 衝突就 abort
-- 用「過時的前提（stale premise）」偵測：T1 讀的資料被 T2 改了，且 T1 也寫了 → abort T1
+- 偵測「**rw-antidependency 環**」：當形成「T1 →rw T2 →rw T3」這種兩條相鄰 rw 邊的結構、作為 pivot 的 T2（同時是 T1 的 rw-successor、又是 T3 的 rw-predecessor）會被 abort。直覺是：T2 讀的資料被 T1 改、T2 寫的資料又被 T3 讀 → T2 站在「過時前提」上做事
 - ✓ 接近 SI 的效能 + 真正可序列化
 - ✗ 衝突率高時 abort 多
 
