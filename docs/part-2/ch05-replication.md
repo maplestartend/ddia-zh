@@ -11,7 +11,7 @@ title: Ch5 複製
   "<strong>三種架構</strong>：Single-Leader（最常見，PostgreSQL/MySQL）、Multi-Leader（跨資料中心）、Leaderless（Dynamo 風格，Cassandra/Riak）。",
   "<strong>同步 vs 非同步的權衡</strong>：同步保證一致性但任一節點掛掉整體卡死；非同步快但有資料丟失風險。實務常用「半同步」。",
   "<strong>複製延遲三大問題</strong>：read-your-writes、monotonic reads、consistent prefix reads —— 要靠應用層或路由策略解決。",
-  "<strong>Leaderless 靠 Quorum</strong>：W + R > N 在「嚴格 quorum」下保證讀到最新值；Dynamo 風格啟用 sloppy quorum（鬆散法定人數 — 原節點不可達時暫寫到替代節點、待恢復後再同步回去）換可用性時不保證。版本向量（version vector）解決並發寫衝突。"
+  "<strong>Leaderless 靠 Quorum</strong>：W + R > N 在「嚴格 quorum」下保證讀到最新值；Dynamo 風格的 sloppy quorum（鬆散法定人數）—— 寫不到原節點時暫存到鄰居、等原節點回來再補 —— 換來可用性但不再保證讀最新。版本向量（version vector）解決並發寫衝突。"
 ]' />
 
 <FirstReadShortcut>
@@ -189,13 +189,17 @@ title: Ch5 複製
 
 | 策略 | 說明 | 風險 |
 |---|---|---|
-| Last-Write-Wins (LWW) | 用時間戳，最大勝（Cassandra / DynamoDB / Riak 預設策略） | 時鐘不同步 → 並發寫被靜默丟失 |
-| 應用層 merge | 給 client 看到衝突，自己決定 | 複雜 |
+| Last-Write-Wins (LWW) | 用時間戳，最大勝（**Cassandra 預設**、**DynamoDB 預設**） | 時鐘不同步 → 並發寫被靜默丟失 |
+| 應用層 merge | 給 client 看到衝突、自己決定（**Riak 預設**：keep all siblings、讀時讓 client resolve） | 複雜 |
 | CRDT | 自動可合併資料結構 | 資料結構受限 |
 | Mergeable persistent data | 像 git，保留分支 | 仍需應用處理 |
 
+::: warning Riak 預設不是 LWW
+Riak 預設啟用 `allow_mult=true` —— 並發寫保留 **siblings**、由 client 讀時 resolve（或用 CRDT data type 如 `riak_dt_map` 自動合併）。LWW（`allow_mult=false`）是 Riak 的**可選**設定、Basho 文件明確不建議用於可能有並發寫的場景（會靜默丟資料）。本表已修正：Cassandra / DynamoDB 預設 LWW、Riak 預設 sibling merge。
+:::
+
 ::: warning CockroachDB / Spanner / YugabyteDB ≠ LWW
-這三家常被誤認為「用 HLC / TrueTime 做 LWW 衝突解決」，**其實不是**：它們是 **Raft single-leader-per-range**、每個資料範圍只有一個 leader 寫入，**根本不存在並發 multi-leader 寫衝突**。HLC / TrueTime 在這幾家用於 **MVCC 時間戳排序與外部一致性**（external consistency），不是用於解多寫者衝突。真正在「並發寫到不同副本、用時間戳挑勝者」的是 Cassandra / DynamoDB / Riak 這類 Dynamo-style leaderless 系統。
+這三家常被誤認為「用 HLC / TrueTime 做 LWW 衝突解決」，**其實不是**：它們是 **Raft single-leader-per-range**、每個資料範圍只有一個 leader 寫入，**根本不存在並發 multi-leader 寫衝突**。HLC / TrueTime 在這幾家用於 **MVCC 時間戳排序與外部一致性**（external consistency），不是用於解多寫者衝突。真正在「並發寫到不同副本、用時間戳挑勝者」的是 Cassandra / DynamoDB 這類 Dynamo-style leaderless 系統。
 :::
 
 ---

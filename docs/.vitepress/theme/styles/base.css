@@ -275,9 +275,10 @@ body {
 }
 
 /* Editorial drop cap：章首（h1 之後的第一個 p）首字大寫 — 書本書頁感
-   中文吃首字漢字、英文吃首字母。`text-wrap: nowrap` 防 drop cap 換行斷字 */
-.vp-doc > h1:first-of-type + p::first-letter,
-.vp-doc > div:first-of-type > h1 + p::first-letter {
+   中文吃首字漢字。**英文首字會被 `::first-letter` 整字選取放大、視覺破碎**——
+   theme/index.ts 用 JS 偵測首字非 CJK 時、在 .vp-doc 加 .no-drop-cap class 跳過此 rule（P2-5 Wave 42）。 */
+.vp-doc:not(.no-drop-cap) > h1:first-of-type + p::first-letter,
+.vp-doc:not(.no-drop-cap) > div:first-of-type > h1 + p::first-letter {
   font-family: var(--font-display);
   font-feature-settings: "onum" 1;
   font-variation-settings: "opsz" 144, "SOFT" 60, "wght" 600;
@@ -288,8 +289,8 @@ body {
   padding-right: 0.04em;
   color: var(--text-secondary);  /* drop cap 改 ink、不用 brand：書頁首字大寫是裝飾不是品牌 */
 }
-.dark .vp-doc > h1:first-of-type + p::first-letter,
-.dark .vp-doc > div:first-of-type > h1 + p::first-letter {
+.dark .vp-doc:not(.no-drop-cap) > h1:first-of-type + p::first-letter,
+.dark .vp-doc:not(.no-drop-cap) > div:first-of-type > h1 + p::first-letter {
   color: var(--text-secondary);
 }
 
@@ -321,6 +322,17 @@ body {
   border: 0;
   border-left: 3px solid var(--rule-soft);
   background: var(--bg-surface);
+}
+
+/* R3-P1-3 Wave 42.3：dark mode code block 強制吃我們的暖 bg-surface
+   原本 Shiki vitesse-dark 帶冷灰底色 leak（--shiki-dark-bg）— 設計師指出「章節地圖 cell 冷灰」
+   用 !important 鎖死外層 div 背景、讓 pre/code 內層保持 Shiki 語法高亮但底色暖一致 */
+.dark .vp-doc div[class*='language-'] {
+  background: var(--bg-surface) !important;
+}
+.dark .vp-doc div[class*='language-'] pre,
+.dark .vp-doc div[class*='language-'] code {
+  background: transparent !important;
 }
 
 /* Editorial：blockquote 走 pull-quote — Fraunces italic + 左 3px ink 實線、無圓角、無背景 */
@@ -393,22 +405,24 @@ body {
   padding: var(--space-2-5) var(--space-3);
 }
 
-/* Editorial：行內 code 用 mono、極淡 mahogany tint 背景、直角邊
-   dark 模式飽和度砍半 — 避免「螢光標籤」搶過內文 */
+/* Editorial 行內 code（R3-P1-4 Wave 42.3）：
+   上輪純去背景效果不夠（邊界與紙底差異 <5%）— 改加極微暖灰底（bg-subtle 5% alpha）
+   + 細底線、字色保持 brand mahogany 形成「書中等寬引文」+ 微 chip 既視感、不像螢光標籤 */
 .vp-doc :not(pre) > code {
   font-family: var(--font-mono);
   font-size: 0.88em;
-  padding: 0 var(--space-1);
+  padding: 1px 0.25em;
   background: var(--brand-tint-soft);
-  color: var(--text-primary);   /* 內文行內 code 改 ink、不用 brand：避免 brand 雜訊 */
+  color: var(--mark-fg);
   border-radius: 0;
   border: 0;
-  border-bottom: 1px dotted var(--border-default);
+  border-bottom: 1px solid var(--rule-soft);
+  letter-spacing: 0;
 }
 .dark .vp-doc :not(pre) > code {
-  color: var(--text-primary);
-  background: rgba(227, 160, 106, 0.06);
-  border-bottom-color: rgba(227, 160, 106, 0.18);
+  color: var(--brand-fg);
+  background: var(--brand-tint-soft);
+  border-bottom-color: var(--rule-soft);
 }
 
 /* Editorial：mark / 強調 用 manuscript orange highlight（不是螢光黃） */

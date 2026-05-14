@@ -58,12 +58,20 @@ try {
   const page = await ctx.newPage();
   page.on("pageerror", (err) => console.error("[pageerror]", err.message));
 
+  // 預熱：dev server 第一次請求每個 page 會 compile chunk、networkidle 仍會早於 hydrate
+  // 先 navigate 到首頁等 hydrate、再依序拍。每頁等 .vp-doc 或 .ddia-hero 出現才拍
   for (const p of PAGES) {
     const url = `http://localhost:5173${p.url}`;
     await page.goto(url, { waitUntil: "networkidle" });
-    await page.waitForTimeout(400); // 字型 + 元件 hydrate
+    // 等 Vue hydrate 完成 — 等到至少有 .vp-doc / .ddia-hero / [class*=ddia-] 出現
+    try {
+      await page.waitForSelector('.vp-doc, .ddia-hero, [class^="ddia-"]', { timeout: 8000 });
+    } catch {
+      console.warn(`[warn] ${p.name} no .vp-doc found within 8s — page may render empty`);
+    }
+    // 額外等字型 swap + hydrate ripple settle（書感字體 Fraunces 載入較慢）
+    await page.waitForTimeout(1200);
     if (scrollPx > 0) {
-      // 捲到指定位置再拍 —— 用於驗 sticky 元件（GlossaryIndex 等）的浮層樣式
       await page.evaluate((px) => window.scrollTo({ top: px, behavior: 'instant' }), scrollPx);
       await page.waitForTimeout(200);
     }

@@ -3,6 +3,30 @@
    依賴 tokens.css 與 components.css
    ========================================================================== */
 
+/* Wave 42 P1-10：桌面內容區寬度拉開 — 原本 1440px 桌面下中文僅 22 字/行豆腐塊感
+   VitePress 預設 .content-container max-width ≈ 752px，我們在 ≥ 1280px 桌面拉到 880-960px
+   讓中文落在 32-36 字/行（紙本書 36 字/行黃金區間）、code block / 表格也不被裁切。
+   保留 outline aside 與 sidebar 自然位置、不動 layout 整體 grid。 */
+@media (min-width: 1280px) {
+  .VPDoc:not(.has-aside) .container .content-container,
+  .VPDoc .content-container {
+    max-width: 880px;
+  }
+}
+@media (min-width: 1440px) {
+  .VPDoc .content-container {
+    max-width: 960px;
+  }
+}
+@media (min-width: 1600px) {
+  :root {
+    --vp-layout-max-width: 1600px;
+  }
+  .VPDoc .content-container {
+    max-width: 1040px;
+  }
+}
+
 /* Mermaid 容器：桌機允許橫向 scroll、SVG 保持原生寬度（字才不會被等比縮成不可讀）
    原本 max-width: 100% !important 把所有 SVG 強制塞進 ~624px vp-doc 容器、
    寬決策樹（viewBox 2000+）被縮到 0.3× → 字 4-5px 完全失明。

@@ -7,6 +7,21 @@
       <p class="ddia-chapter-opener-quote">{{ displayEpigraph }}</p>
       <cite v-if="displayEpigraphSource" class="ddia-chapter-opener-cite">— {{ displayEpigraphSource }}</cite>
     </blockquote>
+
+    <!-- 整本進度條：UX P0 #2 — 章首顯眼處讓讀者知道「我在哪 / 還剩多遠」
+         只主課程 12 章顯示（Part 0 是選讀補強、不計入主進度） -->
+    <div v-if="progressBar" class="ddia-opener-progress" :aria-label="`第 ${progressBar.idx} 章 / 共 ${progressBar.total} 章；整本已讀 ${progressBar.donePct}%`">
+      <div class="ddia-opener-progress-meta">
+        <span class="ddia-opener-progress-pos">Ch <strong>{{ progressBar.idx }}</strong> / {{ progressBar.total }}</span>
+        <span class="ddia-opener-progress-dot">·</span>
+        <span class="ddia-opener-progress-overall">整本已讀 <strong>{{ progressBar.donePct }}%</strong>（{{ progressBar.doneCount }} / {{ progressBar.total }}）</span>
+      </div>
+      <div class="ddia-opener-progress-track">
+        <div class="ddia-opener-progress-fill" :style="{ width: progressBar.donePct + '%' }" />
+        <div class="ddia-opener-progress-marker" :style="{ left: progressBar.posPct + '%' }" :title="`你在這裡：Ch ${progressBar.idx}`" />
+      </div>
+    </div>
+
     <div class="ddia-chapter-opener-rule" />
   </header>
 </template>
@@ -23,7 +38,8 @@
 //
 // 用在章節 markdown 檔最上方，**取代原本的 h1**（不要重複）。
 import { computed, onMounted } from 'vue'
-import { CHAPTERS, PREREQUISITES, PARTS, type Chapter } from '../../data/chapters'
+import { CHAPTERS, PREREQUISITES, PARTS, TOTAL_CHAPTERS, type Chapter } from '../../data/chapters'
+import { useProgress } from '../../composables/useProgress'
 
 // F3 lastVisited 紀錄：本元件在每章首掛載、記錄使用者最近進的章節，給 Dashboard
 // 用「繼續 · ChXX」顯示。比起原本「找下一個未讀章節」更誠實——使用者可能讀到中段就關掉。
@@ -55,6 +71,25 @@ const displayEpigraph = computed(() => props.epigraph ?? resolved.value?.epigrap
 const displayEpigraphSource = computed(() =>
   props.epigraphSource ?? resolved.value?.epigraphSource
 )
+
+// 整本進度條資料：只主課程 12 章（ch01-ch12）顯示
+// - idx: 當前章在 12 章內的位置（1-based）
+// - donePct: 整本已讀百分比（reactive、響應 markDone/unmarkDone）
+// - posPct: 「你在這裡」marker 的水平位置（idx / total * 100）
+const { doneCount } = useProgress()
+const progressBar = computed(() => {
+  if (!props.chapterId) return null
+  const idx = CHAPTERS.findIndex(c => c.id === props.chapterId)
+  if (idx < 0) return null  // Part 0 章節（PREREQUISITES）不算主進度
+  const oneBased = idx + 1
+  return {
+    idx: oneBased,
+    total: TOTAL_CHAPTERS,
+    doneCount: doneCount.value,
+    donePct: Math.round((doneCount.value / TOTAL_CHAPTERS) * 100),
+    posPct: Math.round((oneBased / TOTAL_CHAPTERS) * 100)
+  }
+})
 
 onMounted(() => {
   // 只在 chapter-id 自動模式記錄；手動模式（Part 概覽等）不算章節閱讀
@@ -144,8 +179,79 @@ onMounted(() => {
   color: var(--text-tertiary);
 }
 
+/* 整本進度條：書脊書籤的 Editorial 詮釋——髮絲線軌、mahogany 已讀、accent ▾ 標目前位置
+   R3-P0-E Wave 42.3：視覺權重升一階——track 從 4px 拉到 6px、上下加 hairline 框、字級從 eyebrow→small */
+.ddia-opener-progress {
+  margin-top: var(--space-4-5);
+  padding: var(--space-3) 0;
+  border-top: 1px solid var(--rule-hairline);
+  border-bottom: 1px solid var(--rule-hairline);
+}
+.ddia-opener-progress-meta {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2-5);
+  font-family: var(--font-display);
+  font-variation-settings: var(--fvar-italic-warm);
+  font-style: italic;
+  font-size: var(--type-small);
+  letter-spacing: var(--ls-loose);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+.ddia-opener-progress-pos strong,
+.ddia-opener-progress-overall strong {
+  font-style: normal;
+  font-variation-settings: var(--fvar-section-tight);
+  font-feature-settings: "onum" 1;
+  color: var(--text-primary);
+  letter-spacing: 0;
+}
+.ddia-opener-progress-dot {
+  color: var(--rule-hairline);
+}
+.ddia-opener-progress-overall {
+  margin-left: auto;
+  text-transform: none;
+}
+.ddia-opener-progress-track {
+  position: relative;
+  height: 6px;
+  background: var(--bg-subtle);
+  overflow: visible;
+}
+.ddia-opener-progress-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: var(--brand-500);
+  transition: width 0.3s ease;
+}
+.ddia-opener-progress-marker {
+  position: absolute;
+  top: -4px;
+  width: 3px;
+  height: 14px;
+  background: var(--accent-500);
+  transform: translateX(-1.5px);
+}
+.ddia-opener-progress-marker::after {
+  content: "▾";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 10px; /* lint-typography-allow: ▾ marker 字級、視覺刻意小於 eyebrow 12px 不破壞主階層 */
+  color: var(--accent-500);
+  line-height: 1;
+}
+
 @media (max-width: 640px) {
   .ddia-chapter-opener-mark { font-size: var(--type-display-2); }
   .ddia-chapter-opener-title { font-size: var(--type-display-2); }
+  .ddia-opener-progress-meta { flex-wrap: wrap; }
+  .ddia-opener-progress-overall { margin-left: 0; width: 100%; }
 }
 </style>

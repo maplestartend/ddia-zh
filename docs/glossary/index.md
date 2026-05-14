@@ -1,13 +1,24 @@
 ---
 title: 詞彙表 Glossary
 description: DDIA 全書關鍵術語與本網站 Part 0 補充詞彙的中英對照
+outline: [2, 2]
+pageClass: glossary-page
 ---
+
+<!-- P2-3 Wave 42：outline 限定 H2（A-Z 字母）only —
+     原本全域 level [2,3] 會把 200+ 個 H3 詞條全塞進右側 outline、太擠
+     現在右側 outline 只列字母、配 VP 內建 scroll-spy 自動高亮目前讀到哪個字母 -->
+
 
 # 詞彙表 Glossary
 
 DDIA 全書關鍵術語 + Part 0 補充詞彙的中英對照與簡明解釋。**依字母排序**。
 
+<GlossaryBackButton />
+
 <GlossaryIndex />
+
+<GlossaryStarLinks />
 
 ::: tip 使用提示
 - 內文 `<G>` 元件 hover 看到的「精簡定義」與此頁是同一 SSOT。

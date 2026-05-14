@@ -254,6 +254,14 @@ export function useProgress() {
     return Math.round((first / summary.total) * 100)
   }
 
+  // P0-9（Wave 42）：暴露 reactive 的章節 quiz 摘要
+  // 取代 Progress.vue 原本 setInterval(loadQuiz, 1500) 輪詢
+  // loadQuiz 讀 raw localStorage 不是 reactive；getQuizSummary 讀 quizIndex（reactive）
+  // 同一分頁 saveQuiz 後 quizIndex 立刻更新、跨分頁靠 useStorage 的 storage event listener
+  function getQuizSummary(chapterId: string): QuizSummary | undefined {
+    return quizIndex.value.find(s => s.chapterId === chapterId)
+  }
+
   // 已通關章節數（只算主 12 章、不算 Part 0）
   const passedCount = computed(() => {
     return CHAPTERS.filter(c => {
@@ -300,6 +308,8 @@ export function useProgress() {
     isPassed,
     passedCount,
     passedPct,
-    getFirstAttemptPct
+    getFirstAttemptPct,
+    // Wave 42 P0-9：暴露 reactive quiz summary、取代 Progress.vue 的 setInterval 輪詢
+    getQuizSummary
   }
 }

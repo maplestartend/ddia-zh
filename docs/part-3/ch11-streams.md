@@ -4,7 +4,7 @@ title: Ch11 串流處理
 
 <ChapterOpener chapter-id="ch11" />
 
-<ChapterMeta part="Part III 衍生資料" :read-time="55" difficulty="進階" :tags="['Kafka', 'CDC', 'Event Sourcing']" prereq="Ch10" />
+<ChapterMeta part="Part III 衍生資料" :read-time="55" deep-read-range="80-100" difficulty="進階" :tags="['Kafka', 'CDC', 'Event Sourcing']" prereq="Ch10" />
 
 <TLDR :points='[
   "<strong>串流處理 = 持續處理無界資料（unbounded data）</strong>：批次的「資料集」變成「事件流」，但運算原則相通。",
@@ -14,53 +14,35 @@ title: Ch11 串流處理
   "<strong>Exactly-once 不是真的「只執行一次」</strong>：而是「最終效果等同於只執行一次」—— 透過冪等 + transactional write + atomic offset commit 達成。"
 ]' />
 
+<!-- P1-15 Wave 42：章首瘦身—— FirstReadShortcut 與 11.0 先備合併，前端 tip 後移到 §11.1 後 -->
 <FirstReadShortcut>
 
 這章接 Ch10 批次、把資料系統從「一整批」拉到「連續流」。**第一次讀建議走「概念 + 業務面」路徑**：
 
-- **必讀核心**：§11.0 先備白話（5 詞 + Line event 場景）+ §11.1 兩種 broker（消費即刪 vs log-based）+ §11.2 三種串流來源 + §11.3 stream-table duality / CQRS + §11.6 Stripe idempotency
+- **必讀核心**：§11.0 先備白話 + §11.1 兩種 broker（消費即刪 vs log-based）+ §11.2 三種串流來源 + §11.3 stream-table duality / CQRS + §11.6 Stripe idempotency
 - **第一次可跳**：§11.4 視窗 / watermark / late event 細節（Flink 進階）+ §11.5 transactional output 數學推導（先抓「最終效果等同只執行一次」直覺即可）
 
 讀完核心五節（約 40 分鐘）你就能：**看懂 Kafka 為什麼是「持久 + 可重播」**、**理解 CDC 如何把 DB 變成 Kafka 上游**、**寫得出 Stripe-style idempotency key 端到端去重**、**判斷 EOS 在 stream processing 內部 vs API 邊界的差異**。
 
 </FirstReadShortcut>
 
-## 11.0 先備白話
-
-::: tip 5 個詞先建立印象，其餘用到再學
-| 名詞 | 國中生講法 |
-|---|---|
-| **事件流（stream）** | 一個會不停長出新項目的清單，永遠不會結束 |
-| **Kafka** | 一個「你寫進去就不會被刪掉、可從任意位置重讀」的清單服務 |
-| **offset** | 你讀到第幾筆的書籤 |
-| **CDC**（Change Data Capture） | 把 DB 的「每筆 INSERT / UPDATE / DELETE」自動變成事件丟到 Kafka |
-| **sink** | 事件流的「下游目的地」（如 Elasticsearch、DB、HTTP API） |
+## 11.0 為什麼資料庫與事件流是同一件事
 
 本章核心問題：**「資料庫的世界」與「事件流的世界」其實是同一件事，只是觀察角度不同**。看懂這點，整章的 stream-table duality、event sourcing、CDC 都是它的延伸。
-:::
 
-::: tip 如果你是前端開發者：你已經是 stream consumer
-你可能沒意識到，但下面這些 API **本質上都是訂閱事件流**：
+**5 個必備詞**（看完先建立印象、其餘用到再學）：
 
-| 你用過的 API | 對應本章哪個概念 |
+| 詞 | 國中生講法 |
 |---|---|
-| `firebase.firestore().collection(...).onSnapshot(...)` | **概念上等同 CDC**（DB 主動推變更給你）—— 但實作是 server 維護的 query subscription / watch token、**不是真的 binlog 解析**；**也不支援 offset replay**：斷線重連靠 watch token 從伺服器目前狀態續訂，中斷期間的中間事件不會逐筆補回（只給你最新 snapshot 差異） |
-| `supabase.channel('...').on('postgres_changes', ...).subscribe()` | **真正的 CDC**：走 PostgreSQL logical replication slot 解析 WAL |
-| WebSocket subscribe（Pusher、Ably） | 通用 stream consumer |
-| Server-Sent Events `EventSource` | 單向 stream，無 ack 機制 |
-| RxJS `Observable` / `Subject` | 客戶端內部的 stream 抽象 |
-
-**這些 SDK 幫你做的事**（也是本章在拆解的）：
-- **持久 + 重播**：斷線重連、從某 offset / cursor 補回中斷期間的事件
-- **exactly-once 對等保證**：你的 `onSnapshot` callback 對同一筆 doc 變更可能觸發 1 次也可能 2 次（重連時）—— 寫的 reducer 要冪等
-- **stream-table duality**：你在 `useEffect` 內把 stream 變成 React state 就是把 stream → table；setState 又是反過來把每次變更廣播成 stream
-
-**看完本章，你會理解為什麼**：Firestore offline 模式能 work、Supabase realtime 為什麼選 logical replication、Pusher 為什麼有 message ID + 補洞機制。
-:::
+| **事件流（stream）** | 不停長出新項目的清單，永遠不會結束 |
+| **Kafka** | 「寫進去不會刪、可任意位置重讀」的清單服務 |
+| **offset** | 讀到第幾筆的書籤 |
+| **CDC** | 把 DB 的 INSERT/UPDATE/DELETE 自動變成事件 |
+| **sink** | 事件流的下游目的地（ES、DB、HTTP API） |
 
 ::: tip 本土場景：Line 訊息已讀 / 未讀 event 流
-你每次傳訊息給朋友、Line 在你裝置與朋友裝置間維護的「**訊息已送達 → 已讀**」狀態、就是一條 event stream：
-- **事件不可變**：「Alice 12:34:56 已讀此訊息」是發生過的事實、不能撤回（你的「收回訊息」按鈕是**發另一個 event 蓋過顯示**、不是真的刪原 event）
+你每次傳訊息給朋友、Line 在你裝置與朋友裝置間維護的「**訊息已送達 → 已讀**」狀態、概念上就是一條 event stream：
+- **事件不可變**（概念類比）：「Alice 12:34:56 已讀此訊息」一旦發出就難以撤銷——「收回訊息」**概念上類似 tombstone event 蓋過顯示**（實際 Line 內部如何刪 / 軟刪是私有實作、未公開）
 - **多份 read model**：訊息列表頁、聊天室未讀數 badge、桌機 / 手機 / iPad 各自的 cache——全部從同一條 event 流派生
 - **斷線重連補事件**：你手機飛航模式 30 分鐘、開啟後 Line 補回中間漏接的訊息——就是 stream consumer 從上次 offset 繼續消費
 
@@ -115,6 +97,25 @@ Kafka consumer 落後 producer 多少、是 SRE 第一個要監控的指標。**
 - partition 數變動（partition assignment 改變、觸發全 group rebalance）
 
 **ISR shrink 警示**：當 `kafka.server:type=ReplicaManager,name=UnderReplicatedPartitions` &gt; 0、表示有副本跟不上 leader——可能磁碟 / GC / 網路問題、SRE 必須立刻看。
+:::
+
+::: tip 如果你是前端開發者：你已經是 stream consumer
+你可能沒意識到，但下面這些 API **本質上都是訂閱事件流**：
+
+| 你用過的 API | 對應本章哪個概念 |
+|---|---|
+| `firebase.firestore().collection(...).onSnapshot(...)` | **概念上等同 CDC**（DB 主動推變更給你）—— 但實作是 server 維護的 query subscription / watch token、**不是真的 binlog 解析**；**也不支援 offset replay**：斷線重連靠 watch token 從伺服器目前狀態續訂，中斷期間的中間事件不會逐筆補回（只給你最新 snapshot 差異） |
+| `supabase.channel('...').on('postgres_changes', ...).subscribe()` | **真正的 CDC**：走 PostgreSQL logical replication slot 解析 WAL |
+| WebSocket subscribe（Pusher、Ably） | 通用 stream consumer |
+| Server-Sent Events `EventSource` | 單向 stream，無 ack 機制 |
+| RxJS `Observable` / `Subject` | 客戶端內部的 stream 抽象 |
+
+**這些 SDK 幫你做的事**（也是本章在拆解的）：
+- **持久 + 重播**：斷線重連、從某 offset / cursor 補回中斷期間的事件
+- **exactly-once 對等保證**：你的 `onSnapshot` callback 對同一筆 doc 變更可能觸發 1 次也可能 2 次（重連時）—— 寫的 reducer 要冪等
+- **stream-table duality**：你在 `useEffect` 內把 stream 變成 React state 就是把 stream → table；setState 又是反過來把每次變更廣播成 stream
+
+**看完本章，你會理解為什麼**：Firestore offline 模式能 work、Supabase realtime 為什麼選 logical replication、Pusher 為什麼有 message ID + 補洞機制。
 :::
 
 ---
@@ -193,7 +194,7 @@ Esper、Flink CEP。
 這就是為什麼 Event Sourcing 與 CQRS 幾乎總是同時出現——CQRS 是 event sourcing 的 read side、event sourcing 是 CQRS 的 write side。詳見詞彙表 [CQRS](/glossary/#cqrs) 與 [Event Sourcing](/glossary/#event-sourcing)。
 :::
 
-::: tip 三角整合：Event Sourcing / CQRS / Stream-Table Duality
+::::: tip 三角整合：Event Sourcing / CQRS / Stream-Table Duality
 這三個概念**講的是同一件事的不同切片**——把它們綁在一起、你會發現現代分散式架構的本質。
 
 | 概念 | 關注的是 | 強調的對偶 |
@@ -231,7 +232,7 @@ Esper、Flink CEP。
 :::
 
 **這就是現代 event-driven 平台（Uber / Netflix / Shopify）的核心設計**——把三個概念分開講會學散、合起來看會學透。
-:::
+:::::
 
 ### 4. 跨系統搜尋索引同步
 DB → Elasticsearch via CDC。
@@ -247,9 +248,18 @@ DB → Elasticsearch via CDC。
 | Window 類型 | 規則 | 一個事件落入幾個 window | 典型用例 | 視覺直覺 |
 |---|---|---|---|---|
 | **Tumbling**（翻滾） | 固定大小、**互不重疊**（如 [10:00-10:05)、[10:05-10:10)、…） | **恰好 1 個** | 「每 5 分鐘總訂單數」、定時聚合 | `[ ][ ][ ][ ]` 連續方塊 |
-| **Hopping**（跳躍 / sliding 的離散版） | 固定大小 + **固定 slide step**（如「5 分鐘 window、每 1 分鐘 hop 一次」 → window 重疊）| **N 個**（N = window-size / hop-step） | 「**滾動 5 分鐘**內的平均」、平滑指標 | `[ ]` 上面再疊 `[ ]` |
+| **Hopping**（跳躍） | 固定大小 + **固定 slide step**（如「5 分鐘 window、每 1 分鐘 hop 一次」 → window 重疊）| **N 個**（N = window-size / hop-step） | 「**滾動 5 分鐘**內的平均」、平滑指標 | `[ ]` 上面再疊 `[ ]` |
 | **Sliding**（滑動 / 連續版） | 「**這個事件之前 N 分鐘內**」—— 每筆事件觸發各自的 window | **任意數**（取決於 buffer 內事件數） | session 防詐分析、「過去 1 分鐘內 5 次失敗登入」報警 | 每事件自己劃一條 |
 | **Session**（會話） | **動態大小**：相同 key 的事件**間隔 < gap** 視為同一 session、間隔 ≥ gap 開新 session | **1 個**（依時間動態決定哪一個） | 使用者瀏覽 session、IoT 設備活躍期 | 不定長方塊、靠空白分界 |
+
+::: warning 框架間「Sliding」用法不一致
+**本表的 Sliding 定義是 Flink `SlidingEventTimeWindows` / Kafka Streams `SlidingWindows`**（每事件觸發各自 window）。但**部分框架的 sliding 是 hopping 的別名**：
+- **Spark Structured Streaming**：`window(eventTime, "10 minutes", "5 minutes")` 文件叫 sliding window、實際是上表的 Hopping
+- **Apache Beam**：`SlidingWindows.of(10min).every(5min)` 也是 Hopping
+- **Flink / Kafka Streams**：Sliding = 上表定義（連續、不是 hopping）
+
+讀文件看到「sliding window」**先查具體框架定義**、不要假設與本表一致。
+:::
 
 ::: tip Tumbling vs Hopping 最容易混淆
 - **Tumbling**：每事件只進**一個** window —— 適合「**互斥**」的時段聚合（這 5 分鐘 vs 那 5 分鐘）

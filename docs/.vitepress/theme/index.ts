@@ -17,6 +17,9 @@ import ChapterCard from './components/ChapterCard.vue'
 import NextChapterBridge from './components/NextChapterBridge.vue'
 import GlossaryTerm from './components/GlossaryTerm.vue'
 import GlossaryIndex from './components/GlossaryIndex.vue'
+import GlossaryStarLinks from './components/GlossaryStarLinks.vue'
+import GlossaryBackButton from './components/GlossaryBackButton.vue'
+import DashboardStats from './components/DashboardStats.vue'
 import SectionDivider from './components/SectionDivider.vue'
 import BaseLink from './components/BaseLink.vue'
 import PrereqBox from './components/PrereqBox.vue'
@@ -110,6 +113,9 @@ export default {
     app.component('GlossaryTerm', GlossaryTerm)
     app.component('G', GlossaryTerm)
     app.component('GlossaryIndex', GlossaryIndex)
+    app.component('GlossaryStarLinks', GlossaryStarLinks)
+    app.component('GlossaryBackButton', GlossaryBackButton)
+    app.component('DashboardStats', DashboardStats)
     app.component('SectionDivider', SectionDivider)
     app.component('BaseLink', BaseLink)
     app.component('PrereqBox', PrereqBox)
@@ -202,6 +208,51 @@ export default {
       document.addEventListener('DOMContentLoaded', attachObserver)
     } else {
       attachObserver()
+    }
+
+    // ====================================================================
+    // P2-5 Wave 42：drop cap 中英混排首字防護
+    // ====================================================================
+    // ::first-letter 在「The」這種英文起頭段會把整個 leading word 放大、視覺破碎。
+    // 策略：page hydrate 後檢查 .vp-doc 內第一個 <p>（緊接 h1 或 div>h1）的第一個字、
+    //       不是 CJK 漢字就在 .vp-doc 加 .no-drop-cap class，跳過 CSS drop cap rule。
+    // CJK 範圍：U+4E00–U+9FFF 基本漢字 + U+3400–U+4DBF 擴展 A
+    // ====================================================================
+    const CJK_RE = /^[㐀-䶿一-鿿]/
+    const refreshDropCap = () => {
+      const root = document.querySelector('.vp-doc')
+      if (!root) return
+      // 找出第一個 <p> —— 緊接 h1 或在 div>h1 之後
+      let p: HTMLParagraphElement | null = null
+      const h1 = root.querySelector(':scope > h1')
+      if (h1) p = h1.nextElementSibling as HTMLParagraphElement
+      if (!p || p.tagName !== 'P') {
+        const wrappedH1 = root.querySelector(':scope > div > h1')
+        if (wrappedH1) p = wrappedH1.nextElementSibling as HTMLParagraphElement
+      }
+      if (!p || p.tagName !== 'P') {
+        root.classList.remove('no-drop-cap')
+        return
+      }
+      const firstChar = (p.textContent ?? '').trimStart().charAt(0)
+      if (firstChar && !CJK_RE.test(firstChar)) {
+        root.classList.add('no-drop-cap')
+      } else {
+        root.classList.remove('no-drop-cap')
+      }
+    }
+    if (router && !(routerWithGuard as Record<string, unknown>).__ddiaDropCapHooked) {
+      ;(routerWithGuard as Record<string, unknown>).__ddiaDropCapHooked = true
+      const prevDropHook = router.onAfterRouteChanged
+      router.onAfterRouteChanged = (to: string) => {
+        refreshDropCap()
+        if (typeof prevDropHook === 'function') prevDropHook(to)
+      }
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', refreshDropCap)
+    } else {
+      refreshDropCap()
     }
   }
 } satisfies Theme

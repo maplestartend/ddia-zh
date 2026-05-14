@@ -58,23 +58,25 @@ function scrollToLetter(letter: string, e: MouseEvent) {
 </script>
 
 <style scoped>
-/* Editorial 詞彙表索引條：書邊頁碼樣式 sticky bar */
+/* Editorial 詞彙表索引條：書邊頁碼樣式 sticky bar
+   R3-P1-5 Wave 42.3：UX 指出 sticky 視覺存在感太弱、捲過 sticky 時讀者不會注意
+   加強：top 距導覽列更近、底部更明顯的 hairline + shadow、確保 sticky 滑經內容時可見 */
 .ddia-glossary-index {
   position: sticky;
-  top: calc(var(--vp-nav-height, 64px) + 8px);
+  top: var(--vp-nav-height, 64px);
   z-index: 10;
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
   gap: var(--space-1-5);
-  padding: var(--space-2-5) 0;
-  margin: var(--space-3) 0 32px;
+  padding: var(--space-2-5) var(--space-3);
+  margin: var(--space-3) calc(-1 * var(--space-3)) 32px;
   background: var(--bg-canvas);
   border: 0;
   border-top: 1px solid var(--rule-hairline);
-  border-bottom: 1px solid var(--rule-hairline);
+  border-bottom: 2px solid var(--rule-hairline);
   border-radius: 0;
-  box-shadow: 0 4px 8px -4px var(--bg-canvas);
+  box-shadow: 0 8px 12px -8px rgba(28, 26, 23, 0.15);
 }
 
 :global(.dark) .ddia-glossary-index {

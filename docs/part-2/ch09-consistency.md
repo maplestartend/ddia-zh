@@ -4,7 +4,7 @@ title: Ch9 一致性與共識
 
 <ChapterOpener chapter-id="ch09" />
 
-<ChapterMeta part="Part II 分散式資料" :read-time="65" difficulty="進階" :tags="['Linearizability', 'Raft', '2PC']" prereq="Ch8" />
+<ChapterMeta part="Part II 分散式資料" :read-time="65" deep-read-range="90-120" difficulty="進階" :tags="['Linearizability', 'Raft', '2PC']" prereq="Ch8" />
 
 <PrereqBox
   :prereq="['Ch5 複製（leader / follower / quorum）', 'Ch7 交易（ACID、isolation）', 'Ch8 分散式問題（時鐘、網路分區、fencing token）']"

@@ -43,7 +43,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { computed, nextTick, onMounted, ref } from 'vue'
 import { withBase } from 'vitepress'
 import Icon from './Icon.vue'
 import { useProgress } from '../../composables/useProgress'
@@ -52,7 +52,7 @@ import { nextChapter } from '../../data/chapters'
 
 const props = defineProps<{ chapterId: string }>()
 
-const { isDone: checkDone, getDoneAt, markDone, unmarkDone, loadQuiz, isPassed, getFirstAttemptPct } = useProgress()
+const { isDone: checkDone, getDoneAt, markDone, unmarkDone, isPassed, getFirstAttemptPct, getQuizSummary } = useProgress()
 const { seedReview } = useReview()
 const isDone = computed(() => checkDone(props.chapterId))
 const doneAt = computed(() => getDoneAt(props.chapterId))
@@ -60,22 +60,17 @@ const next = computed(() => nextChapter(props.chapterId))
 
 // 偵測本頁是否有 Quiz 元件（部分章節沒有測驗、就不顯示「做測驗」按鈕）
 const hasQuiz = ref(false)
-// reactive：quiz 答完之後切到「看測驗答案」+ 顯示分數
-const quizDoneTick = ref(0)
-const quizResult = computed(() => {
-  quizDoneTick.value  // 依賴 tick 觸發重算
-  return loadQuiz(props.chapterId)
-})
-const quizDone = computed(() => !!quizResult.value?.submitted)
-// 通關狀態（Wave 34：與已讀獨立、Quiz 首次 >= 60% 自動通關）
-const passed = computed(() => {
-  quizDoneTick.value  // 依賴 tick 觸發重算（與 quizResult 同步）
-  return isPassed(props.chapterId)
-})
-const firstPct = computed(() => {
-  quizDoneTick.value
-  return getFirstAttemptPct(props.chapterId) ?? 0
-})
+
+// P0-9 Wave 42：改用 reactive quizIndex（getQuizSummary），取代 setInterval 1.5s 輪詢
+// quizIndex 是 useStorage ref、saveQuiz 寫入後同分頁 reactive、跨分頁靠 storage event
+// 多分頁開著也不再有多個 timer 持續燒 CPU
+const quizSummary = computed(() => getQuizSummary(props.chapterId))
+const quizDone = computed(() => !!quizSummary.value)
+const quizResult = computed(() => quizSummary.value
+  ? { score: quizSummary.value.score, total: quizSummary.value.total }
+  : null)
+const passed = computed(() => isPassed(props.chapterId))
+const firstPct = computed(() => getFirstAttemptPct(props.chapterId) ?? 0)
 
 function toggle() {
   if (isDone.value) {
@@ -96,14 +91,10 @@ function scrollToQuiz() {
 }
 
 // Quiz 元件 mount 後本 DOM 才有 .ddia-quiz、需在下一個 paint 偵測
-let quizPoll: number | undefined
-onMounted(() => {
+// R3-P1-10 Wave 42.3：用 nextTick 避免 Progress 比 Quiz 先 mount 時 hasQuiz 永遠 false
+onMounted(async () => {
+  await nextTick()
   hasQuiz.value = !!document.querySelector('.ddia-quiz')
-  // 答題完成觸發 storage 寫入、loadQuiz 結果會變；定時 tick 讓 quizResult 重算
-  quizPoll = window.setInterval(() => { quizDoneTick.value++ }, 1500)
-})
-onUnmounted(() => {
-  if (quizPoll) window.clearInterval(quizPoll)
 })
 </script>
 

@@ -219,12 +219,26 @@
   background: var(--brand-tint-soft);
 }
 
-/* 鍵盤導航：label 內含 radio、focus 從 input 傳到 label 父元素 — 用 :focus-within 包整行 */
+/* 鍵盤導航：label 內含 radio、focus 從 input 傳到 label 父元素。
+   - :focus-within（含滑鼠點擊）只給輕量 hover 反饋
+   - :has(input:focus-visible)（僅鍵盤聚焦）才給 outline 強指引
+   Wave 42 a11y：鍵盤使用者必須能看清楚自己在哪題、加粗 outline + 同 brand 色 */
 .ddia-quiz-option:focus-within {
-  border-left-color: var(--rule-active);  /* Wave 30c：同上 */
+  border-left-color: var(--rule-active);
   background: var(--brand-tint-soft);
-  outline: var(--focus-ring-width) solid var(--focus-ring-color);
-  outline-offset: var(--focus-ring-offset);
+}
+.ddia-quiz-option:has(input:focus-visible) {
+  outline: 3px solid var(--cta-bg);
+  outline-offset: 2px;
+  z-index: 1;
+}
+/* R3-P2 Wave 42.3：:has 不支援的舊瀏覽器（Firefox < 121 / 老 Safari）fallback
+   退到 :focus-within 給較弱但仍可見的 outline、確保鍵盤使用者不會失去視覺指引 */
+@supports not selector(:has(*)) {
+  .ddia-quiz-option:focus-within {
+    outline: 2px solid var(--cta-bg);
+    outline-offset: 2px;
+  }
 }
 
 .ddia-quiz-option.selected {
@@ -283,7 +297,7 @@
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  margin: -var(--space-2) 0 var(--space-3-5);
+  margin: calc(-1 * var(--space-2)) 0 var(--space-3-5);
   padding: 0;
   background: transparent;
   border-radius: 0;
@@ -371,10 +385,15 @@
   border-color: var(--text-primary);
 }
 
+/* P2-7 Wave 42：Editorial 化 primary CTA —
+   保留 mahogany 主色強度（仍是視覺主動作）、但用「實心 + 雙重邊框印記」取代純色矩形
+   讓書頁感而非 SaaS pill。底部加 3px 印記 = 鋼印 stamp 隱喻 */
 .ddia-btn.primary {
   background: var(--cta-bg);
   color: var(--text-inverse);
-  border-color: var(--mark-fg);
+  border: 1px solid var(--brand-700);
+  border-bottom-width: 3px;
+  position: relative;
 }
 
 .ddia-btn.primary:hover:not(:disabled) {
@@ -591,6 +610,12 @@
   border: 0;
 }
 
+/* Dashboard stat card 內進度條的上 spacing（取代 inline style="margin-top: ..."；
+   P0-8 抽 DashboardStats partial 時順手清理 inline style 違反 CSP / lint:spacing 的問題） */
+.ddia-progress-bar-top {
+  margin-top: var(--space-2-5);
+}
+
 .ddia-progress-fill {
   height: 100%;
   background: var(--cta-bg);
@@ -780,7 +805,9 @@
 .ddia-incorrect-summary .material-symbols-rounded {
   display: none;
 }
+/* R3-P1-9：跨瀏覽器藏 summary marker — webkit + 標準 list-style + ::marker */
 .ddia-incorrect-summary::-webkit-details-marker { display: none; }
+.ddia-incorrect-summary::marker { content: ""; }
 .ddia-incorrect-summary::before {
   content: "§";
   font-family: var(--font-display);
@@ -891,13 +918,16 @@
   opacity: 1;
 }
 
+/* P1-14 Wave 42：去掉內部 head 與 status 兩條髮絲線分隔
+   —— 原本「3-zone tile（頭|文|尾）」視覺=SaaS card，現改成「整張卡 = 一個文段」
+   只靠 typography 階層（章號 small uppercase / 章名 serif h3 / summary body / status meta）區分 */
 .ddia-chapter-card-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: var(--space-2-5);
-  padding-bottom: var(--space-2-5);
-  border-bottom: 1px solid var(--border-default);
+  margin-bottom: var(--space-1-5);
+  padding-bottom: 0;
+  border-bottom: 0;
 }
 
 /* 章節編號：Fraunces SemiBold + 全大寫 + 寬字距 + oldstyle figures */
@@ -935,8 +965,8 @@
 
 .ddia-chapter-card-status {
   margin-top: var(--space-3);
-  padding-top: var(--space-2-5);
-  border-top: 1px solid var(--border-default);
+  padding-top: 0;
+  border-top: 0;
   font-size: var(--type-tiny);
   color: var(--text-tertiary);
   display: flex;
@@ -1040,6 +1070,31 @@
   max-width: 540px;
 }
 
+/* P2-2 Wave 42：Part header 「Part X 概覽 →」連結 — 補上原本只能透過 sidebar 進 Part 概覽的捷徑 */
+.ddia-part-header-link {
+  flex-shrink: 0;
+  align-self: flex-end;
+  font-family: var(--font-display);
+  font-variation-settings: var(--fvar-section-tight);
+  font-weight: 600;
+  font-size: var(--type-small);
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--mark-fg);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  padding-bottom: 2px;
+  transition: border-bottom-color 0.15s;
+}
+.ddia-part-header-link:hover,
+.ddia-part-header-link:focus-visible {
+  border-bottom-color: var(--mark-fg);
+}
+@media (max-width: 640px) {
+  .ddia-part-header { flex-direction: column; align-items: flex-start; }
+  .ddia-part-header-link { align-self: flex-start; margin-top: var(--space-2); }
+}
+
 /* ---------- Hero：首頁 hero 區（Editorial 扉頁 / frontispiece）---------- */
 .ddia-hero {
   padding: 72px var(--space-4);
@@ -1112,6 +1167,122 @@
   text-transform: uppercase;
 }
 
+/* R4-5 Wave 42.4：paths 第二屏分隔 — UX 指出 ★ 推薦卡之後讀者以為「都同等重要」
+   用 dinkus + italic hint 明示「以下是進階補充」、層級降一階 */
+.ddia-path-divider {
+  text-align: center;
+  margin: var(--space-6) auto var(--space-5);
+  padding: var(--space-4) 0;
+}
+.ddia-path-divider-mark {
+  display: block;
+  font-family: var(--font-display);
+  font-size: var(--type-h3);
+  color: var(--rule-hairline);
+  letter-spacing: var(--ls-display);
+  margin-bottom: var(--space-2);
+}
+.ddia-path-divider-text {
+  display: block;
+  font-family: var(--font-display);
+  font-variation-settings: var(--fvar-italic-warm);
+  font-style: italic;
+  font-size: var(--type-eyebrow);
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-1);
+}
+.ddia-path-divider-hint {
+  display: block;
+  font-family: var(--font-body);
+  font-size: var(--type-eyebrow);
+  color: var(--text-tertiary);
+  letter-spacing: var(--ls-tight);
+}
+
+/* R3-P1-1 Wave 42.3：hero 三個 numeric stat（40 / 12 / 3）oldstyle 大字 — 取代原本扁平 meta 列
+   設計：Fraunces oldstyle figures + 下方小字標籤、用 · 分隔、整組置中
+   R4-3 / R4-4 Wave 42.4：中文 label letter-spacing 太緊→ 0.22em + small caps；下方加 38px gap 給 CTA 一條髮絲線分隔 */
+.ddia-hero-stats {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-3-5);
+  margin: var(--space-4) auto 0;
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--rule-hairline);
+  width: fit-content;
+  max-width: 100%;
+}
+.ddia-hero-stat {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-1-5);
+}
+.ddia-hero-stat-num {
+  font-family: var(--font-display);
+  font-feature-settings: "onum" 1, "tnum" 1;
+  font-variation-settings: "opsz" 36, "SOFT" 60, "wght" 500;
+  font-size: var(--type-h2);
+  line-height: 1;
+  color: var(--mark-fg);
+  letter-spacing: -0.01em;
+}
+.ddia-hero-stat-label {
+  font-family: var(--font-display);
+  font-variation-settings: var(--fvar-italic-warm);
+  font-style: italic;
+  font-size: var(--type-eyebrow);
+  letter-spacing: 0.22em; /* lint-typography-allow: hero stats 中文小字、特化字距、設計師三輪審視特化 */
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+.ddia-hero-stat-sep {
+  color: var(--rule-hairline);
+  font-family: var(--font-display);
+  font-size: var(--type-body-lg);
+  line-height: 1;
+}
+
+/* R4-4 Wave 42.4：hero stats 與 CTA row 之間多 14px gap、避免兩者黏太緊 */
+.ddia-hero-stats + .ddia-cta-row {
+  margin-top: var(--space-4-5);
+}
+
+/* R3-P1-2 Wave 42.3：Editorial page note — 取代 :::tip 橘色 callout
+   設計：左 3px 髮絲線印記 + italic eyebrow，書頁旁注感、不再像 SaaS toast */
+.ddia-page-note {
+  margin: var(--space-5) 0;
+  padding: var(--space-2-5) 0 var(--space-2-5) var(--space-4);
+  border-left: 3px solid var(--rule-hairline);
+}
+.ddia-page-note-eyebrow {
+  font-family: var(--font-display);
+  font-variation-settings: var(--fvar-italic-warm);
+  font-style: italic;
+  font-size: var(--type-eyebrow);
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: var(--space-2);
+}
+.ddia-page-note-text {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--type-body-tight);
+  line-height: 1.75;
+  color: var(--text-secondary);
+  letter-spacing: var(--ls-body-cn);
+}
+.ddia-page-note-text a {
+  color: var(--mark-fg);
+  text-decoration: none;
+  border-bottom: 1px solid var(--rule-soft);
+}
+.ddia-page-note-text a:hover {
+  border-bottom-color: var(--mark-fg);
+}
+
 .ddia-cta-row {
   display: inline-flex;
   gap: var(--space-4-5);
@@ -1119,6 +1290,28 @@
   margin-top: var(--space-4-5);
   flex-wrap: wrap;
   align-items: center;
+}
+
+/* Hero colophon：版權聲明 inline italic 小字、不喧賓奪主、不再做 :::tip banner */
+.ddia-hero-colophon {
+  margin: var(--space-4) auto 0;
+  max-width: 640px;
+  font-family: var(--font-display);
+  font-variation-settings: var(--fvar-italic-warm);
+  font-style: italic;
+  font-size: var(--type-eyebrow);
+  line-height: 1.6;
+  color: var(--text-tertiary);
+  letter-spacing: var(--ls-tight);
+}
+.ddia-hero-colophon a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  border-bottom: 1px solid var(--rule-hairline);
+}
+.ddia-hero-colophon a:hover {
+  color: var(--text-primary);
+  border-bottom-color: var(--text-secondary);
 }
 
 /* CTA：去除膠囊圓角、改成 Editorial「文字按鈕」+ 下方髮絲線 hover 印記 */
@@ -1992,31 +2185,41 @@ button.DocSearch.DocSearch-Button:focus-visible {
   border-top: 1px solid var(--rule-hairline);
 }
 
-/* Edge label：是 / 否 / PostgreSQL 等分支文字、置於 child 上方一行 */
+/* Edge label：是 / 否 / PostgreSQL 等分支文字、置於 child 上方一行
+   R4-1 Wave 42.4：去 pill border —— 改 inline italic eyebrow（設計師三輪都點過淡灰邊框） */
 .ddia-dtree-edge {
   display: inline-block;
-  padding: 3px 10px;
-  background: var(--bg-canvas);
-  border: 1px solid var(--rule-hairline);
+  padding: 2px 0;
+  background: transparent;
+  border: 0;
   font-family: var(--font-display);
+  font-variation-settings: var(--fvar-italic-warm);
   font-style: italic;
   font-size: var(--type-eyebrow);
   letter-spacing: var(--ls-eyebrow);
   text-transform: uppercase;
-  color: var(--text-secondary);
-  margin-bottom: 6px;
+  color: var(--text-tertiary);
+  margin-bottom: 4px;
+}
+.ddia-dtree-edge::before {
+  content: "→ ";
+  color: var(--mark-fg);
+  font-style: normal;
+  margin-right: 2px;
 }
 
 .ddia-dtree-child {
   /* child 拿到 branch 完整寬度、不會被 edge label 擠 */
 }
 
-/* Leaf 節點：結論卡 */
+/* Leaf 節點：結論卡
+   R4-1 Wave 42.4：去 全包邊（淡灰 pill 感）—— 只保留左 3px tone 印記、底色透明
+   設計師 R1/R2/R3 三輪都點過、終於收 */
 .ddia-dtree-leaf {
   display: inline-block;
-  padding: 10px 16px;
-  border: 1px solid var(--rule-hairline);
-  background: var(--bg-surface);
+  padding: 8px 14px;
+  border: 0;
+  background: transparent;
   font-family: var(--font-body);
   line-height: 1.55;
   color: var(--text-primary);
@@ -2034,35 +2237,37 @@ button.DocSearch.DocSearch-Button:focus-visible {
   font-style: italic;
 }
 
-/* Tone 變體 ─ 用 token 控、light/dark 自動適配
-   不直接寫色碼、改吃 semantic token；暗色 mode 透過 tokens.css 翻轉值 */
-.ddia-dtree-leaf.is-tone-danger {
-  background: color-mix(in srgb, var(--error-500) 12%, var(--bg-surface));
-  border-color: var(--error-500);
-  border-left-width: 3px;
+/* Tone 變體 ─ Editorial Manuscript：放棄飽和填色、改成「米色紙底 + 左 3px 印記」
+   設計師審視 P0：原本 success/warning 飽和填色（薄荷/檸檬感）破壞 mahogany 暖色基調。
+   現在所有葉節點都是 bg-surface 紙底、tone 只影響左印記顏色與小字標籤。
+   safe = 主色 mahogany 印記（推薦選擇）
+   warn = 焦糖印記（注意但不是錯）
+   danger = brand alarm 印記（強警告）
+   neutral = 灰髮絲線（中性選項） */
+.ddia-dtree-leaf {
+  position: relative;
+  padding-left: var(--space-4);
 }
-.ddia-dtree-leaf.is-tone-safe {
-  background: color-mix(in srgb, var(--success-500) 14%, var(--bg-surface));
-  border-color: var(--success-500);
-  border-left-width: 3px;
+.ddia-dtree-leaf::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--rule-hairline);
 }
-.ddia-dtree-leaf.is-tone-warn {
-  background: color-mix(in srgb, var(--warning-500) 14%, var(--bg-surface));
-  border-color: var(--warning-500);
-  border-left-width: 3px;
+.ddia-dtree-leaf.is-tone-safe::before {
+  background: var(--brand-500);
 }
-.ddia-dtree-leaf.is-tone-neutral {
-  background: var(--bg-surface);
+.ddia-dtree-leaf.is-tone-warn::before {
+  background: var(--warning-500);
 }
-
-.dark .ddia-dtree-leaf.is-tone-danger {
-  background: color-mix(in srgb, var(--error-500) 22%, var(--bg-surface));
+.ddia-dtree-leaf.is-tone-danger::before {
+  background: var(--error-500);
 }
-.dark .ddia-dtree-leaf.is-tone-safe {
-  background: color-mix(in srgb, var(--success-500) 24%, var(--bg-surface));
-}
-.dark .ddia-dtree-leaf.is-tone-warn {
-  background: color-mix(in srgb, var(--warning-500) 24%, var(--bg-surface));
+.ddia-dtree-leaf.is-tone-neutral::before {
+  background: var(--rule-hairline);
 }
 
 /* ---------- SequenceFlow ---------- */
@@ -2120,23 +2325,18 @@ button.DocSearch.DocSearch-Button:focus-visible {
 .ddia-seq-phase:last-child {
   border-bottom: none;
 }
+/* Editorial：phase 用左 3px 印記分 tone，不用飽和填色（飽和綠破壞 mahogany 色溫） */
+.ddia-seq-phase {
+  border-left: 3px solid transparent;
+}
 .ddia-seq-phase.is-tone-warn {
-  background: color-mix(in srgb, var(--warning-500) 8%, transparent);
+  border-left-color: var(--warning-500);
 }
 .ddia-seq-phase.is-tone-safe {
-  background: color-mix(in srgb, var(--success-500) 8%, transparent);
+  border-left-color: var(--brand-500);
 }
 .ddia-seq-phase.is-tone-danger {
-  background: color-mix(in srgb, var(--error-500) 8%, transparent);
-}
-.dark .ddia-seq-phase.is-tone-warn {
-  background: color-mix(in srgb, var(--warning-500) 14%, transparent);
-}
-.dark .ddia-seq-phase.is-tone-safe {
-  background: color-mix(in srgb, var(--success-500) 14%, transparent);
-}
-.dark .ddia-seq-phase.is-tone-danger {
-  background: color-mix(in srgb, var(--error-500) 14%, transparent);
+  border-left-color: var(--error-500);
 }
 
 .ddia-seq-phase-title {
@@ -2273,17 +2473,15 @@ button.DocSearch.DocSearch-Button:focus-visible {
   line-height: 1.5;
   color: var(--text-primary);
 }
+/* Editorial：note 用左印記區分 tone、紙底保留、不堆飽和填色 */
 .ddia-seq-note.is-tone-warn {
-  background: color-mix(in srgb, var(--warning-500) 14%, var(--bg-surface));
   border-left-color: var(--warning-500);
 }
 .ddia-seq-note.is-tone-danger {
-  background: color-mix(in srgb, var(--error-500) 12%, var(--bg-surface));
   border-left-color: var(--error-500);
 }
 .ddia-seq-note.is-tone-safe {
-  background: color-mix(in srgb, var(--success-500) 14%, var(--bg-surface));
-  border-left-color: var(--success-500);
+  border-left-color: var(--brand-500);
 }
 
 /* Mobile：≤ 640px 太擠時容許 horizontal scroll，但不縮 message font */
@@ -2312,4 +2510,181 @@ button.DocSearch.DocSearch-Button:focus-visible {
   vertical-align: 0.08em;
   cursor: help;
   letter-spacing: 0;
+}
+
+/* ──────────────────────────────────────────────
+   學習路徑入口卡片網格（paths/index.md 頁首）
+   設計：連體髮絲線網格、不浮起、italic eyebrow + Fraunces 標題
+   ────────────────────────────────────────────── */
+.ddia-path-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  margin: var(--space-5) 0 var(--space-6);
+  border-top: 1px solid var(--rule-hairline);
+  border-left: 1px solid var(--rule-hairline);
+}
+.ddia-path-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1-5);
+  padding: var(--space-3-5) var(--space-4);
+  border-right: 1px solid var(--rule-hairline);
+  border-bottom: 1px solid var(--rule-hairline);
+  text-decoration: none !important;
+  color: var(--text-primary);
+  position: relative;
+  transition: background 0.18s, color 0.18s;
+}
+
+/* R3-P1-6 Wave 42.3：推薦路徑卡 — 用淡 accent tint 底 + 左 3px brand 印記做「推薦」訊號 */
+.ddia-path-card.is-recommended {
+  background: var(--brand-tint-soft);
+}
+.ddia-path-card.is-recommended::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--cta-bg);
+}
+.ddia-path-card-recommended {
+  font-family: var(--font-display);
+  font-variation-settings: var(--fvar-italic-warm);
+  font-style: italic;
+  font-size: var(--type-eyebrow);
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--mark-fg);
+  margin-bottom: 2px;
+}
+
+/* R3-P1-8 Wave 42.3：通用 italic ink 強調記號（取代不在 .vp-doc 內的 <em> 失效情境）
+   用於 Dashboard / Hero / 元件內部需要書頁感 italic mark 的地方 */
+.ddia-em-mark {
+  font-family: var(--font-display);
+  font-variation-settings: var(--fvar-italic-warm);
+  font-style: italic;
+  color: var(--mark-fg);
+}
+
+/* R4-2 Wave 42.4：Glossary 頁特化 — A-Z 字母分組標題加大、scanability 一口氣升
+   設計師 + 教材兩位都點出 70+ 詞密度高、需更明顯的 anchor */
+.glossary-page .vp-doc h2.role-h2 {
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 96, "SOFT" 60, "wght" 500;
+  font-feature-settings: "onum" 1;
+  font-size: 64px; /* lint-typography-allow: glossary 字母 anchor、Editorial display size 突破階層 */
+  letter-spacing: 0.04em;
+  text-transform: none;
+  margin-top: var(--space-6);
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--rule-hairline);
+  color: var(--mark-fg);
+}
+.glossary-page .vp-doc h2.role-h2::before {
+  content: "§ ";
+  font-size: 0.5em;
+  color: var(--text-tertiary);
+  margin-right: 0;
+  vertical-align: 0.6em;
+  font-style: italic;
+}
+@media (max-width: 640px) {
+  .glossary-page .vp-doc h2.role-h2 {
+    font-size: 44px; /* lint-typography-allow: glossary A-Z mobile 字級 */
+  }
+}
+
+/* R3-P2 Wave 42.3：首頁底部「最近更新」回訪鉤子 — Editorial「殿尾頁腳」感
+   髮絲線框 + italic eyebrow + body 小字、不喧賓奪主但給回訪讀者新訊號 */
+.ddia-recent-update {
+  margin: var(--space-6) 0 var(--space-5);
+  padding: var(--space-3-5) 0;
+  border-top: 1px solid var(--rule-hairline);
+  border-bottom: 1px solid var(--rule-hairline);
+  text-align: center;
+}
+.ddia-recent-update-eyebrow {
+  font-family: var(--font-display);
+  font-variation-settings: var(--fvar-italic-warm);
+  font-style: italic;
+  font-size: var(--type-eyebrow);
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: var(--space-2);
+}
+.ddia-recent-update-text {
+  margin: 0 auto;
+  max-width: 56em;
+  font-family: var(--font-body);
+  font-size: var(--type-small);
+  line-height: 1.7;
+  color: var(--text-secondary);
+  letter-spacing: var(--ls-body-cn);
+}
+.ddia-recent-update-text a {
+  color: var(--mark-fg);
+  text-decoration: none;
+  border-bottom: 1px solid var(--rule-soft);
+}
+.ddia-recent-update-text a:hover {
+  border-bottom-color: var(--mark-fg);
+}
+.ddia-path-card:hover,
+.ddia-path-card:focus-visible {
+  background: var(--bg-surface);
+  color: var(--mark-fg);
+}
+.ddia-path-card:hover::before,
+.ddia-path-card:focus-visible::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--cta-bg);
+}
+.ddia-path-card-eyebrow {
+  font-family: var(--font-display);
+  font-variation-settings: var(--fvar-italic-warm);
+  font-style: italic;
+  font-size: var(--type-eyebrow);
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+.ddia-path-card-title {
+  font-family: var(--font-display);
+  font-variation-settings: var(--fvar-section-tight);
+  font-weight: 600;
+  font-size: var(--type-body-lg);
+  line-height: 1.25;
+  letter-spacing: var(--ls-tight);
+  color: var(--text-primary);
+}
+.ddia-path-card:hover .ddia-path-card-title,
+.ddia-path-card:focus-visible .ddia-path-card-title {
+  color: var(--mark-fg);
+}
+.ddia-path-card-desc {
+  font-family: var(--font-body);
+  font-size: var(--type-small);
+  line-height: 1.55;
+  color: var(--text-secondary);
+  letter-spacing: var(--ls-tight);
+}
+@media (max-width: 900px) {
+  .ddia-path-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 560px) {
+  .ddia-path-cards {
+    grid-template-columns: 1fr;
+  }
 }

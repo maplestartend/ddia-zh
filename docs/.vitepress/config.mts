@@ -79,16 +79,15 @@ export default withMermaid(defineConfig({
       },
       { text: '詞彙表', link: '/glossary/' },
       {
+        // R3-P2 Wave 42.3：UX 指出 nav 8 項過多、撐長 dropdown 讀者不知道點哪
+        // 精簡到 4 項核心、進階工具（ADR / 容量規劃 / 事故 / OLTP↔DE）已在 paths/index.md
+        // 「進階：從學到做」section + 視角橋一節連結、不必重複進 nav
         text: '學習路徑',
         items: [
           { text: '依角色（後端 / DE / 架構師 / 面試）', link: '/paths/' },
           { text: '30 天讀通計畫（完整版）', link: '/paths/30-day-summer-plan' },
           { text: '30 天初學者暑假計畫', link: '/paths/30-day-beginner' },
-          { text: '面試 cheatsheet', link: '/paths/interview-cheatsheet' },
-          { text: '視角橋：OLTP ↔ 資料工程', link: '/bridges/oltp-de' },
-          { text: 'ADR 模板（決策記錄）', link: '/paths/adr-template' },
-          { text: '容量規劃工作表', link: '/paths/capacity-planning' },
-          { text: '真實事故 × DDIA 對照', link: '/paths/incident-postmortems' }
+          { text: '面試 cheatsheet', link: '/paths/interview-cheatsheet' }
         ]
       },
       { text: '我的進度', link: '/progress' } // VitePress cleanUrls：無尾斜線

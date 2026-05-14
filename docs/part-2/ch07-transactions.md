@@ -4,7 +4,7 @@ title: Ch7 交易
 
 <ChapterOpener chapter-id="ch07" />
 
-<ChapterMeta part="Part II 分散式資料" :read-time="60" difficulty="進階" :tags="['ACID', 'Isolation', 'Serializable']" prereq="Ch5, Ch6" />
+<ChapterMeta part="Part II 分散式資料" :read-time="60" deep-read-range="90-120" difficulty="進階" :tags="['ACID', 'Isolation', 'Serializable']" prereq="Ch5, Ch6" />
 
 <PrereqBox
   :prereq="['[Part 0.3 SQL §5 交易與隔離](/part-0/sql)', '[Part 0.5 OS §1 行程與執行緒](/part-0/os)', 'Ch5（複製基本概念）']"
@@ -14,7 +14,7 @@ title: Ch7 交易
 
 <TLDR :points='[
   "<strong>ACID 並非鐵板一塊</strong>：A / I / D 各家 DB 詮釋不一，C（一致性）甚至是應用責任、不是 DB 責任。",
-  "<strong>弱隔離級別有經典異常</strong>：Read Committed 解決 dirty read / write；Snapshot Isolation 解決 non-repeatable read；但仍擋不住 lost update（PG / Oracle 在 SI 才自動偵測、READ COMMITTED 預設不偵測）、write skew、以及基於不存在性決策的 phantom-based write skew。",
+  "<strong>隔離級別逐層解決異常</strong>：Read Committed 解決 dirty read / write、Snapshot Isolation 解決 non-repeatable read；但仍擋不住 lost update、write skew、phantom 三類異常。",
   "<strong>Snapshot Isolation 用 MVCC 實作</strong>：每筆交易看到「開始時的快照」、讀不阻塞寫、寫不阻塞讀 —— 是現代 DB 主流（PostgreSQL、Oracle）。",
   "<strong>Lost Update vs Write Skew</strong>：都是並發異常，但 write skew 涉及「跨列的約束」、SI 也擋不住 —— 需要 SSI 或顯式鎖。",
   "<strong>真正的 Serializable 有三種實作</strong>：Actual Serial Execution（VoltDB 單執行緒）、2PL（傳統鎖）、SSI（樂觀並發、PostgreSQL 9.1+）。"
@@ -91,7 +91,11 @@ DDIA 原書用 Alice 轉帳給 Bob 當範例、本站用街口 / Line Pay 重講
 ::: warning 命名地獄：REPEATABLE READ 在各家 DB 是不同東西
 SQL 標準的 REPEATABLE READ 並未要求防止 phantom，且各家詮釋差異極大：
 - **PostgreSQL** 的 REPEATABLE READ = 完整的 Snapshot Isolation（純 MVCC、commit 時 first-committer-wins 偵測寫衝突）
-- **MySQL InnoDB** 的 REPEATABLE READ **嚴格說不是 SI**——是「**MVCC consistent read + locking read 混合**」：純 `SELECT` 用 MVCC 走 snapshot；但 `SELECT ... FOR UPDATE` / `UPDATE` / `DELETE` 用 **next-key lock**、會**繞過 MVCC snapshot 直接讀最新已 commit 版本**再對該列加鎖 → 同一個 RR 交易內可能 `SELECT` 看到 A 值、`SELECT ... FOR UPDATE` 同一列看到 B 值（B 是別人已 commit 但比我 snapshot 新的版本）；且不會像 PG 那樣 commit 時 `40001` abort
+- **MySQL InnoDB** 的 REPEATABLE READ **嚴格說不是 SI**——是「**MVCC consistent read + locking read 混合**」：
+  - 純 `SELECT` 用 MVCC 走 snapshot（同 PG 行為）
+  - 但 `SELECT ... FOR UPDATE` / `UPDATE` / `DELETE` 用 **next-key lock**、會**繞過 MVCC snapshot 直接讀最新已 commit 版本**再加鎖
+  - 後果：同一個 RR 交易內 `SELECT` 看到 A 值、`SELECT ... FOR UPDATE` 同一列卻看到 B 值（B 比 snapshot 新但已 commit）
+  - 且**不會像 PG 那樣 commit 時 `40001` abort** —— InnoDB RR 不偵測寫寫衝突
 - **Oracle** 沒有真正的 REPEATABLE READ；它的「Serializable」其實是 SI
 
 讀文件看到「REPEATABLE READ」時，**永遠先查具體 DB 的實際語意**。

@@ -19,8 +19,8 @@ const props = withDefaults(defineProps<{
   filled?: boolean
   iconSize?: number
   variant?: 'primary' | 'ghost' | 'plain'
-  /** 額外的 class，會附加到內建 ddia-cta 樣式之後 */
-  class?: string
+  /** 額外的 class，會附加到內建 ddia-cta 樣式之後（避用 Vue 保留的 class 字 = 用 extraClass）*/
+  extraClass?: string
 }>(), {
   filled: false,
   iconSize: 18,
@@ -32,7 +32,7 @@ const ctaClass = computed(() => {
   const cls = []
   if (props.variant === 'primary') cls.push('ddia-cta', 'primary')
   else if (props.variant === 'ghost') cls.push('ddia-cta', 'ghost')
-  if (props.class) cls.push(props.class)
+  if (props.extraClass) cls.push(props.extraClass)
   return cls.join(' ')
 })
 </script>

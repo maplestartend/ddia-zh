@@ -6,6 +6,14 @@
     <p v-if="displayTeaser || hasSlotContent" class="ddia-bridge-teaser">
       <slot>{{ displayTeaser }}</slot>
     </p>
+    <!-- P1-11 Wave 42：加預估時數 + 更明顯的 continue CTA — 章末瘦身後 Bridge 變主元件、需更穩重 -->
+    <div v-if="displayReadTime" class="ddia-bridge-meta">
+      <span class="ddia-bridge-meta-time">預估 {{ displayReadTime }} 分鐘</span>
+    </div>
+    <div class="ddia-bridge-cta">
+      <span class="ddia-bridge-cta-text">Continue Reading</span>
+      <span class="ddia-bridge-cta-arrow">→</span>
+    </div>
     <div class="ddia-bridge-rule" aria-hidden="true" />
   </a>
 </template>
@@ -57,6 +65,8 @@ const currentChap = computed<Chapter | undefined>(() => {
   return [...CHAPTERS, ...PREREQUISITES].find(c => c.id === props.chapterId)
 })
 const displayTeaser = computed(() => currentChap.value?.teaser)
+// P1-11：下一章的預估閱讀時間（從 chapters.ts SSOT 拉）—— 章末瘦身後 Bridge 主元件需更多資訊密度
+const displayReadTime = computed(() => nextChap.value?.readTime)
 </script>
 
 <style scoped>
@@ -139,6 +149,46 @@ const displayTeaser = computed(() => currentChap.value?.teaser)
   color: var(--text-secondary);
 }
 
+/* P1-11 Wave 42：read-time meta + 強化 CTA — 章末瘦身後 Bridge 是主元件，視覺重量需更穩重 */
+.ddia-bridge-meta {
+  margin-top: var(--space-2-5);
+  font-family: var(--font-display);
+  font-variation-settings: var(--fvar-italic-warm);
+  font-style: italic;
+  font-size: var(--type-eyebrow);
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+.ddia-bridge-cta {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  margin: var(--space-4) auto 0;
+  padding: var(--space-2) var(--space-4);
+  border-top: 1px solid var(--rule-hairline);
+  border-bottom: 1px solid var(--rule-hairline);
+  font-family: var(--font-display);
+  font-variation-settings: var(--fvar-section-tight);
+  font-weight: 600;
+  font-size: var(--type-small);
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--mark-fg);
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+.ddia-bridge:hover .ddia-bridge-cta {
+  background: var(--brand-tint-soft);
+}
+.ddia-bridge-cta-arrow {
+  font-size: var(--type-body-mid);
+  transition: transform 0.2s ease;
+}
+.ddia-bridge:hover .ddia-bridge-cta-arrow {
+  transform: translateX(3px);
+}
+
+/* 底部 dinkus 細線：對應原本書頁段落收尾 */
 .ddia-bridge-rule {
   height: 1px;
   background: var(--rule-hairline);

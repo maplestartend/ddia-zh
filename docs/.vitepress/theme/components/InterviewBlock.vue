@@ -1,9 +1,12 @@
 <template>
-  <div class="ddia-interview">
-    <div class="ddia-interview-eyebrow">
-      <Icon name="campaign" :size="14" filled />
-      面試怎麼問
-    </div>
+  <!-- P1-11 Wave 42：章末元件序列「滿出來」共識——
+       InterviewBlock 改用 <details> 預設收起，省去 5 件套之中佔最大量的 Q&A 框框。
+       讀者想練習就點開、否則章末視覺只剩 Quiz → Bridge 兩件主元件，明顯瘦身 -->
+  <details class="ddia-interview" :open="defaultOpen">
+    <summary class="ddia-interview-summary">
+      <span class="ddia-interview-eyebrow">面試怎麼問</span>
+      <span class="ddia-interview-count">{{ questions.length }} 題 · 點開練習</span>
+    </summary>
     <p class="ddia-interview-intro">
       想像面試官問你這幾題、自己心裡演練 90 秒講清楚。不必寫得長、能把關鍵字串起來就行。textarea 自動存。
     </p>
@@ -22,12 +25,11 @@
         />
       </li>
     </ol>
-  </div>
+  </details>
 </template>
 
 <script setup lang="ts">
 import { computed, watch } from 'vue'
-import Icon from './Icon.vue'
 import { useStorage } from '../../composables/useStorage'
 
 interface InterviewQ {
@@ -36,10 +38,13 @@ interface InterviewQ {
   tag?: string  // 「轉帳系統」「分散式 KV」之類的面試題型標籤
 }
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   chapterId: string
   questions: InterviewQ[]
-}>()
+  /** P1-11：預設收起（false）— 章末瘦身。讀者若已寫過答案、Quiz Cheat Sheet 仍可帶出。
+   *  少數想預設展開的章節（如面試準備路徑專題）可覆寫 :default-open="true" */
+  defaultOpen?: boolean
+}>(), { defaultOpen: false })
 
 const key = computed(() => `ddia-interview-${props.chapterId}`)
 // 用 string[] 儲存每題答案（與題目 index 對應）
@@ -76,22 +81,54 @@ watch(answers, (v) => {
   border-bottom: 1px solid var(--rule-hairline);
   border-radius: 0;
 }
-.ddia-interview-eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-1-5);
+/* P1-11 Wave 42：summary 折疊頭 — italic eyebrow + 題數提示 */
+.ddia-interview-summary {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2-5);
+  padding: var(--space-2) 0;
+  cursor: pointer;
+  list-style: none;
   font-family: var(--font-display);
+  user-select: none;
+  position: relative;
+  padding-left: 1.2em;
+}
+.ddia-interview-summary::-webkit-details-marker { display: none; }
+.ddia-interview-summary::before {
+  content: "▸";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: var(--type-eyebrow);
+  color: var(--warning-fg);
+  transition: transform 0.18s ease;
+}
+.ddia-interview[open] > .ddia-interview-summary::before {
+  transform: translateY(-50%) rotate(90deg);
+}
+.ddia-interview-summary:hover {
+  color: var(--mark-fg);
+}
+.ddia-interview-summary:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+}
+.ddia-interview-eyebrow {
   font-variation-settings: var(--fvar-eyebrow-warm);
-  /* Wave 30a：功能性元件 eyebrow 去 italic（italic 留給儀式：Hero/ChapterOpener/Bridge/TLDR/Quiz） */
   font-size: var(--type-eyebrow);
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: var(--ls-eyebrow);
   color: var(--warning-fg);
-  margin-bottom: var(--space-2-5);
 }
-.ddia-interview-eyebrow :deep(.material-symbols-rounded) {
-  display: none;
+.ddia-interview-count {
+  font-variation-settings: var(--fvar-italic-warm);
+  font-style: italic;
+  font-size: var(--type-eyebrow);
+  letter-spacing: var(--ls-loose);
+  color: var(--text-tertiary);
 }
 .ddia-interview-intro {
   margin: 0 0 var(--space-3-5);

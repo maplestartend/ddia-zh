@@ -258,10 +258,13 @@
   --bg-secondary: #2C251F;
   --bg-elevated:  #241E1A;
 
-  --border-default: #3A332C;
-  --border-strong:  #E3D9BF; /* dark 模式：髮絲線轉米白 */
-  --rule-hairline:  #E3D9BF;
-  --rule-soft:      #5A5147;
+  --border-default: #4A4034;
+  /* Wave 42.4 R4-6：暗色 hairline 二輪 bump
+     UX 三輪審視「Part 連體網格右下角 hairline 與底色對比偏弱 1.6:1」
+     從 #D4C8A8 升 #C5B89A — 仍是暖米調但對 #1C1714 bg 對比 ~ 3.1:1（達 WCAG UI 元件 3:1）*/
+  --border-strong:  #C5B89A;
+  --rule-hairline:  #C5B89A;
+  --rule-soft:      #7A7163;
 
   --text-primary:   #EDE3CE; /* 蠟燭光下的米白 */
   --text-secondary: #C9BFA8;
