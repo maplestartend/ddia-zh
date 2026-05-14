@@ -26,6 +26,10 @@ import CheatSheetExport from './components/CheatSheetExport.vue'
 import Part0SelfAssessment from './components/Part0SelfAssessment.vue'
 import ReviewDue from './components/ReviewDue.vue'
 import InterviewBlock from './components/InterviewBlock.vue'
+// Wave 38：DecisionTree / SequenceFlow 取代 mermaid（CJK + 624px 容器跑版痼疾）
+import DecisionTree from './components/DecisionTree.vue'
+import DecisionTreeNode from './components/DecisionTreeNode.vue'
+import SequenceFlow from './components/SequenceFlow.vue'
 
 // Editorial 模式不再載 Material Symbols、不再需要 FOUT 防護 hook
 // 字型載入由 font-display: swap 處理（Fraunces / Noto Serif TC / Noto Sans TC / JetBrains Mono）
@@ -113,6 +117,9 @@ export default {
     app.component('Part0SelfAssessment', Part0SelfAssessment)
     app.component('ReviewDue', ReviewDue)
     app.component('InterviewBlock', InterviewBlock)
+    app.component('DecisionTree', DecisionTree)
+    app.component('DecisionTreeNode', DecisionTreeNode)
+    app.component('SequenceFlow', SequenceFlow)
 
     // ====================================================================
     // a11y mermaid <title> 注入（Wave 29d 引入、Wave 30d 大改修效能問題）

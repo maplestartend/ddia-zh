@@ -187,23 +187,99 @@ city: [Taipei, Tokyo, NYC]
 
 把整章的取捨壓成一張決策圖，實際做工程選型時可照走：
 
-```mermaid
-graph TD
-    Start[要存什麼 / 怎麼用？] --> Q1{讀寫比例？}
-    Q1 -- 讀遠多於寫 --> BTree[B-Tree 派]
-    Q1 -- 寫遠多於讀 --> Q2{需要範圍查詢？}
-    Q1 -- 讀寫接近 --> Q3{資料量 vs RAM？}
-
-    Q2 -- 是 / 純 KV --> LSM[LSM 派]
-    Q2 -- 純點查 --> Q4{需要持久化？}
-    Q4 -- 全在記憶體 --> Redis[Redis 系]
-    Q4 -- 要持久 --> Hash[Bitcask 系]
-
-    Q3 -- 塞得進 RAM --> BTree
-    Q3 -- 塞不進 --> Q5{OLTP 還是 OLAP？}
-    Q5 -- OLTP --> LSM
-    Q5 -- OLAP --> Column[欄式儲存]
-```
+<DecisionTree caption="儲存引擎選型決策樹（Ch3 §3.1-3.6 整章壓縮）" :root='{
+  q: "讀寫比例？",
+  branches: [
+    {
+      label: "讀遠多於寫",
+      child: {
+        kind: "leaf",
+        tone: "safe",
+        text: "B-Tree 派 — PG / MySQL / SQLite，多數 web app 預設適用"
+      }
+    },
+    {
+      label: "寫遠多於讀",
+      child: {
+        q: "需要範圍查詢？",
+        branches: [
+          {
+            label: "是 / 純 KV",
+            child: {
+              kind: "leaf",
+              tone: "neutral",
+              text: "LSM 派 — RocksDB / Cassandra / ScyllaDB（寫密集 / 大量 ingest / 時序 IoT）"
+            }
+          },
+          {
+            label: "純點查",
+            child: {
+              q: "需要持久化？",
+              branches: [
+                {
+                  label: "全在記憶體",
+                  child: {
+                    kind: "leaf",
+                    tone: "neutral",
+                    text: "Redis 系 — Redis / Memcached（純點查 / 全在記憶體）"
+                  }
+                },
+                {
+                  label: "要持久",
+                  child: {
+                    kind: "leaf",
+                    tone: "neutral",
+                    text: "Bitcask 系 — Bitcask / LevelDB 早期（純 KV / 要持久 / 單機極快）"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      label: "讀寫接近",
+      child: {
+        q: "資料量 vs RAM？",
+        branches: [
+          {
+            label: "塞得進 RAM",
+            child: {
+              kind: "leaf",
+              tone: "neutral",
+              text: "Redis / VoltDB 等 in-memory store（DDIA §3.2 路徑）"
+            }
+          },
+          {
+            label: "塞不進",
+            child: {
+              q: "OLTP 還是 OLAP？",
+              branches: [
+                {
+                  label: "OLTP",
+                  child: {
+                    kind: "leaf",
+                    tone: "neutral",
+                    text: "LSM 派"
+                  }
+                },
+                {
+                  label: "OLAP",
+                  child: {
+                    kind: "leaf",
+                    tone: "warn",
+                    text: "欄式儲存 — Parquet on S3 + DuckDB / ClickHouse / Redshift / BigQuery（OLAP / 多欄少列 / 聚合）"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}' />
 
 **決策樹快速結論 + 工具對應**：
 - **B-Tree 派**（讀遠多於寫 / 每筆改少 / 查詢多）→ PG / MySQL / SQLite，多數 web app 預設適用

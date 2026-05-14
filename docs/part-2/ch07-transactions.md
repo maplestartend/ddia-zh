@@ -198,23 +198,69 @@ UPDATE coupons SET remaining = 0 WHERE id=X;  -- 寫死新值
 
 把通則畫成 mermaid 決策樹，PR review 時可直接照走：
 
-```mermaid
-graph TD
-    Start[並發寫衝突場景] --> Q1{衝突的條件是<br/>跨列邏輯？<br/>例：admin 數 ≥ 2}
-    Q1 -- 是 --> A[需 SERIALIZABLE / SSI<br/>或顯式 SELECT ... FOR UPDATE 鎖所有相關列<br/>應用層 retry on 40001]
-    Q1 -- 否 --> Q2{能用原子 UPDATE 嗎？<br/>例：SET stock = stock - 1<br/>WHERE stock &gt; 0}
-    Q2 -- 是 --> B[原子 UPDATE<br/>任何隔離級別都安全<br/>看 affected rows 判斷]
-    Q2 -- 否 --> Q3{你的 DB 是？}
-    Q3 -- PostgreSQL --> C[升 REPEATABLE READ<br/>+ catch 40001 retry<br/>PG SI 自動偵測同列 lost update]
-    Q3 -- MySQL InnoDB --> D[RR 不偵測 lost update！<br/>必須用 SELECT ... FOR UPDATE<br/>悲觀鎖；或改寫成原子 UPDATE]
-    Q3 -- Oracle --> E[升 SERIALIZABLE = SI<br/>同 PG 行為、+ retry on ORA-08177]
-
-    style A fill:#fbe8e6,stroke:#b3261e
-    style B fill:#e3f3e8,stroke:#16a34a
-    style C fill:#fff3dc,stroke:#d98a00
-    style D fill:#fff3dc,stroke:#d98a00
-    style E fill:#fff3dc,stroke:#d98a00
-```
+<DecisionTree caption="lost update / write skew 通用選型決策樹" :root='{
+  q: "衝突的條件是跨列邏輯？",
+  hint: "例：admin 數 ≥ 2 / 同帳號雙刷",
+  branches: [
+    {
+      label: "是（write skew）",
+      child: {
+        kind: "leaf",
+        tone: "danger",
+        text: "需 SERIALIZABLE / SSI、或顯式 SELECT ... FOR UPDATE 鎖所有相關列；應用層 retry on 40001"
+      }
+    },
+    {
+      label: "否（lost update）",
+      child: {
+        q: "能用原子 UPDATE 嗎？",
+        hint: "例：SET stock = stock - 1 WHERE stock > 0",
+        branches: [
+          {
+            label: "是",
+            child: {
+              kind: "leaf",
+              tone: "safe",
+              text: "原子 UPDATE — 任何隔離級別都安全；看 affected rows 判斷成功與否"
+            }
+          },
+          {
+            label: "否",
+            child: {
+              q: "你的 DB 是？",
+              branches: [
+                {
+                  label: "PostgreSQL",
+                  child: {
+                    kind: "leaf",
+                    tone: "warn",
+                    text: "升 REPEATABLE READ + catch 40001 retry；PG SI 自動偵測同列 lost update"
+                  }
+                },
+                {
+                  label: "MySQL InnoDB",
+                  child: {
+                    kind: "leaf",
+                    tone: "warn",
+                    text: "RR 不偵測 lost update！必須用 SELECT ... FOR UPDATE 悲觀鎖；或改寫成原子 UPDATE"
+                  }
+                },
+                {
+                  label: "Oracle",
+                  child: {
+                    kind: "leaf",
+                    tone: "warn",
+                    text: "升 SERIALIZABLE = SI（同 PG 行為）；+ retry on ORA-08177"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}' />
 
 **讀法**：
 - 🔴 **A 分支**（write skew）：最嚴重、效能代價最高

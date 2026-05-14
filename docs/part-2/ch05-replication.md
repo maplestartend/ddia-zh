@@ -55,36 +55,48 @@ title: Ch5 複製
 
 ### 同步 vs 非同步
 
-```mermaid
-sequenceDiagram
-    autonumber
-    participant C as Client
-    participant L as Leader
-    participant F1 as Follower 1
-    participant F2 as Follower 2
-
-    Note over C,F2: 同步複製：等所有 follower ACK 才回 client
-    C->>L: write x=1
-    L->>F1: replicate
-    L->>F2: replicate
-    F1-->>L: ACK
-    F2-->>L: ACK
-    L-->>C: OK ✓（強一致；任一 follower 慢就卡）
-
-    Note over C,F2: 非同步複製：立刻 ack，背景傳
-    C->>L: write x=2
-    L-->>C: OK ✓（快但 leader 掛掉可能丟資料）
-    L->>F1: replicate (背景)
-    L->>F2: replicate (背景)
-
-    Note over C,F2: 半同步：至少 1 個 follower 同步即可
-    C->>L: write x=3
-    L->>F1: replicate
-    L->>F2: replicate
-    F1-->>L: ACK
-    L-->>C: OK ✓（一個 follower 同步就保證資料不丟）
-    F2-->>L: ACK (晚到也沒關係)
-```
+<SequenceFlow
+  caption="同步 vs 非同步 vs 半同步 — 三種複製模式的時序對比"
+  :actors='["Client", "Leader", "Follower 1", "Follower 2"]'
+  :phases='[
+    {
+      tone: "warn",
+      name: "全同步（理論模型）— 等所有 follower ACK 才回 client",
+      steps: [
+        { from: 0, to: 1, msg: "write x=1" },
+        { from: 1, to: 2, msg: "replicate" },
+        { from: 1, to: 3, msg: "replicate" },
+        { from: 2, to: 1, kind: "return", msg: "ACK" },
+        { from: 3, to: 1, kind: "return", msg: "ACK" },
+        { from: 1, to: 0, kind: "return", msg: "OK ✓" },
+        { kind: "note", actors: [0, 3], tone: "warn", text: "強一致；任一 follower 慢就卡 — 實務上極少這樣做" }
+      ]
+    },
+    {
+      tone: "safe",
+      name: "非同步複製 — 立刻 ack、背景傳（MySQL 預設）",
+      steps: [
+        { from: 0, to: 1, msg: "write x=2" },
+        { from: 1, to: 0, kind: "return", msg: "OK ✓" },
+        { from: 1, to: 2, msg: "replicate（背景）" },
+        { from: 1, to: 3, msg: "replicate（背景）" },
+        { kind: "note", actors: [0, 3], text: "快、但 leader 掛掉時尚未複製的寫會丟失" }
+      ]
+    },
+    {
+      name: "半同步 — 至少 1 個 follower 同步即可（實務常見折衷）",
+      steps: [
+        { from: 0, to: 1, msg: "write x=3" },
+        { from: 1, to: 2, msg: "replicate" },
+        { from: 1, to: 3, msg: "replicate" },
+        { from: 2, to: 1, kind: "return", msg: "ACK" },
+        { from: 1, to: 0, kind: "return", msg: "OK ✓" },
+        { from: 3, to: 1, kind: "return", msg: "ACK（晚到也沒關係）" },
+        { kind: "note", actors: [0, 3], tone: "safe", text: "一個 follower 同步就保證資料不丟 — MySQL 8.0+ `rpl_semi_sync_source_wait_for_replica_count=1`" }
+      ]
+    }
+  ]'
+/>
 
 - **同步**：寫入要等 follower ACK → 強一致但 follower 掛了卡寫入。實務範例：PostgreSQL `synchronous_commit=on` + `synchronous_standby_names`。
 - **非同步**：寫入立刻 ack → 快，但 leader 掛了可能丟資料。MySQL 預設。
@@ -199,23 +211,91 @@ DDIA Ch5 §5.4 的「版本向量」指後者。實務上 Dynamo / Riak / Voldem
 
 把 Single-Leader / Multi-Leader / Leaderless 三大架構的選型壓成一張圖：
 
-```mermaid
-graph TD
-    Start[要選什麼複製拓樸？] --> Q1{單 region 還是多 region？}
-
-    Q1 -- 單 region 為主<br/>低延遲 + 強一致需求 --> SL[Single-Leader<br/>PG / MySQL streaming<br/>+ 半同步 + read replica]
-    Q1 -- 多 region 寫入<br/>各 DC 都要能寫 --> Q2{衝突可接受嗎？}
-    Q1 -- 跨 region 但只一處寫 --> SL2[Single-Leader 跨 region<br/>+ async follower 在其他 region<br/>讀就近 / 寫回主]
-
-    Q2 -- 衝突不可接受<br/>金融 / 強一致 --> SLgeo[Single-Leader<br/>+ 在最近 region 部署 leader<br/>承擔跨 region 寫延遲]
-    Q2 -- 衝突可容忍<br/>計數器 / 文件協作 --> Q3{需要 commutative 結構嗎？}
-    Q3 -- 是 --> CRDT[Multi-Leader + CRDT<br/>Yjs / Automerge / Riak DT]
-    Q3 -- 否、用 LWW 接受最後寫贏 --> ML[Multi-Leader + LWW<br/>Bucardo / MySQL Group Replication<br/>Oracle GoldenGate / BDR]
-
-    Q1 -- 寫入 throughput 是瓶頸<br/>大量 ingest --> Lless{需要範圍查詢嗎？}
-    Lless -- 否、純 KV 點查 --> DynamoLike[Leaderless<br/>Cassandra / Riak / ScyllaDB<br/>Quorum + read repair]
-    Lless -- 是 --> SL3[回 Single-Leader<br/>+ partition 分擔寫]
-```
+<DecisionTree caption="複製拓樸選型 — Single-Leader / Multi-Leader / Leaderless 三選" :root='{
+  q: "單 region 還是多 region？",
+  branches: [
+    {
+      label: "單 region 為主（低延遲 + 強一致）",
+      child: {
+        kind: "leaf",
+        tone: "safe",
+        text: "Single-Leader — PG / MySQL streaming + 半同步 + read replica"
+      }
+    },
+    {
+      label: "跨 region 但只一處寫",
+      child: {
+        kind: "leaf",
+        tone: "neutral",
+        text: "Single-Leader 跨 region — async follower 在其他 region；讀就近 / 寫回主"
+      }
+    },
+    {
+      label: "多 region 寫入（各 DC 都要能寫）",
+      child: {
+        q: "衝突可接受嗎？",
+        branches: [
+          {
+            label: "衝突不可接受（金融 / 強一致）",
+            child: {
+              kind: "leaf",
+              tone: "danger",
+              text: "Single-Leader + 在最近 region 部署 leader — 承擔跨 region 寫延遲（毫秒到秒級）"
+            }
+          },
+          {
+            label: "衝突可容忍（計數器 / 文件協作）",
+            child: {
+              q: "需要 commutative 結構嗎？",
+              branches: [
+                {
+                  label: "是",
+                  child: {
+                    kind: "leaf",
+                    tone: "safe",
+                    text: "Multi-Leader + CRDT — Yjs / Automerge / Riak DT"
+                  }
+                },
+                {
+                  label: "否、用 LWW 接受最後寫贏",
+                  child: {
+                    kind: "leaf",
+                    tone: "warn",
+                    text: "Multi-Leader + LWW — Tungsten Replicator / SymmetricDS、或自寫 LWW on Kafka / DynamoDB Global Tables"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      label: "寫入 throughput 是瓶頸（大量 ingest）",
+      child: {
+        q: "需要範圍查詢嗎？",
+        branches: [
+          {
+            label: "否、純 KV 點查",
+            child: {
+              kind: "leaf",
+              tone: "neutral",
+              text: "Leaderless — Cassandra / Riak / ScyllaDB；Quorum + read repair"
+            }
+          },
+          {
+            label: "是",
+            child: {
+              kind: "leaf",
+              tone: "safe",
+              text: "回 Single-Leader + partition 分擔寫"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}' />
 
 **選型快速結論**：
 - 預設選 **Single-Leader**（多數 web app 適用）

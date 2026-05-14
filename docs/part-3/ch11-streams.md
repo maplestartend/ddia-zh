@@ -196,33 +196,38 @@ Session window 的長度**取決於資料本身**（事件分布決定 gap）—
 
 把 watermark 視覺化最直觀的方式：**event-time 軸**（事件在現實世界發生時間）vs **processing-time 軸**（事件被框架處理的時間）—— 兩條軸理想情況下應該是 y=x 對角線、但實際上有 lag：
 
-```mermaid
-sequenceDiagram
-    autonumber
-    participant Realtime as Event-time (現實)
-    participant Stream as Processing-time (框架收到)
-    participant Watermark as Watermark
-    participant Window as Window [10:00-10:05]
+<SequenceFlow
+  caption="Watermark：framework 對 event-time 進度的保守估計（heuristic、非完備）"
+  :actors='["現實 event-time", "框架 processing-time", "Watermark", "Window [10:00-10:05]"]'
+  :phases='[
+    {
+      name: "T=10:00 視窗開始 · 事件陸續到達",
+      steps: [
+        { from: 0, to: 1, msg: "e1 (event-time 10:01)" },
+        { kind: "note", actors: [1, 1], text: "處理時間 10:01:03" },
+        { from: 0, to: 1, msg: "e2 (event-time 10:02)" },
+        { kind: "note", actors: [1, 1], text: "處理時間 10:02:01" },
+        { from: 0, to: 1, msg: "e3 (event-time 10:00、亂序到達)" },
+        { kind: "note", actors: [1, 1], text: "處理時間 10:04:00" },
+        { kind: "note", actors: [2, 2], text: "Watermark = 10:04（保守估計：所有 ≤ 10:04 都到了）" }
+      ]
+    },
+    {
+      name: "T=10:05 視窗結束 · Watermark 跨 10:05 才觸發 close",
+      steps: [
+        { from: 0, to: 1, msg: "e4 (event-time 10:03)" },
+        { kind: "note", actors: [1, 1], text: "處理時間 10:05:30" },
+        { kind: "note", actors: [2, 3], tone: "safe", text: "Watermark 推進到 10:05、視窗關閉、輸出結果" },
+        { from: 0, to: 1, msg: "e5 (event-time 10:04、late event)" },
+        { kind: "note", actors: [1, 1], text: "處理時間 10:06:00" },
+        { kind: "note", actors: [3, 3], tone: "warn", text: "⚠ 已關窗、e5 丟棄（除非設 allowed lateness）" },
+        { kind: "note", actors: [2, 3], tone: "warn", text: "Watermark 本質是 heuristic、永遠可能有更晚到的 event" }
+      ]
+    }
+  ]'
+/>
 
-    Note over Realtime,Window: T=10:00 視窗開始
-    Realtime->>Stream: e1 (event-time 10:01)
-    Note over Stream: 處理時間 10:01:03
-    Realtime->>Stream: e2 (event-time 10:02)
-    Note over Stream: 處理時間 10:02:01
-    Realtime->>Stream: e3 (event-time 10:00、亂序到達)
-    Note over Stream: 處理時間 10:04:00
-    Note over Watermark: Watermark = 10:04（保守估計：所有 ≤ 10:04 都到了）
-
-    Note over Realtime,Window: T=10:05 視窗結束、Watermark 跨過 10:05 才觸發
-    Realtime->>Stream: e4 (event-time 10:03)
-    Note over Stream: 處理時間 10:05:30
-    Note over Watermark: Watermark 推進到 10:05、視窗關閉、輸出結果
-    Realtime->>Stream: e5 (event-time 10:04、late event)
-    Note over Stream: 處理時間 10:06:00
-    Note over Window: ⚠️ 已關窗、e5 丟棄（除非設 allowed lateness）
-```
-
-**重點**：watermark 是框架對「event-time 進度」的保守估計、用來決定何時關 window。watermark **太激進**（推太快）→ 丟掉很多 late event；**太保守**（推太慢）→ 結果輸出延遲變大。
+**重點**：watermark 是框架對「event-time 進度」的**啟發式（heuristic）**保守估計、不是完備保證——**永遠可能有更晚到的 event**（例：手機離線一週後回連、舊事件才送到）。watermark **太激進**（推太快）→ 丟掉很多 late event；**太保守**（推太慢）→ 結果輸出延遲變大。allowed lateness 機制就是為這個本質性的不確定性留的。
 
 ### 三大框架的 watermark / late event 機制對照
 

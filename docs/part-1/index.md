@@ -46,31 +46,99 @@ Part I 四章對應三類「**該怎麼選**」的決策。下面 3 棵獨立決
 
 ### 1. 新專案要選什麼 DB?（Ch2）
 
-```mermaid
-flowchart TD
-    A[新專案要選什麼 DB?] --> B{資料是樹狀且整份讀寫?}
-    B -- 是 --> C[Document DB<br/>MongoDB / DynamoDB]
-    B -- 否 --> D{多對多關係多?}
-    D -- 是 --> E[Relational DB<br/>PostgreSQL / MySQL]
-    D -- 否 --> F{關係是查詢主體?<br/>如社交圖譜}
-    F -- 是 --> G[Graph DB<br/>Neo4j / TigerGraph]
-    F -- 否 --> E
-```
+<DecisionTree :root='{
+  q: "資料是樹狀且整份讀寫？",
+  branches: [
+    {
+      label: "是",
+      child: {
+        kind: "leaf",
+        tone: "neutral",
+        text: "Document DB — MongoDB / CouchDB；DynamoDB 也算（KV + document 混合）"
+      }
+    },
+    {
+      label: "否",
+      child: {
+        q: "多對多關係多？",
+        branches: [
+          {
+            label: "是",
+            child: {
+              kind: "leaf",
+              tone: "safe",
+              text: "Relational DB — PostgreSQL / MySQL"
+            }
+          },
+          {
+            label: "否",
+            child: {
+              q: "關係是查詢主體？",
+              hint: "如社交圖譜",
+              branches: [
+                {
+                  label: "是",
+                  child: {
+                    kind: "leaf",
+                    tone: "neutral",
+                    text: "Graph DB — Neo4j / TigerGraph"
+                  }
+                },
+                {
+                  label: "否",
+                  child: {
+                    kind: "leaf",
+                    tone: "safe",
+                    text: "Relational DB — PostgreSQL / MySQL（多數場景的預設選擇）"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}' />
 
 ### 2. 新表很大時要選什麼儲存引擎?（Ch3）
 
-```mermaid
-flowchart TD
-    H[新表很大時要選什麼引擎?] --> I{寫多 or 讀多?}
-    I -- 寫密集 --> J[LSM-Tree<br/>RocksDB / Cassandra]
-    I -- 讀密集 --> K[B-Tree<br/>PostgreSQL / MySQL]
-```
+<DecisionTree :root='{
+  q: "寫多 or 讀多？",
+  branches: [
+    {
+      label: "寫密集",
+      child: {
+        kind: "leaf",
+        tone: "neutral",
+        text: "LSM-Tree — RocksDB / Cassandra / ScyllaDB"
+      }
+    },
+    {
+      label: "讀密集",
+      child: {
+        kind: "leaf",
+        tone: "safe",
+        text: "B-Tree — PostgreSQL / MySQL / SQLite"
+      }
+    }
+  ]
+}' />
 
 ### 3. 要做分析報表?（Ch3）
 
-```mermaid
-flowchart TD
-    L[要做分析報表?] --> M[列轉欄式儲存<br/>Redshift / BigQuery / ClickHouse]
-```
+<DecisionTree :root='{
+  q: "要做分析報表？",
+  branches: [
+    {
+      label: "是",
+      child: {
+        kind: "leaf",
+        tone: "warn",
+        text: "列轉欄式儲存 — Redshift / BigQuery / ClickHouse / DuckDB"
+      }
+    }
+  ]
+}' />
 
 Part I 的核心訓練是**「在資料層做出有依據的決策」**。Part II 開始我們會把這些單機決策放到多機環境，看會發生什麼。
