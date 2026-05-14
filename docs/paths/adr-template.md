@@ -274,7 +274,7 @@ ADR-0023（2024-09）選 SQS Standard 的條件已不適用：
 
 ## Alternatives Considered
 - **AWS MSK 自管**：放棄。團隊規模不夠養 Kafka cluster、寧可付 Confluent managed 費用
-- **Kinesis Data Streams**：放棄。replay 機制弱（24h 預設、最多 7 天）、Confluent 生態更完整
+- **Kinesis Data Streams**：放棄。replay 機制相對弱（**24h 預設保留、2020 後可延長到 365 天但要付每 GB-hour 費用**、且 stream 數 / shard 數有 region 軟上限）、Confluent 生態（Connectors / Schema Registry / Streams DSL）更完整。本案需 30 天 replay 雖然技術上 Kinesis 撐得住、但工具鏈與成本平衡點仍輸 Confluent
 - **保留 SQS + 加 EventBridge replay**：放棄。EventBridge 14 天保留期不夠 30 天訓練窗口
 
 ## Migration Plan

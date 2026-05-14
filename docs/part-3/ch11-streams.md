@@ -221,6 +221,15 @@ Esper、Flink CEP。
 - **CQRS**：下方多個 read model 各自最佳化某種查詢負載
 - **Stream-Table Duality**：每個 read model 都是「事件流的 fold 結果」、隨時可從 source-of-truth 重建
 
+::: tip Stream-Table Duality 也對 source-of-truth 本身成立
+上圖把 stream-table 對偶畫在「source → read models」這層、但**對偶其實在 source 內部也成立**——Kafka 一個 topic 本身就有兩種看法：
+- **完整事件流**（不做 compaction）：保留每個 key 的所有歷史變更、`log.retention.ms` 控
+- **compacted topic**：背景 compaction 只保留每個 key 的最新值、變成「key → latest value」的表
+- **同一個 topic 可在不同 consumer 視角分別當 stream 或 table** —— consumer 從 offset 0 重播是 stream、用 `KTable` 抽象消費是 table
+
+換句話說：stream-table duality **不是「上下游」的關係、是「同一份資料的兩種觀察方式」**——即使 source-of-truth 本身、log（stream）↔ compacted topic（table）也是這個對偶的化身。Kafka Streams 的 `KStream` vs `KTable` API 就把這對偶顯式表達出來。
+:::
+
 **這就是現代 event-driven 平台（Uber / Netflix / Shopify）的核心設計**——把三個概念分開講會學散、合起來看會學透。
 :::
 

@@ -87,8 +87,8 @@ DB connection pool 在 30 秒內耗盡
 | 工具 | 解什麼 | 知名實作 |
 |---|---|---|
 | **Circuit Breaker** | 偵測下游失效率 → 快速熔斷不再呼叫 | Hystrix（已 deprecated）、Resilience4j、Sentinel |
-| **Bulkhead** | 不同下游用不同連線池 / thread pool → 一個壞不會拖垮全部 | Hystrix BulkheadProperties、Resilience4j Bulkhead |
-| **Exponential Backoff + Jitter** | 重試間隔指數增 + 加隨機抖動 → 避免「重試風暴」同步打爆下游 | AWS SDK 預設、Polly（.NET） |
+| **Bulkhead** | 不同下游用不同連線池 / thread pool → 一個壞不會拖垮全部 | Hystrix（**已 deprecated**）用 `HystrixThreadPoolProperties` + `executionIsolationSemaphoreMaxConcurrentRequests`、Resilience4j `BulkheadConfig`（推薦） |
+| **Exponential Backoff + Jitter** | 重試間隔指數增 + 加隨機抖動 → 避免「重試風暴」同步打爆下游。**Jitter 三種**（[AWS Architecture Blog 2015](https://aws.amazon.com/blogs/architecture/exponential-backoff-and-jitter/)）：full jitter（`sleep = random(0, base × 2^n)`、最隨機、推薦預設）/ equal jitter（base 一半固定 + 一半隨機）/ decorrelated jitter（前一次 sleep 影響下次、AWS SDK 內部用） | AWS SDK 預設 full jitter、Polly（.NET）支援所有三種 |
 | **Load Shedding** | 流量超過某閾值就拒絕新請求（保住既有處理中的請求） | Envoy adaptive concurrency、Netflix concurrency-limits |
 
 **為什麼這條鏈這麼常見**：DDIA 原書 Ch1 §1.2 講「軟體錯誤」+ Google SRE Book Ch22「Addressing Cascading Failures」整章都在解這個。**Cascading failure 是 SRE 值班手冊永遠的第一章**——你管的系統夠大、總有一天會撞。
