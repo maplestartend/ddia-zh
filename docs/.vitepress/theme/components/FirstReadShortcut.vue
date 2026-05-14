@@ -7,6 +7,9 @@
     <div class="ddia-frs-body">
       <slot />
     </div>
+    <div class="ddia-frs-quiz-hint">
+      <strong>章末 Quiz 分級對應</strong>：<code>basic</code> 題 = 走完上面「必讀核心」就該答得出 · <code>applied</code> 題 = 把觀念套到真實場景 · <code>interview</code> 題 = senior 面試級加碼（第一次讀答不出來不要緊）
+    </div>
   </aside>
 </template>
 
@@ -82,5 +85,25 @@
 .ddia-frs-body :deep(strong) {
   color: var(--brand-500);
   font-weight: 600;
+}
+.ddia-frs-quiz-hint {
+  margin-top: var(--space-3);
+  padding-top: var(--space-2-5);
+  border-top: 1px dashed var(--rule-hairline);
+  font-family: var(--font-body);
+  font-size: 13px;  /* lint-typography-allow: FRS Quiz hint 小字 */
+  line-height: 1.65;
+  color: var(--text-secondary);
+}
+.ddia-frs-quiz-hint strong {
+  color: var(--brand-500);
+  font-weight: 600;
+}
+.ddia-frs-quiz-hint code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  padding: 0 4px;
+  background: var(--bg-canvas);
+  border-radius: 0;
 }
 </style>

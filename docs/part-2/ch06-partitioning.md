@@ -14,6 +14,17 @@ title: Ch6 分區
   "<strong>Rebalancing 三策略</strong>：fixed number of partitions（最簡單、推薦）、dynamic、proportional to nodes。請求路由由 ZooKeeper 或 gossip 解決。"
 ]' />
 
+<FirstReadShortcut>
+
+Ch5 講「多副本怎麼一致」、這章接著解「**單機放不下時怎麼切**」。**第一次讀建議聚焦三節**：
+
+- **必讀核心**：§6.1 分區與複製的關係 + §6.2 兩種分區策略（key range / hash）+ §6.3 熱點與再平衡（rebalance）
+- **第一次可跳**：§6.4 secondary index 的 local / global 取捨細節（第一次只需知道「secondary index 跨分區查得到、但代價高」即可）+ §6.5 路由與請求轉發機制（ZooKeeper / etcd / 客戶端 routing 三種模式可之後再細看）
+
+讀完核心三節（約 30 分鐘）你就能：**判斷你的業務該用 key range 還是 hash 分區**、**辨識 hot spot 場景（蝦皮雙 11 / 台鐵連假訂票）**、**理解為什麼 rebalance 是分散式 DB 維運最痛的部分**。
+
+</FirstReadShortcut>
+
 ## 6.1 分區與複製
 
 通常**同時**做分區（橫向切）與複製（每塊多份）：

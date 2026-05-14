@@ -456,10 +456,15 @@ await db.runTransaction(async (tx) => {
 4. 改 `SERIALIZABLE`，觀察 PostgreSQL 何時 abort 交易
 :::
 
+::: tip Quiz 題目分級
+- **★ 核心題**（basic / applied）：走 FirstReadShortcut「最小可用版」路徑也應答得出來
+- **☆ 進階題**（interview）：通常需要讀過該章「第一次可跳」的小節、面試常考；第一次答不出來沒關係、之後回頭再挑戰
+:::
+
 <Quiz chapter-id="ch07" :questions='[
   {
     difficulty: "basic",
-    question: "ACID 的四個字母分別代表什麼？",
+    question: "★ ACID 的四個字母分別代表什麼？",
     options: [
       "Atomicity / Consistency / Isolation / Durability",
       "Availability / Concurrency / Integrity / Distribution",
@@ -471,7 +476,7 @@ await db.runTransaction(async (tx) => {
   },
   {
     difficulty: "applied",
-    question: "Snapshot Isolation 仍然可能發生下列哪一種異常？",
+    question: "★ Snapshot Isolation 仍然可能發生下列哪一種異常？",
     options: [
       "Dirty Read",
       "Non-repeatable Read",
@@ -484,7 +489,7 @@ await db.runTransaction(async (tx) => {
   },
   {
     difficulty: "interview",
-    question: "PostgreSQL 的 SERIALIZABLE 採用 SSI，相對於 2PL 的主要差別是？",
+    question: "☆ PostgreSQL 的 SERIALIZABLE 採用 SSI，相對於 2PL 的主要差別是？",
     options: [
       "SSI 不保證可序列化",
       "SSI 樂觀執行、commit 時偵測衝突並 abort；2PL 悲觀加鎖、阻塞他人",
@@ -497,7 +502,7 @@ await db.runTransaction(async (tx) => {
   },
   {
     difficulty: "interview",
-    question: "ACID 中的「C」（Consistency）的真相是？",
+    question: "☆ ACID 中的「C」（Consistency）的真相是？",
     options: [
       "由 DB 完全保證",
       "其實主要是應用層責任，DB 只提供原子性/隔離性等工具去達成業務約束",
@@ -509,7 +514,7 @@ await db.runTransaction(async (tx) => {
   },
   {
     difficulty: "applied",
-    question: "下列哪個是「Lost Update」的可靠解法？",
+    question: "★ 下列哪個是「Lost Update」的可靠解法？",
     options: [
       "完全靠應用程式重試",
       "用原子更新 `UPDATE x SET v = v + 1` 或 `SELECT ... FOR UPDATE` 顯式鎖定",
@@ -522,7 +527,7 @@ await db.runTransaction(async (tx) => {
   },
   {
     difficulty: "interview",
-    question: "你在 MySQL InnoDB 預設 REPEATABLE READ 下跑「讀庫存 → 應用層判斷 → UPDATE 扣減」這種交易、兩個 client 並發跑——結果偶爾出現庫存變負數。下列何者是最準確的原因？",
+    question: "☆ 你在 MySQL InnoDB 預設 REPEATABLE READ 下跑「讀庫存 → 應用層判斷 → UPDATE 扣減」這種交易、兩個 client 並發跑——結果偶爾出現庫存變負數。下列何者是最準確的原因？",
     options: [
       "MySQL 預設不是 RR、需要明確 SET TRANSACTION ISOLATION LEVEL",
       "MySQL InnoDB RR 用 MVCC 提供 snapshot read、但**不偵測 lost update**——兩個交易讀到同一 snapshot、各自算 UPDATE、後寫者覆蓋先寫者，沒有 abort",
@@ -535,7 +540,7 @@ await db.runTransaction(async (tx) => {
   },
   {
     difficulty: "interview",
-    question: "PostgreSQL SSI 偵測到 write skew 時用什麼機制 abort 交易？相對 2PL 的 predicate lock 有什麼結構性差異？",
+    question: "☆ PostgreSQL SSI 偵測到 write skew 時用什麼機制 abort 交易？相對 2PL 的 predicate lock 有什麼結構性差異？",
     options: [
       "用 next-key lock 鎖索引範圍——跟 MySQL 的做法一樣",
       "用 SIREAD lock（軟鎖，不阻塞，只紀錄讀集）+ commit 時偵測 rw-dependency cycle——commit 時才驗證、所以是樂觀並發控制",

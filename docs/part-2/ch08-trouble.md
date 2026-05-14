@@ -78,6 +78,36 @@ title: Ch8 分散式系統的麻煩
 **DDIA 原書用 Amazon / Google paper、本站用 HiNet / MOD、底層的 partial failure / unreliable network / process pause 都是同一套**。
 :::
 
+::: tip 網路常見故障源清單（SRE 自學鋪墊）
+書本喜歡寫「網路會丟封包」抽象、但 SRE 遇到的是**有名字的具體故障源**——記得這些字、debug 時直接知道往哪查：
+
+| 故障源 | 症狀 | 偵測 |
+|---|---|---|
+| **BGP misconfig / hijack** | 跨 ISP 路由突然繞遠 / 黑洞 | BGP route monitoring（Cloudflare Radar、Hurricane Electric） |
+| **DNS 失效 / 中毒** | 解析超時、解析到錯誤 IP | `dig +trace` 比對、TTL 觀察 |
+| **MTU 黑洞（PMTU discovery 失敗）** | 大封包 silently 丟失、小封包正常 | `ping -M do -s 1472` 測試 |
+| **TCP RST 風暴** | 短時間大量連線被重置 | `netstat -s` 看 `connection resets received` |
+| **TLS handshake 慢** | 連線成功但 RTT 多 100-300ms | `curl -w "%{time_appconnect}"` |
+| **Switch / TOR 升級** | 機架內 IP 短暫不可達 | DC 變更紀錄 + traceroute 路徑變動 |
+| **NAT 表耗盡** | 突然大量連線失敗、源端口號 < 32768 | conntrack 表觀察 |
+| **Anycast 路由切換** | 用戶從 A 機房切到 B 機房、TCP 連線重置 | CDN provider event log |
+
+**這節是「Ch8 §8.2 從教材延伸到實務」的橋**——不需要全部記、但記得到「**網路故障不是單一現象、是一堆有名字的具體模式**」就夠了。
+:::
+
+::: tip TCP keepalive 預設 7200 秒太長、連線池飽和的真兇
+SRE 寫 service-to-service 呼叫最常踩的雷：**TCP keepalive 預設 2 小時、應用層 timeout 必須短於這個**。
+
+- **Linux 預設**：`tcp_keepalive_time=7200` 秒（**2 小時**）才開始 probe、之後 `tcp_keepalive_probes=9` × `tcp_keepalive_intvl=75` 才放棄連線 → **最壞要 2 小時 11 分才偵測到對端死亡**
+- **問題**：你的 service-to-service 連線池如果有 100 條連線、下游一個 pod 直接 kill `-9`、你的應用程式**完全感知不到**、繼續往那 100 條死連線塞請求 → connection refused / hang
+- **解法**：
+  - 應用層 timeout（`tcp_user_timeout` 或 framework HTTP client timeout）設 30 秒以內、強制中斷
+  - 連線池啟用 idle health check（如 HikariCP `validationTimeout`、urllib3 `Retry`）
+  - K8s 服務間用 service mesh（Istio / Linkerd）、它們會處理 transparent health check
+
+**為什麼連線池容易飽和**：典型場景是「下游慢 → connection 卡住 → pool 滿 → 新請求拿不到 connection → 上游也卡」——這就是 Ch1 的 cascading failure 在 connection-level 的化身、配合 keepalive 預設太長放大效果。
+:::
+
 ---
 
 ## 8.3 不可靠的時鐘

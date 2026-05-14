@@ -124,10 +124,15 @@ RETURN person.name
 4. 你會選哪一種？為什麼？
 :::
 
+::: tip Quiz 題目分級
+- **★ 核心題**（basic / applied）：走 FirstReadShortcut「最小可用版」路徑也應答得出來
+- **☆ 進階題**（interview）：通常需要讀過該章「第一次可跳」的小節、面試常考；第一次答不出來沒關係、之後回頭再挑戰
+:::
+
 <Quiz chapter-id="ch02" :questions='[
   {
     difficulty: "applied",
-    question: "下列哪種情境最適合使用文件模型而非關聯模型？",
+    question: "★ 下列哪種情境最適合使用文件模型而非關聯模型？",
     options: [
       "兩個實體之間有頻繁需要 JOIN 的多對多關係",
       "資料結構天然是樹狀、且整份文件常被一起讀取",
@@ -139,7 +144,7 @@ RETURN person.name
   },
   {
     difficulty: "basic",
-    question: "「宣告式查詢語言」相對於命令式的最大優勢是？",
+    question: "★ 「宣告式查詢語言」相對於命令式的最大優勢是？",
     options: [
       "執行速度一定更快",
       "查詢與儲存實作解耦，引擎可自由選擇執行計畫並進行優化、平行化",
@@ -151,7 +156,7 @@ RETURN person.name
   },
   {
     difficulty: "applied",
-    question: "對於「找出 Alice 朋友的朋友的朋友」這類查詢，哪種模型最自然？",
+    question: "★ 對於「找出 Alice 朋友的朋友的朋友」這類查詢，哪種模型最自然？",
     options: [
       "關聯模型 + 三次 self-join",
       "文件模型 + 巢狀陣列",
@@ -163,7 +168,7 @@ RETURN person.name
   },
   {
     difficulty: "basic",
-    question: "下列哪個敘述最準確描述 Schema-on-read？",
+    question: "★ 下列哪個敘述最準確描述 Schema-on-read？",
     options: [
       "資料儲存時不強制 schema，讀取時由應用程式按當前期待解讀結構",
       "讀取資料時自動產生 schema 文件給 DBA 參考",
@@ -175,7 +180,7 @@ RETURN person.name
   },
   {
     difficulty: "applied",
-    question: "你的 MongoDB 集合裡，每個 user document 嵌入 `posts` 陣列。當系統長到每個 user 有上千篇 post 時最常見的問題是？",
+    question: "★ 你的 MongoDB 集合裡，每個 user document 嵌入 `posts` 陣列。當系統長到每個 user 有上千篇 post 時最常見的問題是？",
     options: [
       "MongoDB 不允許這麼大的 document",
       "更新單一 post 仍需重寫整份 user document，且查詢「最近 N 篇」需要 unwind 陣列 —— 局部性優勢反成寫入瓶頸",
@@ -187,7 +192,7 @@ RETURN person.name
   },
   {
     difficulty: "interview",
-    question: "你的 e-commerce 後端目前用 PostgreSQL，要新增「商品全文搜尋（中英文模糊）」需求。下列哪個組合最符合 DDIA 提到的「polyglot persistence」精神？",
+    question: "☆ 你的 e-commerce 後端目前用 PostgreSQL，要新增「商品全文搜尋（中英文模糊）」需求。下列哪個組合最符合 DDIA 提到的「polyglot persistence」精神？",
     options: [
       "把所有資料搬到 Elasticsearch、廢棄 PostgreSQL",
       "PostgreSQL 仍是主資料庫，用 CDC（如 Debezium）把商品變更非同步同步到 Elasticsearch 作搜尋引擎",

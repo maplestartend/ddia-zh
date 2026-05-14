@@ -125,6 +125,23 @@ title: Ch5 複製
 
 > GitHub 2012 故障：自動 failover 把舊 leader 的資料覆蓋掉新 leader，丟失資料。
 
+::: tip 實務工具錨點：你會怎麼真的做 PG / MySQL failover？
+書本講 failover 三大麻煩很對、但 SRE 自學者會想「**那實務上是怎麼解的**」——記得工具名、production 撞到再深入：
+
+| DB | 主流 failover 工具 | 核心機制 |
+|---|---|---|
+| **PostgreSQL** | [**Patroni**](https://github.com/zalando/patroni) | etcd / Consul / ZooKeeper 當 DCS（Distributed Configuration Store） + leader election 走 Raft + `pg_rewind` 處理時序倒流 |
+| **MySQL** | [**Orchestrator**](https://github.com/openark/orchestrator) / **MHA**（已 deprecated）/ **InnoDB Cluster** | MGR（MySQL Group Replication）+ Group Communication System + Paxos 內建 |
+| **MongoDB** | 內建 Replica Set | Raft 變體、自動 election、`priority` 控制誰能當 primary |
+| **Redis** | Sentinel / Cluster | Sentinel 用 gossip + quorum 決定 master |
+
+**「真壞了還是只是抖了」的判斷**（SRE 最痛的決定）：
+- **Patroni** 用 etcd watchdog：master 失去 etcd lease → 自動降級為 replica；新 master 拿到 lease → 提升為 primary
+- 「**抖了**」（暫時性失聯）+「**自動切換**」可能比「**繼續等**」造成更多問題（split-brain 風險）——所以 Patroni 預設 `ttl=30` 秒 + `loop_wait=10` 秒、給 master 機會恢復、不要太急
+
+**Ch9 §9.5 共識章會更深入**：Raft 的 leader election 就是 Patroni / Orchestrator 底層在用的東西、Ch8 fencing token 是擋 zombie leader 的關鍵——這幾章串起來、你就理解「**PG / MySQL failover 不是黑魔法、是 Ch5-Ch9 內容的工程化**」。
+:::
+
 ---
 
 ## 5.3 複製延遲的三個問題
@@ -346,10 +363,15 @@ DDIA Ch5 §5.4 的「版本向量」指後者。實務上 Dynamo / Riak / Voldem
 3. 用 Python 實作一個 N=3, W=2, R=2 的簡易 leaderless KV store，包含 read repair。
 :::
 
+::: tip Quiz 題目分級
+- **★ 核心題**（basic / applied）：走 FirstReadShortcut「最小可用版」路徑也應答得出來
+- **☆ 進階題**（interview）：通常需要讀過該章「第一次可跳」的小節、面試常考；第一次答不出來沒關係、之後回頭再挑戰
+:::
+
 <Quiz chapter-id="ch05" :questions='[
   {
     difficulty: "applied",
-    question: "「半同步複製」的設計動機是？",
+    question: "★ 「半同步複製」的設計動機是？",
     options: [
       "省記憶體",
       "在全同步的一致性與全非同步的可用性之間取得平衡，至少一個 follower 同步即可繼續",
@@ -361,7 +383,7 @@ DDIA Ch5 §5.4 的「版本向量」指後者。實務上 Dynamo / Riak / Voldem
   },
   {
     difficulty: "applied",
-    question: "Quorum 公式 W + R > N 保證的是？",
+    question: "★ Quorum 公式 W + R > N 保證的是？",
     options: [
       "讀寫操作的延遲下限",
       "讀取集合與寫入集合至少有一個節點重疊，因此能讀到最新寫入值",
@@ -373,7 +395,7 @@ DDIA Ch5 §5.4 的「版本向量」指後者。實務上 Dynamo / Riak / Voldem
   },
   {
     difficulty: "basic",
-    question: "「Read-your-writes consistency」要解決的問題是？",
+    question: "★ 「Read-your-writes consistency」要解決的問題是？",
     options: [
       "兩個使用者看到不同順序的事件",
       "使用者自己寫入後立即讀取卻看不到自己剛寫的值",
@@ -385,7 +407,7 @@ DDIA Ch5 §5.4 的「版本向量」指後者。實務上 Dynamo / Riak / Voldem
   },
   {
     difficulty: "interview",
-    question: "Multi-Leader 架構中，下列哪個是「最後寫入勝出（LWW）」衝突解決的主要風險？",
+    question: "☆ Multi-Leader 架構中，下列哪個是「最後寫入勝出（LWW）」衝突解決的主要風險？",
     options: [
       "效能太慢",
       "依賴節點時鐘，時鐘不同步會導致寫入被靜默丟失",
@@ -397,7 +419,7 @@ DDIA Ch5 §5.4 的「版本向量」指後者。實務上 Dynamo / Riak / Voldem
   },
   {
     difficulty: "basic",
-    question: "你用 PostgreSQL async streaming replication、把讀流量導到 follower。最容易在使用者體驗上踩到的問題是？",
+    question: "★ 你用 PostgreSQL async streaming replication、把讀流量導到 follower。最容易在使用者體驗上踩到的問題是？",
     options: [
       "Follower 完全不能讀",
       "Follower 因複製延遲落後 leader 數百毫秒以上，使用者剛寫完立刻刷新可能看不到自己的寫入（read-your-writes 問題）",
@@ -409,7 +431,7 @@ DDIA Ch5 §5.4 的「版本向量」指後者。實務上 Dynamo / Riak / Voldem
   },
   {
     difficulty: "interview",
-    question: "Multi-Leader 系統用 LWW 解衝突、跟 Ch9 的 Linearizability（線性一致）兼容嗎？",
+    question: "☆ Multi-Leader 系統用 LWW 解衝突、跟 Ch9 的 Linearizability（線性一致）兼容嗎？",
     options: [
       "兼容 —— LWW 提供事件全序排序、符合線性一致定義",
       "不兼容 —— LWW 靠時鐘排序，時鐘漂移時可能讓「真實時序較早」的寫帶較大時間戳贏掉「較晚」的寫，外部觀察者看到的順序與真實時序不一致",
