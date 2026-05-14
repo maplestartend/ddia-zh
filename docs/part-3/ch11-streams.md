@@ -418,6 +418,58 @@ UPDATE orders SET status = 'paid', paid_at = now()
 **沒有「(a) > (b) > (c)」的絕對排序**——取決於部署環境。但 outbox **三者共同的本質**：「**業務寫與事件寫在同一 DB transaction 內**」是不可妥協的、否則就回到雙寫陷阱。
 :::
 
+### 11.6 Stripe-style idempotency key：端到端去重的業界標準 {#stripe-style-idempotency-key}
+
+Exactly-once 在「**消費端 + 對外副作用**」這層通常靠 **idempotency key**——這是 Stripe / Square / Adyen 等支付系統的事實標準，2020 後也擴散到電商 / 票務 / 物流 API。
+
+**運作機制**（以 Stripe API 為例）：
+
+1. **Client 產生 UUID 當 `Idempotency-Key` header**（每次 POST 都生新的、retry 同一個請求用同一把 key）
+2. **Server 收到請求先查 dedupe store**（Redis / PostgreSQL，TTL 24 小時）：
+   - **Key 不存在** → 正常處理、把 `{key, request fingerprint, response body}` 寫進 store
+   - **Key 存在 + fingerprint 相同** → **直接回傳 cached response**（不重複扣款 / 不重複發貨）
+   - **Key 存在 + fingerprint 不同**（例如改了金額卻用同一把 key） → 回 `409 Conflict`、拒絕處理
+3. **24 小時後 key 過期**——這也是為什麼 Stripe 文件建議 client 端的 retry 視窗不要超過 24 小時
+
+**Schema 設計範例**：
+```sql
+CREATE TABLE idempotency_keys (
+  key VARCHAR(64) PRIMARY KEY,                  -- client 給的 UUID
+  request_fingerprint VARCHAR(64) NOT NULL,     -- SHA-256(method + path + body)
+  response_status INT NOT NULL,
+  response_body JSONB NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  expires_at TIMESTAMPTZ NOT NULL               -- 24h TTL
+);
+CREATE INDEX idx_expires ON idempotency_keys(expires_at);
+```
+
+**Trade-off**：
+- **24h TTL vs 永久保留**：永久保留可避免「24h 後重試造成重複扣款」、但 dedupe store 會無限長大、變成另一個維運痛點
+- **request fingerprint 算到哪一層**：含 body 太嚴（任何空白都算不同請求）、不含 body 太寬鬆（改了金額同 key 過得了）。實務上多半算「**business-level fields**」的 hash（金額、收款帳號、商品 ID）
+- **與 Kafka exactly-once 的差異**：Kafka EOS 是 broker-to-consumer 內部、idempotency key 是 client-to-server 外部——**兩個世界、各管一段**
+
+**dedupe store 三種實作選擇**：
+- **PostgreSQL `UNIQUE constraint on (api_key, idempotency_key)`**：強一致、ACID 保證、但寫吞吐有限（每秒數千 QPS 級）。適合中低流量金融場景
+- **Redis `SETNX` + `EXPIRE`**：原子寫入 + TTL、高吞吐（每秒數十萬 QPS）、但 Redis 失效時可能掉 dedupe state（重試會穿透到下游）
+- **PostgreSQL + Redis hybrid**：Redis 當 hot cache（24 小時內熱資料）、PG 當 source of truth（無限保留）——兼顧吞吐與一致性、但兩套維運成本
+
+**為什麼比「在 DB 用 UNIQUE constraint 擋」更好**：
+- DB UNIQUE constraint 只擋同一筆 INSERT 重複、但「先扣款 → 寫訂單 → 通知物流」三步操作的中段失敗、UNIQUE 救不了——Idempotency Key 把**整個 endpoint 的副作用當原子單位**
+- 第二次重試時 client 拿到的不是 `409 duplicate`、而是**原本第一次成功的 response**（含 `transaction_id` 等欄位），這對 client 整合來說行為自然、不需要特別處理「重複」的 edge case
+
+::: tip 本土場景：街口 / Line Pay / 玉山銀行 / 蝦皮
+- **街口 / Line Pay 轉帳 API**：客戶端 SDK 每筆轉帳自動生 idempotency key、網路抖動 SDK 自動重試三次也不會扣兩次
+- **玉山銀行 Open API**：`refundOrder` / `transferOut` 等寫操作要求 `X-Request-Id` header、伺服器端 dedupe 保留 7 天（涵蓋客服爭議窗口）
+- **蝦皮商品下訂 API**：購物車送出時 SDK 生 idempotency key、即使網路抖動重試三次也只下單一次
+
+**這正是 Ch7 街口轉帳「卡 3 秒被扣兩次」的解法**——但要應用層主動實作、DB 不會自動給。
+:::
+
+**進階主題**（本書深度之外、有興趣請查相關文獻）：idempotency key 與分散式 transaction、CAP 取捨、Saga 流程中的多步 idempotency 設計。
+
+**為什麼這比 Ch12 §12.4 端到端正確性的「Client 產生 request_id」更具體**：Stripe 的設計把 dedupe 提升到 API 合約層（header），讓 client SDK 可以無痛內建 retry 邏輯，是「**把 exactly-once 變成可協作的工程默契**」的範本。
+
 ---
 
 ## 章末練習

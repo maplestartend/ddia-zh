@@ -14,6 +14,17 @@ title: Ch5 複製
   "<strong>Leaderless 靠 Quorum</strong>：W + R > N 在「嚴格 quorum」下保證讀到最新值；Dynamo 風格啟用 sloppy quorum（鬆散法定人數 — 原節點不可達時暫寫到替代節點、待恢復後再同步回去）換可用性時不保證。版本向量（version vector）解決並發寫衝突。"
 ]' />
 
+<FirstReadShortcut>
+
+這章是 Part II 進入點（多副本資料世界）、是 Ch6-9 的基礎。**第一次讀建議用「最小可用版」路徑**：
+
+- **必讀核心**：§5.1 leader-based 複製 + §5.2 failover 三大麻煩 + §5.3 同步/非同步取捨 + §5.4 複製延遲三大問題（read-your-writes / monotonic / consistent prefix）
+- **第一次可跳**：§5.5 leaderless（Dynamo 風格）的 sloppy quorum / version vector 細節（先抓「W+R>N 是必要不充分條件」即可、不需記 ABD 證明）+ §5.6 多 leader 衝突解法的 CRDT 數學
+
+讀完核心三節（約 60 分鐘）你就能：**看懂 PG / MySQL streaming replication 的 lag 從何來**、**知道為什麼 read replica 讀到舊資料是正常的**、**判斷 single-leader vs leaderless 的場景選型**。
+
+</FirstReadShortcut>
+
 ## 5.1 為什麼需要<G term="replication">複製</G>
 
 - **降低延遲**：把資料放在使用者近的資料中心
@@ -129,6 +140,24 @@ title: Ch5 複製
 ### 3. Consistent Prefix Reads（一致前綴讀）
 觀察者看到「答案早於問題」—— 兩個分區間的因果順序被破壞。
 **解法**：把因果相關的寫入放在同一分區；或實作**因果一致性協定**（用 vector clock 記錄因果依賴，並讓接收端依因果序遞送訊息）。注意 vector clock 本身只是工具，需配合「延後遞送」的傳遞層才能解決問題。
+
+::: tip 本土場景：中華電信 MOD / KKTV / friDay 直播即時轉播
+**MOD 等 IPTV 服務**有經典的 leader-follower 複製場景：
+- **節目資料中心（leader）**：節目表、收藏、觀看歷史的 source of truth
+- **各 CDN 節點（follower）**：把節目表 + 用戶觀看狀態複製到全台機房、用戶從最近的節點讀
+- **複製延遲的真實後果**：你在桌機按「加到我的收藏」、3 秒後手機 App 重新整理還是看不到——這就是 read-your-writes 違反；MOD App 用 **session sticky**（你寫過後一段時間內讀都鎖到 leader）解這個問題
+
+跨機房寫入更難：北部資料中心宕機切到南部 follower 當 leader（**failover**）、原本還沒同步完的觀看歷史可能丟失幾秒——這就是同步 / 非同步複製的 trade-off。**DDIA 原書用 GitHub commit / Twitter timeline、本站用 MOD / KKTV、底層的 leader / follower / replica lag 是同一套**。
+:::
+
+::: tip 本土場景：中華電信 MOD 同步異常 + 蝦皮商品列表
+**台灣讀者熟悉的 replication lag 場景**：
+- **蝦皮上架新商品後立刻刷新看不到**：賣家後台寫到 master、買家端列表頁是 read replica、replication lag 1-3 秒、買家就看到舊列表——這正是 §5.4 **read-your-writes** 問題（賣家自己的寫應該立刻能讀到、SDK / proxy 層要把該 session 的讀導回 master 或加 read-after-write 路由）
+- **中華電信 MOD 帳號變更後 5 分鐘才生效**：你升級套餐後不是立刻能看新頻道——後台多區資料庫非同步複製，營業系統 commit 完還要傳到頻道授權系統。這是「**為什麼跨系統最終一致是常態**」的真實面
+- **Line 訊息群組換管理員後其他成員看不到**：寫到主庫 → 推送服務從 follower 讀群組設定 → follower 還沒跟上 → 推送用了舊管理員清單 → 通知漏發
+
+**DDIA 原書用 GitHub / 維基百科、本站用蝦皮 / MOD / Line、底層的 leader-follower lag、read-your-writes、monotonic read 都是同一套問題**。
+:::
 
 ---
 

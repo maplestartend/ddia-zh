@@ -470,6 +470,42 @@
   color: var(--brand-fg);
 }
 
+/* is-info 變體：米色 info 框（取代黃色 warning 視覺、Cody 建議友善化） */
+.ddia-hero-disclaimer.is-info {
+  max-width: 640px;
+  margin: var(--space-5) auto 0;
+  padding: var(--space-3-5) var(--space-4-5);
+  background: var(--bg-surface);
+  border: 0;
+  border-top: none;
+  border-left: 3px solid var(--accent-tint-rule, var(--rule-hairline));
+  border-radius: 0;
+  text-align: left;
+  color: var(--text-secondary);
+  font-style: normal;
+  font-family: var(--font-body);
+  font-size: var(--type-small-tight);
+  line-height: 1.75;
+}
+.ddia-hero-disclaimer.is-info strong {
+  color: var(--text-primary);
+}
+.ddia-hero-disclaimer-eyebrow {
+  display: block;
+  margin-bottom: var(--space-2);
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 500;
+  font-size: 0.78em;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+.dark .ddia-hero-disclaimer.is-info {
+  background: var(--bg-surface);
+  border-left-color: var(--brand-fg);
+}
+
 /* Hero CTA 下方的 secondary nav（Editorial：去除卡片化、改成單行文字按鈕） */
 .ddia-secondary-nav {
   display: flex;
@@ -2263,4 +2299,17 @@ button.DocSearch.DocSearch-Button:focus-visible {
   .ddia-seq-arrow-msg {
     font-size: 0.84em;
   }
+}
+
+/* 詞彙表「面試常考」★ 標記 — Editorial accent，不搶 h3 主視覺 */
+.glossary-star {
+  display: inline-block;
+  margin-left: 0.35em;
+  color: var(--accent-500);
+  font-family: var(--font-display);
+  font-size: 0.78em;
+  font-weight: 600;
+  vertical-align: 0.08em;
+  cursor: help;
+  letter-spacing: 0;
 }

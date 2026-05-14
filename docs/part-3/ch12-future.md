@@ -74,6 +74,15 @@ es.index(record)     # 失敗
 ```
 這正是 Kafka Streams、Materialize、ksqlDB 走的路線。
 
+::: tip 本土場景：金管會跨行結算 + 街口 / Line Pay
+**台灣金融科技遇到的「資料系統未來」議題**：
+- **金管會跨行結算（財金公司）**：傳統批次 settle（T+1 結算）正在轉向 near real-time、用 stream processing + idempotent ledger 取代每晚對帳——**這就是 Kleppmann 在 Ch12 §12.2 講的 Lambda → Kappa 演進**
+- **街口 / Line Pay 端到端正確性**：你掃 QR Code 付款、店家終端機收到「成功」推播、店家 POS 系統入帳——這條鏈路中**任何一段斷網都不能造成「店家收錢 / 你帳戶沒扣」或反過來**。實務上靠：(1) request_id / idempotency key 去重、(2) 雙向對帳 batch job 找差異、(3) 人工 SOP 補單。**這就是 §12.4 端到端正確性的真實樣貌**
+- **倫理面（§12.5）**：金管會對 P2P 借貸、虛擬資產交易所、人臉辨識的監管——「**設計這些系統的人對社會有不對稱責任**」在台灣已經是 KYC / AML / 個資法的實際法規
+
+**DDIA 原書用美式 fintech / 歐盟 GDPR、本站用台灣金管會 / 個資法 / 街口、底層的端到端正確性與資料倫理是同一套**。
+:::
+
 ---
 
 ## 12.4 端到端正確性
@@ -91,6 +100,20 @@ DDIA 的核心觀點：**可靠性不是某一層的責任**。
 - Client 產生 `request_id`
 - 整條鏈路（API、DB、訊息隊列、外部支付）都用同一 ID 去重
 - 失敗時任意層重試，總效果仍是「付款一次」
+
+**完整實務手段請見** [Ch11 §11.6 Stripe-style idempotency key](/part-3/ch11-streams#stripe-style-idempotency-key)。
+
+::: tip 本土場景：FISC 跨行清算 + 健保資料中心 + 央行 CBDC
+**台灣讀者感受得到的「資料系統未來」三個真實場景**：
+
+- **金管會跨行清算（FISC 財金資訊公司）**：你 ATM 轉帳收的「跨行手續費 17 元」背後是 **財金資訊公司** 的跨行清算系統——每天清算數百萬筆、不能算錯 1 元。這是 Ch12「**端到端正確性**」的真實案例：跨行訊息要走多家銀行的系統、任何一段 corrupt 都要能偵測（CRC + 雙向對帳 batch job + 銀行間 reconciliation 機制）
+
+- **健保署資料中心**：你看醫生 EMR 寫入、健保卡讀寫、健保署中央資料庫、保費計算——這是台灣最大規模的衛福資料系統。Ch12 §12.5 倫理段落講的「**資料持有者對個資的不對稱權力**」就是這個場景：健保署能看見全民醫療紀錄、但你看不見自己的數據怎麼被用、被誰用、被授權給誰研究
+
+- **中央銀行數位貨幣（CBDC）試辦**：台灣央行 2022 起試辦、設計上要解決：(1)「**雙花**」（同一筆錢同時付給兩個對象、Ch7 lost update 的金融版）、(2)「**離線交易**」（沒網路時的去中心化共識、Ch9 共識議題）、(3)「**可追蹤但保護隱私**」（Ch12 §倫理：監管需要 vs 個人金融隱私的張力）——這正是 Ch12 §unbundled databases + Ch11 stream-as-source-of-truth 的真實應用
+
+**DDIA 原書 2017 寫作時舉 Google / Apple / 美國金融案例、本站讀者 2024 的對應場景是 FISC / 健保署 / 央行——技術根本問題一樣、但決策權與監管脈絡不同**。
+:::
 
 ---
 
@@ -277,6 +300,36 @@ DDIA 寫於 2017、但**思想框架未過期**。延伸閱讀建議：
 <ChapterNote chapter-id="ch12" />
 
 <Progress chapter-id="ch12" />
+
+<PartCheckpoint part="3">
+
+**Part III 結束自評：能不能用 batch / stream / event sourcing 的詞回答這些設計題？**
+
+1. **批次 vs 串流的本質差異是什麼？**「資料界限性」與「失敗語意」兩個維度怎麼分？
+   - *提示*：Ch10 §10.1（資料邊界）+ Ch11 §11.0（失敗當常態）
+
+2. **為什麼 Spark / Flink 取代 MapReduce、但 MapReduce 模型沒過時？**
+   - *提示*：Ch10 §10.5（dataflow 引擎勝出原因）+ §10.2（map-reduce 不變的抽象）
+
+3. **Event Sourcing 與 CQRS 為什麼通常配對出現？**
+   - *提示*：Ch11 §11.2 + 詞彙表 [CQRS](/glossary/#cqrs)
+
+4. **Kafka 的 exactly-once 與 Stripe-style idempotency key 各保證什麼？兩者衝突嗎？**
+   - *提示*：Ch11 §11.5 + Ch11 §11.6 Stripe idempotency
+
+5. **Lambda 與 Kappa 架構各自的 trade-off？什麼情況下 Lambda 仍然合理？**
+   - *提示*：Ch12 §12.2
+
+6. **「衍生資料」（derived data）為什麼是 Ch11/12 的核心觀念？它與 source-of-truth 的關係是？**
+   - *提示*：Ch12 §12.3 unbundling
+
+7. **端到端正確性為什麼不能完全靠 DB？**Stripe idempotency key、雙向對帳 batch job 各補哪個漏洞？
+   - *提示*：Ch12 §12.4 + Ch11 §11.6
+
+**答錯 ≥ 3 題**：建議從第一題對應的章節回頭重讀
+**全部能答**：恭喜你走完 12 章 DDIA 旅程 — 你已具備設計資料密集系統的核心 mental model
+
+</PartCheckpoint>
 
 <NextChapterBridge next-link="/progress" next-title="檢視我的學習進度">
 你完成全書了！這 12 章的內容會在你日後的工程決策中反覆回響 —— 從選 isolation level、設計 read replica、到評估資料平台架構。<strong>建議現在做的事</strong>：選一個你工作 / 學習中的真實系統，用本書詞彙重新描述一次它的架構，並寫下三個你之前沒注意到的設計決策。這就是把 DDIA「真的學會」的開始。

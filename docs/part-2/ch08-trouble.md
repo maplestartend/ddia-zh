@@ -66,7 +66,16 @@ title: Ch8 分散式系統的麻煩
 叢集被切成兩塊互通不到對方 → 各自以為對方掛了 → **split brain**。
 
 ::: warning 雲端是更動盪的環境
-公有雲環境的網路延遲變化遠大於專屬資料中心。AWS 曾有過 30 秒 + 的封包延遲案例。
+公有雲環境的網路延遲變化遠大於專屬資料中心。AWS 曾有過 30 秒 + 的封包延遲案例——出處：[Bailis & Kingsbury 2014, ACM Queue "The Network is Reliable"](https://queue.acm.org/detail.cfm?id=2655736) 整理了多家公司觀測到的網路異常，**EC2 上有 30 秒以上延遲的觀測**只是其中一個案例。**這不是只有 cloud——傳統 DC 在 switch 升級、TOR 故障、機架網卡退化時也會看到類似行為**，網路工程不是「上雲才麻煩」的特殊問題。
+:::
+
+::: tip 本土場景：HiNet 跨機房斷網 + 中華電信 MOD 直播卡頓
+**台灣工程師遇過的 partial failure**：
+- **HiNet 跨機房 BGP 抖動**（每年總會有幾次）：A 機房連 B 機房的封包延遲從 1ms 飆到 200ms、持續 30 秒、然後恢復——你的 monitoring dashboard 看不到「斷網」、只看到 P99 延遲尖刺。**這就是 partial failure**：沒有任何節點當機、但系統行為已經錯了
+- **MOD 直播突然卡 3 秒、然後自動補上**：原因可能是 CDN 邊緣節點的健康檢查 timeout 太短、把實際只是 GC pause 的後端錯判為當機、流量切到備援，等備援預熱完成才恢復——**這正是 §8.4 process pause 在現實的化身**
+- **電信業者 ASR / GR**（Application Server Restart / Graceful Restart）：5G core network 升級時封包會 buffer 1-3 秒再放出——**對應用層看起來像「網路停了一下又恢復」，但實際是有意的 pause**
+
+**DDIA 原書用 Amazon / Google paper、本站用 HiNet / MOD、底層的 partial failure / unreliable network / process pause 都是同一套**。
 :::
 
 ---
@@ -75,7 +84,7 @@ title: Ch8 分散式系統的麻煩
 
 ### Time-of-day Clock
 `System.currentTimeMillis()`、`gettimeofday()`：表示 Unix 時間。
-- 由 NTP 同步 → **可能向前/向後跳變**
+- 由 <G term="ntp">NTP</G> 同步 → **可能向前/向後跳變**
 - 不能用來測量「經過多少時間」
 
 ### <G term="monotonic-clock">Monotonic Clock</G>
@@ -120,7 +129,7 @@ while (true) {
 }
 ```
 
-→ **不能假設 wall-clock time 在程式碼之間恆等於行程的進度**。
+→ **不能假設 <G term="wall-clock">wall-clock time</G> 在程式碼之間恆等於行程的進度**。
 
 <SectionDivider icon="psychology" label="心智模型" />
 

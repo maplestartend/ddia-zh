@@ -14,6 +14,17 @@ title: Ch10 批次處理
   "<strong>批次輸出應是不可變（immutable）的衍生資料</strong>：可重複執行、可回溯、可平行驗證 —— Lambda 架構的基礎。"
 ]' />
 
+<FirstReadShortcut>
+
+這章是 Part III 開場、把資料系統從「線上服務」拉到「批次處理」的世界。**第一次讀建議走「現代視角優先」路徑**：
+
+- **必讀核心**：§10.1 為什麼批次 + §10.2 MapReduce 直覺（不必背 Hadoop 細節）+ §10.4 Dataflow 引擎（Spark / Flink 為什麼勝出）
+- **第一次可跳**：§10.3 MapReduce 細節實作（HDFS / sort-merge join / map-side join 各種優化、現代 SRE 多半透過 Spark / BigQuery / Snowflake 不需手刻）+ §10.5 Lambda 架構歷史討論
+
+讀完核心三節（約 35 分鐘）你就能：**看懂 Spark / Flink 為什麼比 Hadoop 快、知道 batch 與 stream 在概念上是同一回事的不同切片**。
+
+</FirstReadShortcut>
+
 ## 10.1 批次 vs 線上 vs 串流
 
 | 類型 | 範例 | 延遲 | 用途 |
@@ -35,6 +46,15 @@ title: Ch10 批次處理
 **Lambda 架構**（10.5 會講）的「批次 + 速度」雙層概念跟你做的「SSG 預先建好 + client-side fetch 補實時」**有共通精神（靜態 base layer + 動態增量補丁）**，但嚴格說不一樣：Lambda 是「**伺服器端兩層各自完整處理同份資料、最後合併**」，SSG + CSR 是「**靜態 + 動態混合**」、沒有「兩層處理同份資料再合併」這層。理解 Lambda 動機就好、別把 SSG 當 Lambda 來架構。
 
 讀完本章你會理解：**為什麼 Vercel/Netlify 的 build 時間敏感**（批次 shuffle 的代價）、**為什麼 ISR revalidate window 要設好**（衍生資料的新鮮度 vs 重算成本權衡）。
+:::
+
+::: tip 本土場景：政府開放資料 daily ETL + 蝦皮夜間訂單對帳
+**台灣工程師遇到的 batch processing**：
+- **政府開放資料平台 data.gov.tw 每日 ETL**：各部會系統凌晨 dump 到中央、清洗、轉檔（JSON / CSV / GeoJSON）、發佈——典型 MapReduce 模式（map = 各部會檔案解析、reduce = 統一格式入庫）
+- **蝦皮 / 91APP 夜間訂單對帳**：白天 OLTP 累積百萬訂單、夜間批次跑「金流對帳 + 物流對帳 + 賣家結算」——這就是 Ch10 §10.1「批次處理 = 把『失敗』當『重來』」的場景，半夜跑壞了重跑、白天看得到結果就好
+- **電商廠商商品推薦離線訓練**：用昨天的點擊 + 加購 + 購買資料訓練 collaborative filtering 模型、隔天線上服務載入新模型——MapReduce / Spark / Airflow 的典型用法
+
+**DDIA 原書用 Google MapReduce paper / 多 PB Hadoop cluster、本站用政府開放資料 / 蝦皮夜批、底層的批次容錯 / shuffle / DAG 都是同一套**。
 :::
 
 ---
@@ -152,6 +172,15 @@ sc.textFile("hdfs://logs")
   .reduceByKey(_ + _)
   .saveAsTextFile("hdfs://errors")
 ```
+
+::: tip 本土場景：政府開放資料 daily ETL + 蝦皮夜間訂單聚合
+**台灣 batch processing 真實場景**：
+- **政府開放資料平台**（data.gov.tw）：每日從 30+ 部會抓資料、格式統一、產 sitemap、推到 CDN——典型的 daily DAG（早期用 cron + shell、現代多半 Airflow / Dagster）
+- **蝦皮夜間訂單聚合**：白天 OLTP 寫入訂單到 MySQL、晚上 batch job 把訂單 + 物流 + 評價 join 起來灌進資料倉儲（Snowflake / BigQuery）給 BI / 機器學習用——典型的 ETL pipeline
+- **失敗就重來**：政府開放資料抓取某部會 API 失敗、重跑該節點即可（idempotent 設計）；蝦皮夜間 job 跑一半 OOM、Airflow 標 task FAILED、隔小時 retry——**這就是 batch 典範**：失敗當常態、retry 是內建語意，不是 incident
+
+**DDIA 原書用 Google MapReduce、本站用蝦皮 / 開放資料 / dbt、底層的「失敗重來不當災難」設計哲學完全相同**。
+:::
 
 ---
 
