@@ -43,7 +43,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, onMounted, ref } from 'vue'
+import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue'
 import { withBase } from 'vitepress'
 import Icon from './Icon.vue'
 import { useProgress } from '../../composables/useProgress'
@@ -92,9 +92,19 @@ function scrollToQuiz() {
 
 // Quiz 元件 mount 後本 DOM 才有 .ddia-quiz、需在下一個 paint 偵測
 // R3-P1-10 Wave 42.3：用 nextTick 避免 Progress 比 Quiz 先 mount 時 hasQuiz 永遠 false
+// W43-3 Wave 43：加 MutationObserver、SPA 換章後若 Quiz 元件變動仍能即時更新
 onMounted(async () => {
   await nextTick()
-  hasQuiz.value = !!document.querySelector('.ddia-quiz')
+  const refresh = () => { hasQuiz.value = !!document.querySelector('.ddia-quiz') }
+  refresh()
+  // 主 .vp-doc tree 變動（章節切換 SSG hydrate）後 re-check Quiz 是否仍在
+  const vpDoc = document.querySelector('.vp-doc')
+  if (!vpDoc || typeof MutationObserver === 'undefined') return
+  const obs = new MutationObserver(() => {
+    requestAnimationFrame(refresh)
+  })
+  obs.observe(vpDoc, { childList: true, subtree: false })
+  onUnmounted(() => obs.disconnect())
 })
 </script>
 

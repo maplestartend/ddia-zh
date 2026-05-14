@@ -98,6 +98,9 @@ export const GLOSSARY: readonly GlossaryEntry[] = [
   { term: 'serializability', slug: 'serializability', chinese: '可序列化', english: 'Serializability',
     shortDef: '最強的隔離級別，效果如同所有交易循序執行。實作：2PL、SSI、Actual Serial Execution。',
     chapter: '/part-2/ch07-transactions' },
+  { term: 'next-key-lock', slug: 'next-key-lock', chinese: 'Next-Key 鎖', english: 'Next-Key Lock',
+    shortDef: 'MySQL InnoDB 的鎖類型 = record lock（鎖該列）+ gap lock（鎖該列前的索引間隙）。組合起來能擋 phantom read。InnoDB REPEATABLE READ 的 locking read（SELECT ... FOR UPDATE）會用此鎖、繞過 MVCC snapshot 讀最新已 commit 版本。',
+    chapter: '/part-2/ch07-transactions' },
 
   // ── 儲存引擎 ──
   { term: 'b-tree', slug: 'b-tree', chinese: 'B-Tree', english: 'B-Tree',

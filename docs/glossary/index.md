@@ -379,6 +379,16 @@ P99 = 把全部請求按延遲排序、第 99% 名那個的延遲。比平均值
 
 讀者在 MySQL 文件找不到「謂詞鎖」字面是因為實作改叫 next-key lock。詳見 [Ch7](/part-2/ch07-transactions)。
 
+### Next-Key Lock {#next-key-lock}
+**中文**：Next-Key 鎖
+**MySQL InnoDB 專用的組合鎖** = `record lock`（鎖該列本身）+ `gap lock`（鎖該列前的索引間隙）。能擋 [Phantom Read](#phantom-read) —— 想插入到被鎖區間的新列會被擋。
+
+InnoDB **REPEATABLE READ 的 locking read**（`SELECT ... FOR UPDATE` / `UPDATE` / `DELETE`）會用 next-key lock，**繞過 MVCC snapshot 直接讀最新已 commit 版本**再加鎖。這就是為什麼 MySQL InnoDB RR 內：
+- 純 `SELECT` 看到的是 snapshot
+- `SELECT ... FOR UPDATE` 看到的是最新值（可能與前面 `SELECT` 不同）
+
+這是 InnoDB 與 PostgreSQL SI 行為差異的核心。詳見 [Ch7](/part-2/ch07-transactions) §7.2 命名地獄段。
+
 ### Phantom Read {#phantom-read}
 **中文**：幻讀
 查詢條件對應的「列集合」在交易期間被其他交易改變（插入 / 刪除 / 更新使列符合或不符合條件）。**Berenson et al. 1995《A Critique of ANSI SQL Isolation Levels》區分兩種**：

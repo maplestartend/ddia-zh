@@ -93,7 +93,7 @@ SQL 標準的 REPEATABLE READ 並未要求防止 phantom，且各家詮釋差異
 - **PostgreSQL** 的 REPEATABLE READ = 完整的 Snapshot Isolation（純 MVCC、commit 時 first-committer-wins 偵測寫衝突）
 - **MySQL InnoDB** 的 REPEATABLE READ **嚴格說不是 SI**——是「**MVCC consistent read + locking read 混合**」：
   - 純 `SELECT` 用 MVCC 走 snapshot（同 PG 行為）
-  - 但 `SELECT ... FOR UPDATE` / `UPDATE` / `DELETE` 用 **next-key lock**、會**繞過 MVCC snapshot 直接讀最新已 commit 版本**再加鎖
+  - 但 `SELECT ... FOR UPDATE` / `UPDATE` / `DELETE` 用 **<G term="next-key-lock">next-key lock</G>**、會**繞過 MVCC snapshot 直接讀最新已 commit 版本**再加鎖
   - 後果：同一個 RR 交易內 `SELECT` 看到 A 值、`SELECT ... FOR UPDATE` 同一列卻看到 B 值（B 比 snapshot 新但已 commit）
   - 且**不會像 PG 那樣 commit 時 `40001` abort** —— InnoDB RR 不偵測寫寫衝突
 - **Oracle** 沒有真正的 REPEATABLE READ；它的「Serializable」其實是 SI

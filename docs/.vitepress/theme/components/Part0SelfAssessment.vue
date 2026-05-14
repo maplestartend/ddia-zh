@@ -22,13 +22,17 @@
     </ol>
 
     <div class="ddia-self-assess-result">
+      <!-- W43-7 Wave 43：result block 加總分顯示、第一眼讓讀者看到「X / 7 答得出來」 -->
+      <div class="ddia-self-assess-score">
+        <span class="ddia-self-assess-score-eyebrow">自評結果</span>
+        <span class="ddia-self-assess-score-num">{{ checkedCount }} <span class="ddia-self-assess-score-of">/ {{ items.length }}</span></span>
+        <span class="ddia-self-assess-score-label">答得出來</span>
+      </div>
       <div v-if="recommendations.length === 0" class="ddia-self-assess-pass">
-        <Icon name="celebration" :size="20" filled />
         <strong>7 題全勾</strong>——直接跳到 <a :href="withBase('/part-1/ch01-reliable')">Ch1 可靠、可擴展、可維護</a>。Part 0 隨時可以回頭翻當參考。
       </div>
       <div v-else class="ddia-self-assess-todo">
         <div class="ddia-self-assess-todo-head">
-          <Icon name="auto_fix_high" :size="16" filled />
           <strong>建議補強清單（{{ recommendations.length }} 章）</strong>
         </div>
         <ul>
@@ -88,6 +92,7 @@ function toggle(id: string) {
 }
 
 const recommendations = computed(() => items.filter(i => !checked.value[i.id]))
+const checkedCount = computed(() => items.filter(i => checked.value[i.id]).length)
 </script>
 
 <style scoped>
@@ -185,6 +190,48 @@ const recommendations = computed(() => items.filter(i => !checked.value[i.id]))
 
 .ddia-self-assess-result {
   margin-top: var(--space-3-5);
+}
+
+/* W43-7 Wave 43：總分 banner — 第一眼讓讀者看到「X / 7 答得出來」
+   Editorial：左右髮絲線 + 大字 Fraunces oldstyle figures + italic eyebrow */
+.ddia-self-assess-score {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2-5);
+  padding: var(--space-2-5) 0;
+  margin-bottom: var(--space-3);
+  border-top: 1px solid var(--rule-hairline);
+  border-bottom: 1px solid var(--rule-hairline);
+}
+.ddia-self-assess-score-eyebrow {
+  font-family: var(--font-display);
+  font-variation-settings: var(--fvar-italic-warm);
+  font-style: italic;
+  font-size: var(--type-eyebrow);
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+.ddia-self-assess-score-num {
+  font-family: var(--font-display);
+  font-feature-settings: "onum" 1, "tnum" 1;
+  font-variation-settings: "opsz" 36, "SOFT" 60, "wght" 500;
+  font-size: var(--type-h2);
+  line-height: 1;
+  color: var(--mark-fg);
+}
+.ddia-self-assess-score-of {
+  font-size: var(--type-body);
+  color: var(--text-tertiary);
+}
+.ddia-self-assess-score-label {
+  margin-left: auto;
+  font-family: var(--font-display);
+  font-variation-settings: var(--fvar-italic-warm);
+  font-style: italic;
+  font-size: var(--type-small);
+  letter-spacing: var(--ls-loose);
+  color: var(--text-secondary);
 }
 .ddia-self-assess-pass {
   display: flex;

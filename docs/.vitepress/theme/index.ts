@@ -20,6 +20,7 @@ import GlossaryIndex from './components/GlossaryIndex.vue'
 import GlossaryStarLinks from './components/GlossaryStarLinks.vue'
 import GlossaryBackButton from './components/GlossaryBackButton.vue'
 import DashboardStats from './components/DashboardStats.vue'
+import ChapterFloatingProgress from './components/ChapterFloatingProgress.vue'
 import SectionDivider from './components/SectionDivider.vue'
 import BaseLink from './components/BaseLink.vue'
 import PrereqBox from './components/PrereqBox.vue'
@@ -116,6 +117,7 @@ export default {
     app.component('GlossaryStarLinks', GlossaryStarLinks)
     app.component('GlossaryBackButton', GlossaryBackButton)
     app.component('DashboardStats', DashboardStats)
+    app.component('ChapterFloatingProgress', ChapterFloatingProgress)
     app.component('SectionDivider', SectionDivider)
     app.component('BaseLink', BaseLink)
     app.component('PrereqBox', PrereqBox)

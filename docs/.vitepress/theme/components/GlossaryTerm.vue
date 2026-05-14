@@ -56,6 +56,23 @@ import { computed, ref, onMounted, onUnmounted, useId, nextTick } from 'vue'
 import { withBase } from 'vitepress'
 import { findTerm } from '../../data/glossary'
 
+// W43-2 Wave 43：module-level scroll listener singleton
+// 原本每個 G 元件 mount 時都呼叫 window.addEventListener('scroll', onScroll)
+// 詞密集章（如 ch07 / ch11）有 30-50 個 G 實例 → 30-50 個 scroll listeners
+// 改成：模組層級 ONE listener、各實例註冊 update fn 進 Set、scroll 時 fan-out
+const activeReposeFns = new Set<() => void>()
+let scrollListenerInstalled = false
+function ensureGlobalScrollListener() {
+  if (scrollListenerInstalled || typeof window === 'undefined') return
+  scrollListenerInstalled = true
+  window.addEventListener('scroll', () => {
+    // 一個 raf 內把所有 active tooltip 的 reposition 跑完、降低多 listener 觸發 cost
+    requestAnimationFrame(() => {
+      for (const fn of activeReposeFns) fn()
+    })
+  }, { passive: true })
+}
+
 const props = defineProps<{ term: string }>()
 
 const entry = computed(() => findTerm(props.term))
@@ -112,9 +129,8 @@ function onDocClick(e: MouseEvent) {
   }
 }
 
-function onScroll() {
-  // R3-P1-7 Wave 42.3：原本 scroll 立刻隱藏太激進、讀者微滾就要重 hover
-  // 改成 scroll 期間重新定位（fixed 本來就跟 viewport、只要重算 anchor rect）
+// W43-2 Wave 43：reposition fn 註冊到 module-level Set、不再各自起 window.addEventListener
+const myReposeFn = () => {
   if (show.value) updateTooltipPosition()
 }
 
@@ -122,13 +138,14 @@ onMounted(() => {
   mounted.value = true  // R3-P0-C：teleport `:disabled="!mounted"` 解除
   isTouch.value = window.matchMedia('(hover: none)').matches
   document.addEventListener('click', onDocClick, true)
-  window.addEventListener('scroll', onScroll, { passive: true })
+  ensureGlobalScrollListener()
+  activeReposeFns.add(myReposeFn)
 })
 onUnmounted(() => {
   if (typeof document !== 'undefined') {
     document.removeEventListener('click', onDocClick, true)
-    window.removeEventListener('scroll', onScroll)
   }
+  activeReposeFns.delete(myReposeFn)
 })
 </script>
 

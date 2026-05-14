@@ -673,6 +673,39 @@
   color: var(--text-secondary);
   letter-spacing: var(--ls-tight);
 }
+
+/* W43-5 Wave 43：first-visit 3 步 mini guide */
+.ddia-dashboard-welcome-steps {
+  list-style: none;
+  margin: 0 auto;
+  padding: var(--space-3) 0 0;
+  max-width: 560px;
+  border-top: 1px solid var(--rule-hairline);
+  text-align: left;
+}
+.ddia-dashboard-welcome-steps li {
+  margin: var(--space-2) 0;
+  padding: 0;
+  font-family: var(--font-body);
+  font-size: var(--type-small);
+  line-height: 1.75;
+  color: var(--text-secondary);
+  letter-spacing: var(--ls-body-cn);
+}
+.ddia-dashboard-welcome-steps li strong {
+  font-family: var(--font-display);
+  font-variation-settings: var(--fvar-section-tight);
+  color: var(--mark-fg);
+  letter-spacing: var(--ls-tight);
+}
+.ddia-dashboard-welcome-steps a {
+  color: var(--mark-fg);
+  text-decoration: none;
+  border-bottom: 1px solid var(--rule-soft);
+}
+.ddia-dashboard-welcome-steps a:hover {
+  border-bottom-color: var(--mark-fg);
+}
 .ddia-dashboard-welcome-cta {
   display: inline-flex;
   flex-wrap: wrap;
@@ -1942,6 +1975,28 @@ button.DocSearch.DocSearch-Button:focus-visible {
   font-size: var(--type-body-lg);
   color: var(--text-tertiary);
 }
+
+/* W43-5 Wave 43：回訪讀者 frame —「整本 X/12 · 上次讀於 Y 天前」 */
+.ddia-dashboard-resume-meta {
+  margin-top: var(--space-2);
+  font-family: var(--font-display);
+  font-variation-settings: var(--fvar-italic-warm);
+  font-style: italic;
+  font-size: var(--type-eyebrow);
+  letter-spacing: var(--ls-loose);
+  color: var(--text-tertiary);
+}
+.ddia-dashboard-resume-meta strong {
+  font-style: normal;
+  font-feature-settings: "onum" 1;
+  font-variation-settings: var(--fvar-section-tight);
+  color: var(--text-secondary);
+  letter-spacing: 0;
+}
+.ddia-dashboard-resume-ago {
+  margin-left: var(--space-1);
+}
+
 /* Wave 31a：dashboard-resume dark patches 已由 alias 重綁接管 */
 
 /* ---------- Dashboard 完成 Ceremony：12 章全讀完換結語 + 三個延伸選項（F2） ---------- */

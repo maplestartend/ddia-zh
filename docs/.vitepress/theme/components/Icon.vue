@@ -1,8 +1,8 @@
 <template>
-  <!-- P1-19 Wave 42：Editorial 模式下 Icon 已被 base.css `.material-symbols-rounded { display: none }` 視覺隱藏
-       元件仍存在於 DOM tree、佔 hydrate 成本。現在改成「有 label 才 render sr-only span、否則 render nothing」
-       —— 完整保留 a11y（label 餵 screen reader）、無視覺負擔、減 ~150+ Icon node hydrate cost。
-       未來若要回到圖示模式（恢復 Material Symbols），只需把 v-if 條件砍掉 + 回 base.css 移除 display:none。 -->
+  <!-- Editorial 模式：所有 Material Symbols 圖示都用 typographic mark（§ · ◆ →）取代
+       本元件只剩 sr-only a11y 用途、當 label 有設定才 render 螢幕閱讀器專用 span
+       未來若要回到圖示模式，需 (1) 補回 name/size/filled 等 props
+       (2) 加 <span class="material-symbols-rounded"> 渲染、(3) base.css 移除 display:none -->
   <span
     v-if="label"
     role="img"
@@ -12,21 +12,19 @@
 </template>
 
 <script setup lang="ts">
-// 沒 label 時整個 component render nothing —— 不發 DOM、不佔 hydrate。
+// W43-1 Wave 43：清掉 dead props（name/size/weight/filled/grade）— Editorial 模式下這 5 個 prop 都不影響渲染
+// 保留 label 作為 sr-only a11y 朗讀文字。所有舊呼叫端如 <Icon name="x" :size="16" filled />
+// 仍能正常工作 —— Vue 3 對未知 attr 走 fallthrough、由於本元件 root 是 conditional span、
+// 沒有 root 時 attrs 會被吞掉、不會有 warning
 defineProps<{
-  name: string                                    // 保留（外部呼叫端不必同步刪）
-  size?: number
-  weight?: 100 | 200 | 300 | 400 | 500 | 600 | 700
-  filled?: boolean
-  grade?: -25 | 0 | 200
-  label?: string                                  // 唯一仍有作用：sr-only a11y
+  /** sr-only a11y 朗讀文字（唯一仍生效的 prop）。沒設定時整個元件 render nothing */
+  label?: string
 }>()
 </script>
 
 <style scoped>
 /* sr-only：螢幕閱讀器看得到、視覺看不到（標準 a11y 模式）
-   R3-P2 Wave 42.3：加 clip-path（取代 deprecated clip）+ inset(50%) 標準寫法
-   也避免 position:absolute 在父元素 static 時錨到祖先元素的副作用 */
+   clip-path inset(50%) 取代 deprecated clip，避免 position:absolute 錨到祖先 */
 .ddia-icon-sr-only {
   position: absolute;
   width: 1px;

@@ -1,4 +1,6 @@
 <template>
+  <!-- W43-6 Wave 43：章節頁專用 floating 進度 chip（捲過章首後右上角浮現）-->
+  <ChapterFloatingProgress />
   <header class="ddia-chapter-opener">
     <div class="ddia-chapter-opener-mark">{{ displayNum }}</div>
     <div class="ddia-chapter-opener-eyebrow">{{ displayEyebrow }}</div>
@@ -40,6 +42,7 @@
 import { computed, onMounted } from 'vue'
 import { CHAPTERS, PREREQUISITES, PARTS, TOTAL_CHAPTERS, type Chapter } from '../../data/chapters'
 import { useProgress } from '../../composables/useProgress'
+import ChapterFloatingProgress from './ChapterFloatingProgress.vue'
 
 // F3 lastVisited 紀錄：本元件在每章首掛載、記錄使用者最近進的章節，給 Dashboard
 // 用「繼續 · ChXX」顯示。比起原本「找下一個未讀章節」更誠實——使用者可能讀到中段就關掉。

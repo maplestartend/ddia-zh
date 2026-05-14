@@ -368,10 +368,32 @@ scripts/
 └── screenshots/                   # 截圖輸出（gitignored）
 
 主要 Vue 元件（theme/components/）：
-- 章首：ChapterOpener / ChapterMeta / PrereqBox / TLDR / FirstReadShortcut（死亡章節捷徑）
-- 章末：Quiz（★/☆ 分級）/ InterviewBlock / ChapterNote / Progress / NextChapterBridge / PartCheckpoint（Ch4/9/12 跨章自評）
+- 章首：ChapterOpener（含整本進度條 + floating progress 觸發點）/ ChapterMeta（read-time + deep-read-range）/ PrereqBox / TLDR / FirstReadShortcut
+- 章末：Quiz（★/☆ 分級）/ InterviewBlock（details 摺疊）/ ChapterNote / Progress / NextChapterBridge / PartCheckpoint（Ch4/9/12 跨章自評）
 - 視覺化：DecisionTree / SequenceFlow（取代 Mermaid、Wave 38）/ SectionDivider
-- 詞彙：GlossaryTerm（G alias）/ GlossaryIndex
-- 基礎：Icon / BaseLink
-- 進階：Dashboard / ChapterCard / CheatSheetExport / Part0SelfAssessment / ReviewDue
+- 詞彙：GlossaryTerm（G alias，tooltip Teleport 到 body）/ GlossaryIndex（A-Z sticky）/ GlossaryStarLinks（面試 ★ 7 條速跳）/ GlossaryBackButton（referrer 跳回章節）
+- 基礎：Icon（Editorial 模式下純 sr-only a11y）/ BaseLink
+- 進階：Dashboard（fresh/resume/complete 三態 + 3 步 mini guide）/ DashboardStats（partial）/ ChapterCard / CheatSheetExport / Part0SelfAssessment（含 X/7 總分 banner）/ ReviewDue / ChapterFloatingProgress（章節頁右上角浮現）
 ```
+
+## Wave 42 / Wave 43 設計收尾（4 位專家 4 輪審視從 B+ 升 A/A+）
+
+整站視覺與互動經四輪審視收斂、目前處於「production-ready Editorial Manuscript」狀態。關鍵改動：
+
+- **章首加整本進度條**（ChapterOpener 內含 Ch X/12 + 整本 N% + ▾ 位置 marker）
+- **章節頁 floating progress chip**（捲過章首 280px 後右上角浮現、桌面 ≥ 1024px 才顯示）
+- **首頁 hero 改 numeric stats**（40 / 12 / 3 + Fraunces oldstyle figures + 底邊 hairline 與 CTA 分區）
+- **路徑卡 ★ 推薦**（PATH·01「兩週速成」brand tint + 左印記、其他 5 卡視覺降一階）
+- **詞彙表三件套**：A-Z sticky 索引 + 面試 ★ 7 條 quick links + 跳回章節 referrer button
+- **決策樹 leaf 去 pill border**（純文字 + 左 3px tone 印記、edge label inline italic + → mark）
+- **暗色 hairline 提到 #C5B89A**（對 #1C1714 bg 對比 3.1:1 達 WCAG UI 3:1）
+- **Dashboard 三態**：first-visit 3 步 mini guide / returning「整本 X/12 + 上次讀於 N 天前」frame / complete ceremony
+- **inline code**：bg `var(--brand-tint-soft)` + 底線、Editorial 等寬引文質感
+- **章節寬度桌面拉到 880-1040px**（避免 1440px 中文 22 字/行豆腐塊）
+- **InterviewBlock 改 `<details>` 預設收起**（章末瘦身）+ NextChapterBridge 加 Continue CTA
+- **GlossaryTerm tooltip Teleport 到 body**（修 ARIA APG）+ singleton scroll listener
+- **Progress 改 reactive quizIndex 取代 setInterval**（多分頁不再多個 timer）
+- **Part 0 self-assessment 結果 banner**（X/7 答得出來 + 建議補強清單）
+- **內容正確性紅旗修**：Riak 預設不是 LWW、Ch11 Line 比喻降為「概念上類似」、Hopping 表頭去 sliding 子句
+
+最終評等共識：🎨 設計師 **A+** / ⚙️ 前端 **A** / 📚 教材 **A (91)** / 🧭 UX **A**
