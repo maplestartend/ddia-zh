@@ -142,12 +142,22 @@ body {
   font-variation-settings: "opsz" 48, "SOFT" 60, "wght" 580;
   font-size: var(--type-h2);
   font-weight: 600;
-  /* Wave 44：刪 h2 自動 border-top —— 兩位 border audit 專家共識「站台最大自動 hairline 來源」、
-     每章撒 10+ 條無語意 hairline。h2 已有 Fraunces 28px 襯線 + § 符號 + 顯著 margin-top，
-     文字本身就是分隔器。僅在 .role-h2 / SectionDivider 後可選擇性加回。 */
-  padding-top: var(--space-2);
+  /* Wave 44：刪 h2 自動 border-top —— 兩位 border audit 專家共識「站台最大自動 hairline 來源」
+     文字本身就是分隔器。
+     Wave 45 修：padding-top 從 8 還原到 20、避免「heading 黏上方 border 太近」+ 給 #anchor 對齊基線空間 */
+  padding-top: var(--space-3-5);
   margin-top: var(--space-h2-break);
   line-height: 1.3;
+}
+
+/* Wave 45：明確定義 .header-anchor # 位置、對齊 h2/h3 text top
+   VitePress 預設 anchor `top: 0` 配 h2 大 padding-top 會看起來偏高、
+   現在用 padding-top 同值 + 小 baseline 微調讓 # 視覺對齊標題文字 */
+.vp-doc h2 .header-anchor {
+  top: calc(var(--space-3-5) + 0.15em);
+}
+.vp-doc h3 .header-anchor {
+  top: calc(var(--space-2) + 0.1em);
 }
 
 /* a11y skip link：focus 才現身、Tab 第一鍵能跳過 nav / sidebar 直達內文 */

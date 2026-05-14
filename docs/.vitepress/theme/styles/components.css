@@ -2076,60 +2076,7 @@ button.DocSearch.DocSearch-Button:focus-visible {
 }
 /* Wave 31a：reading-progress dark bg 已由 cta-bg alias 重綁接管 */
 
-/* ---------- Quiz 答完 inline next bridge ----------
-   把成就感熱度導向下一章 — 取代過去需要 scroll 到 footer prev/next */
-.ddia-quiz-next {
-  margin-top: var(--space-4-5);
-  padding-top: var(--space-4);
-  border-top: 1px solid var(--rule-hairline);
-  text-align: center;
-}
-.ddia-quiz-next-eyebrow {
-  font-family: var(--font-display);
-  font-variation-settings: var(--fvar-eyebrow-warm);
-  font-style: italic;
-  font-size: var(--type-eyebrow);
-  font-weight: 500;
-  letter-spacing: var(--ls-eyebrow);
-  text-transform: uppercase;
-  color: var(--text-tertiary);
-  margin-bottom: var(--space-2-5);
-}
-.ddia-quiz-next-link {
-  display: inline-flex;
-  align-items: baseline;
-  gap: var(--space-3);
-  text-decoration: none;
-  color: var(--text-primary);
-  padding: var(--space-1) var(--space-2) 6px;
-  border-bottom: 1px solid var(--rule-hairline);
-  transition: color 0.15s, border-bottom-color 0.15s;
-}
-.ddia-quiz-next-link:hover {
-  color: var(--mark-fg);
-  border-bottom-color: var(--mark-fg);
-}
-.ddia-quiz-next-num {
-  font-family: var(--font-display);
-  font-feature-settings: "onum" 1;
-  font-variation-settings: var(--fvar-section-tight);
-  font-size: var(--type-small-tight);
-  letter-spacing: var(--ls-eyebrow);
-  text-transform: uppercase;
-  color: var(--mark-fg);
-}
-.ddia-quiz-next-title {
-  font-family: var(--font-display);
-  font-variation-settings: "opsz" 48, "SOFT" 50, "wght" 500;
-  font-size: var(--type-h2-tight);
-  letter-spacing: var(--ls-tight);
-}
-.ddia-quiz-next-arrow {
-  font-family: var(--font-display);
-  font-size: var(--type-body-lg);
-  color: var(--text-tertiary);
-}
-/* Wave 31a：quiz-next dark patches 已由 alias 重綁接管 */
+/* Wave 45：Quiz inline 「下一站」區塊已刪除（與下方 <NextChapterBridge> 重複） */
 
 /* ==========================================================================
    Wave 38：DecisionTree / SequenceFlow 元件 — 取代 mermaid（CJK 跑版痼疾）

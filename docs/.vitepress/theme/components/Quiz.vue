@@ -83,25 +83,16 @@
       </template>
     </div>
 
-    <!-- Quiz 答完後 inline reveal 下一章橋 — 把成就感熱度導向繼續閱讀 -->
-    <div v-if="submitted && next" class="ddia-quiz-next">
-      <div class="ddia-quiz-next-eyebrow">下一站</div>
-      <a :href="nextHref" class="ddia-quiz-next-link">
-        <span class="ddia-quiz-next-num">{{ next.num }}</span>
-        <span class="ddia-quiz-next-title">{{ next.shortTitle }}</span>
-        <span class="ddia-quiz-next-arrow">→</span>
-      </a>
-    </div>
+    <!-- W45 Wave 45：刪除 Quiz 內 inline「下一站」區塊 —— 與下方 <NextChapterBridge> 重複 -->
+
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import { withBase } from 'vitepress'
 import Icon from './Icon.vue'
 import { useProgress } from '../../composables/useProgress'
 import { useReview } from '../../composables/useReview'
-import { nextChapter } from '../../data/chapters'
 
 type Difficulty = 'basic' | 'applied' | 'interview'
 
@@ -128,10 +119,7 @@ const submitted = ref(false)
 const attemptCount = ref(1)
 const firstAttemptScore = ref<number | null>(null)
 
-// Quiz 答完後的下一章橋接 — 用 chapters.ts 的 nextChapter() 找下一章資訊
-const next = computed(() => nextChapter(props.chapterId))
-const nextHref = computed(() => next.value ? withBase(next.value.link) : '#')
-
+// W45 Wave 45：刪除 Quiz inline「下一站」邏輯 —— 與下方 NextChapterBridge 重複
 onMounted(() => {
   const saved = loadQuiz(props.chapterId)
   if (saved && saved.answers.length === props.questions.length) {
