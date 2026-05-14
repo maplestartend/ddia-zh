@@ -188,7 +188,7 @@ onMounted(() => {
   margin-top: var(--space-4-5);
   padding: var(--space-3) 0;
   border-top: 1px solid var(--rule-hairline);
-  border-bottom: 1px solid var(--rule-hairline);
+  /* Wave 44 border audit：刪 border-bottom、章首 progress band 由下方 ChapterMeta 接 border-top */
 }
 .ddia-opener-progress-meta {
   display: flex;

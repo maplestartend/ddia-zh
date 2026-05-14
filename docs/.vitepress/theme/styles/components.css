@@ -11,7 +11,7 @@
   background: transparent;
   border: 0;
   border-top: 1px solid var(--rule-hairline);
-  border-bottom: 1px solid var(--rule-hairline);
+  /* Wave 44 border audit：刪 border-bottom、單線封頂、空白接下方元件 */
   border-radius: 0;
   padding: var(--space-3-5) 0 26px;
   margin: var(--space-4-5) 0 var(--space-5);
@@ -147,7 +147,7 @@
   background: transparent;
   border: 0;
   border-top: 1px solid var(--rule-hairline);
-  border-bottom: 1px solid var(--rule-hairline);
+  /* Wave 44 border audit：刪 border-bottom、章末序列由相鄰元件接 border-top */
   border-radius: 0;
   padding: 28px 0 var(--space-4);
   margin: var(--space-5) 0;
@@ -593,7 +593,7 @@
   background: transparent;
   border: 0;
   border-top: 1px solid var(--rule-hairline);
-  border-bottom: 1px solid var(--rule-hairline);
+  /* Wave 44 border audit：刪 border-bottom、章末序列由相鄰元件接 border-top */
   border-radius: 0;
   display: flex;
   align-items: center;
@@ -638,7 +638,7 @@
   background: transparent;
   border: 0;
   border-top: 1px solid var(--rule-hairline);
-  border-bottom: 1px solid var(--rule-hairline);
+  /* Wave 44 border audit：刪 border-bottom、首頁段落由下方元件接 border-top */
   border-radius: 0;
   text-align: center;
 }
@@ -819,7 +819,7 @@
   background: transparent;
   border: 0;
   border-top: 1px solid var(--rule-hairline);
-  border-bottom: 1px solid var(--rule-hairline);
+  /* Wave 44 border audit：刪 border-bottom */
   border-radius: 0;
 }
 .ddia-incorrect-summary {
@@ -910,8 +910,10 @@
   padding: var(--space-3-5) var(--space-4) var(--space-3-5);
   background: transparent;
   border: 0;
-  border-right: 1px solid var(--rule-hairline);
-  border-bottom: 1px solid var(--rule-hairline);
+  /* Wave 44 border audit：卡片內部分隔降為 --rule-soft 米灰、外框維持 hairline
+     讀者立刻分得出「主框 vs 細胞」、不再 16 張獨立卡 */
+  border-right: 1px solid var(--rule-soft);
+  border-bottom: 1px solid var(--rule-soft);
   border-radius: 0;
   transition: background-color 0.18s;
   text-decoration: none !important;
@@ -1925,7 +1927,7 @@ button.DocSearch.DocSearch-Button:focus-visible {
   max-width: 640px;
   text-align: center;
   border-top: 1px solid var(--rule-hairline);
-  border-bottom: 1px solid var(--rule-hairline);
+  /* Wave 44 border audit：刪 border-bottom、單線封頂 */
 }
 .ddia-dashboard-resume-eyebrow {
   font-family: var(--font-display);
@@ -2003,7 +2005,7 @@ button.DocSearch.DocSearch-Button:focus-visible {
   max-width: 640px;
   text-align: center;
   border-top: 1px solid var(--rule-hairline);
-  border-bottom: 1px solid var(--rule-hairline);
+  /* Wave 44 border audit：刪 border-bottom、ceremony 用 dinkus + 大量留白足夠 framing */
 }
 .ddia-dashboard-ceremony-dinkus {
   font-family: var(--font-display);
@@ -2581,8 +2583,9 @@ button.DocSearch.DocSearch-Button:focus-visible {
   flex-direction: column;
   gap: var(--space-1-5);
   padding: var(--space-3-5) var(--space-4);
-  border-right: 1px solid var(--rule-hairline);
-  border-bottom: 1px solid var(--rule-hairline);
+  /* Wave 44 border audit：內部分隔降為 --rule-soft 米灰、外框維持 hairline */
+  border-right: 1px solid var(--rule-soft);
+  border-bottom: 1px solid var(--rule-soft);
   text-decoration: none !important;
   color: var(--text-primary);
   position: relative;
@@ -2656,7 +2659,7 @@ button.DocSearch.DocSearch-Button:focus-visible {
   margin: var(--space-6) 0 var(--space-5);
   padding: var(--space-3-5) 0;
   border-top: 1px solid var(--rule-hairline);
-  border-bottom: 1px solid var(--rule-hairline);
+  /* Wave 44 border audit：刪 border-bottom、置中文字段落不需雙線夾住 */
   text-align: center;
 }
 .ddia-recent-update-eyebrow {

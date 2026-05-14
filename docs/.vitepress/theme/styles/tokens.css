@@ -188,6 +188,15 @@
   --mark-fg:     var(--brand-500);  /* 印刷符號 § · ◆ / drop cap / TLDR bullet 等「印記」 */
   --rule-active: var(--brand-500);  /* hover indicator / sidebar active / ChapterCard top 印記 */
   --cta-bg:      var(--brand-500);  /* CTA filled button background / Quiz score */
+
+  /* Wave 44 border audit：3 級 hairline weight alias（解決「單一強度 hairline 氾濫」問題）
+     新元件依場景選用、避免無語意全包邊：
+     - major:   章/Part 邊界、章首大儀式封頂（罕用、視覺最強）
+     - section: 章末序列、首頁段落、整體 framing 主用線（最常用）
+     - subtle:  卡片網格內部、表格 row（明顯弱於 section） */
+  --rule-major:   var(--rule-hairline);
+  --rule-section: var(--rule-hairline);
+  --rule-subtle:  var(--rule-soft);
 }
 
 /* ---------- Semantic · Light（cream 紙本） ---------- */

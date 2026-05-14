@@ -27,8 +27,8 @@
   margin: var(--space-5) 0 var(--space-6);
   padding: var(--space-3-5) var(--space-4) var(--space-4) calc(var(--space-4) + 12px);
   background: var(--bg-surface);
+  /* Wave 44 border audit：bg-surface + 左 3px brand 印記 + top hairline 已足夠 framing */
   border-top: 1px solid var(--rule-hairline);
-  border-bottom: 1px solid var(--rule-hairline);
   border-left: 3px solid var(--brand-500);
   border-radius: 0;
 }

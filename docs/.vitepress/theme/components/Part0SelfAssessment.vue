@@ -103,7 +103,7 @@ const checkedCount = computed(() => items.filter(i => checked.value[i.id]).lengt
   background: transparent;
   border: 0;
   border-top: 1px solid var(--rule-hairline);
-  border-bottom: 1px solid var(--rule-hairline);
+  /* Wave 44 border audit：刪 outer 雙線、保留 score banner 內部雙線當 emphasis */
   border-radius: 0;
 }
 .ddia-self-assess-header {

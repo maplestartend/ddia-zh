@@ -166,7 +166,7 @@ const displayReadTime = computed(() => nextChap.value?.readTime)
   gap: var(--space-2);
   margin: var(--space-4) auto 0;
   padding: var(--space-2) var(--space-4);
-  border-top: 1px solid var(--rule-hairline);
+  /* Wave 44 border audit：Bridge CTA 改單線、不再框中框 */
   border-bottom: 1px solid var(--rule-hairline);
   font-family: var(--font-display);
   font-variation-settings: var(--fvar-section-tight);

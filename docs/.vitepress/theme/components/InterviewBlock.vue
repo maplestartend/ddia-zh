@@ -78,7 +78,7 @@ watch(answers, (v) => {
   background: transparent;
   border: 0;
   border-top: 1px solid var(--rule-hairline);
-  border-bottom: 1px solid var(--rule-hairline);
+  /* Wave 44 border audit：刪 border-bottom、章末序列由相鄰元件接 border-top */
   border-radius: 0;
 }
 /* P1-11 Wave 42：summary 折疊頭 — italic eyebrow + 題數提示 */

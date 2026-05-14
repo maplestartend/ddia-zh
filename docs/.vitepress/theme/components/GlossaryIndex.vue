@@ -73,6 +73,7 @@ function scrollToLetter(letter: string, e: MouseEvent) {
   margin: var(--space-3) calc(-1 * var(--space-3)) 32px;
   background: var(--bg-canvas);
   border: 0;
+  /* lint-border-density-allow: sticky A-Z 索引條、上接 nav 下接內容、雙線是 sticky framing */
   border-top: 1px solid var(--rule-hairline);
   border-bottom: 2px solid var(--rule-hairline);
   border-radius: 0;

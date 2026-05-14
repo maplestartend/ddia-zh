@@ -16,7 +16,8 @@
     "lint:typography": "node scripts/lint-typography.mjs",
     "lint:spacing": "node scripts/lint-spacing.mjs",
     "lint:dark-patch": "node scripts/lint-dark-patch.mjs",
-    "lint:chapter-sequence": "node scripts/lint-chapter-sequence.mjs"
+    "lint:chapter-sequence": "node scripts/lint-chapter-sequence.mjs",
+    "lint:border-density": "node scripts/lint-border-density.mjs"
   },
   "keywords": [
     "ddia",

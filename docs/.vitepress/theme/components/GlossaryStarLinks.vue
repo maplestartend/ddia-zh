@@ -38,7 +38,7 @@ const starredTerms = [
   margin: var(--space-3) 0 var(--space-4);
   padding: var(--space-3) 0;
   border-top: 1px solid var(--rule-hairline);
-  border-bottom: 1px solid var(--rule-hairline);
+  /* Wave 44 border audit：刪 bottom、下方 A-Z sticky 索引條已有 hairline */
 }
 .ddia-glossary-stars-eyebrow {
   display: inline-flex;

@@ -25,6 +25,8 @@ defineProps<{ part: 1 | 2 | 3 }>()
 .ddia-part-checkpoint {
   margin: 64px 0 var(--space-5);
   padding: var(--space-5) 0 var(--space-4);
+  /* lint-border-density-allow: 跨 Part 自評（Ch4/9/12）刻意「重儀式」雙線 framing；
+     資訊設計師指出此處是站台唯一「重分隔」訊號、不應降階 */
   border-top: 3px double var(--rule-hairline);
   border-bottom: 1px solid var(--rule-hairline);
   background: transparent;

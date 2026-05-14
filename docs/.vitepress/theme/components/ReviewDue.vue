@@ -69,7 +69,7 @@ function onForgotten(chapterId: string) {
   background: transparent;
   border: 0;
   border-top: 1px solid var(--rule-hairline);
-  border-bottom: 1px solid var(--rule-hairline);
+  /* Wave 44 border audit：刪 border-bottom */
   border-radius: 0;
 }
 .ddia-review-eyebrow {

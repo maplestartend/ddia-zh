@@ -142,9 +142,11 @@ body {
   font-variation-settings: "opsz" 48, "SOFT" 60, "wght" 580;
   font-size: var(--type-h2);
   font-weight: 600;
-  border-top: 1px solid var(--rule-hairline);
-  padding-top: var(--space-4-5);
-  margin-top: var(--space-h2-break);  /* Wave 32：48 還原章節 chunk 節奏（Wave 31d 誤 round 到 40 失去章/節層級差） */
+  /* Wave 44：刪 h2 自動 border-top —— 兩位 border audit 專家共識「站台最大自動 hairline 來源」、
+     每章撒 10+ 條無語意 hairline。h2 已有 Fraunces 28px 襯線 + § 符號 + 顯著 margin-top，
+     文字本身就是分隔器。僅在 .role-h2 / SectionDivider 後可選擇性加回。 */
+  padding-top: var(--space-2);
+  margin-top: var(--space-h2-break);
   line-height: 1.3;
 }
 

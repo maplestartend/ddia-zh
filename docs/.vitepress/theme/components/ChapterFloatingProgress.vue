@@ -88,7 +88,7 @@ onUnmounted(() => {
   gap: var(--space-1);
   padding: var(--space-2) var(--space-3);
   background: var(--bg-surface);
-  border-top: 1px solid var(--rule-hairline);
+  /* Wave 44 border audit：浮動 chip 已有 shadow + bg、雙線過重、只留 bottom */
   border-bottom: 1px solid var(--rule-hairline);
   box-shadow: 0 4px 12px -6px rgba(28, 26, 23, 0.12);
   font-family: var(--font-display);
