@@ -348,13 +348,30 @@ docs/
 │           └── ChapterCard.vue    # 章節卡片
 ├── index.md                       # 首頁
 ├── progress.md                    # 進度頁
-├── glossary/index.md              # 詞彙表
-├── paths/index.md                 # 學習路徑
-└── part-{1,2,3}/
+├── glossary/index.md              # 詞彙表（70+ 詞、7 條 ★ 面試常考 Badge）
+├── paths/
+│   ├── index.md                   # 學習路徑（依角色）
+│   ├── 30-day-beginner.md         # 30 天初學者版（高中 / 大二 / bootcamp）
+│   ├── 30-day-summer-plan.md      # 30 天完整版（工作 1-3 年）
+│   ├── interview-cheatsheet.md    # 面試題 × DDIA 對照（20 處本土場景）
+│   ├── adr-template.md            # ADR 4-Q 模板 + 7 範例（含失敗 ADR）
+│   ├── capacity-planning.md       # 容量規劃工作表
+│   └── incident-postmortems.md    # 8 個真實事故 × DDIA 對照 + 本土範本
+├── bridges/oltp-de.md             # OLTP ↔ 資料工程視角橋
+└── part-{0,1,2,3}/
     ├── index.md                   # Part 概覽
-    └── ch*.md                     # 章節內容（12 章）
+    └── ch*.md                     # 章節內容（12 章 + Part 0 八個前置）
 
 scripts/
-├── screenshot.mjs                 # Playwright 截圖工具
+├── screenshot.mjs                 # Playwright 截圖工具（主腳本）
+├── lint-*.mjs                     # 7 個 lint
 └── screenshots/                   # 截圖輸出（gitignored）
+
+主要 Vue 元件（theme/components/）：
+- 章首：ChapterOpener / ChapterMeta / PrereqBox / TLDR / FirstReadShortcut（死亡章節捷徑）
+- 章末：Quiz（★/☆ 分級）/ InterviewBlock / ChapterNote / Progress / NextChapterBridge / PartCheckpoint（Ch4/9/12 跨章自評）
+- 視覺化：DecisionTree / SequenceFlow（取代 Mermaid、Wave 38）/ SectionDivider
+- 詞彙：GlossaryTerm（G alias）/ GlossaryIndex
+- 基礎：Icon / BaseLink
+- 進階：Dashboard / ChapterCard / CheatSheetExport / Part0SelfAssessment / ReviewDue
 ```

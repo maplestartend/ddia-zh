@@ -305,6 +305,90 @@ ADR-0023（2024-09）選 SQS Standard 的條件已不適用：
 
 ---
 
+### 範例 7：失敗 ADR — 撤回決策、回到原方案（架構師也會錯）
+
+ADR-0001 modular monolith → 半年後團隊跟風拆 microservices → 三個月後痛到想哭、撤回。**這份 ADR 教的是「資深架構師也會錯、錯了怎麼面對」**。
+
+```markdown
+# ADR-0067: 撤回 ADR-0048（過早微服務化）、回到 modular monolith
+
+**Status**: Accepted　**Date**: 2025-08-20　**Authors**: 後端架構小組
+**Reverts**: ADR-0048（2025-03-12「拆分新產品線為 6 個 microservices」）
+
+## Context（撤回理由）
+
+ADR-0048（2025-03 通過）把新產品線從 modular monolith 拆成 6 個 microservices。
+6 個月後業務數字 + 工程數字都很差：
+
+**業務面**：
+- Feature lead time（PRD → production）從 5 天 → 18 天
+- 跨服務 bug 比率從 8% → 31%（多數是 schema mismatch + retry storm）
+- 客戶反映 P99 延遲從 180ms → 450ms（多 5-7 跳網路 hop）
+
+**工程面**：
+- 6 人團隊維護 6 服務 → 「每人是某服務唯一懂的人」、輪休風險高
+- on-call 變數從 1 個 service 變 6 個、值班心累
+- bounded context **6 個月後**才穩定下來、初始拆分線跨越多個真實邊界
+
+## Decision（撤回）
+
+**撤回 ADR-0048、合併回 modular monolith**（用 Strangler Fig 倒過來走）：
+1. 6 個 microservice 重新打包成 1 個 deploy unit、保留模組邊界（用 NestJS Module / Spring Modulith）
+2. 服務間 HTTP call 換成 in-process function call（保留同樣 interface signature 方便未來再拆）
+3. 跨服務 DB schema 合併（用一張 PG、模組級別 schema 命名分隔）
+4. **不留 microservices code 在 main branch**——徹底刪、留 `archive/microservices-2025-q1` git tag 給未來考古
+5. 12 個月後若某模組真撞到擴展瓶頸、用正式 Strangler Fig 抽出（這次 bounded context 已穩定）
+
+## Consequences
+
+**正面（撤回後）**：
+- Feature lead time 預期回到 5-7 天（合併工程驗證後 6 週內）
+- P99 延遲預期回到 200ms 內
+- on-call 認知負荷砍 6 倍
+- 招募 / onboarding 變回單一 stack
+
+**負面（承認損失）**：
+- 6 個月工程投入大部分作廢（保留 module boundary 設計知識、其他都白做）
+- 團隊士氣短期受傷（「我們之前到底在幹嘛」）
+- 對外故事不好講（投資人 / 老闆問「為什麼朝令夕改」）
+
+**中性 / 學習**：
+- bounded context 不穩時不能拆——這是這次最痛的教訓、未來決策板模板加一條 checklist
+- 「先 modular monolith first, microservices later」這條從業界共識升級成**本團隊鐵律**
+- ADR-0048 本身**沒寫錯**（Context / Decision / Consequences / Alternatives 都對）——錯的是「**假設業務 6 個月後會擴張、實際沒擴張**」、單純的判讀錯誤
+
+## Alternatives Considered（撤回階段）
+
+- **繼續硬拆、加 platform team 支撐**：放棄。團隊規模不夠養 platform team、會把 ROI 進一步往後拖
+- **保留 microservice 形式、優化跨服務通訊（gRPC / service mesh）**：放棄。問題不是通訊效能、是邊界劃錯
+- **凍結現狀、用文件 + code review 強化**：放棄。痛點不會自己消失、6 個月後損失加倍
+
+## Learnings from ADR-0048（不是責備、是制度化教訓）
+
+1. **拆分時 bounded context 必須穩定 ≥ 6 個月**——這條加進團隊 ADR 決策 checklist
+2. **業務成長假設要寫成 measurable + verifiable**——ADR-0048 寫「業務會擴張」太抽象、應該寫「Q3 用戶數 ≥ X、否則不拆」
+3. **拆分前先做 PoC**：選 1 個最不重要的服務拆 1 個月、量測 lead time 變化、再決定是否全拆
+4. **承認錯誤的速度比把錯誤掩埋重要**——ADR-0048 的決策者就是這份 ADR-0067 的主筆人、這是制度成熟度的訊號
+
+## 給後續決策者
+
+如果你 12 個月後讀到這份、再次考慮拆 microservices：
+- 先讀 [ADR-0001](#adr-0001) modular monolith（原始決策）+ ADR-0048（過早拆分）+ 本份（撤回）的演進序列
+- 再讀 Sam Newman *Building Microservices* 第 2 版 Ch1-3、確認 bounded context 穩定性
+- 最後跑一份「bounded context heatmap」（每月模組邊界跨越次數）、≤ 3% 才考慮拆
+```
+
+::: tip 為什麼失敗 ADR 比成功 ADR 更有價值
+Senior 跟 staff 的差別不是「決策更準」、是「**錯了能承認 + 學到 + 制度化**」。失敗 ADR 把這個過程寫下來——
+- 後來人不會重複同樣的錯
+- 團隊文化轉向 blameless（這是 ADR 本身、不是 5-Whys postmortem）
+- 真實架構演進是「往前一步、退兩步、再往前三步」、不是直線
+
+**真實世界 80% 的架構工作是 ADR-0067 這種**——只是多數團隊沒寫下來、後人就重複踩坑。
+:::
+
+---
+
 ## 連結 DDIA：哪些章該寫 ADR？
 
 DDIA 整本書都在訓練「**識別 trade-off**」的能力。下面 5 個典型場景該寫 ADR：

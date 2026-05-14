@@ -82,8 +82,13 @@ export default withMermaid(defineConfig({
         text: '學習路徑',
         items: [
           { text: '依角色（後端 / DE / 架構師 / 面試）', link: '/paths/' },
+          { text: '30 天讀通計畫（完整版）', link: '/paths/30-day-summer-plan' },
+          { text: '30 天初學者暑假計畫', link: '/paths/30-day-beginner' },
+          { text: '面試 cheatsheet', link: '/paths/interview-cheatsheet' },
           { text: '視角橋：OLTP ↔ 資料工程', link: '/bridges/oltp-de' },
-          { text: 'ADR 模板（決策記錄）', link: '/paths/adr-template' }
+          { text: 'ADR 模板（決策記錄）', link: '/paths/adr-template' },
+          { text: '容量規劃工作表', link: '/paths/capacity-planning' },
+          { text: '真實事故 × DDIA 對照', link: '/paths/incident-postmortems' }
         ]
       },
       { text: '我的進度', link: '/progress' } // VitePress cleanUrls：無尾斜線

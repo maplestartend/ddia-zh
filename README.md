@@ -15,10 +15,11 @@
 
 - **12 章主課程** — Part I 資料系統基礎 / Part II 分散式資料 / Part III 衍生資料
 - **Part 0 前置知識**（選讀）— 作業系統、網路、SQL、資料結構、並行控制
-- **詞彙表** — 70+ 名詞，內文 hover tooltip + 完整定義頁
-- **學習路徑** — 依角色推薦的閱讀順序
+- **詞彙表** — 70+ 名詞，內文 hover tooltip + 完整定義頁；含「面試常考 ★」標記 7 條
+- **學習路徑** — 依角色（後端 / DE / 架構師 / 面試 / SRE）+ 30 天計畫雙版本（初學者 / 完整）
+- **從學到做的 4 個產出工具** — ADR 模板（7 範例含失敗 ADR）/ 容量規劃工作表 / 真實事故 × DDIA 對照 / Ch9 §9.8 學界證明骨架
 
-**主動學習元件**：TL;DR 章首摘要 / 章末測驗 / 已讀進度追蹤（localStorage，無後端帳號）。
+**主動學習元件**：TL;DR / FirstReadShortcut（死亡章節最小可用路徑）/ 章末 Quiz（★ 核心 ☆ 進階分級）/ PartCheckpoint（跨章自評）/ 已讀進度（localStorage、無後端帳號）。
 
 **性質**：個人非商業學習筆記。重新整理、改寫、補充原創評論與 Part 0 銜接內容；**不複製原書內文**。詳細版權說明見 [LICENSE](LICENSE) 與 [NOTICE.md](NOTICE.md)。
 
@@ -97,10 +98,18 @@ docs/
 ├── index.md                       首頁
 ├── part-0/                        前置知識（OS / 網路 / SQL / 並行）—— 選讀
 ├── part-1/                        Part I 資料系統基礎（Ch1-Ch4）
-├── part-2/                        Part II 分散式資料（Ch5-Ch9）
-├── part-3/                        Part III 衍生資料（Ch10-Ch12）
-├── glossary/index.md              詞彙表（長定義）
-├── paths/index.md                 學習路徑（依角色）
+├── part-2/                        Part II 分散式資料（Ch5-Ch9、Ch9 含 §9.8 學界證明骨架）
+├── part-3/                        Part III 衍生資料（Ch10-Ch12、Ch11 含 §11.6 Stripe idempotency）
+├── glossary/index.md              詞彙表（70+ 詞、7 條「面試常考 ★」標記）
+├── paths/                         學習路徑
+│   ├── index.md                   依角色入口
+│   ├── 30-day-beginner.md         30 天初學者版（高中 / 大二 / bootcamp）
+│   ├── 30-day-summer-plan.md      30 天完整版（大三大四 / 工作 1-3 年）
+│   ├── interview-cheatsheet.md    面試題 × DDIA 章節對照（8 題 + 20 處本土場景）
+│   ├── adr-template.md            ADR 4-Q 模板 + 7 範例（含失敗 ADR）
+│   ├── capacity-planning.md       容量規劃工作表（QPS → shard/replica/cache 規格）
+│   └── incident-postmortems.md    8 個真實事故 × DDIA 章節對照 + 本土 blameless 範本
+├── bridges/oltp-de.md             OLTP ↔ 資料工程視角橋
 └── progress.md                    我的進度
 ```
 
