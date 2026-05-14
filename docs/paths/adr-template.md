@@ -71,54 +71,146 @@ title: ADR 模板 — 從 trade-off 學習到產出決策
 
 ---
 
-## 完整範例：訊息佇列選型 ADR
+## 5 個完整範例 ADR（對應 DDIA 章節）
+
+這 5 個範例對應五種最常見的決策場景、可以複製拿去當你公司 ADR 的起點。
+
+### 範例 1：訊息佇列選型 — SQS vs Kafka（對應 Ch11）
 
 ```markdown
 # ADR-0023: 訂單通知選用 AWS SQS（而非 Kafka）
 
-**Status**: Accepted
-**Date**: 2026-05-14
-**Authors**: 後端架構小組
+**Status**: Accepted　**Date**: 2026-05-14　**Authors**: 後端架構小組
 
 ## Context
-
-Q3 上線「訂單通知」功能（push notification + email + SMS）。
-- 預期初期 1K msg/min、12 個月後 10K msg/min
-- 99.9% 送達率、99% < 10s
-- 既有 stack：AWS、Terraform、團隊 3 人、無 Kafka 經驗
-- 預算：每月 < $200
+Q3 上線「訂單通知」（push + email + SMS）。預期初期 1K msg/min、12 個月後 10K msg/min；
+99.9% 送達率、99% < 10s。既有 stack：AWS + Terraform、團隊 3 人、無 Kafka 經驗。預算 < $200/月。
 
 ## Decision
-
-採用 **AWS SQS Standard Queue** + Lambda consumer。
-
-- 單一 queue（不分 priority 等）
-- consumer 失敗 → SQS DLQ（max retries=3）
-- 每月成本估 $50
-
-12 個月後若接近 10K msg/min、重新評估換 Kafka MSK 或 Kinesis。
+採用 **AWS SQS Standard Queue** + Lambda consumer。單一 queue、consumer 失敗進 DLQ
+（max retries=3）。月成本估 $50。12 個月後若接近 10K msg/min 再評估 Kafka MSK / Kinesis。
 
 ## Consequences
-
-**正面**：
-- 1 週上線（Terraform 模組已有）
-- 無維運（managed）
-- 成本 $50/month vs 自管 EC2 + RabbitMQ ≈ $300/month
-
-**負面**：
-- 失去 FIFO ordering（除非用 SQS FIFO Queue、有 300 msg/sec 限制）
-- 失去 message replay（必須額外存到 S3 才能重播）
-- 換 Kafka 需重寫 consumer + 重新訓練團隊
-
-**中性**：
-- consumer debug 走 CloudWatch Logs、需要習慣
-- 監控用 CloudWatch alarms 即可、不用裝 Prometheus
+- ✓ 1 週上線（Terraform 模組已有）、無維運、月 $50 vs 自管 RabbitMQ ≈ $300
+- ✗ 失 FIFO ordering（除非用 SQS FIFO、上限 300 msg/sec）、失 replay（須額外存 S3）、未來換 Kafka 需重寫 consumer
+- 中性：debug 走 CloudWatch Logs、不用裝 Prometheus
 
 ## Alternatives Considered
-
-- **Kafka MSK**：放棄。學習曲線吃掉 Q3 進度、初期 throughput 用不到 Kafka 能力
+- **Kafka MSK**：放棄。學習曲線吃掉 Q3 進度、初期吞吐用不到 Kafka 能力
 - **RabbitMQ on EC2**：放棄。自管 HA 與 AWS managed 政策衝突
 - **Redis Streams**：放棄。Redis 是 cache、持久化保證不夠
+```
+
+### 範例 2：資料庫選型 — PostgreSQL vs MongoDB（對應 Ch2 + Ch3）
+
+```markdown
+# ADR-0008: 新專案主資料庫選用 PostgreSQL（而非 MongoDB）
+
+**Status**: Accepted　**Date**: 2026-05-14
+
+## Context
+B2B SaaS 新專案、預期 3 年內 < 100M 筆訂單。業務模型大量 JOIN（訂單 ↔ 客戶 ↔ 商品 ↔ 出貨）。
+團隊 4 人都熟 SQL、無 production NoSQL 經驗。
+
+## Decision
+採用 **PostgreSQL 16**（AWS RDS）+ JSONB 處理半結構化欄位（如商品自訂屬性）。
+
+## Consequences
+- ✓ 開發速度快、SQL 工具鏈完整、未來可加 read replica
+- ✓ JSONB 已能 cover「文件式」需求、不用真的引入 NoSQL
+- ✗ 極端水平擴展時 PG 分片比 Mongo 痛（但業務量還很遠）
+- 中性：團隊熟悉、招募容易
+
+## Alternatives Considered
+- **MongoDB**：放棄。JOIN 模式多、團隊無經驗
+- **MySQL**：放棄。PG 的 JSONB / CTE / partial index 在我們用例更靈活
+- **CockroachDB**：放棄。我們不需要跨 region 寫一致性、PG 已夠
+```
+
+### 範例 3：跨服務交易 — Saga vs 2PC（對應 Ch7 + Ch9）
+
+```markdown
+# ADR-0042: 訂單流程採用 Saga Orchestration（不採 2PC）
+
+**Status**: Accepted　**Date**: 2026-05-14
+
+## Context
+訂單建立要協調 4 個服務：付款、庫存、物流、通知。服務在不同 VPC、不能用 2PC。
+業務允許「最終一致」（卡 30 秒不致命、但**不能丟單**）。
+
+## Decision
+採用 **Saga Orchestration（Temporal 框架）**、定義各服務的 compensating action：
+- 付款失敗 → 取消訂單
+- 庫存不足 → 退款 + 通知客戶
+- 物流失敗 → 回補庫存 + 退款
+
+## Consequences
+- ✓ 可觀測（Temporal UI 看每步狀態）、可重試、無 coordinator SPOF
+- ✓ 補償邏輯與 happy path 並列、不會被遺忘
+- ✗ 要寫 compensating handler（5 服務 × 失敗點、最終 8 個 handler）
+- ✗ 中間狀態對外可能可見（訂單從「已付款 → 取消中 → 已退款」、UI 要處理）
+- ✗ 一旦上 production、流程改動要小心 in-flight transaction
+
+## Alternatives Considered
+- **2PC / XA**：放棄。coordinator 失效卡整個流程、跨 VPC 高延遲
+- **Choreography Saga**：放棄。流程鏈長、debug 困難、團隊無經驗
+- **不做交易、靠 eventually consistent**：放棄。訂單一致性是業務核心
+```
+
+### 範例 4：服務架構 — modular monolith vs microservices（對應 Ch1 + Ch4）
+
+```markdown
+# ADR-0001: 新產品線採 modular monolith（不立刻拆 microservices）
+
+**Status**: Accepted　**Date**: 2026-05-14
+
+## Context
+新產品團隊 6 人、12 個月內要 MVP。業務還在快速迭代、bounded context 不穩（很可能 6 個月後重組）。
+沒有需要獨立擴展的元件。
+
+## Decision
+採用 **modular monolith**（NestJS + 強制模組邊界 + 內部禁止跨模組直接 import）。
+未來撞到擴展或團隊規模門檻、再走 Strangler Fig 抽出 microservice。
+
+## Consequences
+- ✓ 開發速度快 2-3×、無分散式 debug、團隊認知負荷低
+- ✓ 部署簡單（單一 deploy unit）
+- ✗ 未來某模組要獨立擴展、抽出來有成本（但比一開始就拆少）
+- 中性：CI/CD pipeline 一條、不用維護多套
+
+## Alternatives Considered
+- **從一開始拆 5 個 microservice**：放棄。過早、bounded context 不穩、6 人 cover 不過來
+- **完全沒模組邊界的 monolith**：放棄。12 個月後一定耦合到拆不開
+- **Service Weaver / Encore**：考慮過、但團隊不熟新框架、風險高
+```
+
+### 範例 5：擴展讀流量 — read replica + cache vs sharding（對應 Ch5 + Ch6）
+
+```markdown
+# ADR-0015: 擴展讀流量採 read replica + Redis cache（不分片）
+
+**Status**: Accepted　**Date**: 2026-05-14
+
+## Context
+寫流量 500 QPS（單機輕鬆）、讀流量 5K QPS 開始撞 PG 單機天花板。業務模型多表 JOIN
+（分片會很痛）。預估未來 12 個月讀流量再長 3×。
+
+## Decision
+- 加 2 台 PG read replica（async streaming replication、lag 監控 < 5s）
+- 加 Redis cache（熱 key + 5 分鐘 TTL、write-through 同步刪 cache）
+- API gateway 層做 read-write splitting（write → master、read → replica）
+
+## Consequences
+- ✓ 開發改動小、cache 砍 60% 讀打到 DB
+- ✓ 容易 rollback（不行可以全切回 master）
+- ✗ replica lag 帶來 read-your-writes 異常（用 session-sticky 解、user 自己的寫導回 master）
+- ✗ cache 一致性要小心（write 同步刪 cache、否則 stale）
+- ✗ 跨 region read replica 延遲還是有（不是 multi-leader）
+
+## Alternatives Considered
+- **直接 sharding**：放棄。過早、業務模型 JOIN 太多、維運複雜
+- **換 Aurora Serverless**：放棄。成本高、垂直擴展上限不夠未來成長
+- **CockroachDB 全替換**：放棄。我們不需要跨 region 寫一致性、改造成本太高
 ```
 
 ---
