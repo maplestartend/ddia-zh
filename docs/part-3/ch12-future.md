@@ -65,7 +65,7 @@ es.index(record)     # 失敗
 - Materialized view
 - Cache
 
-「Unbundled」想法：用事件 log 當骨幹，每個關注點用最適合的工具：
+「<G term="unbundling">Unbundled</G>」想法：用事件 log 當骨幹，每個關注點用最適合的工具：
 ```
         Event Log (Kafka)
        /     |        \

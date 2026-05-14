@@ -112,7 +112,7 @@ PostgreSQL ─[Debezium]─→ Kafka ─→ Elasticsearch
 - 可時間旅行（看任意時刻的狀態）
 - 可重建 read model（衍生不同的快取/索引）
 
-### Stream-Table Duality
+### <G term="stream-table-duality">Stream-Table Duality</G>
 > 一張表是某個串流在某時刻的「凍結快照」；一個串流是某張表的所有變更歷史。
 
 ::: tip 具體例子：users 表 ↔ users_events 流
@@ -153,7 +153,7 @@ Esper、Flink CEP。
 ::: warning 「自動更新」≠ 同步即時、也不保證最終一致
 - **延遲**：consumer 處理 stream 與真實寫入有 ms~s 級時間差；高負載 / consumer 故障時可達分鐘級
 - **失敗模式**：下游 consumer 掛掉 / 處理失敗會讓 view 暫時 stale；若處理**非冪等**（如「+1」而非「set」）、重試會讓 view **永久發散**
-- 解法：要求處理冪等（idempotent）+ at-least-once delivery，或走 §11.5 的 exactly-once 機制
+- 解法：要求處理<G term="idempotent">冪等（idempotent）</G>+ at-least-once delivery，或走 §11.5 的 <G term="exactly-once">exactly-once</G> 機制
 :::
 
 ::: tip 這就是 CQRS：把 read model 與 write model 分開

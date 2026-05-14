@@ -11,13 +11,13 @@ title: 首頁
     <BaseLink to="/part-0/basics" variant="primary">新手起步 · 0.0 三分鐘看懂後端</BaseLink>
     <BaseLink to="/part-1/ch01-reliable" variant="ghost">已熟悉 SQL／後端 · 直接讀 Ch 1 →</BaseLink>
   </div>
-  <div class="ddia-hero-disclaimer is-info">
-    <span class="ddia-hero-disclaimer-eyebrow">本站是個人學習筆記</span>
-    著作權屬 <a href="https://www.kleppmann.com/" target="_blank" rel="noopener">Martin Kleppmann</a> 與 <a href="https://www.oreilly.com/library/view/designing-data-intensive-applications/9781491903063/" target="_blank" rel="noopener">O'Reilly Media</a>；本站為<strong>非官方、非授權</strong>的繁體中文整理 + 主動學習元件，僅供個人非商業自學參考。請至 <a href="https://dataintensive.net/" target="_blank" rel="noopener">dataintensive.net</a> 或 <a href="https://www.oreilly.com/library/view/designing-data-intensive-applications/9781491903063/" target="_blank" rel="noopener">O'Reilly 官方購書頁</a>（ISBN 978-1-4493-7332-0）支持原作。
-  </div>
 </div>
 
 <div style="max-width: 1100px; margin: 0 auto; padding: 0 24px;">
+
+::: tip 關於本站
+本站是《Designing Data-Intensive Applications》([Martin Kleppmann](https://www.kleppmann.com/)、[O'Reilly](https://www.oreilly.com/library/view/designing-data-intensive-applications/9781491903063/)) 的**非官方個人學習筆記**、非商業用途。原書著作權屬 Martin Kleppmann 與 O'Reilly Media。詳見 [LICENSE](https://github.com/maplestartend/ddia-zh/blob/main/LICENSE) / [NOTICE](https://github.com/maplestartend/ddia-zh/blob/main/NOTICE.md)。
+:::
 
 <Dashboard />
 
