@@ -1,0 +1,453 @@
+/* ==========================================================================
+   Components — 所有 .ddia-* 元件樣式（TLDR / Quiz / Progress / Dashboard /
+   Hero / ChapterCard / Disclaimer / Scenario Badge 等）
+   依賴 tokens.css 的 semantic 變數
+   說明：學習循環 block (.ddia-chapter-loop) 與 Glossary 索引條的 scoped
+   樣式在元件 .vue 檔內，這裡只放跨元件 / global selector 的部分
+   ========================================================================== */
+
+/* ---------- TLDR：章首重點卡片（Editorial：書腰樣式 — 上下髮絲線、無背景、§ section sign）---------- */
+.ddia-tldr {
+  background: transparent;
+  border: 0;
+  border-top: 1px solid var(--rule-hairline);
+  /* Wave 44 border audit：刪 border-bottom、單線封頂、空白接下方元件 */
+  border-radius: 0;
+  padding: var(--space-3-5) 0 26px;
+  margin: var(--space-4-5) 0 var(--space-5);
+  position: relative;
+}
+
+.ddia-tldr-title {
+  font-family: var(--font-display);
+  font-variation-settings: var(--fvar-section-tight);
+  font-weight: 600;
+  font-size: var(--type-eyebrow);
+  color: var(--text-tertiary);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-3);
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+}
+
+/* § section sign 取代 Material icon — 印刷術慣例 */
+.ddia-tldr-title::before {
+  content: "§";
+  font-size: var(--type-body-lg);
+  font-family: var(--font-display);
+  font-style: italic;
+  letter-spacing: 0;
+  color: var(--mark-fg);
+  margin-right: var(--space-1);
+  font-variation-settings: "opsz" 48, "wght" 500;
+}
+
+/* 隱藏 TLDR 標題裡的 Material icon（書腰風不用 lightning bolt） */
+.ddia-tldr-title .material-symbols-rounded {
+  display: none;
+}
+
+.dark .ddia-tldr-title {
+  color: var(--text-tertiary);
+}
+
+.ddia-tldr ul {
+  margin: 0;
+  padding-left: 1.2em;
+  list-style: none;
+}
+
+.ddia-tldr li {
+  margin: var(--space-2) 0;
+  line-height: 1.75;
+  color: var(--text-primary);
+  position: relative;
+  padding-left: var(--space-1);
+}
+
+/* 列表 bullet 用 dot operator · 取代圓點 — 印刷感 */
+.ddia-tldr li::before {
+  content: "·";
+  position: absolute;
+  left: -0.8em;
+  top: -0.1em;
+  font-family: var(--font-display);
+  font-size: var(--type-h2-tight);
+  font-weight: 700;
+  color: var(--mark-fg);
+  line-height: 1;
+}
+
+/* ---------- ChapterMeta：章首 metadata 列（Editorial：書頁版權頁樣式）---------- */
+.ddia-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px var(--space-4);
+  margin: var(--space-3) 0 var(--space-4-5);
+  padding: var(--space-3) 0;
+  background: transparent;
+  border: 0;
+  border-top: 1px solid var(--border-default);
+  border-bottom: 1px solid var(--border-default);
+  border-radius: 0;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-variation-settings: var(--fvar-italic-note);
+  font-size: var(--type-small-tight);
+  letter-spacing: var(--ls-loose);
+}
+
+.ddia-meta-item {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  color: var(--text-tertiary);
+}
+.ddia-meta-item .material-symbols-rounded {
+  display: none;
+}
+
+.ddia-meta-item strong {
+  font-family: var(--font-display);
+  font-style: normal;
+  font-variation-settings: var(--fvar-section-tight);
+  color: var(--text-primary);
+  font-weight: 600;
+  letter-spacing: var(--ls-body-cn);
+}
+
+/* ddia-badge：Editorial 化（無圓角、印刷感 italic） */
+.ddia-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 0;
+  border: 0;
+  border-bottom: 1px dotted var(--brand-fg);
+  border-radius: 0;
+  background: transparent;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-variation-settings: var(--fvar-eyebrow-warm);
+  font-size: var(--type-meta);
+  font-weight: 500;
+  letter-spacing: var(--ls-loose);
+  color: var(--brand-fg);
+}
+
+.ddia-badge.accent {
+  border-bottom-color: var(--accent-500);
+  color: var(--accent-500);
+  background: transparent;
+}
+
+/* ---------- Quiz：章末測驗（Editorial：書末練習題排版） ---------- */
+.ddia-quiz {
+  background: transparent;
+  border: 0;
+  border-top: 1px solid var(--rule-hairline);
+  /* Wave 44 border audit：刪 border-bottom、章末序列由相鄰元件接 border-top */
+  border-radius: 0;
+  padding: 28px 0 var(--space-4);
+  margin: var(--space-5) 0;
+}
+
+.ddia-quiz-header {
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 48, "SOFT" 30, "wght" 600;
+  font-size: var(--type-h2-tight);
+  font-weight: 600;
+  margin-bottom: var(--space-3-5);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  color: var(--text-primary);
+  letter-spacing: -0.005em;
+}
+
+.ddia-quiz-header-title {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-2-5);
+}
+.ddia-quiz-header-title .material-symbols-rounded {
+  display: none;
+}
+/* 標題前綴 § 印刷符號 */
+.ddia-quiz-header-title::before {
+  content: "§";
+  font-family: var(--font-display);
+  font-style: italic;
+  font-variation-settings: "opsz" 48, "wght" 500;
+  font-size: var(--type-h2);
+  color: var(--mark-fg);
+  margin-right: var(--space-1);
+  line-height: 1;
+}
+
+.ddia-quiz-question {
+  font-family: var(--font-display);
+  font-variation-settings: var(--fvar-section-tight);
+  font-weight: 600;
+  font-size: var(--type-section);
+  margin: var(--space-4) 0 12px;
+  color: var(--text-primary);
+  line-height: 1.55;
+}
+
+.ddia-quiz-option {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2-5);
+  padding: var(--space-2-5) var(--space-3) var(--space-2-5) var(--space-3);
+  margin: var(--space-1) 0;
+  border: 0;
+  border-left: 2px solid transparent;
+  border-radius: 0;
+  cursor: pointer;
+  transition: border-left-color 0.15s, background 0.15s;
+  background: transparent;
+  font-family: var(--font-body);
+  font-size: var(--type-body-tight);
+  line-height: 1.65;
+  color: var(--text-primary);
+}
+
+.ddia-quiz-option:hover {
+  border-left-color: var(--rule-active);  /* Wave 30c：左印記 = rule-active alias */
+  background: var(--brand-tint-soft);
+}
+
+/* 鍵盤導航：label 內含 radio、focus 從 input 傳到 label 父元素。
+   - :focus-within（含滑鼠點擊）只給輕量 hover 反饋
+   - :has(input:focus-visible)（僅鍵盤聚焦）才給 outline 強指引
+   Wave 42 a11y：鍵盤使用者必須能看清楚自己在哪題、加粗 outline + 同 brand 色 */
+.ddia-quiz-option:focus-within {
+  border-left-color: var(--rule-active);
+  background: var(--brand-tint-soft);
+}
+.ddia-quiz-option:has(input:focus-visible) {
+  outline: 3px solid var(--cta-bg);
+  outline-offset: 2px;
+  z-index: 1;
+}
+/* R3-P2 Wave 42.3：:has 不支援的舊瀏覽器（Firefox < 121 / 老 Safari）fallback
+   退到 :focus-within 給較弱但仍可見的 outline、確保鍵盤使用者不會失去視覺指引 */
+@supports not selector(:has(*)) {
+  .ddia-quiz-option:focus-within {
+    outline: 2px solid var(--cta-bg);
+    outline-offset: 2px;
+  }
+}
+
+.ddia-quiz-option.selected {
+  border-left-color: var(--rule-active);  /* Wave 30c：同上 */
+  background: var(--brand-tint);
+}
+
+.ddia-quiz-option.correct {
+  border-left-color: var(--success-fg);
+  background: var(--success-bg);
+}
+
+.ddia-quiz-option.wrong {
+  border-left-color: var(--error-fg);
+  background: var(--error-bg);
+}
+
+.ddia-quiz-option input[type='radio'] {
+  margin-top: var(--space-1);
+  accent-color: var(--mark-fg);
+}
+
+.ddia-quiz-actions {
+  display: flex;
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+  align-items: center;
+}
+
+.ddia-quiz-explanation {
+  margin-top: var(--space-3);
+  padding: var(--space-1-5) 0 var(--space-1-5) var(--space-3-5);
+  background: transparent;
+  border-radius: 0;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-variation-settings: var(--fvar-italic-note);
+  font-size: var(--type-body-mid);
+  line-height: 1.75;
+  border-left: 3px solid var(--rule-hairline);
+  color: var(--text-secondary);
+}
+
+.ddia-quiz-score {
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 48, "wght" 600;
+  font-feature-settings: "onum" 1;
+  font-weight: 600;
+  font-size: var(--type-body-lg);
+  color: var(--mark-fg);
+  letter-spacing: 0;
+}
+
+/* Quiz 重做次數提示（Editorial：italic 譯註） */
+.ddia-quiz-attempt-note {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin: calc(-1 * var(--space-2)) 0 var(--space-3-5);
+  padding: 0;
+  background: transparent;
+  border-radius: 0;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-variation-settings: var(--fvar-italic-warm);
+  font-size: var(--type-small-tight);
+  color: var(--text-tertiary);
+}
+
+/* 題目難度標記（Editorial：小寫 italic「basic」、「applied」、「interview」標籤） */
+.ddia-quiz-difficulty {
+  display: inline-block;
+  padding: 0;
+  margin-right: var(--space-2-5);
+  font-family: var(--font-display);
+  font-style: italic;
+  font-variation-settings: var(--fvar-eyebrow-warm);
+  font-size: var(--type-eyebrow);
+  font-weight: 500;
+  letter-spacing: 0.12em;  /* lint-typography-allow: quiz-difficulty tag small-caps 設計值（basic/applied/interview）*/
+  text-transform: uppercase;
+  vertical-align: 1px;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+}
+.ddia-quiz-difficulty.is-basic { color: var(--success-fg); }
+.ddia-quiz-difficulty.is-applied { color: var(--accent-500); }
+.ddia-quiz-difficulty.is-interview { color: var(--warning-fg); }
+
+/* explanation 內「回到對應章節」連結（Editorial：文字鏈 + 下底線） */
+.ddia-quiz-anchor-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  margin-left: var(--space-2-5);
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--accent-500);
+  border-radius: 0;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-variation-settings: var(--fvar-eyebrow-warm);
+  font-size: var(--type-small-tight);
+  color: var(--accent-500);
+  text-decoration: none;
+  transition: color 0.15s, border-color 0.15s;
+}
+.ddia-quiz-anchor-link:hover {
+  color: var(--mark-fg);
+  border-bottom-color: var(--mark-fg);
+}
+:global(.dark) .ddia-quiz-anchor-link {
+  color: var(--brand-fg);
+  border-bottom-color: var(--brand-fg);
+}
+
+/* ---------- 通用按鈕（Editorial：方正、髮絲線邊、Fraunces SemiBold）---------- */
+.ddia-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2-5) var(--space-3-5);
+  border-radius: 0;
+  font-family: var(--font-display);
+  font-variation-settings: var(--fvar-section-tight);
+  font-weight: 600;
+  font-size: var(--type-small);
+  letter-spacing: var(--ls-loose);
+  cursor: pointer;
+  border: 1px solid var(--text-primary);
+  background: transparent;
+  color: var(--text-primary);
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.ddia-btn .material-symbols-rounded {
+  display: none;
+}
+
+.ddia-btn:hover:not(:disabled) {
+  background: var(--text-primary);
+  color: var(--bg-canvas);
+  border-color: var(--text-primary);
+}
+
+/* P2-7 Wave 42：Editorial 化 primary CTA —
+   保留 mahogany 主色強度（仍是視覺主動作）、但用「實心 + 雙重邊框印記」取代純色矩形
+   讓書頁感而非 SaaS pill。底部加 3px 印記 = 鋼印 stamp 隱喻 */
+.ddia-btn.primary {
+  background: var(--cta-bg);
+  color: var(--text-inverse);
+  border: 1px solid var(--brand-700);
+  border-bottom-width: 3px;
+  position: relative;
+}
+
+.ddia-btn.primary:hover:not(:disabled) {
+  background: var(--brand-700);
+  border-color: var(--brand-700);
+  color: var(--text-inverse);
+}
+
+.dark .ddia-btn {
+  border-color: var(--text-primary);
+  color: var(--text-primary);
+}
+.dark .ddia-btn:hover:not(:disabled) {
+  background: var(--text-primary);
+  color: var(--bg-canvas);
+}
+
+/* Wave 31a：.dark .ddia-btn.primary base rebind 已由 tokens.css .dark alias 重綁接管（bg/border/color 全 cascade 對齊）。
+   :hover 改用 --accent-200 是獨立配色決策、保留 */
+.dark .ddia-btn.primary:hover:not(:disabled) {
+  background: var(--accent-200);
+  border-color: var(--accent-200);
+  color: var(--bg-canvas);
+}
+
+.ddia-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Wave 28d：btn focus-visible 用 token outline 覆蓋 base.css 全域 box-shadow、給 btn 更銳利環
+   .primary 自己就是 brand 底色、focus-ring 用 accent 對比避免自撞 */
+.ddia-btn:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+  box-shadow: none;
+}
+.ddia-btn.primary:focus-visible {
+  outline-color: var(--accent-500);
+}
+
+/* Wave 28d：active state 全站 — 按下瞬間視覺壓凹回饋 */
+.ddia-btn:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+/* Wave 21.1：destructive 動作 ghost 變體（如 Quiz「徹底清空」） */
+.ddia-btn-ghost-danger {
+  color: var(--error-fg);
+  border-color: color-mix(in srgb, var(--error-fg) 30%, transparent);
+}
+.ddia-btn-ghost-danger:hover:not(:disabled) {
+  background: var(--error-bg);
+  border-color: var(--error-fg);
+  color: var(--error-fg);
+}
+

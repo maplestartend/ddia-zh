@@ -1,0 +1,654 @@
+/* ==========================================================================
+   Wave 38：DecisionTree / SequenceFlow 元件 — 取代 mermaid（CJK 跑版痼疾）
+   原則：純 HTML + CSS Grid / Flex 佈局、無 SVG viewBox、無 foreignObject sizing
+   暗色 mode 用 Editorial token 自動切換、不靠 inline !important 競爭
+   ========================================================================== */
+
+/* ---------- 狀態圖 figure 容器（state machine 用 markdown 表格、加 caption） ---------- */
+.ddia-state-figure {
+  margin: var(--space-5) 0;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--rule-hairline);
+  background: var(--bg-surface);
+}
+.ddia-state-figure figcaption,
+.ddia-state-figure > em:last-child {
+  display: block;
+  margin-top: var(--space-3);
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--type-eyebrow);
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  text-align: center;
+}
+.ddia-state-figure table {
+  margin-top: var(--space-3);
+}
+
+/* ---------- DecisionTree ---------- */
+.ddia-dtree-figure {
+  margin: var(--space-5) 0;
+  padding: 0;
+}
+.ddia-dtree-caption {
+  margin-top: var(--space-3);
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--type-eyebrow);
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  text-align: center;
+}
+
+/* Question 節點 */
+.ddia-dtree-question-block {
+  margin: 0;
+}
+.ddia-dtree-question {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 10px 16px;
+  border: 1px solid var(--rule-hairline);
+  background: var(--bg-surface);
+  font-family: var(--font-display);
+  font-weight: 500;
+  line-height: 1.5;
+  max-width: 100%;
+}
+.ddia-dtree-question-eyebrow {
+  display: inline-block;
+  font-style: italic;
+  font-size: var(--type-eyebrow);
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  flex-shrink: 0;
+}
+.ddia-dtree-question-text {
+  color: var(--text-primary);
+}
+.ddia-dtree-question-hint {
+  color: var(--text-tertiary);
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 0.92em;
+}
+
+/* Branches：垂直堆疊 + 左側髮絲線標深度
+   設計變更（Wave 38a）：edge label 改成 child 上方一行（display: block）、
+   不再跟 child flex row 並排——避免深層 nested 時 edge label 吃掉 child 寬度、
+   葉節點被擠到每字一行的問題。indent 從 16+24 縮到 8+12、深層更寬鬆。 */
+.ddia-dtree-branches {
+  margin-top: var(--space-2);
+  margin-left: var(--space-2);
+  padding-left: var(--space-3);
+  border-left: 1px solid var(--rule-hairline);
+}
+.ddia-dtree-branch {
+  position: relative;
+  margin-top: var(--space-3);
+}
+.ddia-dtree-branch:first-child {
+  margin-top: var(--space-2);
+}
+/* L-connector：branch 從深度線往右伸出的水平髮絲線、對到 edge label 中軸 */
+.ddia-dtree-branch::before {
+  content: "";
+  position: absolute;
+  left: calc(-1 * var(--space-3) - 1px);
+  top: 14px;
+  width: var(--space-3);
+  height: 0;
+  border-top: 1px solid var(--rule-hairline);
+}
+
+/* Edge label：是 / 否 / PostgreSQL 等分支文字、置於 child 上方一行
+   R4-1 Wave 42.4：去 pill border —— 改 inline italic eyebrow（設計師三輪都點過淡灰邊框） */
+.ddia-dtree-edge {
+  display: inline-block;
+  padding: 2px 0;
+  background: transparent;
+  border: 0;
+  font-family: var(--font-display);
+  font-variation-settings: var(--fvar-italic-warm);
+  font-style: italic;
+  font-size: var(--type-eyebrow);
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: 4px;
+}
+.ddia-dtree-edge::before {
+  content: "→ ";
+  color: var(--mark-fg);
+  font-style: normal;
+  margin-right: 2px;
+}
+
+.ddia-dtree-child {
+  /* child 拿到 branch 完整寬度、不會被 edge label 擠 */
+}
+
+/* Leaf 節點：結論卡
+   R4-1 Wave 42.4：去 全包邊（淡灰 pill 感）—— 只保留左 3px tone 印記、底色透明
+   設計師 R1/R2/R3 三輪都點過、終於收 */
+.ddia-dtree-leaf {
+  display: inline-block;
+  padding: 8px 14px;
+  border: 0;
+  background: transparent;
+  font-family: var(--font-body);
+  line-height: 1.55;
+  color: var(--text-primary);
+  max-width: 100%;
+}
+.ddia-dtree-leaf-text {
+  white-space: normal;
+}
+.ddia-dtree-leaf-note {
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px dashed var(--rule-hairline);
+  font-size: 0.88em;
+  color: var(--text-tertiary);
+  font-style: italic;
+}
+
+/* Tone 變體 ─ Editorial Manuscript：放棄飽和填色、改成「米色紙底 + 左 3px 印記」
+   設計師審視 P0：原本 success/warning 飽和填色（薄荷/檸檬感）破壞 mahogany 暖色基調。
+   現在所有葉節點都是 bg-surface 紙底、tone 只影響左印記顏色與小字標籤。
+   safe = 主色 mahogany 印記（推薦選擇）
+   warn = 焦糖印記（注意但不是錯）
+   danger = brand alarm 印記（強警告）
+   neutral = 灰髮絲線（中性選項） */
+.ddia-dtree-leaf {
+  position: relative;
+  padding-left: var(--space-4);
+}
+.ddia-dtree-leaf::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--rule-hairline);
+}
+.ddia-dtree-leaf.is-tone-safe::before {
+  background: var(--brand-500);
+}
+.ddia-dtree-leaf.is-tone-warn::before {
+  background: var(--warning-500);
+}
+.ddia-dtree-leaf.is-tone-danger::before {
+  background: var(--error-500);
+}
+.ddia-dtree-leaf.is-tone-neutral::before {
+  background: var(--rule-hairline);
+}
+
+/* ---------- SequenceFlow ---------- */
+.ddia-seq-figure {
+  margin: var(--space-5) 0;
+  padding: 0;
+  border: 1px solid var(--rule-hairline);
+  background: var(--bg-surface);
+}
+.ddia-seq-caption {
+  margin: var(--space-2) var(--space-3) var(--space-3);
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--type-eyebrow);
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  text-align: center;
+}
+
+/* 共用 grid template：第一 col = 36px 編號、後面 N 個 actor 等寬 */
+.ddia-seq-header,
+.ddia-seq-step {
+  display: grid;
+  grid-template-columns: 36px repeat(var(--actor-count), minmax(90px, 1fr));
+}
+
+/* Actor header */
+.ddia-seq-header {
+  border-bottom: 1px solid var(--rule-hairline);
+  background: var(--bg-canvas);
+}
+.ddia-seq-num-placeholder {
+  /* 第 1 col 留白佔 num 位置 */
+}
+.ddia-seq-actor {
+  padding: 10px 8px;
+  text-align: center;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 0.92em;
+  color: var(--text-primary);
+  border-right: 1px solid var(--rule-hairline);
+}
+.ddia-seq-actor:last-child {
+  border-right: none;
+}
+
+/* Phase tint */
+.ddia-seq-phase {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--rule-hairline);
+  position: relative;
+}
+.ddia-seq-phase:last-child {
+  border-bottom: none;
+}
+/* Editorial：phase 用左 3px 印記分 tone，不用飽和填色（飽和綠破壞 mahogany 色溫） */
+.ddia-seq-phase {
+  border-left: 3px solid transparent;
+}
+.ddia-seq-phase.is-tone-warn {
+  border-left-color: var(--warning-500);
+}
+.ddia-seq-phase.is-tone-safe {
+  border-left-color: var(--brand-500);
+}
+.ddia-seq-phase.is-tone-danger {
+  border-left-color: var(--error-500);
+}
+
+.ddia-seq-phase-title {
+  padding: 6px 16px;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--type-eyebrow);
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  border-bottom: 1px dashed var(--rule-hairline);
+  margin-bottom: 6px;
+}
+.ddia-seq-phase-caption {
+  padding: 4px 16px 0;
+  font-size: 0.88em;
+  font-style: italic;
+  color: var(--text-tertiary);
+}
+
+/* Step row */
+.ddia-seq-step {
+  align-items: center;
+  min-height: 36px;
+  padding: 4px 0;
+}
+
+.ddia-seq-num {
+  grid-column: 1 / 2;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 0.78em;
+  color: var(--text-tertiary);
+}
+
+/* 訊息箭頭：橫線跨多 column、文字置中、線兩端有箭頭 */
+.ddia-seq-arrow {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 16px;
+  min-height: 32px;
+}
+.ddia-seq-arrow-msg {
+  position: relative;
+  padding: 3px 10px;
+  background: var(--bg-canvas);
+  border: 1px solid var(--rule-hairline);
+  font-family: var(--font-body);
+  font-size: 0.92em;
+  color: var(--text-primary);
+  z-index: 2;
+  max-width: 100%;
+}
+/* 箭頭主線：跨整個 arrow box */
+.ddia-seq-arrow::before {
+  content: "";
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  top: 50%;
+  height: 0;
+  border-top: 1px solid var(--text-secondary);
+  z-index: 1;
+}
+/* 三角箭頭尖：forward 在右、backward 在左 */
+.ddia-seq-arrow.is-dir-forward::after {
+  content: "";
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  border-left: 6px solid var(--text-secondary);
+  z-index: 1;
+}
+.ddia-seq-arrow.is-dir-backward::after {
+  content: "";
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  border-right: 6px solid var(--text-secondary);
+  z-index: 1;
+}
+/* return: 虛線 + 較淡色 */
+.ddia-seq-arrow.is-return::before {
+  border-top-style: dashed;
+  border-top-color: var(--text-tertiary);
+}
+.ddia-seq-arrow.is-return.is-dir-forward::after {
+  border-left-color: var(--text-tertiary);
+}
+.ddia-seq-arrow.is-return.is-dir-backward::after {
+  border-right-color: var(--text-tertiary);
+}
+
+/* Self loop */
+.ddia-seq-self {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 8px;
+}
+.ddia-seq-self-msg {
+  padding: 2px 10px;
+  background: var(--bg-canvas);
+  border: 1px solid var(--rule-hairline);
+  font-family: var(--font-body);
+  font-size: 0.88em;
+  color: var(--text-primary);
+  font-style: italic;
+}
+
+/* Note：跨多 actor 的訊息盒 */
+.ddia-seq-step.is-kind-note {
+  /* note row 不需要編號欄位、整 row 留給 note */
+}
+.ddia-seq-note {
+  padding: 8px 12px;
+  margin: 4px 8px;
+  background: color-mix(in srgb, var(--info-500) 10%, var(--bg-surface));
+  border-left: 3px solid var(--info-500);
+  font-family: var(--font-body);
+  font-size: 0.92em;
+  line-height: 1.5;
+  color: var(--text-primary);
+}
+/* Editorial：note 用左印記區分 tone、紙底保留、不堆飽和填色 */
+.ddia-seq-note.is-tone-warn {
+  border-left-color: var(--warning-500);
+}
+.ddia-seq-note.is-tone-danger {
+  border-left-color: var(--error-500);
+}
+.ddia-seq-note.is-tone-safe {
+  border-left-color: var(--brand-500);
+}
+
+/* Mobile：≤ 640px 太擠時容許 horizontal scroll，但不縮 message font */
+@media (max-width: 640px) {
+  .ddia-seq-figure {
+    overflow-x: auto;
+  }
+  .ddia-seq-header,
+  .ddia-seq-step {
+    grid-template-columns: 28px repeat(var(--actor-count), minmax(80px, 1fr));
+    min-width: max-content;
+  }
+  .ddia-seq-arrow-msg {
+    font-size: 0.84em;
+  }
+}
+
+/* 詞彙表「面試常考」★ 標記 — Editorial accent，不搶 h3 主視覺 */
+.glossary-star {
+  display: inline-block;
+  margin-left: 0.35em;
+  color: var(--accent-500);
+  font-family: var(--font-display);
+  font-size: 0.78em;
+  font-weight: 600;
+  vertical-align: 0.08em;
+  cursor: help;
+  letter-spacing: 0;
+}
+
+/* ──────────────────────────────────────────────
+   學習路徑入口卡片網格（paths/index.md 頁首）
+   設計：連體髮絲線網格、不浮起、italic eyebrow + Fraunces 標題
+   ────────────────────────────────────────────── */
+
+/* W46：兩問題快速分流卡 — paths/index.md 開頭、卡片網格之上
+   設計：左 3px 印記 + italic eyebrow + 巢狀問答清單、Editorial 旁注感 */
+.ddia-path-decision {
+  margin: var(--space-5) 0 var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  border-left: 3px solid var(--brand-500);
+  background: var(--brand-tint-soft);
+}
+.ddia-path-decision-eyebrow {
+  font-family: var(--font-display);
+  font-variation-settings: var(--fvar-italic-warm);
+  font-style: italic;
+  font-size: var(--type-eyebrow);
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: var(--space-2);
+}
+.ddia-path-decision-list {
+  margin: 0;
+  padding-left: var(--space-4);
+}
+.ddia-path-decision-list > li {
+  margin-bottom: var(--space-2-5);
+}
+.ddia-path-decision-list > li:last-child {
+  margin-bottom: 0;
+}
+.ddia-path-decision-list strong {
+  font-family: var(--font-display);
+  color: var(--text-primary);
+}
+.ddia-path-decision-list ul {
+  margin-top: var(--space-1);
+  padding-left: var(--space-4);
+}
+.ddia-path-decision-list em {
+  font-style: italic;
+  color: var(--text-secondary);
+}
+
+.ddia-path-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  margin: var(--space-5) 0 var(--space-6);
+  border-top: 1px solid var(--rule-hairline);
+  border-left: 1px solid var(--rule-hairline);
+}
+.ddia-path-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1-5);
+  padding: var(--space-3-5) var(--space-4);
+  /* Wave 44 border audit：內部分隔降為 --rule-soft 米灰、外框維持 hairline */
+  border-right: 1px solid var(--rule-soft);
+  border-bottom: 1px solid var(--rule-soft);
+  text-decoration: none !important;
+  color: var(--text-primary);
+  position: relative;
+  transition: background 0.18s, color 0.18s;
+}
+
+/* R3-P1-6 Wave 42.3：推薦路徑卡 — 用淡 accent tint 底 + 左 3px brand 印記做「推薦」訊號 */
+.ddia-path-card.is-recommended {
+  background: var(--brand-tint-soft);
+}
+.ddia-path-card.is-recommended::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--cta-bg);
+}
+.ddia-path-card-recommended {
+  font-family: var(--font-display);
+  font-variation-settings: var(--fvar-italic-warm);
+  font-style: italic;
+  font-size: var(--type-eyebrow);
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--mark-fg);
+  margin-bottom: 2px;
+}
+
+/* R3-P1-8 Wave 42.3：通用 italic ink 強調記號（取代不在 .vp-doc 內的 <em> 失效情境）
+   用於 Dashboard / Hero / 元件內部需要書頁感 italic mark 的地方 */
+.ddia-em-mark {
+  font-family: var(--font-display);
+  font-variation-settings: var(--fvar-italic-warm);
+  font-style: italic;
+  color: var(--mark-fg);
+}
+
+/* R4-2 Wave 42.4：Glossary 頁特化 — A-Z 字母分組標題加大、scanability 一口氣升
+   設計師 + 教材兩位都點出 70+ 詞密度高、需更明顯的 anchor */
+.glossary-page .vp-doc h2.role-h2 {
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 96, "SOFT" 60, "wght" 500;
+  font-feature-settings: "onum" 1;
+  font-size: 64px; /* lint-typography-allow: glossary 字母 anchor、Editorial display size 突破階層 */
+  letter-spacing: 0.04em;
+  text-transform: none;
+  margin-top: var(--space-6);
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--rule-hairline);
+  color: var(--mark-fg);
+}
+.glossary-page .vp-doc h2.role-h2::before {
+  content: "§ ";
+  font-size: 0.5em;
+  color: var(--text-tertiary);
+  margin-right: 0;
+  vertical-align: 0.6em;
+  font-style: italic;
+}
+@media (max-width: 640px) {
+  .glossary-page .vp-doc h2.role-h2 {
+    font-size: 44px; /* lint-typography-allow: glossary A-Z mobile 字級 */
+  }
+}
+
+/* R3-P2 Wave 42.3：首頁底部「最近更新」回訪鉤子 — Editorial「殿尾頁腳」感
+   髮絲線框 + italic eyebrow + body 小字、不喧賓奪主但給回訪讀者新訊號 */
+.ddia-recent-update {
+  margin: var(--space-6) 0 var(--space-5);
+  padding: var(--space-3-5) 0;
+  border-top: 1px solid var(--rule-hairline);
+  /* Wave 44 border audit：刪 border-bottom、置中文字段落不需雙線夾住 */
+  text-align: center;
+}
+.ddia-recent-update-eyebrow {
+  font-family: var(--font-display);
+  font-variation-settings: var(--fvar-italic-warm);
+  font-style: italic;
+  font-size: var(--type-eyebrow);
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: var(--space-2);
+}
+.ddia-recent-update-text {
+  margin: 0 auto;
+  max-width: 56em;
+  font-family: var(--font-body);
+  font-size: var(--type-small);
+  line-height: 1.7;
+  color: var(--text-secondary);
+  letter-spacing: var(--ls-body-cn);
+}
+.ddia-recent-update-text a {
+  color: var(--mark-fg);
+  text-decoration: none;
+  border-bottom: 1px solid var(--rule-soft);
+}
+.ddia-recent-update-text a:hover {
+  border-bottom-color: var(--mark-fg);
+}
+.ddia-path-card:hover,
+.ddia-path-card:focus-visible {
+  background: var(--bg-surface);
+  color: var(--mark-fg);
+}
+.ddia-path-card:hover::before,
+.ddia-path-card:focus-visible::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--cta-bg);
+}
+.ddia-path-card-eyebrow {
+  font-family: var(--font-display);
+  font-variation-settings: var(--fvar-italic-warm);
+  font-style: italic;
+  font-size: var(--type-eyebrow);
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+.ddia-path-card-title {
+  font-family: var(--font-display);
+  font-variation-settings: var(--fvar-section-tight);
+  font-weight: 600;
+  font-size: var(--type-body-lg);
+  line-height: 1.25;
+  letter-spacing: var(--ls-tight);
+  color: var(--text-primary);
+}
+.ddia-path-card:hover .ddia-path-card-title,
+.ddia-path-card:focus-visible .ddia-path-card-title {
+  color: var(--mark-fg);
+}
+.ddia-path-card-desc {
+  font-family: var(--font-body);
+  font-size: var(--type-small);
+  line-height: 1.55;
+  color: var(--text-secondary);
+  letter-spacing: var(--ls-tight);
+}
+@media (max-width: 900px) {
+  .ddia-path-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 560px) {
+  .ddia-path-cards {
+    grid-template-columns: 1fr;
+  }
+}

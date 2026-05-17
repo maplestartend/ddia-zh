@@ -1,11 +1,16 @@
 import DefaultTheme from 'vitepress/theme'
 import { defineAsyncComponent } from 'vue'
 import type { Theme } from 'vitepress'
-// CSS 拆 4 檔避免單檔失控（原本 custom.css 接近 1000 行）
-// 順序重要：tokens 先（定義 CSS 變數）→ base（消費變數）→ components → layout
+// CSS 順序：tokens → base → components/* → layout
+// W49：components.css 2772 行拆 6 子檔（CLAUDE.md §9 上限 500 / 風險最小化 / dev HMR 切片）
 import './styles/tokens.css'
 import './styles/base.css'
-import './styles/components.css'
+import './styles/components/editorial-marks.css'      // TLDR / ChapterMeta / Badge / Quiz / 按鈕
+import './styles/components/disclaimer-scenario.css'  // Hero disclaimer / Scenario badge / Hero nav
+import './styles/components/dashboard.css'            // Progress / Dashboard / Stats / 錯題本
+import './styles/components/chapter-cards.css'        // Chapter cards / Part header / Hero / custom-block / Card status
+import './styles/components/vp-overrides.css'         // VP nav/sidebar/outline/search/footer + Mermaid override + resume/ceremony + reading-progress
+import './styles/components/diagrams-paths.css'       // figures / DecisionTree / SequenceFlow / path-decision / path-cards / em-mark / glossary-h2 / recent-update
 import './styles/layout.css'
 
 // W48：常駐元件（首頁 / 章首 / 詞彙等多處用）走同步 import

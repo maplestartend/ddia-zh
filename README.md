@@ -119,11 +119,12 @@ docs/
 ## 技術棧
 
 - **VitePress 1.6** — 靜態網站生成器（基於 Vite + Vue 3）
-- **TypeScript** — strict + noUnusedLocals + noUncheckedIndexedAccess
+- **TypeScript** — strict + noUnusedLocals + noUncheckedIndexedAccess + literal union types（`as const satisfies` 推 ChapterId / GlossarySlug）
+- **CSS 拆 4+6 檔** — `tokens / base / layout` + `components/{editorial-marks, disclaimer-scenario, dashboard, chapter-cards, vp-overrides, diagrams-paths}.css`（W49 拆 components.css 2772 行 → 6 子檔、CLAUDE.md §9 合規）
 - **自寫視覺化元件** — DecisionTree / SequenceFlow（W38 取代 Mermaid、解 CJK + 624px 容器跑版痼疾；W48 拔除 mermaid plugin 省 3 MB chunks）
 - **章末元件 async load** — Quiz / Dashboard / Part0SelfAssessment 等走 `defineAsyncComponent`（W48、app.js 從 605 KB 降到 146 KB）
 - **Playwright** — 截圖驗收
-- **localStorage** — 進度、測驗紀錄（純前端、無後端、走 `useStorage` 統一介面）
+- **localStorage** — 進度、測驗紀錄（純前端、無後端、走 `useStorage` 統一介面 + W48 加 object/array T 強制 validate overload）
 
 ## 設計慣例（Editorial Manuscript · O'Reilly 紙本書感）
 

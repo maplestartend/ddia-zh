@@ -1,0 +1,567 @@
+/* ==========================================================================
+   VitePress chrome Editorial 覆寫
+   覆蓋 VP 內建 sidebar / outline TOC / top nav / search modal / footer 等
+   讓整站視覺一致進入 Editorial Manuscript
+   ========================================================================== */
+
+/* ----- Top Nav Bar：移除圓角 SaaS 感、對齊 Editorial ----- */
+.VPNavBar {
+  background: var(--bg-canvas) !important;
+}
+.VPNavBar.has-sidebar .content {
+  background: var(--bg-canvas);
+  backdrop-filter: none;
+}
+.VPNavBar:not(.has-sidebar):not(.top) .wrapper {
+  padding: 0;
+}
+.VPNavBarTitle .title {
+  font-family: var(--font-display);
+  font-variation-settings: var(--fvar-section-tight);
+  font-weight: 600;
+  letter-spacing: var(--ls-loose);
+}
+.VPNavBar .divider-line {
+  background: var(--rule-hairline);
+}
+.VPNavBarMenuLink,
+.VPNavBarMenuGroup .text {
+  font-family: var(--font-display);
+  font-variation-settings: var(--fvar-section-mid);
+  font-size: var(--type-small);
+  letter-spacing: var(--ls-body-cn);
+}
+
+/* 搜尋框：方框去圓角、淡灰邊（不用 ink black 太重）+ hover/focus 反饋 */
+.VPNavBarSearch .DocSearch-Button,
+button.DocSearch.DocSearch-Button {
+  border-radius: 0 !important;
+  background: transparent !important;
+  border: 1px solid var(--border-default) !important;
+  box-shadow: none !important;
+  font-family: var(--font-display);
+  font-style: italic;
+  color: var(--text-tertiary) !important;
+  padding: var(--space-1-5) var(--space-2-5) !important;
+  transition: border-color 0.15s, color 0.15s, background-color 0.15s !important;
+}
+.VPNavBarSearch .DocSearch-Button:hover,
+button.DocSearch.DocSearch-Button:hover {
+  border-color: var(--mark-fg) !important;  /* Wave 30c：hover indicator semantic */
+  color: var(--mark-fg) !important;
+  background: transparent !important;
+}
+/* focus-visible 用 brand 色 outline 取代 VP 預設可能露出來的藍框 */
+.VPNavBarSearch .DocSearch-Button:focus-visible,
+button.DocSearch.DocSearch-Button:focus-visible {
+  border-color: var(--focus-ring-color) !important;
+  color: var(--focus-ring-color) !important;
+  outline: var(--focus-ring-width) solid var(--focus-ring-color) !important;
+  outline-offset: var(--focus-ring-offset) !important;
+  box-shadow: none !important;
+}
+.DocSearch-Button .DocSearch-Search-Icon {
+  color: var(--text-tertiary);
+  transition: color 0.15s;
+}
+.DocSearch-Button:hover .DocSearch-Search-Icon,
+.DocSearch-Button:focus-visible .DocSearch-Search-Icon {
+  color: var(--mark-fg);
+}
+/* ⌘K 鍵盤提示：預設樣式太重（陰影 + 圓角 + 灰底），改成單純 mono 字 */
+.DocSearch-Button-Keys,
+.DocSearch-Button-Key {
+  background: transparent !important;
+  box-shadow: none !important;
+  border: 0 !important;
+  color: var(--text-tertiary) !important;
+  font-family: var(--font-mono) !important;
+  font-size: var(--type-mini) !important;
+  padding: 0 2px !important;
+  min-width: 0 !important;
+}
+
+/* Light/Dark toggle：徹底替換 VP 預設 iOS pill 為 Editorial 書籤字符按鈕
+   策略：隱藏所有 VP 內部 markup（.check / .vpi-sun / .vpi-moon）
+        用 ::before content 渲染當前「目的地」的字符（light → ☾、dark → ☀）
+   click 行為 VP 已綁在 button 上、不動 JS */
+.VPSwitchAppearance {
+  width: auto !important;
+  height: auto !important;
+  min-width: 44px !important;   /* WCAG 2.5.5 AA：觸控目標 ≥ 44×44 */
+  min-height: 44px !important;
+  border-radius: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: var(--space-2-5) var(--space-2-5) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  transition: background-color 0.15s !important;
+}
+
+/* 隱藏 VP 預設的 pill 滑塊 + sun/moon SVG */
+.VPSwitchAppearance > .check,
+.VPSwitchAppearance .check .icon,
+.VPSwitchAppearance .vpi-sun,
+.VPSwitchAppearance .vpi-moon {
+  display: none !important;
+}
+
+/* Light 模式：顯示 ☾（提示「點此切換到暗色」） */
+.VPSwitchAppearance::before {
+  content: "☾";
+  font-family: var(--font-display);
+  font-size: var(--type-section);
+  line-height: 1;
+  color: var(--text-secondary);
+  transition: color 0.15s, transform 0.15s;
+  display: inline-block;
+}
+
+/* Dark 模式：顯示 ☀（提示「點此切換到亮色」） */
+.dark .VPSwitchAppearance::before {
+  content: "☀";
+  color: var(--brand-fg);
+}
+
+/* Hover：字符變主色 + 淡 tint 背景 + 微微旋轉（書頁翻動感） */
+.VPSwitchAppearance:hover {
+  background: var(--brand-tint-soft) !important;
+}
+.VPSwitchAppearance:hover::before {
+  color: var(--mark-fg);
+  transform: rotate(-12deg);
+}
+.dark .VPSwitchAppearance:hover::before {
+  color: var(--accent-200);
+  transform: rotate(12deg);
+}
+
+/* focus-visible 用全域 outline 規則 */
+.VPSwitchAppearance:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color) !important;
+  outline-offset: var(--focus-ring-offset) !important;
+}
+
+/* ----- Sidebar：Editorial 化字型 + 移除圓角 + active 印記 ----- */
+.VPSidebar {
+  background: var(--bg-canvas) !important;
+  border-right: 1px solid var(--rule-hairline);
+  padding-top: var(--space-4-5);
+}
+.VPSidebarGroup .title .title-text {
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 24, "SOFT" 50, "wght" 600;
+  font-size: var(--type-small-tight);
+  font-style: italic;
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+.VPSidebarItem .link {
+  border-radius: 0;
+  font-family: var(--font-body);
+  font-size: var(--type-small);
+  letter-spacing: var(--ls-tight);
+}
+.VPSidebarItem .link .text {
+  color: var(--text-secondary);
+}
+.VPSidebarItem .link:hover .text {
+  color: var(--text-primary);
+}
+.VPSidebarItem.is-active > .item .link .text {
+  color: var(--rule-active) !important;  /* Wave 30c：sidebar active 走 rule-active alias */
+  font-weight: 600;
+}
+.VPSidebarItem.is-active > .item {
+  position: relative;
+}
+.VPSidebarItem.is-active > .item::before {
+  content: "";
+  position: absolute;
+  left: -16px;
+  top: 4px;
+  bottom: 4px;
+  width: 2px;
+  background: var(--rule-active);  /* Wave 30c：sidebar active 左印記 = rule-active */
+}
+
+/* ----- Outline TOC（右側）：Editorial 化 ----- */
+.VPDocAsideOutline {
+  font-family: var(--font-body);
+}
+.VPDocAsideOutline .outline-title {
+  font-family: var(--font-display);
+  font-variation-settings: var(--fvar-eyebrow-warm);
+  font-style: italic;
+  font-size: var(--type-eyebrow);
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  border-bottom: 1px solid var(--rule-hairline);
+  padding-bottom: var(--space-2);
+  margin-bottom: var(--space-2-5);
+}
+.VPDocAsideOutline .outline-link {
+  font-size: var(--type-small-tight);
+  line-height: 1.6;
+  color: var(--text-tertiary);
+  border-radius: 0;
+  padding: var(--space-1) 0 var(--space-1) var(--space-2);
+  border-left: 1px solid transparent;
+  transition: color 0.15s, border-left-color 0.15s;
+}
+.VPDocAsideOutline .outline-link:hover {
+  color: var(--text-primary);
+  border-left-color: var(--rule-soft);
+}
+.VPDocAsideOutline .outline-link.active {
+  color: var(--mark-fg);
+  border-left-color: var(--mark-fg);
+  font-weight: 500;
+}
+/* outline marker：移除 VP 預設左 vertical line（用我們的 border-left 代替） */
+.VPDocAsideOutline .outline-marker {
+  display: none;
+}
+/* outline 整欄左邊改髮絲線 */
+.VPDocAside .root {
+  border-left: 1px solid var(--rule-hairline);
+  padding-left: var(--space-3);
+}
+
+/* ----- Local Search Modal：去圓角 + Editorial 字 ----- */
+.VPLocalSearchBox .shell {
+  border-radius: 0 !important;
+  background: var(--bg-canvas) !important;
+  border: 1px solid var(--rule-hairline) !important;
+}
+.VPLocalSearchBox .search-bar {
+  border-bottom: 1px solid var(--rule-hairline) !important;
+}
+.VPLocalSearchBox input {
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 36, "SOFT" 50, "wght" 500;
+}
+.VPLocalSearchBox .result {
+  border-radius: 0 !important;
+  border-bottom: 1px solid var(--border-default);
+}
+
+/* ----- Footer：Editorial 化 ----- */
+.VPFooter {
+  background: var(--bg-canvas) !important;
+  border-top: 1px solid var(--rule-hairline);
+  padding: var(--space-4-5) var(--space-4);
+}
+.VPFooter .container {
+  text-align: center;
+}
+.VPFooter .message,
+.VPFooter .copyright {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-variation-settings: var(--fvar-italic-warm);
+  font-size: var(--type-meta);
+  color: var(--text-tertiary);
+  letter-spacing: var(--ls-loose);
+  line-height: 1.8;
+}
+.VPFooter .container::before {
+  content: "◆";
+  display: block;
+  font-family: var(--font-display);
+  font-size: var(--type-eyebrow);
+  color: var(--text-tertiary);  /* 印刷符號 ◆ 改 ink、不用 brand：頁尾不該搶 attention */
+  margin-bottom: var(--space-3);
+}
+
+/* ----- Doc footer prev/next：Editorial 化 ----- */
+.VPDocFooter,
+.pager {
+  border-top: 1px solid var(--rule-hairline);
+  margin-top: var(--space-5-5);
+  padding-top: var(--space-4);
+}
+/* pager-link 不再畫 border-top — 上面 .pager 已有外框 hairline、
+   原本 pager-link 自己又畫一條 = 兩條重疊 */
+.pager-link {
+  border-radius: 0 !important;
+  border: 0 !important;
+  padding: var(--space-3) 0 !important;
+}
+/* Bridge 後緊接 VPDocFooter / .pager 時、外框 border-top 移除（Bridge 已是章末儀式封頂） */
+.ddia-bridge + .VPDocFooter,
+.ddia-bridge + .pager {
+  border-top: 0 !important;
+  margin-top: var(--space-4) !important;
+}
+.pager-link .desc {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-variation-settings: var(--fvar-italic-warm);
+  font-size: var(--type-mini);
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+.pager-link .title {
+  font-family: var(--font-display);
+  font-variation-settings: var(--fvar-section-tight);
+  font-size: var(--type-body-mid);
+  letter-spacing: var(--ls-tight);
+}
+
+/* ----- Mermaid SVG nodes：去圓角 + 字型 ----- */
+.vp-doc svg[id*="mermaid"] g rect,
+.vp-doc svg[id*="mermaid"] g polygon,
+.vp-doc div[class*="mermaid"] rect,
+.vp-doc div[class*="mermaid"] polygon {
+  rx: 0 !important;
+  ry: 0 !important;
+}
+.vp-doc svg[id*="mermaid"] text,
+.vp-doc div[class*="mermaid"] text {
+  font-family: var(--font-display) !important;
+}
+
+/* ----- Mermaid 暗色模式 SVG override（F5） ----------
+   vitepress-plugin-mermaid 不支援 darkThemeVariables、暗色模式下 mermaid 仍用米黃紙底色，
+   與 --bg-canvas (#171311) 反差過大。用 SVG fill / stroke override 強制套暗色 palette。
+   只覆寫填色與線色、字色已在上面 .vp-doc 規則處理。 */
+.dark .vp-doc svg[id*="mermaid"] g rect,
+.dark .vp-doc svg[id*="mermaid"] g polygon,
+.dark .vp-doc div[class*="mermaid"] rect,
+.dark .vp-doc div[class*="mermaid"] polygon {
+  fill: #1F1A17 !important;        /* --bg-surface dark */
+  stroke: #E3A06A !important;       /* --info-fg / brand accent in dark */
+}
+/* sequence diagram actor box / note 區塊背景與邊框
+   重要：要明確限制只命中 rect / polygon、不要連帶把 <text class="actor actor-box"> 的字色一起改成背景色
+   （這是 ch09 ABD 與 ch11 watermark 在 dark 下 participant 名字消失的元兇）*/
+.dark .vp-doc svg[id*="mermaid"] rect.actor,
+.dark .vp-doc svg[id*="mermaid"] polygon.actor,
+.dark .vp-doc svg[id*="mermaid"] rect.actor-man,
+.dark .vp-doc svg[id*="mermaid"] polygon.actor-man {
+  fill: #1F1A17 !important;
+  stroke: #E3A06A !important;
+}
+.dark .vp-doc svg[id*="mermaid"] rect.note,
+.dark .vp-doc svg[id*="mermaid"] polygon.note {
+  fill: #261F1B !important;
+  stroke: #A67A4D !important;
+}
+/* 連線 / 箭頭 */
+.dark .vp-doc svg[id*="mermaid"] .messageLine0,
+.dark .vp-doc svg[id*="mermaid"] .messageLine1,
+.dark .vp-doc svg[id*="mermaid"] line.actor-line,
+.dark .vp-doc svg[id*="mermaid"] path.flowchart-link,
+.dark .vp-doc svg[id*="mermaid"] line.flowchart-link {
+  stroke: #B5AC97 !important;
+}
+.dark .vp-doc svg[id*="mermaid"] #arrowhead path,
+.dark .vp-doc svg[id*="mermaid"] marker path {
+  fill: #B5AC97 !important;
+  stroke: #B5AC97 !important;
+}
+/* 字色暗色版（覆寫 themeVariables.primaryTextColor 在 SVG 內 inline 寫的 #1C1A17）
+   明確列出 mermaid 用的 text class、避免被前面 background-color 規則蓋掉 */
+.dark .vp-doc svg[id*="mermaid"] text,
+.dark .vp-doc div[class*="mermaid"] text,
+.dark .vp-doc svg[id*="mermaid"] text.actor,
+.dark .vp-doc svg[id*="mermaid"] text.actor-box,
+.dark .vp-doc svg[id*="mermaid"] text.actor-man,
+.dark .vp-doc svg[id*="mermaid"] text.messageText,
+.dark .vp-doc svg[id*="mermaid"] text.noteText,
+.dark .vp-doc svg[id*="mermaid"] text.labelText,
+.dark .vp-doc svg[id*="mermaid"] text tspan,
+.dark .vp-doc svg[id*="mermaid"] .messageText,
+.dark .vp-doc svg[id*="mermaid"] .noteText tspan,
+.dark .vp-doc svg[id*="mermaid"] .actor-box {
+  fill: #EDE3CE !important;          /* --text-primary dark */
+}
+
+/* mermaid sequenceDiagram 的 actor 名稱與 flowchart node label 用 foreignObject + HTML div 渲染、
+   不是 SVG <text>——上面的 fill 規則對 HTML 內容無效（要用 color、不是 fill）。
+   這是「ch09 §9.1 ABD 與 ch11 watermark 在 dark 下 participant 名字完全消失」的元兇修法。 */
+.dark .vp-doc svg[id*="mermaid"] foreignObject,
+.dark .vp-doc svg[id*="mermaid"] foreignObject *,
+.dark .vp-doc div[class*="mermaid"] foreignObject,
+.dark .vp-doc div[class*="mermaid"] foreignObject * {
+  color: #EDE3CE !important;
+}
+/* mermaid 暗色 edge label 背景（避免半透明白底蓋住箭頭線） */
+.dark .vp-doc svg[id*="mermaid"] .edgeLabel rect,
+.dark .vp-doc svg[id*="mermaid"] .edgeLabel,
+.dark .vp-doc svg[id*="mermaid"] .label-container {
+  fill: #1F1A17 !important;
+  background-color: #1F1A17 !important;
+}
+/* 整體 mermaid 背景（containing div / svg）拉到暗 */
+.dark .vp-doc div[class*="mermaid"],
+.dark .vp-doc svg[id*="mermaid"] {
+  background: transparent !important;
+}
+
+/* ---------- Dashboard resume link：returning user 看見的「繼續讀」入口 ---------- */
+.ddia-dashboard-resume {
+  margin: var(--space-4-5) auto var(--space-5);
+  padding: var(--space-3-5) 0;
+  max-width: 640px;
+  text-align: center;
+  border-top: 1px solid var(--rule-hairline);
+  /* Wave 44 border audit：刪 border-bottom、單線封頂 */
+}
+.ddia-dashboard-resume-eyebrow {
+  font-family: var(--font-display);
+  font-variation-settings: var(--fvar-eyebrow-warm);
+  font-style: italic;
+  font-size: var(--type-eyebrow);
+  font-weight: 500;
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: var(--space-3);
+}
+.ddia-dashboard-resume-link {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  text-decoration: none;
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--rule-hairline);
+  padding: var(--space-1) var(--space-1);
+  transition: color 0.15s, border-bottom-color 0.15s;
+}
+.ddia-dashboard-resume-link:hover {
+  color: var(--mark-fg);
+  border-bottom-color: var(--mark-fg);
+}
+.ddia-dashboard-resume-num {
+  font-family: var(--font-display);
+  font-feature-settings: "onum" 1, "smcp" 1;
+  font-variation-settings: var(--fvar-section-tight);
+  font-size: var(--type-small-tight);
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--mark-fg);
+}
+.ddia-dashboard-resume-title {
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 36, "SOFT" 30, "wght" 600;
+  font-size: var(--type-h3);
+  letter-spacing: var(--ls-tight);
+}
+.ddia-dashboard-resume-arrow {
+  font-family: var(--font-display);
+  font-size: var(--type-body-lg);
+  color: var(--text-tertiary);
+}
+
+/* W43-5 Wave 43：回訪讀者 frame —「整本 X/12 · 上次讀於 Y 天前」 */
+.ddia-dashboard-resume-meta {
+  margin-top: var(--space-2);
+  font-family: var(--font-display);
+  font-variation-settings: var(--fvar-italic-warm);
+  font-style: italic;
+  font-size: var(--type-eyebrow);
+  letter-spacing: var(--ls-loose);
+  color: var(--text-tertiary);
+}
+.ddia-dashboard-resume-meta strong {
+  font-style: normal;
+  font-feature-settings: "onum" 1;
+  font-variation-settings: var(--fvar-section-tight);
+  color: var(--text-secondary);
+  letter-spacing: 0;
+}
+.ddia-dashboard-resume-ago {
+  margin-left: var(--space-1);
+}
+
+/* Wave 31a：dashboard-resume dark patches 已由 alias 重綁接管 */
+
+/* ---------- Dashboard 完成 Ceremony：12 章全讀完換結語 + 三個延伸選項（F2） ---------- */
+.ddia-dashboard-ceremony {
+  margin: var(--space-5) auto var(--space-5);
+  padding: var(--space-4-5) 0 var(--space-5);
+  max-width: 640px;
+  text-align: center;
+  border-top: 1px solid var(--rule-hairline);
+  /* Wave 44 border audit：刪 border-bottom、ceremony 用 dinkus + 大量留白足夠 framing */
+}
+.ddia-dashboard-ceremony-dinkus {
+  font-family: var(--font-display);
+  font-size: var(--type-small);
+  letter-spacing: 0.6em;  /* lint-typography-allow: ceremony dinkus 寬距、印刷儀式設計 */
+  color: var(--text-tertiary);
+  margin-bottom: var(--space-3);
+  padding-left: 0.6em;
+}
+.ddia-dashboard-ceremony-eyebrow {
+  font-family: var(--font-display);
+  font-variation-settings: var(--fvar-eyebrow-warm);
+  font-style: italic;
+  font-size: var(--type-eyebrow);
+  font-weight: 500;
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: var(--space-3-5);
+  padding-left: 0.3em;
+}
+.ddia-dashboard-ceremony-text {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-variation-settings: "opsz" 48, "SOFT" 60, "wght" 400;
+  font-size: var(--type-h2-tight);
+  line-height: 1.55;
+  color: var(--text-primary);
+  margin: 0 0 var(--space-4-5);
+  text-wrap: balance;
+}
+.ddia-dashboard-ceremony-links {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2-5);
+  align-items: center;
+}
+.ddia-dashboard-ceremony-link {
+  font-family: var(--font-display);
+  font-variation-settings: var(--fvar-eyebrow);
+  font-size: var(--type-small);
+  letter-spacing: var(--ls-loose);
+  color: var(--text-secondary);
+  text-decoration: none;
+  border-bottom: 1px dotted var(--border-default);
+  padding: var(--space-1) 2px;
+  transition: color 0.15s, border-bottom-color 0.15s;
+}
+.ddia-dashboard-ceremony-link:hover {
+  color: var(--mark-fg);
+  border-bottom-color: var(--mark-fg);
+  border-bottom-style: solid;
+}
+/* Wave 31a：ceremony-link:hover dark patch 已由 alias 重綁接管 */
+
+/* ---------- Reading progress 髮絲線：頂部 fixed 1px 線 ----------
+   JS 在 theme/index.ts 控制 width。長頁（章節 / 詞彙表 / paths）才顯示足夠長度 */
+.ddia-reading-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2px;
+  background: var(--cta-bg);
+  width: 0%;
+  z-index: 999;
+  pointer-events: none;
+  transition: width 0.15s ease-out;
+}
+/* Wave 31a：reading-progress dark bg 已由 cta-bg alias 重綁接管 */
+
+/* Wave 45：Quiz inline 「下一站」區塊已刪除（與下方 <NextChapterBridge> 重複） */
+

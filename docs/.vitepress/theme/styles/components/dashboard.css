@@ -1,0 +1,306 @@
+/* ---------- Progress / Chapter loop（learning loop 元件 scoped 樣式在 Vue 內） ---------- */
+.ddia-progress-wrapper {
+  margin: var(--space-4-5) 0 var(--space-3);
+  padding: var(--space-3) 0;
+  background: transparent;
+  border: 0;
+  border-top: 1px solid var(--rule-hairline);
+  /* Wave 44 border audit：刪 border-bottom、章末序列由相鄰元件接 border-top */
+  border-radius: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.ddia-progress-bar {
+  height: 3px;
+  background: var(--bg-subtle);
+  border-radius: 0;
+  overflow: hidden;
+  margin: var(--space-2) 0;
+  border: 0;
+}
+
+/* Dashboard stat card 內進度條的上 spacing（取代 inline style="margin-top: ..."；
+   P0-8 抽 DashboardStats partial 時順手清理 inline style 違反 CSP / lint:spacing 的問題） */
+.ddia-progress-bar-top {
+  margin-top: var(--space-2-5);
+}
+
+.ddia-progress-fill {
+  height: 100%;
+  background: var(--cta-bg);
+  transition: width 0.4s ease;
+}
+
+/* ---------- Dashboard：首頁進度卡片 ---------- */
+.ddia-dashboard {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--space-3);
+  margin: var(--space-4-5) 0;
+}
+
+/* Dashboard 全新訪客歡迎卡（Editorial：書頁段落而非 SaaS 卡）*/
+.ddia-dashboard-welcome {
+  margin: var(--space-5) auto;
+  padding: var(--space-4-5) 0;
+  max-width: 640px;
+  background: transparent;
+  border: 0;
+  border-top: 1px solid var(--rule-hairline);
+  /* Wave 44 border audit：刪 border-bottom、首頁段落由下方元件接 border-top */
+  border-radius: 0;
+  text-align: center;
+}
+.ddia-dashboard-welcome-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1-5);
+  font-family: var(--font-display);
+  font-variation-settings: var(--fvar-eyebrow-warm);
+  font-style: italic;
+  font-size: var(--type-eyebrow);
+  font-weight: 500;
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: var(--space-2-5);
+}
+.ddia-dashboard-welcome-eyebrow .material-symbols-rounded {
+  display: none; /* welcome 不要 hand icon */
+}
+.dark .ddia-dashboard-welcome-eyebrow {
+  color: var(--text-tertiary);
+}
+.ddia-dashboard-welcome-text {
+  margin: 0 auto var(--space-3-5);
+  max-width: 520px;
+  font-family: var(--font-display);
+  font-variation-settings: var(--fvar-italic-note);
+  font-style: italic;
+  font-size: var(--type-body);
+  line-height: 1.75;
+  color: var(--text-secondary);
+  letter-spacing: var(--ls-tight);
+}
+
+/* W43-5 Wave 43：first-visit 3 步 mini guide */
+.ddia-dashboard-welcome-steps {
+  list-style: none;
+  margin: 0 auto;
+  padding: var(--space-3) 0 0;
+  max-width: 560px;
+  border-top: 1px solid var(--rule-hairline);
+  text-align: left;
+}
+.ddia-dashboard-welcome-steps li {
+  margin: var(--space-2) 0;
+  padding: 0;
+  font-family: var(--font-body);
+  font-size: var(--type-small);
+  line-height: 1.75;
+  color: var(--text-secondary);
+  letter-spacing: var(--ls-body-cn);
+}
+.ddia-dashboard-welcome-steps li strong {
+  font-family: var(--font-display);
+  font-variation-settings: var(--fvar-section-tight);
+  color: var(--mark-fg);
+  letter-spacing: var(--ls-tight);
+}
+.ddia-dashboard-welcome-steps a {
+  color: var(--mark-fg);
+  text-decoration: none;
+  border-bottom: 1px solid var(--rule-soft);
+}
+.ddia-dashboard-welcome-steps a:hover {
+  border-bottom-color: var(--mark-fg);
+}
+.ddia-dashboard-welcome-cta {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: var(--space-4-5);
+  justify-content: center;
+  align-items: center;
+}
+/* welcome card 內部 CTA 也要去掉 icon */
+.ddia-dashboard-welcome-cta .ddia-cta .material-symbols-rounded {
+  display: none;
+}
+
+/* Stat card（Editorial：書末附錄表格樣式 — 髮絲線分隔 + 大序體數字） */
+.ddia-dashboard {
+  border-top: 1px solid var(--rule-hairline);
+  border-left: 1px solid var(--rule-hairline);
+}
+
+.ddia-stat-card {
+  background: transparent;
+  border: 0;
+  border-right: 1px solid var(--rule-hairline);
+  border-bottom: 1px solid var(--rule-hairline);
+  border-radius: 0;
+  padding: var(--space-3-5) var(--space-4);
+  transition: background-color 0.15s;
+}
+
+.ddia-stat-card:hover {
+  background: var(--bg-surface);
+}
+
+.ddia-stat-label {
+  font-family: var(--font-display);
+  font-variation-settings: var(--fvar-section-mid);
+  font-style: italic;
+  font-size: var(--type-eyebrow);
+  color: var(--text-tertiary);
+  font-weight: 500;
+  letter-spacing: var(--ls-wide);
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1-5);
+}
+.ddia-stat-label .material-symbols-rounded {
+  display: none;
+}
+
+/* 大數字：Fraunces oldstyle figures（不是 mono）— 印刷感比 mono 強 */
+.ddia-stat-value {
+  font-family: var(--font-display);
+  font-feature-settings: "onum" 1, "kern" 1;
+  font-variation-settings: "opsz" 144, "SOFT" 30, "wght" 500;
+  font-size: var(--type-feature);
+  font-weight: 500;
+  color: var(--text-primary);
+  line-height: 1.1;
+  margin-top: var(--space-2);
+  letter-spacing: -0.01em;
+}
+
+/* 空狀態的 — 改用較柔和的顏色 + 對齊高度，避免與其他三格的大數字並排時視覺塌空 */
+.ddia-stat-value.is-empty {
+  color: var(--text-tertiary);
+  font-weight: 500;
+}
+
+.ddia-stat-value.brand {
+  color: var(--mark-fg);
+}
+
+.dark .ddia-stat-value.brand {
+  color: var(--brand-300);
+}
+
+/* Wave 21.1：誠實版標籤（Editorial：去 glass pill 圓角背景、改 italic 印刷標記） */
+.ddia-stat-tag {
+  display: inline-block;
+  margin-left: var(--space-1-5);
+  padding: 0;
+  background: transparent;
+  color: var(--success-fg);
+  border-radius: 0;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--type-tiny);
+  font-weight: 500;
+  letter-spacing: var(--ls-loose);
+  vertical-align: baseline;
+  cursor: help;
+}
+.ddia-stat-tag::before {
+  content: "· ";
+  color: var(--text-tertiary);
+  margin-right: 2px;
+  font-style: normal;
+}
+.ddia-stat-sub {
+  margin-top: var(--space-1);
+  font-size: var(--type-tiny);
+  font-style: italic;
+  color: var(--text-tertiary);
+  opacity: 0.85;
+}
+
+/* 錯題本（Editorial：書末 errata 表格） */
+.ddia-incorrect-book {
+  margin: var(--space-4) 0 var(--space-5);
+  padding: var(--space-3-5) 0;
+  background: transparent;
+  border: 0;
+  border-top: 1px solid var(--rule-hairline);
+  /* Wave 44 border audit：刪 border-bottom */
+  border-radius: 0;
+}
+.ddia-incorrect-summary {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2-5);
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-variation-settings: var(--fvar-section-tight);
+  font-weight: 600;
+  font-size: var(--type-body-mid);
+  color: var(--text-primary);
+  list-style: none;
+  letter-spacing: var(--ls-tight);
+}
+.ddia-incorrect-summary .material-symbols-rounded {
+  display: none;
+}
+/* R3-P1-9：跨瀏覽器藏 summary marker — webkit + 標準 list-style + ::marker */
+.ddia-incorrect-summary::-webkit-details-marker { display: none; }
+.ddia-incorrect-summary::marker { content: ""; }
+.ddia-incorrect-summary::before {
+  content: "§";
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--type-body);
+  color: var(--warning-fg);
+  margin-right: 2px;
+}
+.ddia-incorrect-summary::after {
+  content: '▾';
+  margin-left: auto;
+  color: var(--text-tertiary);
+  font-size: var(--type-mini);
+  transition: transform 0.15s;
+}
+.ddia-incorrect-book[open] .ddia-incorrect-summary::after {
+  transform: rotate(180deg);
+}
+.ddia-incorrect-hint {
+  font-size: var(--type-eyebrow);
+  color: var(--text-tertiary);
+  font-weight: 400;
+}
+.ddia-incorrect-list {
+  margin: var(--space-2-5) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.ddia-incorrect-item {
+  padding: var(--space-2) 0;
+  border-top: 1px solid var(--border-default);
+}
+.ddia-incorrect-item:first-child { border-top: none; }
+.ddia-incorrect-link {
+  display: block;
+  text-decoration: none;
+  color: var(--text-primary);
+}
+.ddia-incorrect-link:hover strong {
+  color: var(--mark-fg);
+}
+:global(.dark) .ddia-incorrect-link:hover strong {
+  color: var(--brand-300);
+}
+.ddia-incorrect-meta {
+  display: block;
+  margin-top: 2px;
+  font-size: var(--type-eyebrow);
+  color: var(--text-tertiary);
+}
+
