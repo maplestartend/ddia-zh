@@ -1,16 +1,19 @@
-import DefaultTheme from 'vitepress/theme'
+// W50：用 theme-without-fonts 入口、不載 VP 預設 Inter 字型（站內 0 處引用、省 540 KB woff2）
+import DefaultTheme from 'vitepress/theme-without-fonts'
 import { defineAsyncComponent } from 'vue'
 import type { Theme } from 'vitepress'
 // CSS 順序：tokens → base → components/* → layout
-// W49：components.css 2772 行拆 6 子檔（CLAUDE.md §9 上限 500 / 風險最小化 / dev HMR 切片）
+// W49 拆 6 / W50 再拆語意化為 8 子檔（reviewer #4 共識 + CLAUDE.md §9 全檔 ≤500 行）
 import './styles/tokens.css'
 import './styles/base.css'
-import './styles/components/editorial-marks.css'      // TLDR / ChapterMeta / Badge / Quiz / 按鈕
-import './styles/components/disclaimer-scenario.css'  // Hero disclaimer / Scenario badge / Hero nav
-import './styles/components/dashboard.css'            // Progress / Dashboard / Stats / 錯題本
-import './styles/components/chapter-cards.css'        // Chapter cards / Part header / Hero / custom-block / Card status
-import './styles/components/vp-overrides.css'         // VP nav/sidebar/outline/search/footer + Mermaid override + resume/ceremony + reading-progress
-import './styles/components/diagrams-paths.css'       // figures / DecisionTree / SequenceFlow / path-decision / path-cards / em-mark / glossary-h2 / recent-update
+import './styles/components/editorial-marks.css'   // TLDR / ChapterMeta / Badge / Quiz / 按鈕
+import './styles/components/home-hero.css'          // Hero + disclaimer + persona-router + cta + page-note + scenario-badge
+import './styles/components/dashboard.css'          // Progress / Dashboard / Stats / 錯題本 / resume / ceremony / reading-progress
+import './styles/components/chapter-cards.css'      // Chapter cards + Part header（W50 拆 hero / custom-block 出去後純化）
+import './styles/components/custom-block.css'       // VP admonition tip/info/warning/danger 樣式
+import './styles/components/vp-overrides.css'       // VP nav/sidebar/outline/search/footer（W50 純化、無 dashboard / mermaid 殘留）
+import './styles/components/diagrams.css'           // state-figure + DecisionTree + SequenceFlow
+import './styles/components/paths-glossary.css'     // path-decision + path-cards + em-mark + recent-update + glossary 排版
 import './styles/layout.css'
 
 // W48：常駐元件（首頁 / 章首 / 詞彙等多處用）走同步 import

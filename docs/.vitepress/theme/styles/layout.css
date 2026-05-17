@@ -27,53 +27,7 @@
   }
 }
 
-/* Mermaid 容器：桌機允許橫向 scroll、SVG 保持原生寬度（字才不會被等比縮成不可讀）
-   原本 max-width: 100% !important 把所有 SVG 強制塞進 ~624px vp-doc 容器、
-   寬決策樹（viewBox 2000+）被縮到 0.3× → 字 4-5px 完全失明。
-   現在策略：桌機 SVG 保持原生寬度、容器 overflow-x auto 出現 scrollbar；
-   手機才退回等比縮（pinch-zoom 比橫向 scroll 體驗好） */
-.vp-doc div[class*="mermaid"],
-.vp-doc .mermaid {
-  max-width: 100%;
-  overflow-x: auto;
-  overflow-y: hidden;
-  text-align: center;
-  /* 給上下 padding 讓 scrollbar 不貼內容 */
-  padding-bottom: 4px;
-}
-
-.vp-doc div[class*="mermaid"] svg,
-.vp-doc .mermaid svg,
-.vp-doc svg[role="graphics-document"],
-.vp-doc svg[id*="mermaid"] {
-  max-width: none !important;     /* 不再強制塞容器、讓 SVG 維持自然寬度 */
-  height: auto !important;
-}
-
-/* node label 的 foreignObject（mermaid flowchart 用 HTML div 渲染節點文字）
-   預設 overflow 會把第二/三行 <br/> 切掉、是「ch07 lost update 樹的 40001 / WHERE stock > 0 字串消失」元兇。
-   強制 visible 讓多行內容不被裁。 */
-.vp-doc svg[id*="mermaid"] foreignObject,
-.vp-doc div[class*="mermaid"] foreignObject {
-  overflow: visible !important;
-}
-.vp-doc svg[id*="mermaid"] foreignObject > div,
-.vp-doc div[class*="mermaid"] foreignObject > div {
-  overflow: visible !important;
-  line-height: 1.5 !important;
-  white-space: normal !important;
-  padding: 2px 0;
-}
-
-/* 手機（≤ 768px）退回等比縮：手機橫向 scroll 容易誤觸 / 干擾閱讀流 */
-@media (max-width: 768px) {
-  .vp-doc div[class*="mermaid"] svg,
-  .vp-doc .mermaid svg,
-  .vp-doc svg[role="graphics-document"],
-  .vp-doc svg[id*="mermaid"] {
-    max-width: 100% !important;
-  }
-}
+/* W50：原 mermaid 容器 / SVG / foreignObject 規則已隨 plugin 拔除（W48 dist 0 處 mermaid 引用）*/
 
 /* ----- Tablet / Mobile（≤ 768px） ----- */
 @media (max-width: 768px) {

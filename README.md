@@ -120,7 +120,7 @@ docs/
 
 - **VitePress 1.6** — 靜態網站生成器（基於 Vite + Vue 3）
 - **TypeScript** — strict + noUnusedLocals + noUncheckedIndexedAccess + literal union types（`as const satisfies` 推 ChapterId / GlossarySlug）
-- **CSS 拆 4+6 檔** — `tokens / base / layout` + `components/{editorial-marks, disclaimer-scenario, dashboard, chapter-cards, vp-overrides, diagrams-paths}.css`（W49 拆 components.css 2772 行 → 6 子檔、CLAUDE.md §9 合規）
+- **CSS 拆 3+8 檔** — `tokens / base / layout` + `components/{editorial-marks, home-hero, dashboard, chapter-cards, custom-block, vp-overrides, diagrams, paths-glossary}.css`（W49 拆 6 子檔、W50 再語意化重切為 8 子檔；CLAUDE.md §9 全檔 ≤500 行）
 - **自寫視覺化元件** — DecisionTree / SequenceFlow（W38 取代 Mermaid、解 CJK + 624px 容器跑版痼疾；W48 拔除 mermaid plugin 省 3 MB chunks）
 - **章末元件 async load** — Quiz / Dashboard / Part0SelfAssessment 等走 `defineAsyncComponent`（W48、app.js 從 605 KB 降到 146 KB）
 - **Playwright** — 截圖驗收
@@ -179,7 +179,7 @@ docs/
 
 - 進度與測驗紀錄都在 **localStorage**，換瀏覽器 / 清快取會遺失（沒有後端帳號）
 - 全文搜尋是 VitePress 內建 local search，CJK tokenizer 自訂在 [config.mts](docs/.vitepress/config.mts)
-- CI 跑 type-check + 11 個 lint + build；其中 base / dark-patch / chapter-sequence 三個 lint 是 BLOCKING（失敗擋部署）；W48 拔除 mermaid plugin 後 build time 從 ~14s 降到 ~6s、dist 從 8.2 MB 降到 5.5 MB
+- CI 跑 type-check + 11 個 lint + build；其中 base / dark-patch / chapter-sequence 三個 lint 是 BLOCKING（失敗擋部署）；W48 拔除 mermaid plugin 後 build time 從 ~14s 降到 ~6s、dist 從 8.2 MB 降到 5.5 MB；W50 進一步拔除 VP default 內建未用 Inter 字型（540 KB）、dist 降到 4.8 MB、woff2 從 642 KB 降到 228 KB
 
 ## License
 

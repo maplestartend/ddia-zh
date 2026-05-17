@@ -45,10 +45,6 @@
 }
 
 /* 隱藏 TLDR 標題裡的 Material icon（書腰風不用 lightning bolt） */
-.ddia-tldr-title .material-symbols-rounded {
-  display: none;
-}
-
 .dark .ddia-tldr-title {
   color: var(--text-tertiary);
 }
@@ -105,10 +101,6 @@
   gap: var(--space-2);
   color: var(--text-tertiary);
 }
-.ddia-meta-item .material-symbols-rounded {
-  display: none;
-}
-
 .ddia-meta-item strong {
   font-family: var(--font-display);
   font-style: normal;
@@ -170,9 +162,6 @@
   display: inline-flex;
   align-items: baseline;
   gap: var(--space-2-5);
-}
-.ddia-quiz-header-title .material-symbols-rounded {
-  display: none;
 }
 /* 標題前綴 § 印刷符號 */
 .ddia-quiz-header-title::before {
@@ -375,10 +364,6 @@
   color: var(--text-primary);
   transition: background 0.15s, color 0.15s, border-color 0.15s;
 }
-.ddia-btn .material-symbols-rounded {
-  display: none;
-}
-
 .ddia-btn:hover:not(:disabled) {
   background: var(--text-primary);
   color: var(--bg-canvas);

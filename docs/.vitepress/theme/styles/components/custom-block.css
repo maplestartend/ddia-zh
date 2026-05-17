@@ -1,0 +1,54 @@
+/* ---------- VitePress custom-block（::: tip / info / warning / danger / details）----------
+   Editorial 化：無圓角、左邊 3px 髮絲線、italic 標題、無背景（or 極淡 tint） */
+.custom-block {
+  background: transparent;
+  border: 0;
+  border-left: 3px solid var(--rule-hairline);
+  border-radius: 0;
+  padding: var(--space-2) 0 var(--space-2) 20px;
+  margin: var(--space-4-5) 0;
+  font-size: var(--type-body-mid);
+  line-height: 1.75;
+  color: var(--text-secondary);
+}
+
+.custom-block .custom-block-title {
+  font-family: var(--font-display);
+  font-variation-settings: var(--fvar-section-tight);
+  font-style: italic;
+  font-size: var(--type-small-tight);
+  font-weight: 600;
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--text-primary);
+  margin: 0 0 var(--space-1-5);
+}
+
+.custom-block p {
+  margin: var(--space-1-5) 0;
+}
+
+/* background-color: transparent 顯式覆寫 — 不寫的話 VP 預設 .custom-block.tip
+   (specificity 0,2,0) 的 `background-color: var(--vp-custom-block-tip-bg)` 米黃會贏，
+   破壞 Editorial 無浮起原則、踩到 docusaurus 四色 admonition 指紋。
+   .details 仍刻意 bg-subtle（在下方 1182），不在此處透明化。 */
+.custom-block.tip { border-left-color: var(--mark-fg); background-color: transparent; }
+.custom-block.tip .custom-block-title { color: var(--mark-fg); }
+
+.custom-block.info { border-left-color: var(--accent-500); background-color: transparent; }
+.custom-block.info .custom-block-title { color: var(--accent-500); }
+
+.custom-block.warning { border-left-color: var(--warning-fg); background-color: transparent; }
+.custom-block.warning .custom-block-title { color: var(--warning-fg); }
+
+.custom-block.danger { border-left-color: var(--error-fg); background-color: transparent; }
+.custom-block.danger .custom-block-title { color: var(--error-fg); }
+
+.custom-block.details {
+  background: var(--bg-subtle);
+  padding: var(--space-3) 20px;
+}
+
+/* Wave 31a：.dark .custom-block.tip 已由 alias 重綁接管（light 用 --mark-fg、dark cascade 暖橙） */
+.dark .custom-block.info { border-left-color: var(--accent-200); }
+.dark .custom-block.info .custom-block-title { color: var(--accent-200); }

@@ -61,7 +61,10 @@ import { useLastVisited } from '../../composables/useLastVisited'
 import { CHAPTERS, PREREQUISITES, TOTAL_CHAPTERS } from '../../data/chapters'
 
 // W48：mode prop 刪除 — progress.md 直接用 <DashboardStats />，Dashboard 純跑三態
+// W48：lastVisited 走 useLastVisited composable（reactive、修 SPA 換章後 Dashboard 不更新的 bug）
+// W50：useLastVisited() 提到 computed 之前、消除 TDZ-like 可讀性問題（原來靠 lazy getter 才沒爆）
 const { doneCount, quizCount, isDone } = useProgress()
+const lastVisited = useLastVisited()
 const totalChapters = TOTAL_CHAPTERS
 
 // W43-5 Wave 43：「上次讀於 X 天前」相對時間（讀者語言、不顯示 timestamp）
@@ -80,10 +83,6 @@ const lastVisitedAgo = computed<string | null>(() => {
 
 const isFresh = computed(() => doneCount.value === 0 && quizCount.value === 0)
 const isComplete = computed(() => doneCount.value >= totalChapters)
-
-// F3：讀 ChapterOpener 寫入的 lastVisited、用「繼續上次讀的章」優先於「下一個未讀」
-// W48：走 useLastVisited composable（reactive、修 SPA 換章後 Dashboard 不更新的 bug）
-const lastVisited = useLastVisited()
 
 const allChaptersForResume = computed(() => [...CHAPTERS, ...PREREQUISITES])
 const resumeChapter = computed(() => {

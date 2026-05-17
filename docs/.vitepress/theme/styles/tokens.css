@@ -349,9 +349,10 @@
 /* ==========================================================================
    VitePress i18n 修正：code-copy button toast 的「已複製」改回繁體
    ==========================================================================
-   VP 內建（vars.css）有 `:lang(zh) { --vp-code-copy-copied-text-content: '已复制' }`，  /* lint-taiwan-terms-allow：示範對岸預設 */
-   而我們 config 用 `lang: 'zh-TW'` 會被 prefix `:lang(zh)` 命中、按下 code copy 後顯示簡體。
-   tokens.css 後於 VP CSS 載入，同 specificity 後到者勝 → override 成功。
+   VP 內建 vars.css 對 :lang(zh) 預設 --vp-code-copy-copied-text-content 為簡體；
+   我們 config 用 lang 設為 zh-TW、會被 prefix :lang(zh) 命中、按下 code copy 後顯示簡體。
+   tokens.css 後於 VP CSS 載入、同 specificity 後到者勝、override 成功。
+   W50：原註解含反引號觸發 esbuild minifier warning、改純文字避免 build noise。
    ========================================================================== */
 :lang(zh),
 :lang(zh-Hant),

@@ -51,8 +51,8 @@ export default defineConfig({
     //   Body（內文）：Noto Sans TC weight 400 / 500（700 由瀏覽器合成 — 省 ~600KB CJK）
     //   Mono（數字 / 程式碼）：JetBrains Mono weight 400 / 500
     // Fraunces 軸：opsz 9-144、wght 400-700、SOFT 40-80（W48 收斂、實際只用三點、字檔省 ~25%）
-    // preload hero 用字（Fraunces 顯示字、Noto Sans TC 內文）：縮 FOUT 從 ~1.8s 到 ~700ms
-    ['link', { rel: 'preload', as: 'style', href: 'https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@48..144,500..700&family=Noto+Sans+TC:wght@400;500&display=swap' }],
+    // W50：preload URL 與 stylesheet URL 必須一致才能命中（W48 兩條 URL 不同 = 白做工）
+    ['link', { rel: 'preload', as: 'style', href: 'https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,400..700,40..80&family=Noto+Serif+TC:wght@600&family=Noto+Sans+TC:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap' }],
     ['link', { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,400..700,40..80&family=Noto+Serif+TC:wght@600&family=Noto+Sans+TC:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap' }],
     ['meta', { name: 'theme-color', content: '#8C3A2A' }]
   ],
@@ -161,5 +161,17 @@ export default defineConfig({
         }
       }
     }
+  },
+
+  // W50：把 search-index modulepreload 過濾掉 — 拆獨立 chunk 後若還 preload 等於白拆
+  // 讀者開搜尋按鈕（VPLocalSearchBox）時才下載即可
+  transformHead({ assets }) {
+    return []  // 不在這加 head；過濾在 transformHtml
+  },
+  transformHtml(code) {
+    return code.replace(
+      /<link rel="modulepreload"[^>]*search-index[^>]*>/g,
+      ''
+    )
   }
 })

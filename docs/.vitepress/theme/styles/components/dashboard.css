@@ -68,9 +68,6 @@
   color: var(--text-tertiary);
   margin-bottom: var(--space-2-5);
 }
-.ddia-dashboard-welcome-eyebrow .material-symbols-rounded {
-  display: none; /* welcome 不要 hand icon */
-}
 .dark .ddia-dashboard-welcome-eyebrow {
   color: var(--text-tertiary);
 }
@@ -126,10 +123,6 @@
   align-items: center;
 }
 /* welcome card 內部 CTA 也要去掉 icon */
-.ddia-dashboard-welcome-cta .ddia-cta .material-symbols-rounded {
-  display: none;
-}
-
 /* Stat card（Editorial：書末附錄表格樣式 — 髮絲線分隔 + 大序體數字） */
 .ddia-dashboard {
   border-top: 1px solid var(--rule-hairline);
@@ -163,10 +156,6 @@
   align-items: center;
   gap: var(--space-1-5);
 }
-.ddia-stat-label .material-symbols-rounded {
-  display: none;
-}
-
 /* 大數字：Fraunces oldstyle figures（不是 mono）— 印刷感比 mono 強 */
 .ddia-stat-value {
   font-family: var(--font-display);
@@ -247,9 +236,6 @@
   list-style: none;
   letter-spacing: var(--ls-tight);
 }
-.ddia-incorrect-summary .material-symbols-rounded {
-  display: none;
-}
 /* R3-P1-9：跨瀏覽器藏 summary marker — webkit + 標準 list-style + ::marker */
 .ddia-incorrect-summary::-webkit-details-marker { display: none; }
 .ddia-incorrect-summary::marker { content: ""; }
@@ -303,4 +289,162 @@
   font-size: var(--type-eyebrow);
   color: var(--text-tertiary);
 }
+
+/* ---------- Dashboard resume link：returning user 看見的「繼續讀」入口 ---------- */
+.ddia-dashboard-resume {
+  margin: var(--space-4-5) auto var(--space-5);
+  padding: var(--space-3-5) 0;
+  max-width: 640px;
+  text-align: center;
+  border-top: 1px solid var(--rule-hairline);
+  /* Wave 44 border audit：刪 border-bottom、單線封頂 */
+}
+.ddia-dashboard-resume-eyebrow {
+  font-family: var(--font-display);
+  font-variation-settings: var(--fvar-eyebrow-warm);
+  font-style: italic;
+  font-size: var(--type-eyebrow);
+  font-weight: 500;
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: var(--space-3);
+}
+.ddia-dashboard-resume-link {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  text-decoration: none;
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--rule-hairline);
+  padding: var(--space-1) var(--space-1);
+  transition: color 0.15s, border-bottom-color 0.15s;
+}
+.ddia-dashboard-resume-link:hover {
+  color: var(--mark-fg);
+  border-bottom-color: var(--mark-fg);
+}
+.ddia-dashboard-resume-num {
+  font-family: var(--font-display);
+  font-feature-settings: "onum" 1, "smcp" 1;
+  font-variation-settings: var(--fvar-section-tight);
+  font-size: var(--type-small-tight);
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--mark-fg);
+}
+.ddia-dashboard-resume-title {
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 36, "SOFT" 30, "wght" 600;
+  font-size: var(--type-h3);
+  letter-spacing: var(--ls-tight);
+}
+.ddia-dashboard-resume-arrow {
+  font-family: var(--font-display);
+  font-size: var(--type-body-lg);
+  color: var(--text-tertiary);
+}
+
+/* W43-5 Wave 43：回訪讀者 frame —「整本 X/12 · 上次讀於 Y 天前」 */
+.ddia-dashboard-resume-meta {
+  margin-top: var(--space-2);
+  font-family: var(--font-display);
+  font-variation-settings: var(--fvar-italic-warm);
+  font-style: italic;
+  font-size: var(--type-eyebrow);
+  letter-spacing: var(--ls-loose);
+  color: var(--text-tertiary);
+}
+.ddia-dashboard-resume-meta strong {
+  font-style: normal;
+  font-feature-settings: "onum" 1;
+  font-variation-settings: var(--fvar-section-tight);
+  color: var(--text-secondary);
+  letter-spacing: 0;
+}
+.ddia-dashboard-resume-ago {
+  margin-left: var(--space-1);
+}
+
+/* Wave 31a：dashboard-resume dark patches 已由 alias 重綁接管 */
+
+/* ---------- Dashboard 完成 Ceremony：12 章全讀完換結語 + 三個延伸選項（F2） ---------- */
+.ddia-dashboard-ceremony {
+  margin: var(--space-5) auto var(--space-5);
+  padding: var(--space-4-5) 0 var(--space-5);
+  max-width: 640px;
+  text-align: center;
+  border-top: 1px solid var(--rule-hairline);
+  /* Wave 44 border audit：刪 border-bottom、ceremony 用 dinkus + 大量留白足夠 framing */
+}
+.ddia-dashboard-ceremony-dinkus {
+  font-family: var(--font-display);
+  font-size: var(--type-small);
+  letter-spacing: 0.6em;  /* lint-typography-allow: ceremony dinkus 寬距、印刷儀式設計 */
+  color: var(--text-tertiary);
+  margin-bottom: var(--space-3);
+  padding-left: 0.6em;
+}
+.ddia-dashboard-ceremony-eyebrow {
+  font-family: var(--font-display);
+  font-variation-settings: var(--fvar-eyebrow-warm);
+  font-style: italic;
+  font-size: var(--type-eyebrow);
+  font-weight: 500;
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: var(--space-3-5);
+  padding-left: 0.3em;
+}
+.ddia-dashboard-ceremony-text {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-variation-settings: "opsz" 48, "SOFT" 60, "wght" 400;
+  font-size: var(--type-h2-tight);
+  line-height: 1.55;
+  color: var(--text-primary);
+  margin: 0 0 var(--space-4-5);
+  text-wrap: balance;
+}
+.ddia-dashboard-ceremony-links {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2-5);
+  align-items: center;
+}
+.ddia-dashboard-ceremony-link {
+  font-family: var(--font-display);
+  font-variation-settings: var(--fvar-eyebrow);
+  font-size: var(--type-small);
+  letter-spacing: var(--ls-loose);
+  color: var(--text-secondary);
+  text-decoration: none;
+  border-bottom: 1px dotted var(--border-default);
+  padding: var(--space-1) 2px;
+  transition: color 0.15s, border-bottom-color 0.15s;
+}
+.ddia-dashboard-ceremony-link:hover {
+  color: var(--mark-fg);
+  border-bottom-color: var(--mark-fg);
+  border-bottom-style: solid;
+}
+/* Wave 31a：ceremony-link:hover dark patch 已由 alias 重綁接管 */
+
+/* ---------- Reading progress 髮絲線：頂部 fixed 1px 線 ----------
+   JS 在 theme/index.ts 控制 width。長頁（章節 / 詞彙表 / paths）才顯示足夠長度 */
+.ddia-reading-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2px;
+  background: var(--cta-bg);
+  width: 0%;
+  z-index: 999;
+  pointer-events: none;
+  transition: width 0.15s ease-out;
+}
+/* Wave 31a：reading-progress dark bg 已由 cta-bg alias 重綁接管 */
+
+/* Wave 45：Quiz inline 「下一站」區塊已刪除（與下方 <NextChapterBridge> 重複） */
 
