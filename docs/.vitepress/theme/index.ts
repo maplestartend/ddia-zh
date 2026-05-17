@@ -148,11 +148,9 @@ export default {
     if (typeof window === 'undefined') return  // SSG safe（Node build 時 router 為 undefined）
 
     // W48：mermaid <title> 注入器已隨 plugin 拔除（DecisionTree / SequenceFlow 不需要）
-    const routerWithGuard = router as unknown as Record<string, unknown>
-
-    // ====================================================================
-    // drop cap 中英混排首字防護（Wave 42）
-    // ====================================================================
+    // W51：HMR / dev hot-reload 反覆執行 enhanceApp 時、用 WeakSet 紀錄已 hook 過的 router 實例
+    //       取代原本 monkey-patch __ddiaDropCapHooked flag 屬性（type cast 噪音消除）
+    const hookedRouters = new WeakSet<object>()
     // ::first-letter 在「The」這種英文起頭段會把整個 leading word 放大、視覺破碎。
     // 策略：page hydrate 後檢查 .vp-doc 內第一個 <p>（緊接 h1 或 div>h1）的第一個字、
     //       不是 CJK 漢字就在 .vp-doc 加 .no-drop-cap class，跳過 CSS drop cap rule。
@@ -181,8 +179,8 @@ export default {
         root.classList.remove('no-drop-cap')
       }
     }
-    if (router && !(routerWithGuard as Record<string, unknown>).__ddiaDropCapHooked) {
-      ;(routerWithGuard as Record<string, unknown>).__ddiaDropCapHooked = true
+    if (router && !hookedRouters.has(router)) {
+      hookedRouters.add(router)
       const prevDropHook = router.onAfterRouteChanged
       router.onAfterRouteChanged = (to: string) => {
         refreshDropCap()

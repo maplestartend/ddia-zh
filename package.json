@@ -19,7 +19,9 @@
     "lint:chapter-sequence": "node scripts/lint-chapter-sequence.mjs",
     "lint:border-density": "node scripts/lint-border-density.mjs",
     "lint:taiwan-terms": "node scripts/lint-taiwan-terms.mjs",
-    "lint:tag-anchors": "node scripts/lint-tag-anchors.mjs"
+    "lint:tag-anchors": "node scripts/lint-tag-anchors.mjs",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "keywords": [
     "ddia",
@@ -48,6 +50,7 @@
     "playwright": "^1.60.0",
     "typescript": "^6.0.3",
     "vitepress": "^1.6.4",
+    "vitest": "^4.1.6",
     "vue-tsc": "^3.2.8"
   }
 }

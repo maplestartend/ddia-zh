@@ -10,23 +10,15 @@ title: 學習路徑
      先以問題分流、再列完整路徑卡、避免讀者第一眼面對 6 張卡無所適從 -->
 <div class="ddia-path-decision" role="region" aria-label="兩問題快速分流">
   <div class="ddia-path-decision-eyebrow">不知道從哪開始？回答兩個問題</div>
-  <ol class="ddia-path-decision-list">
-    <li>
-      <strong>Q1 · 你寫過後端 CRUD 嗎？</strong>
-      <ul>
-        <li><em>完全沒有</em>（高中 / 大二 / 非本科 / Bootcamp 前期）→ <a href="/paths/30-day-beginner">PATH 02 · 30 天初學者版</a></li>
-        <li><em>會 CRUD、不熟分散式</em>（多數讀者）→ <a href="#path-2week">PATH 01 · 兩週速成</a></li>
-        <li><em>1+ 年在職 / 想深讀</em> → <a href="/paths/30-day-summer-plan">30 天讀通完整版</a></li>
-      </ul>
-    </li>
-    <li>
-      <strong>Q2 · 主要目標是找工作 / 升 senior？</strong>
-      <ul>
-        <li><em>是</em> → <a href="/paths/interview-cheatsheet">PATH 06 · 面試準備</a>（3 週、配 ★ 7 條速跳）</li>
-        <li><em>否、想懂技術跟工程師對話</em>（PM / 跨職能）→ 只讀 [Ch1 TLDR](/part-1/ch01-reliable) + <a href="/paths/adr-template">ADR 模板</a> + <a href="/paths/incident-postmortems">Postmortem 範本</a></li>
-      </ul>
-    </li>
-  </ol>
+
+* **Q1 · 你寫過後端 CRUD 嗎？**
+  * *完全沒有*（高中 / 大二 / 非本科 / Bootcamp 前期）→ [PATH 02 · 30 天初學者版](/paths/30-day-beginner)
+  * *會 CRUD、不熟分散式*（多數讀者）→ [PATH 01 · 兩週速成](#path-2week)
+  * *1+ 年在職 / 想深讀* → [30 天讀通完整版](/paths/30-day-summer-plan)
+* **Q2 · 主要目標是找工作 / 升 senior？**
+  * *是* → [PATH 06 · 面試準備](/paths/interview-cheatsheet)（3 週、配 ★ 7 條速跳）
+  * *否、想懂技術跟工程師對話*（PM / 跨職能）→ 只讀 [Ch1 TLDR](/part-1/ch01-reliable) + [ADR 模板](/paths/adr-template) + [Postmortem 範本](/paths/incident-postmortems)
+
 </div>
 
 下方 6 張卡是完整路徑清單（含依角色版本）。

@@ -64,7 +64,7 @@ import { CHAPTERS, PREREQUISITES, TOTAL_CHAPTERS } from '../../data/chapters'
 // W48：lastVisited 走 useLastVisited composable（reactive、修 SPA 換章後 Dashboard 不更新的 bug）
 // W50：useLastVisited() 提到 computed 之前、消除 TDZ-like 可讀性問題（原來靠 lazy getter 才沒爆）
 const { doneCount, quizCount, isDone } = useProgress()
-const lastVisited = useLastVisited()
+const { lastVisited, hasLastVisited } = useLastVisited()
 const totalChapters = TOTAL_CHAPTERS
 
 // W43-5 Wave 43：「上次讀於 X 天前」相對時間（讀者語言、不顯示 timestamp）
@@ -87,16 +87,18 @@ const isComplete = computed(() => doneCount.value >= totalChapters)
 const allChaptersForResume = computed(() => [...CHAPTERS, ...PREREQUISITES])
 const resumeChapter = computed(() => {
   // 1. 有 lastVisited 紀錄、且非全讀完 → 用該章（讓使用者繼續上次中斷的地方）
-  if (lastVisited.value) {
-    const lv = allChaptersForResume.value.find(c => c.id === lastVisited.value!.chapterId)
-    if (lv) return lv
+  const lv = lastVisited.value
+  if (lv) {
+    const found = allChaptersForResume.value.find(c => c.id === lv.chapterId)
+    if (found) return found
   }
   // 2. 否則用「下一個未讀」（舊行為 fallback）
   return CHAPTERS.find(c => !isDone(c.id)) ?? null
 })
-const resumeEyebrow = computed(() =>
-  lastVisited.value && allChaptersForResume.value.some(c => c.id === lastVisited.value!.chapterId)
+const resumeEyebrow = computed(() => {
+  const lv = lastVisited.value
+  return hasLastVisited.value && lv && allChaptersForResume.value.some(c => c.id === lv.chapterId)
     ? '繼續上次讀的章節'
     : '下一個未讀章節'
-)
+})
 </script>

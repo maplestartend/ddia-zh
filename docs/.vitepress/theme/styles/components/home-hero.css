@@ -65,39 +65,6 @@
   text-transform: uppercase;
 }
 
-/* R4-5 Wave 42.4：paths 第二屏分隔 — UX 指出 ★ 推薦卡之後讀者以為「都同等重要」
-   用 dinkus + italic hint 明示「以下是進階補充」、層級降一階 */
-.ddia-path-divider {
-  text-align: center;
-  margin: var(--space-6) auto var(--space-5);
-  padding: var(--space-4) 0;
-}
-.ddia-path-divider-mark {
-  display: block;
-  font-family: var(--font-display);
-  font-size: var(--type-h3);
-  color: var(--rule-hairline);
-  letter-spacing: var(--ls-display);
-  margin-bottom: var(--space-2);
-}
-.ddia-path-divider-text {
-  display: block;
-  font-family: var(--font-display);
-  font-variation-settings: var(--fvar-italic-warm);
-  font-style: italic;
-  font-size: var(--type-eyebrow);
-  letter-spacing: var(--ls-eyebrow);
-  text-transform: uppercase;
-  color: var(--text-secondary);
-  margin-bottom: var(--space-1);
-}
-.ddia-path-divider-hint {
-  display: block;
-  font-family: var(--font-body);
-  font-size: var(--type-eyebrow);
-  color: var(--text-tertiary);
-  letter-spacing: var(--ls-tight);
-}
 
 /* R3-P1-1 Wave 42.3：hero 三個 numeric stat（40 / 12 / 3）oldstyle 大字 — 取代原本扁平 meta 列
    設計：Fraunces oldstyle figures + 下方小字標籤、用 · 分隔、整組置中

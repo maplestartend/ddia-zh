@@ -163,15 +163,9 @@ export default defineConfig({
     }
   },
 
-  // W50：把 search-index modulepreload 過濾掉 — 拆獨立 chunk 後若還 preload 等於白拆
-  // 讀者開搜尋按鈕（VPLocalSearchBox）時才下載即可
-  transformHead({ assets }) {
-    return []  // 不在這加 head；過濾在 transformHtml
-  },
+  // W50/W51：防護網 — Vite manualChunks 拆 search-index 後、Rollup 因 dynamic-import
+  // 預設不 emit preload；但 VP 升級可能引入 preload，這個 hook 主動過濾掉。
   transformHtml(code) {
-    return code.replace(
-      /<link rel="modulepreload"[^>]*search-index[^>]*>/g,
-      ''
-    )
+    return code.replace(/<link rel="modulepreload"[^>]*search-index[^>]*>/g, '')
   }
 })

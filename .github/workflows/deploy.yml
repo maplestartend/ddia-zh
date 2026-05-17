@@ -53,6 +53,9 @@ jobs:
       - name: Type check
         run: npm run type-check
 
+      - name: Unit tests (W51 新增)
+        run: npm test
+
       - name: Lint glossary (non-blocking)
         continue-on-error: true
         run: |

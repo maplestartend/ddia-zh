@@ -47,7 +47,7 @@ import ChapterFloatingProgress from './ChapterFloatingProgress.vue'
 
 // F3 lastVisited：每章首掛載寫入，給 Dashboard「繼續 · ChXX」用。
 // W48：走 useLastVisited composable（走 useStorage、跨元件 reactive）
-const lastVisited = useLastVisited()
+const { lastVisited } = useLastVisited()
 
 const props = defineProps<{
   chapterId?: string           // 自動模式：'ch05' / 'p0-os' 對映 chapters.ts

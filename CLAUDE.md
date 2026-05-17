@@ -409,6 +409,30 @@ TOTAL              2,682 行（W49 後 2,772 行、W50 拔 mermaid 後 −90 行
 **W50 未做（backlog 留 W51+）**：
 - chapter-cards.css 284 行 + dashboard.css 464 行 + home-hero.css 453 行 仍接近上限、未來新增規則前先評估拆子家族（reviewer 共識：現狀內聚、不必硬拆）
 
+## W51 修死債輪（5 verifier 共識）
+
+W50 之後 5 verifier 重審找出 critical regression + sleeping bug、本輪一次清完。
+
+**P0 修 sleeping bug**：
+- **`lint:base` CI 假綠燈** — CLAUDE.md §14 承諾 BLOCKING、但 `npm run lint:base` exit 0 即使有 hits。改預設 BLOCKING（exit 1 on findings）、`--warn` flag 退回 warning-only。CI 不該用 `--warn`。
+- **paths/index.md 5 個 hard-coded `<a href="/...">` 修為 markdown `[文字](/path)`**（W47 加的、在 GitHub Pages 會 404）
+
+**P1 polishing**：
+- `path-divider` 33 行從 home-hero.css 搬到 paths-glossary.css（concept fit）
+- editorial-marks.css 頂部註解更新（W50 後不再含 Hero / Dashboard / ChapterCard）
+- 刪 `transformHead({ assets }) { return [] }` no-op（Verify #5 指出）
+- ADR template 拆 `<details>` 延後（內容為 markdown code block、`<details>` 對 chunk size 影響不確定）
+
+**P2 小修**：
+- **補 unit test 設施 + 24 個測試** ([chapters.test.ts](docs/.vitepress/data/chapters.test.ts) 17 + [glossary.test.ts](docs/.vitepress/data/glossary.test.ts) 7)：裝 vitest、加 `npm test` + `npm run test:watch`、CI deploy.yml 加 unit test 步驟。SSOT 正確性測試（id 唯一、順序、part 對齊、shortDef 長度上限、findTerm 行為）。從 Tech Lead 評 🔴 tests 升 🟡
+- **useLastVisited 加 `hasLastVisited` helper** ([useLastVisited.ts](docs/.vitepress/composables/useLastVisited.ts))：消 ChapterOpener / Dashboard 內 2 處 `lastVisited.value!` non-null 斷言
+- **router monkey-patch 改 WeakSet** ([theme/index.ts](docs/.vitepress/theme/index.ts))：原 `__ddiaDropCapHooked` flag 屬性 + type cast 噪音消除、改 `const hookedRouters = new WeakSet<object>()`
+- Fraunces opsz subset 延後（站內實測仍用 opsz 144、無法縮）
+
+**未做（背景理由）**：
+- ADR template chunk 99.9 KB 拆 — Verify 估「-60-70 KB」但內容是 markdown code block、`<details>` 不會降 chunk size、純 UX 改善
+- 字型 subset — opsz 144 仍在用、SOFT 30 已在 W50 40..80 之外但視覺正常（fallback OK）、再壓有風險
+
 改 [docs/.vitepress/data/chapters.ts](docs/.vitepress/data/chapters.ts)、composables、theme 元件 之前先跑過一次 type-check + build 確認綠燈再動。
 
 ---

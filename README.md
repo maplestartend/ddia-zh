@@ -75,6 +75,8 @@ npm run preview
 | `npm run lint:border-density` | 偵測多重 border 反模式（Wave 44 audit guard、non-blocking）|
 | `npm run lint:taiwan-terms` | 對岸用語 / 簡體字混入偵測（W46 新增、BANNED 65 詞、`--strict` 才 BLOCK）|
 | `npm run lint:tag-anchors` | ChapterMeta tagAnchors ↔ glossary anchor 對齊驗證（W48 新增、防 glossary 重排無聲 404）|
+| `npm test` | Vitest unit test（W51 新增、24 測試含 chapters / glossary SSOT 正確性）|
+| `npm run test:watch` | Vitest watch mode 用於開發 |
 
 ## 寫作 / 維護快速指引
 

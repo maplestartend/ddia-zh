@@ -1,9 +1,8 @@
 /* ==========================================================================
-   Components — 所有 .ddia-* 元件樣式（TLDR / Quiz / Progress / Dashboard /
-   Hero / ChapterCard / Disclaimer / Scenario Badge 等）
+   Editorial marks — TLDR / ChapterMeta / Badge / Quiz / 通用按鈕
    依賴 tokens.css 的 semantic 變數
-   說明：學習循環 block (.ddia-chapter-loop) 與 Glossary 索引條的 scoped
-   樣式在元件 .vue 檔內，這裡只放跨元件 / global selector 的部分
+   W50 純化：原檔尾巴 Hero / Dashboard / ChapterCard 系列已分別搬到
+   home-hero.css / dashboard.css / chapter-cards.css
    ========================================================================== */
 
 /* ---------- TLDR：章首重點卡片（Editorial：書腰樣式 — 上下髮絲線、無背景、§ section sign）---------- */
