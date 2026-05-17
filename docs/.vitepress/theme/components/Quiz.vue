@@ -139,7 +139,8 @@ const correctCount = computed(() =>
 )
 
 function difficultyLabel(d: Difficulty): string {
-  return d === 'basic' ? '基礎' : d === 'applied' ? '應用' : '面試'
+  // ◆ 面試 與 Glossary ★ 面試常考視覺刻意拆兩個 mark，避免「題的常考」與「詞的常考」語意混淆
+  return d === 'basic' ? '基礎' : d === 'applied' ? '應用' : '◆ 面試'
 }
 
 function optionClass(qIdx: number, oIdx: number) {

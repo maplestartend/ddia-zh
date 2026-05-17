@@ -6,56 +6,57 @@ title: 初學者 30 天暑假計畫
 
 # 初學者 30 天暑假計畫
 
-這份計畫是給「**第一次學分散式系統**」的讀者用的——高中自學、大學資工大二、bootcamp 學員、轉職新手都適用。**30 天每天 1-2 小時、能讀完 Part 0 + 主課程的「最小可用版」**。
+這份計畫是給「**第一次學分散式系統**」的讀者用的——高中自學、大學資工大二、bootcamp 學員、轉職新手都適用。**建議節奏：每天 1-2 小時、彈性 30-45 天讀完 Part 0 + 主課程的「最小可用版」**——讀超過 30 天是正常的、走不下去先跳是設計。
 
-::: tip 計畫前提
-- 假設你已熟 SQL 基礎（不熟先看 [0.3 SQL 速覽](/part-0/sql)）
-- 每天 1-2 小時、共 30 天約 35-50 小時
-- 走 [`<FirstReadShortcut>`](/part-2/ch07-transactions) 標的「**必讀核心**」路徑、第一次可跳節先放生
-- 答錯 Quiz / PartCheckpoint 不重要、**目的是建立 mental map、不是考過**
+::: tip 計畫前提（讀之前先看這段）
+- **每天能投入時間**：1-2 小時最舒服、能擠到 2-3 小時可走快版。**完全沒時間？直接看 [兩週速成](/paths/#path-2week)**
+- **彈性節奏**：30 天是「比較快的版本」、**多花到 45 天甚至 60 天也是正常的**——只要每週能往前推 2-3 章就 OK
+- **SQL 基礎**：若還不熟 `SELECT/JOIN/INDEX` 先看 [0.3 SQL 速覽](/part-0/sql)、其他 Part 0 章節「卡了就跳」
+- **走 [`<FirstReadShortcut>`](/part-2/ch07-transactions) 標的「必讀核心」**、可跳節（如 §5.5 leaderless 細節、Ch9 後半 §9.5 §9.6）**第一次直接放生**
+- **Quiz / PartCheckpoint 答錯沒關係**——目的是建立 mental map、不是考過。**答錯題卡 1 分鐘就跳、Quiz 結束才看正解**
 :::
 
-## 第 1 週：暖身 + 入口（Part 0 + Ch1-Ch2）
+::: info 卡關預警：60% 讀者會在 Ch5-Ch9 跌一跤
+**Part 2（Ch5-Ch9）公認是全書最硬的一段**——複製、分區、交易、分散式麻煩、共識五座大山連發。**如果讀到一半放棄整本書、80% 是在這 5 章其中一章**。本計畫第 3 週用 `<FirstReadShortcut>` 把每章砍到「必讀核心」、就是為了讓你能撐過去。**卡關時用下方「擱置策略」、不要在原地耗**。
+:::
 
-| 天數 | 章節 | 重點 |
-|---|---|---|
-| Day 1-2 | [0.0 三分鐘看懂後端](/part-0/basics) + [0.1 為什麼需要資料密集](/part-0/intro) | 建立後端世界觀 |
-| Day 3 | [0.2 衡量指標](/part-0/metrics) | P50/P99/SLO 必精讀 |
-| Day 4-5 | [0.3 SQL 速覽](/part-0/sql) + [0.4 資料結構](/part-0/data-structures) | 補底子 |
-| Day 6 | [0.5 OS](/part-0/os) + [0.6 網路](/part-0/network) + [0.7 並行](/part-0/concurrency) | 快速掃過、用到再回頭 |
-| Day 7 | [Ch1 可靠 / 可擴展 / 可維護](/part-1/ch01-reliable) | 全書三軸、必精讀 |
+> **W47 改 Week 顆粒**：原版列「Day 1 / Day 2 / Day 3...」會被讀者當截止日（anchoring bias）、跟「彈性節奏」自相矛盾。現在改成週進度 + 預期區間、拿掉 Day 字。
 
-## 第 2 週：單機資料系統（Ch2-Ch4）
+## 第 1 週 · 暖身 + 入口（Part 0 階段 A + Ch1-Ch2）｜預期 5-10 天
 
-| 天數 | 章節 | 重點 |
-|---|---|---|
-| Day 8-9 | [Ch2 資料模型](/part-1/ch02-data-models) | SQL vs 文件 vs 圖 |
-| Day 10-11 | [Ch3 儲存](/part-1/ch03-storage) | B-Tree vs LSM-Tree（蝦皮搜尋會用） |
-| Day 12-13 | [Ch4 編碼](/part-1/ch04-encoding) + §4.4.4 服務邊界 | Protobuf 演進、微服務粒度 |
-| Day 14 | [PartCheckpoint I](/part-1/ch04-encoding#part-i-checkpoint) | 自評是否能進 Part II |
+順序依序推進、卡了跳：
 
-## 第 3 週：分散式資料 — 死亡三章（Ch5-Ch9 走 FRS 路徑）
+1. [0.0 三分鐘看懂後端](/part-0/basics) + [0.1 為什麼需要資料密集](/part-0/intro)（建立後端世界觀）
+2. [0.2 衡量指標](/part-0/metrics)（P50/P99/SLO 必精讀）
+3. [0.3 SQL 速覽](/part-0/sql)（補底子）
+4. [Part 0 階段 B（0.4-0.7）](/part-0/) — **沒念過 CS 可整段先跳、進 Ch1 卡再回**
+5. [Ch1 可靠 / 可擴展 / 可維護](/part-1/ch01-reliable) — 全書三軸、必精讀
 
-⚠️ **這週是全書最硬**。請務必走 `<FirstReadShortcut>` 的「**必讀核心**」、不要硬啃可跳節。
+## 第 2 週 · 單機資料系統（Ch2-Ch4）｜預期 5-10 天
 
-| 天數 | 章節 | 路徑 |
-|---|---|---|
-| Day 15-16 | [Ch5 複製](/part-2/ch05-replication) | FRS 路徑、§5.5 leaderless 細節可跳 |
-| Day 17 | [Ch6 分區](/part-2/ch06-partitioning) | FRS 路徑、台鐵訂票場景 |
-| Day 18-19 | [Ch7 交易](/part-2/ch07-transactions) | FRS 路徑、§7.2 末 phantom + §7.3 SSI 環細節可跳 |
-| Day 20 | [Ch8 麻煩](/part-2/ch08-trouble) | FRS 路徑、§8.4 lease 細節 + §8.5 拜占庭可跳 |
-| Day 21 | [Ch9 一致性](/part-2/ch09-consistency) | FRS 路徑、80% 讀者首次跳 §9.5 後半 + §9.6 |
+1. [Ch2 資料模型](/part-1/ch02-data-models)（SQL vs 文件 vs 圖）
+2. [Ch3 儲存](/part-1/ch03-storage)（B-Tree vs LSM-Tree、蝦皮搜尋會用）
+3. [Ch4 編碼](/part-1/ch04-encoding) + §4.4.4 服務邊界（Protobuf 演進、微服務粒度）
+4. [PartCheckpoint I](/part-1/ch04-encoding#part-i-checkpoint) — 自評是否能進 Part II
 
-## 第 4 週：衍生資料 + 收束（Ch10-Ch12）
+## 第 3 週 · 分散式資料 — 死亡五章（Ch5-Ch9 走 FRS 路徑）｜預期 10-15 天
 
-| 天數 | 章節 | 重點 |
-|---|---|---|
-| Day 22-23 | [Ch10 批次](/part-3/ch10-batch) | FRS 路徑、§10.3 MapReduce 細節可跳 |
-| Day 24-25 | [Ch11 串流](/part-3/ch11-streams) | §11.6 Stripe idempotency 必讀（面試常考） |
-| Day 26-27 | [Ch12 未來](/part-3/ch12-future) | unbundling + 倫理 |
-| Day 28 | [PartCheckpoint III](/part-3/ch12-future#part-iii-checkpoint) | 自評 |
-| Day 29 | 詞彙表掃 [7 條面試常考 ★](/glossary/) | CQRS / Saga / Linearizability / Quorum / Idempotent / Exactly-Once / EDW |
-| Day 30 | 寫一份 [ADR](/paths/adr-template) | 把學到的 trade-off 落到一份決策文件 |
+⚠️ **這週是全書最硬**。請務必走 `<FirstReadShortcut>` 的「**必讀核心**」、不要硬啃可跳節。**這週讀超過 15 天是常態、不是落後**。
+
+1. [Ch5 複製](/part-2/ch05-replication) — FRS 路徑、§5.5 leaderless 細節可跳
+2. [Ch6 分區](/part-2/ch06-partitioning) — FRS 路徑、台鐵訂票場景
+3. [Ch7 交易](/part-2/ch07-transactions) — FRS 路徑、§7.2 末 phantom + §7.3 SSI 環細節可跳
+4. [Ch8 麻煩](/part-2/ch08-trouble) — FRS 路徑、§8.4 lease 細節 + §8.5 拜占庭可跳
+5. [Ch9 一致性](/part-2/ch09-consistency) — FRS 路徑、80% 讀者首次跳 §9.5 後半 + §9.6
+
+## 第 4 週 · 衍生資料 + 收束（Ch10-Ch12）｜預期 5-10 天
+
+1. [Ch10 批次](/part-3/ch10-batch) — FRS 路徑、§10.3 MapReduce 細節可跳
+2. [Ch11 串流](/part-3/ch11-streams) — §11.6 Stripe idempotency 可選（卡了先跳）
+3. [Ch12 未來](/part-3/ch12-future) — unbundling + 倫理
+4. [PartCheckpoint III](/part-3/ch12-future#part-iii-checkpoint) — 自評
+5. 詞彙表掃 [7 條面試常考 ★](/glossary/) — CQRS / Saga / Linearizability / Quorum / Idempotent / Exactly-Once / EDW
+6. 寫一份 [ADR](/paths/adr-template) — 把學到的 trade-off 落到一份決策文件
 
 ## 卡關時的「擱置 → 後續」策略
 

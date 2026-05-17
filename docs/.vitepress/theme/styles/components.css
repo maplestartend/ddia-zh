@@ -1325,6 +1325,44 @@
   margin-top: var(--space-4-5);
 }
 
+/* W46：persona-based 路徑分流 chip 列 — 多 reviewer agent 反映「首頁缺『我是 X』入口」
+   風格刻意比 ddia-cta 弱一階：italic eyebrow label + 髮絲線分隔 chip、不搶主 CTA 視覺 */
+.ddia-persona-router {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: baseline;
+  gap: var(--space-2) var(--space-3);
+  margin: var(--space-3) auto 0;
+  max-width: 720px;
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--rule-hairline);
+}
+.ddia-persona-router-label {
+  font-family: var(--font-display);
+  font-variation-settings: var(--fvar-italic-warm);
+  font-style: italic;
+  font-size: var(--type-eyebrow);
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+.ddia-persona-chip {
+  display: inline-block;
+  padding: 4px 10px;
+  font-family: var(--font-display);
+  font-size: var(--type-small);
+  color: var(--text-secondary);
+  text-decoration: none;
+  border-bottom: 1px solid var(--rule-hairline);
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.ddia-persona-chip:hover {
+  color: var(--brand-500);
+  border-bottom-color: var(--brand-500);
+  background: var(--brand-tint-soft);
+}
+
 /* Hero colophon：版權聲明 inline italic 小字、不喧賓奪主、不再做 :::tip banner */
 .ddia-hero-colophon {
   margin: var(--space-4) auto 0;
@@ -2517,6 +2555,48 @@ button.DocSearch.DocSearch-Button:focus-visible {
    學習路徑入口卡片網格（paths/index.md 頁首）
    設計：連體髮絲線網格、不浮起、italic eyebrow + Fraunces 標題
    ────────────────────────────────────────────── */
+
+/* W46：兩問題快速分流卡 — paths/index.md 開頭、卡片網格之上
+   設計：左 3px 印記 + italic eyebrow + 巢狀問答清單、Editorial 旁注感 */
+.ddia-path-decision {
+  margin: var(--space-5) 0 var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  border-left: 3px solid var(--brand-500);
+  background: var(--brand-tint-soft);
+}
+.ddia-path-decision-eyebrow {
+  font-family: var(--font-display);
+  font-variation-settings: var(--fvar-italic-warm);
+  font-style: italic;
+  font-size: var(--type-eyebrow);
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: var(--space-2);
+}
+.ddia-path-decision-list {
+  margin: 0;
+  padding-left: var(--space-4);
+}
+.ddia-path-decision-list > li {
+  margin-bottom: var(--space-2-5);
+}
+.ddia-path-decision-list > li:last-child {
+  margin-bottom: 0;
+}
+.ddia-path-decision-list strong {
+  font-family: var(--font-display);
+  color: var(--text-primary);
+}
+.ddia-path-decision-list ul {
+  margin-top: var(--space-1);
+  padding-left: var(--space-4);
+}
+.ddia-path-decision-list em {
+  font-style: italic;
+  color: var(--text-secondary);
+}
+
 .ddia-path-cards {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

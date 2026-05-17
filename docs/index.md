@@ -26,6 +26,15 @@ title: 首頁
     <BaseLink to="/part-0/basics" variant="primary">新手起步 · 0.0 三分鐘看懂後端</BaseLink>
     <BaseLink to="/part-1/ch01-reliable" variant="ghost">已熟悉 SQL／後端 · 直接讀 Ch 1 →</BaseLink>
   </div>
+  <!-- W47：persona router 5 chip — W46 漏 DE 視角（#06 唯一下降案）、W47 補齊 -->
+  <nav class="ddia-persona-router" aria-label="依身份選路徑">
+    <span class="ddia-persona-router-label">你的身份？</span>
+    <BaseLink to="/paths/30-day-beginner" extra-class="ddia-persona-chip">學生 / 自學</BaseLink>
+    <BaseLink to="/paths/30-day-summer-plan" extra-class="ddia-persona-chip">在職進修</BaseLink>
+    <BaseLink to="/paths/interview-cheatsheet" extra-class="ddia-persona-chip">轉職 / 面試</BaseLink>
+    <BaseLink to="/bridges/oltp-de" extra-class="ddia-persona-chip">資料工程 / 分析</BaseLink>
+    <BaseLink to="/paths/" extra-class="ddia-persona-chip">PM / 非技術</BaseLink>
+  </nav>
   <p class="ddia-hero-colophon">
     <em>非官方個人學習筆記 · 非商業用途 · 原書著作權屬 <a href="https://www.kleppmann.com/">Martin Kleppmann</a> 與 <a href="https://www.oreilly.com/library/view/designing-data-intensive-applications/9781491903063/">O'Reilly</a>。詳見 <a href="https://github.com/maplestartend/ddia-zh/blob/main/LICENSE">LICENSE</a> / <a href="https://github.com/maplestartend/ddia-zh/blob/main/NOTICE.md">NOTICE</a>。</em>
   </p>

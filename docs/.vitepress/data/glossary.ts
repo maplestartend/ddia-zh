@@ -42,9 +42,9 @@ export const GLOSSARY: readonly GlossaryEntry[] = [
   { term: 'scale-out', slug: 'scale-out', chinese: '水平擴展', english: 'Scale Out (Horizontal)',
     shortDef: '加更多機器分擔負載。可以無上限擴展，但要面對複製、分區、共識等分散式系統難題（DDIA Part II 全書焦點）。' },
   { term: 'stateless', slug: 'stateless', chinese: '無狀態', english: 'Stateless Service',
-    shortDef: '服務本身不保存任何請求之間的狀態，所有狀態都丟給 DB / Cache。橫向擴展時可以隨意加機器、任意請求路由到任一台。' },
+    shortDef: '服務本身不儲存任何請求之間的狀態，所有狀態都丟給 DB / Cache。橫向擴展時可以隨意加機器、任意請求路由到任一台。' },
   { term: 'stateful', slug: 'stateful', chinese: '有狀態', english: 'Stateful Service',
-    shortDef: '服務內部保存資料（DB、message broker、Stateful set）。擴展困難得多——這就是 DDIA 整本書在處理的主題。' },
+    shortDef: '服務內部儲存資料（DB、message broker、Stateful set）。擴展困難得多——這就是 DDIA 整本書在處理的主題。' },
 
   // ── 系統元件 ──
   { term: 'cache', slug: 'cache', chinese: '快取', english: 'Cache',
@@ -129,7 +129,7 @@ export const GLOSSARY: readonly GlossaryEntry[] = [
 
   // ── 複製 / 分區 ──
   { term: 'replication', slug: 'replication', chinese: '複製', english: 'Replication',
-    shortDef: '把同一份資料保存在多個節點。三種架構：single-leader、multi-leader、leaderless。',
+    shortDef: '把同一份資料儲存在多個節點。三種架構：single-leader、multi-leader、leaderless。',
     chapter: '/part-2/ch05-replication' },
   { term: 'failover', slug: 'failover', chinese: '故障轉移', english: 'Failover',
     shortDef: '主節點掛了選新 leader 的過程。腦裂（split brain）是這裡最危險的情境。',

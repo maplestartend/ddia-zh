@@ -22,12 +22,16 @@
     </ol>
 
     <div class="ddia-self-assess-result">
-      <!-- W43-7 Wave 43：result block 加總分顯示、第一眼讓讀者看到「X / 7 答得出來」 -->
+      <!-- W43-7：result block 加總分顯示
+           W47：checkedCount = 0 時加 reframing banner（self-efficacy 第一現場、降低勸退）-->
       <div class="ddia-self-assess-score">
         <span class="ddia-self-assess-score-eyebrow">自評結果</span>
         <span class="ddia-self-assess-score-num">{{ checkedCount }} <span class="ddia-self-assess-score-of">/ {{ items.length }}</span></span>
         <span class="ddia-self-assess-score-label">答得出來</span>
       </div>
+      <p v-if="checkedCount === 0" class="ddia-self-assess-reframe">
+        <strong>0 / 7 是正常起點 — Part 0 正是為你設計的</strong>。多數第一次來的讀者全勾不下去，這代表你「正確進入學習狀態」、不是「不適合」。從階段 A（0.0-0.3）開始即可，**階段 B 看不懂可以先跳**、進 Ch1 卡住再回來查。
+      </p>
       <div v-if="recommendations.length === 0" class="ddia-self-assess-pass">
         <strong>7 題全勾</strong>——直接跳到 <a :href="withBase('/part-1/ch01-reliable')">Ch1 可靠、可擴展、可維護</a>。Part 0 隨時可以回頭翻當參考。
       </div>
@@ -233,6 +237,22 @@ const checkedCount = computed(() => items.filter(i => checked.value[i.id]).lengt
   letter-spacing: var(--ls-loose);
   color: var(--text-secondary);
 }
+/* W47：0/7 reframing banner — self-efficacy theory 第一現場 */
+.ddia-self-assess-reframe {
+  margin: var(--space-2-5) 0 var(--space-3) 0;
+  padding: var(--space-2-5) var(--space-3-5);
+  border-left: 3px solid var(--mark-fg);
+  background: var(--brand-tint-soft);
+  font-family: var(--font-body);
+  font-size: var(--type-body-tight);
+  line-height: 1.75;
+  color: var(--text-primary);
+}
+.ddia-self-assess-reframe strong {
+  font-family: var(--font-display);
+  color: var(--mark-fg);
+}
+
 .ddia-self-assess-pass {
   display: flex;
   align-items: baseline;

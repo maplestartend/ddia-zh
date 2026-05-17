@@ -79,8 +79,10 @@ onUnmounted(() => {
 
 <style scoped>
 .ddia-floating-progress {
+  /* W46：原本固定在右上方會跟 VitePress aside (TOC) 競爭；
+     改成右下角浮現，跟 TOC 物理上分離，閱讀時不擋資訊 */
   position: fixed;
-  top: calc(var(--vp-nav-height, 64px) + 16px);
+  bottom: 24px;
   right: 24px;
   z-index: 40;
   display: flex;
@@ -161,7 +163,7 @@ onUnmounted(() => {
 .ddia-floating-progress-fade-enter-from,
 .ddia-floating-progress-fade-leave-to {
   opacity: 0;
-  transform: translateY(-6px);
+  transform: translateY(6px);
 }
 
 @media (max-width: 1024px) {

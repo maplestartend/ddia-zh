@@ -11,7 +11,7 @@ title: Ch5 複製
   "<strong>三種架構</strong>：Single-Leader（最常見，PostgreSQL/MySQL）、Multi-Leader（跨資料中心）、Leaderless（Dynamo 風格，Cassandra/Riak）。",
   "<strong>同步 vs 非同步的權衡</strong>：同步保證一致性但任一節點掛掉整體卡死；非同步快但有資料丟失風險。實務常用「半同步」。",
   "<strong>複製延遲三大問題</strong>：read-your-writes、monotonic reads、consistent prefix reads —— 要靠應用層或路由策略解決。",
-  "<strong>Leaderless 靠 Quorum</strong>：W + R > N 在「嚴格 quorum」下保證讀到最新值；Dynamo 風格的 sloppy quorum（鬆散法定人數）—— 寫不到原節點時暫存到鄰居、等原節點回來再補 —— 換來可用性但不再保證讀最新。版本向量（version vector）解決並發寫衝突。"
+  "<strong>Leaderless（去 leader）架構靠多數票決（quorum 法定人數）達成一致</strong>——寫入要過半（W）、讀取也要過半（R）、重疊處就是最新資料（W + R > N）。Dynamo 風格的 sloppy quorum（鬆散法定人數）——寫不到原節點時先暫存到鄰居、等原節點回來再補——換來可用性但不再保證讀最新。版本向量（version vector，記錄每個節點寫了幾版）用來解決並發寫衝突。"
 ]' />
 
 <FirstReadShortcut>
@@ -140,6 +140,18 @@ title: Ch5 複製
 - 「**抖了**」（暫時性失聯）+「**自動切換**」可能比「**繼續等**」造成更多問題（split-brain 風險）——所以 Patroni 預設 `ttl=30` 秒 + `loop_wait=10` 秒、給 master 機會恢復、不要太急
 
 **Ch9 §9.5 共識章會更深入**：Raft 的 leader election 就是 Patroni / Orchestrator 底層在用的東西、Ch8 fencing token 是擋 zombie leader 的關鍵——這幾章串起來、你就理解「**PG / MySQL failover 不是黑魔法、是 Ch5-Ch9 內容的工程化**」。
+:::
+
+::: tip W47：PG / MySQL / Redis 三家 replication「預設行為」落差表
+mid-level 面試會被追問「**你用的 DB 預設是 sync 還是 async？掛主節點會丟資料嗎？**」—— 三家 OSS DB 的預設值差異常被誤解：
+
+| DB | 預設模式 | 切 sync / semi-sync 的開關 | leader 掛常見資料行為 | 典型坑 |
+|---|---|---|---|---|
+| **PostgreSQL** | **async**（streaming replication） | `synchronous_commit = on` + `synchronous_standby_names = 'FIRST 1 (s1,s2)'` | 未 flush 的 WAL 丟失（async）／可保住已 commit（sync） | `synchronous_commit=on` 但 `synchronous_standby_names` 為空 = 仍是 async（最常見配錯）|
+| **MySQL** | **async**（binlog → replica relay） | `rpl_semi_sync_source_enabled=ON` + `rpl_semi_sync_source_wait_for_replica_count=1`（8.0+ 改名前是 `master/slave`）| async 預設可能丟 0.1-1s 寫入；semi-sync 仍有 phantom write 風險 | InnoDB `sync_binlog=0` + async replication = 雙重風險、production 建議 `sync_binlog=1` |
+| **Redis** | **async**（master → replica）| `WAIT N M` client command 阻塞直到 N 個 replica ACK（**非 server-side 設定、是每次寫入決定**） | 主掛即丟、Sentinel failover 自動切但**確認資料丟失**（min-replicas-to-write 是擋寫不是擋丟）| `WAIT` 不是 sync 模式、只是「**等夠多人收到再回**」、Sentinel 仍可能選到 lag 的 replica |
+
+**面試金句**：「**三家預設都是 async；要強保證得各自配 sync flag、且都有微妙陷阱**」。詳細參數演進史見各家官方 release notes、別只 copy stackoverflow 老答案。
 :::
 
 ---

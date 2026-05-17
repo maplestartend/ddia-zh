@@ -22,13 +22,23 @@
     <div v-if="prereq" class="ddia-meta-item">
       前置：<span class="ddia-badge">{{ prereq }}</span>
     </div>
+    <!-- W46：tag 若有對應 glossary anchor 自動變連結 + 顯示 ? icon、讓初學者一鍵跳定義
+         無對應則 fallback 純文字 badge（向下相容） -->
     <div v-for="(tag, i) in tags" :key="i" class="ddia-meta-item">
-      <span class="ddia-badge accent">{{ tag }}</span>
+      <a v-if="tagAnchors[tag]"
+         :href="withBase(`/glossary/#${tagAnchors[tag]}`)"
+         class="ddia-badge accent ddia-badge-link"
+         :title="`跳到詞彙表查看：${tag}`">
+        {{ tag }}<span class="ddia-badge-help" aria-hidden="true">?</span>
+      </a>
+      <span v-else class="ddia-badge accent">{{ tag }}</span>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { withBase } from 'vitepress'
+
 defineProps<{
   part: string
   readTime: number
@@ -38,11 +48,44 @@ defineProps<{
   /** P1-16：深讀預估時間範圍，例如 "60-90"。設定後 ChapterMeta 顯示「快讀 X 分／深讀 Y-Z 分」 */
   deepReadRange?: string
 }>()
+
+// W46：常見 ChapterMeta tag → glossary anchor 對照表（anchor 須與 docs/glossary/index.md 實際 {#id} 對齊）
+// 加新 tag 時填一行、找不到時自動 fallback 純文字 badge
+const tagAnchors: Record<string, string> = {
+  'SLA': 'sla-slo',
+  'SLO': 'sla-slo',
+  'P99': 'percentile',
+  'Linearizability': 'linearizability',
+  '線性一致': 'linearizability',
+  'Quorum': 'quorum',
+  'Raft': 'raft',
+  '2PC': 'two-phase-commit',
+  'CRDT': 'crdt',
+  'Leader/Follower': 'replication',
+  'CQRS': 'cqrs',
+  'Saga': 'saga',
+  'CAP': 'cap-theorem',
+  'ACID': 'acid'
+}
 </script>
 
 <style scoped>
 .ddia-meta-dot {
   margin: 0 0.18em;
   color: var(--text-tertiary);
+}
+.ddia-badge-link {
+  text-decoration: none;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+}
+.ddia-badge-link:hover {
+  background: var(--brand-tint-soft);
+}
+.ddia-badge-help {
+  font-style: italic;
+  font-weight: 600;
+  opacity: 0.55;
 }
 </style>
