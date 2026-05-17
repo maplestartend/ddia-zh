@@ -43,7 +43,7 @@ jobs:
           restore-keys: vitepress-
 
       - name: Setup Pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6
         with:
           enablement: true   # 第一次部署自動啟用 Pages（雙保險、即使已用 gh API 啟用過也安全）
 
