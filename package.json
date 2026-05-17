@@ -17,7 +17,9 @@
     "lint:spacing": "node scripts/lint-spacing.mjs",
     "lint:dark-patch": "node scripts/lint-dark-patch.mjs",
     "lint:chapter-sequence": "node scripts/lint-chapter-sequence.mjs",
-    "lint:border-density": "node scripts/lint-border-density.mjs"
+    "lint:border-density": "node scripts/lint-border-density.mjs",
+    "lint:taiwan-terms": "node scripts/lint-taiwan-terms.mjs",
+    "lint:tag-anchors": "node scripts/lint-tag-anchors.mjs"
   },
   "keywords": [
     "ddia",

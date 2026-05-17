@@ -125,6 +125,16 @@ VitePress 等套件預設 i18n 對「`lang: zh-TW`」會被 prefix-match `:lang(
 
 未來若發現任何 hover title / aria label / toast 是簡體（VP 升級、新裝 plugin 都可能引入），先到 `node_modules/<套件>/**/*.{css,js,ts}` grep 「`复制`/`确认`/`关闭`/`选择`/`错误`」等簡體字，找到後在我們的 CSS 用 `:lang(zh), :lang(zh-Hant), :lang(zh-TW)` 覆寫 CSS variable，或在 config 對應位置（如 VP `themeConfig.search.options.locales`）顯式設定繁體字串。
 
+#### lint:taiwan-terms 自動偵測（W46 新增）
+
+`npm run lint:taiwan-terms` 掃 `docs/` + `scripts/` 內 `.md/.vue/.ts/.mts/.mjs/.css`、偵測對岸高頻詞（集群/队列/变量/运维 等）與純簡體字混入（设计/实现/数据库/网络/缓存/默认/错误/复制 等）。每處印「位置 + 對岸詞 → 台灣對應」、預設 non-blocking、`--strict` 即 exit 1（接 CI 阻擋）。Wave 46 reviewer agent 在 `docs/part-3/ch12-future.md:215` 抓到「合上」漏改為「闔上」、就是這個 lint 的觸發案例。新增禁詞改 `scripts/lint-taiwan-terms.mjs` 內的 `BANNED` 陣列即可。
+
+**W47 更新**：BANNED 從 28 擴到 **65 詞**（resolution: senior reviewer #5 建議 70-90、但「對象/配置/刷新/菜單」等台灣有合法用法的詞**刻意不入**避免誤殺；歧義詞需 context 白名單機制、暫不實作避免 over-engineering）。`lint-taiwan-terms-allow` 行內 marker 用於 escape（`tokens.css` 對岸 VP override 用此）。
+
+#### lint:tag-anchors（W47 新增）
+
+`npm run lint:tag-anchors` 驗證 `ChapterMeta.vue` 內 `tagAnchors` map 的每個 anchor value 都在 `docs/glossary/index.md` 找得到 `{#xxx}`。預設 non-blocking、`--strict` 即 BLOCK。緣由：W46 把 ChapterMeta tag 變 glossary 連結後、若 glossary 重排或重命名會無聲 404；這個 lint 防回歸。
+
 #### Self-check 指令
 
 新增 / 修改任何中文內容後，在主目錄跑下列 PowerShell self-check（沒輸出就乾淨）：
@@ -301,7 +311,7 @@ npm run type-check             # TypeScript / Vue 型別檢查
 npm run build                  # production SSG build
 npm run screenshot             # Playwright 截圖（dev server 須先開）
 
-# Lint 8 個（其中 base / dark-patch / chapter-sequence 三個 CI BLOCKING）
+# Lint 10 個（其中 base / dark-patch / chapter-sequence 三個 CI BLOCKING）
 npm run lint:glossary          # 詞彙表內文 <G> 標記檢查（non-blocking）
 npm run lint:tldr              # TLDR 用詞檢查（non-blocking）
 npm run lint:base              # hard-coded href 偵測（BLOCKING）
@@ -309,6 +319,9 @@ npm run lint:typography        # raw font-size / letter-spacing（支援 allowli
 npm run lint:spacing           # raw margin / padding
 npm run lint:dark-patch        # alias-redundant .dark 補釘（BLOCKING）
 npm run lint:chapter-sequence  # 章末元件序列驗證（BLOCKING）
+npm run lint:border-density    # 多重 border 反模式偵測（non-blocking）
+npm run lint:taiwan-terms      # 對岸用語 / 簡體字混入偵測（non-blocking、--strict 才 BLOCK；W47 BANNED 65 詞）
+npm run lint:tag-anchors       # ChapterMeta tagAnchors ↔ glossary anchor 對齊（W47 新增、防 glossary 重排無聲 404）
 ```
 
 改 [docs/.vitepress/data/chapters.ts](docs/.vitepress/data/chapters.ts)、composables、theme 元件 之前先跑過一次 type-check + build 確認綠燈再動。
