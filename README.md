@@ -72,6 +72,9 @@ npm run preview
 | `npm run lint:spacing` | 偵測 raw `margin` / `padding`（建議用 var(--space-\*)）|
 | `npm run lint:dark-patch` | 偵測 `.dark .xxx { var(--mark-fg\|rule-active\|cta-bg) }` alias-redundant 補釘（Wave 31a alias 機制守門、**CI BLOCKING**）|
 | `npm run lint:chapter-sequence` | 驗 docs/part-{0,1,2,3}/\*.md 章末元件序列是否在 5 種已知模式（**CI BLOCKING**、Wave 30e regression 防護）|
+| `npm run lint:border-density` | 偵測多重 border 反模式（Wave 44 audit guard、non-blocking）|
+| `npm run lint:taiwan-terms` | 對岸用語 / 簡體字混入偵測（W46 新增、BANNED 65 詞、`--strict` 才 BLOCK）|
+| `npm run lint:tag-anchors` | ChapterMeta tagAnchors ↔ glossary anchor 對齊驗證（W48 新增、防 glossary 重排無聲 404）|
 
 ## 寫作 / 維護快速指引
 
@@ -116,11 +119,11 @@ docs/
 ## 技術棧
 
 - **VitePress 1.6** — 靜態網站生成器（基於 Vite + Vue 3）
-- **TypeScript** — 嚴格模式型別檢查
-- **Material Symbols Rounded** — 圖示系統（透過 ligature）
-- **Mermaid** — 流程圖
+- **TypeScript** — strict + noUnusedLocals + noUncheckedIndexedAccess
+- **自寫視覺化元件** — DecisionTree / SequenceFlow（W38 取代 Mermaid、解 CJK + 624px 容器跑版痼疾；W48 拔除 mermaid plugin 省 3 MB chunks）
+- **章末元件 async load** — Quiz / Dashboard / Part0SelfAssessment 等走 `defineAsyncComponent`（W48、app.js 從 605 KB 降到 146 KB）
 - **Playwright** — 截圖驗收
-- **localStorage** — 進度、測驗紀錄（純前端、無後端）
+- **localStorage** — 進度、測驗紀錄（純前端、無後端、走 `useStorage` 統一介面）
 
 ## 設計慣例（Editorial Manuscript · O'Reilly 紙本書感）
 
@@ -152,8 +155,12 @@ docs/
    - `lint:base` — 防 hard-coded href 在 Pages 404
    - `lint:dark-patch` — Wave 31a alias 機制守門
    - `lint:chapter-sequence` — Wave 30e regression 防護
-5. `GITHUB_PAGES=true npm run build`（觸發 base = `/ddia-zh/`）
-6. 部署到 GitHub Pages
+5. **Non-blocking lints**（W48 新加 2 個 lint summary）：
+   - `lint:tag-anchors` — ChapterMeta tagAnchors 對齊 glossary
+   - `lint:taiwan-terms` — 對岸用語/簡體字偵測
+6. **VitePress cache**（W48）— `actions/cache` 對 `docs/.vitepress/cache + node_modules/.vite` 做 key-based 快取、CI 從 ~90s 降到 ~30s
+7. `GITHUB_PAGES=true npm run build`（觸發 base = `/ddia-zh/`）
+8. 部署到 GitHub Pages
 
 [ci.yml](.github/workflows/ci.yml) 在 PR 觸發時跑相同 lint + type-check + build 驗證（dependabot 依賴升級 PR、未來外部 PR 等）。
 
@@ -171,7 +178,7 @@ docs/
 
 - 進度與測驗紀錄都在 **localStorage**，換瀏覽器 / 清快取會遺失（沒有後端帳號）
 - 全文搜尋是 VitePress 內建 local search，CJK tokenizer 自訂在 [config.mts](docs/.vitepress/config.mts)
-- CI 跑 type-check + 8 個 lint + build；其中 base / dark-patch / chapter-sequence 三個 lint 是 BLOCKING（失敗擋部署）
+- CI 跑 type-check + 11 個 lint + build；其中 base / dark-patch / chapter-sequence 三個 lint 是 BLOCKING（失敗擋部署）；W48 拔除 mermaid plugin 後 build time 從 ~14s 降到 ~6s、dist 從 8.2 MB 降到 5.5 MB
 
 ## License
 

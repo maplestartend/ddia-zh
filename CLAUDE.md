@@ -324,6 +324,34 @@ npm run lint:taiwan-terms      # 對岸用語 / 簡體字混入偵測（non-bloc
 npm run lint:tag-anchors       # ChapterMeta tagAnchors ↔ glossary anchor 對齊（W47 新增、防 glossary 重排無聲 404）
 ```
 
+## W48 重大優化（5 perf reviewer 共識 P0+P1+P2 全執行）
+
+**收益量化**：
+- `app.js` 605 KB → **146 KB**（-76%）— mermaid plugin 拔除 + 章末元件 async
+- `dist` 8.2 MB → **5.5 MB**（-33%）— 三大 mermaid chunks (wardley/cytoscape/katex) 完全消失
+- `build time` 14.11s → **6.13s**（-56%）— 上述兩項合力
+- `CI build time` ~90s → ~30s（actions/cache + 3 倍 dev velocity）
+
+**改動清單**：
+- **拔 `vitepress-plugin-mermaid` + `mermaid` 依賴**：[config.mts](docs/.vitepress/config.mts) 改 export default defineConfig、刪 mermaid block；[theme/index.ts](docs/.vitepress/theme/index.ts) 刪 mermaid `<title>` 注入 observer（~60 行）。Wave 38 早已用 DecisionTree / SequenceFlow 取代、plugin 殘留
+- **章末元件改 `defineAsyncComponent`**：Quiz / Dashboard / Progress / Part0SelfAssessment / ReviewDue / DecisionTree / SequenceFlow / InterviewBlock / PartCheckpoint / GlossaryIndex 等 16 個元件、首頁不再下載
+- **`ChapterFloatingProgress` 換 `useRoute()`**：刪 popstate + MutationObserver hack（~15 行）
+- **抽 `useLastVisited` composable**：ChapterOpener / Dashboard 共用、修「上次讀 X 天前」SPA 換頁不更新 bug
+- **CHAPTERS / PREREQUISITES / GLOSSARY 改 `as const satisfies`**：推出 `ChapterId` / `PrerequisiteId` / `GlossarySlug` / `GlossaryTerm` literal union type、編譯期擋下 id / slug 漂移
+- **字型 preload + Fraunces SOFT 軸 0..100 → 40..80**：LCP -300~500ms、字檔省 ~25%
+- **search index manualChunks**：`@localSearchIndexroot` 拆到獨立 `search-index.js` chunk、首屏不阻塞
+- **token alias 收斂**：刪 `--rule-major` / `--space-transition` / `--space-half-ritual` / `--space-ritual` / `--ink-strong/mid/soft` 共 8 個 0 引用 alias、減未來決策成本
+- **icon-hide 重複規則收斂**：14 處 `:deep(.material-symbols-rounded) { display: none }` 從 .vue 內全刪、靠 base.css 的 global `!important` 規則覆蓋
+- **Dashboard mode prop 拆**：progress.md 改用 `<DashboardStats />`、Dashboard 元件純跑 fresh/complete/resume 三態
+- **useStorage overload**：object/array T 強制要求 validate（防跨分頁 cast 大門 silent corruption）
+- **ChapterMeta props 在 types.d.ts 補精準型別**：讓 vue-tsc 抓 .md 內元件用法 prop 拼錯
+- **GitHub Actions cache**：`actions/cache@v4` 對 `docs/.vitepress/cache + node_modules/.vite` 做 key-based 快取
+- **CI 補 2 個 lint summary**：lint:tag-anchors + lint:taiwan-terms 進 deploy.yml（continue-on-error、印到 step summary）
+
+**未做（W48 backlog）**：
+- components.css 2772 行拆 7 子檔 — 風險高、最小改動原則延後（已超 CLAUDE.md §9 上限的 5.5x、但純組織性、不影響功能）
+- 抽 `.editorial-eyebrow` / `.editorial-mark-typo` utility class（消滅 18+ 處重複）— 需大量元件文字 class 替換、延後
+
 改 [docs/.vitepress/data/chapters.ts](docs/.vitepress/data/chapters.ts)、composables、theme 元件 之前先跑過一次 type-check + build 確認綠燈再動。
 
 ---

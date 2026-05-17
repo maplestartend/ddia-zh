@@ -1,4 +1,5 @@
 import DefaultTheme from 'vitepress/theme'
+import { defineAsyncComponent } from 'vue'
 import type { Theme } from 'vitepress'
 // CSS 拆 4 檔避免單檔失控（原本 custom.css 接近 1000 行）
 // 順序重要：tokens 先（定義 CSS 變數）→ base（消費變數）→ components → layout
@@ -7,35 +8,38 @@ import './styles/base.css'
 import './styles/components.css'
 import './styles/layout.css'
 
+// W48：常駐元件（首頁 / 章首 / 詞彙等多處用）走同步 import
 import Icon from './components/Icon.vue'
 import TLDR from './components/TLDR.vue'
-import Quiz from './components/Quiz.vue'
-import Progress from './components/Progress.vue'
 import ChapterMeta from './components/ChapterMeta.vue'
-import Dashboard from './components/Dashboard.vue'
 import ChapterCard from './components/ChapterCard.vue'
-import NextChapterBridge from './components/NextChapterBridge.vue'
 import GlossaryTerm from './components/GlossaryTerm.vue'
-import GlossaryIndex from './components/GlossaryIndex.vue'
-import GlossaryStarLinks from './components/GlossaryStarLinks.vue'
-import GlossaryBackButton from './components/GlossaryBackButton.vue'
-import DashboardStats from './components/DashboardStats.vue'
-import ChapterFloatingProgress from './components/ChapterFloatingProgress.vue'
 import SectionDivider from './components/SectionDivider.vue'
 import BaseLink from './components/BaseLink.vue'
 import PrereqBox from './components/PrereqBox.vue'
-import ChapterNote from './components/ChapterNote.vue'
 import ChapterOpener from './components/ChapterOpener.vue'
-import CheatSheetExport from './components/CheatSheetExport.vue'
-import Part0SelfAssessment from './components/Part0SelfAssessment.vue'
-import ReviewDue from './components/ReviewDue.vue'
-import InterviewBlock from './components/InterviewBlock.vue'
+import NextChapterBridge from './components/NextChapterBridge.vue'
+import ChapterFloatingProgress from './components/ChapterFloatingProgress.vue'
 import FirstReadShortcut from './components/FirstReadShortcut.vue'
-import PartCheckpoint from './components/PartCheckpoint.vue'
-// Wave 38：DecisionTree / SequenceFlow 取代 mermaid（CJK + 624px 容器跑版痼疾）
-import DecisionTree from './components/DecisionTree.vue'
-import DecisionTreeNode from './components/DecisionTreeNode.vue'
-import SequenceFlow from './components/SequenceFlow.vue'
+
+// W48：章末 / 特殊頁元件走 async import — 首頁不載、章節頁需要才下載 chunk
+// 預估省 app.js 60-100 KB（reviewer #1 建議）
+const Quiz = defineAsyncComponent(() => import('./components/Quiz.vue'))
+const Progress = defineAsyncComponent(() => import('./components/Progress.vue'))
+const Dashboard = defineAsyncComponent(() => import('./components/Dashboard.vue'))
+const DashboardStats = defineAsyncComponent(() => import('./components/DashboardStats.vue'))
+const GlossaryIndex = defineAsyncComponent(() => import('./components/GlossaryIndex.vue'))
+const GlossaryStarLinks = defineAsyncComponent(() => import('./components/GlossaryStarLinks.vue'))
+const GlossaryBackButton = defineAsyncComponent(() => import('./components/GlossaryBackButton.vue'))
+const ChapterNote = defineAsyncComponent(() => import('./components/ChapterNote.vue'))
+const CheatSheetExport = defineAsyncComponent(() => import('./components/CheatSheetExport.vue'))
+const Part0SelfAssessment = defineAsyncComponent(() => import('./components/Part0SelfAssessment.vue'))
+const ReviewDue = defineAsyncComponent(() => import('./components/ReviewDue.vue'))
+const InterviewBlock = defineAsyncComponent(() => import('./components/InterviewBlock.vue'))
+const PartCheckpoint = defineAsyncComponent(() => import('./components/PartCheckpoint.vue'))
+const DecisionTree = defineAsyncComponent(() => import('./components/DecisionTree.vue'))
+const DecisionTreeNode = defineAsyncComponent(() => import('./components/DecisionTreeNode.vue'))
+const SequenceFlow = defineAsyncComponent(() => import('./components/SequenceFlow.vue'))
 
 // Editorial 模式不再載 Material Symbols、不再需要 FOUT 防護 hook
 // 字型載入由 font-display: swap 處理（Fraunces / Noto Serif TC / Noto Sans TC / JetBrains Mono）
@@ -133,87 +137,13 @@ export default {
     app.component('DecisionTreeNode', DecisionTreeNode)
     app.component('SequenceFlow', SequenceFlow)
 
-    // ====================================================================
-    // a11y mermaid <title> 注入（Wave 29d 引入、Wave 30d 大改修效能問題）
-    // ====================================================================
-    // 為什麼要 inject：mermaid plugin render 出來的 <svg> 沒有 <title>，
-    //   screen reader 朗讀只能讀 raw graph data，無語境。
-    //   策略：用「前一個 element 的文字」當 fallback title（最多 80 字）。
-    //
-    // Wave 30d 修法（取代 Wave 29d observe document.body 全 subtree 的效能洩漏）：
-    //   1. observe .vp-doc 而非 document.body：progress bar 寫 width / skip link
-    //      / VP nav state 變動不再觸發 callback
-    //   2. mutations.some 過濾：只有真有 element 加入時才掃描，跳過樣式變更等噪音
-    //   3. route change 時 disconnect + 重綁新的 .vp-doc：VP SPA navigation
-    //      會 unmount/remount .vp-doc，舊 observer 失效需重建
-    //   4. 短裝飾字串（dinkus ◆/·/§/→ / hr / 純符號）不當 title fallback、
-    //      避免 SR 朗讀「◆ ◆ ◆」或「---」
-    // ====================================================================
     if (typeof window === 'undefined') return  // SSG safe（Node build 時 router 為 undefined）
 
-    let mermaidObserver: MutationObserver | null = null
-    // 純裝飾性短字（dinkus / hr / 空白 / 全形破折號 / box-drawing / 省略號）：不可作朗讀 title
-    // Wave 31b 擴充：補 box-drawing `─━│┃` + 全形破折號 + 中文書名 / 引號
-    // Wave 32 擴充：補 unicode 空白 `　` 全形空白、`​` ZWSP、`﻿` BOM
-    //              + 省略號 `…⋯` + 去除原本重複的 `「」`
-    const DECORATIVE_RE = /^[\s　​﻿\-—–◆·§→·•．。、，\.\*…⋯─━│┃「」『』〈〉《》【】]+$/u
-
-    const injectMermaidTitles = () => {
-      const root = document.querySelector('.vp-doc')
-      if (!root) return
-      const svgs = root.querySelectorAll<SVGSVGElement>('svg[id*="mermaid"]')
-      svgs.forEach(svg => {
-        if (svg.querySelector(':scope > title')) return  // already has
-        const parent = svg.closest('p, div')
-        const prev = parent?.previousElementSibling
-        let prevText = (prev?.textContent || '').trim().replace(/\s+/g, ' ').slice(0, 80)
-        if (DECORATIVE_RE.test(prevText) || prevText.length < 2) prevText = ''
-        const titleEl = document.createElementNS('http://www.w3.org/2000/svg', 'title')
-        titleEl.textContent = prevText || 'Mermaid 流程圖'
-        svg.insertBefore(titleEl, svg.firstChild)
-      })
-    }
-
-    const attachObserver = () => {
-      if (mermaidObserver) { mermaidObserver.disconnect(); mermaidObserver = null }
-      const root = document.querySelector('.vp-doc')
-      if (!root) return
-      mermaidObserver = new MutationObserver(mutations => {
-        // 只有 mutation 真有 element 加入時才 inject — 跳過樣式 / 屬性 / scroll 變更等噪音
-        const hasAdditions = mutations.some(m => m.type === 'childList' && m.addedNodes.length > 0)
-        if (!hasAdditions) return
-        requestAnimationFrame(injectMermaidTitles)
-      })
-      mermaidObserver.observe(root, { childList: true, subtree: true })
-      requestAnimationFrame(injectMermaidTitles)
-    }
-
-    // SPA navigation：VP 在 route change 後會 unmount/remount .vp-doc
-    // onAfterRouteChanged 在新 page hydrate 完才觸發，此時可安全 query 新的 .vp-doc
-    //
-    // Wave 31b：加 guard flag 防 HMR / dev hot reload 反覆執行 enhanceApp 時 prevHook chain
-    // 無限延長（每次 reload 都會把舊 onAfterRouteChanged 包進 prevHook、最終 N 次 reload 後一次
-    // route change 會觸發 N 次 attachObserver。雖然每次 attach 都 disconnect 舊的不會 leak observer，
-    // 但 prevHook closure chain 會堆積 memory）。
+    // W48：mermaid <title> 注入器已隨 plugin 拔除（DecisionTree / SequenceFlow 不需要）
     const routerWithGuard = router as unknown as Record<string, unknown>
-    if (router && !routerWithGuard.__ddiaMermaidHooked) {
-      routerWithGuard.__ddiaMermaidHooked = true
-      const prevHook = router.onAfterRouteChanged
-      router.onAfterRouteChanged = (to: string) => {
-        attachObserver()
-        if (typeof prevHook === 'function') prevHook(to)
-      }
-    }
-
-    // 初次也要綁（首次載入時 router 尚未觸發 onAfterRouteChanged）
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', attachObserver)
-    } else {
-      attachObserver()
-    }
 
     // ====================================================================
-    // P2-5 Wave 42：drop cap 中英混排首字防護
+    // drop cap 中英混排首字防護（Wave 42）
     // ====================================================================
     // ::first-letter 在「The」這種英文起頭段會把整個 leading word 放大、視覺破碎。
     // 策略：page hydrate 後檢查 .vp-doc 內第一個 <p>（緊接 h1 或 div>h1）的第一個字、

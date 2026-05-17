@@ -28,6 +28,19 @@ const sharedValidators = new Map<string, (raw: unknown) => boolean>()
 // 同步記 fallback：跨分頁刪除（newValue === null）時用來重置 ref。
 const sharedFallbacks = new Map<string, unknown>()
 
+// W48 overload：object / array T 強制要求 validate
+// 防止跨分頁 `e.newValue` JSON.parse 後直接 cast 成 T 而沒驗 schema（silent corruption 大門）
+// primitive T（string/number/boolean/null）validate 仍可選 — 它們 parse 完直接合法
+export function useStorage<T extends object>(
+  key: string,
+  fallback: T,
+  options: { validate: (raw: unknown) => raw is T }
+): Ref<T>
+export function useStorage<T>(
+  key: string,
+  fallback: T,
+  options?: { validate?: (raw: unknown) => raw is T }
+): Ref<T>
 export function useStorage<T>(
   key: string,
   fallback: T,

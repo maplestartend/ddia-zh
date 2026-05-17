@@ -85,9 +85,6 @@ function renderInline(raw: string): string {
   color: var(--text-tertiary);
   margin-bottom: var(--space-2-5);
 }
-.ddia-prereq-eyebrow :deep(.material-symbols-rounded) {
-  display: none;
-}
 .ddia-prereq-list {
   margin: 0;
   display: grid;
@@ -108,9 +105,6 @@ function renderInline(raw: string): string {
   font-weight: 500;
   white-space: nowrap;
   letter-spacing: var(--ls-loose);
-}
-.ddia-prereq-list dt :deep(.material-symbols-rounded) {
-  display: none;
 }
 .ddia-prereq-list dd {
   margin: 0;

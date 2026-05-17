@@ -106,11 +106,8 @@
      原名 --space-chapter-break 改為 --space-h2-break 避免「chapter」隱喻 h1 級的混淆 */
   --space-h2-break: 48px;  /* h2 margin-top 專用、書本節級 chunk 韻律 */
 
-  /* Wave 32 語意 alias — 給「我要章末儀式間距」這種設計直覺的呼叫名、底層數字 token 不動 */
-  --space-transition:  var(--space-5);    /* 過場：callout / blockquote / 區塊分隔 */
-  --space-half-ritual: var(--space-5-5);  /* 半儀式：章末→Bridge 印記 */
-  --space-ritual:      var(--space-6);    /* 儀式：h2 大段 / Part / 章節級 */
-
+  /* W48：原 --space-transition / --space-half-ritual / --space-ritual 與下方 --gap-* 雙軌語意重疊
+     全 repo grep 0 引用、直接刪減決策成本。新元件用 --gap-* 系列即可。 */
   --gap-paragraph: var(--space-3);   /* <p> margin */
   --gap-block:     var(--space-4);   /* table / callout / 普通元件 */
   --gap-section:   var(--space-5);   /* h3 / section break / hr / SectionDivider */
@@ -176,11 +173,8 @@
      避免 fixed reading-progress bar / nav 邊緣裁切（box-shadow 在此模式被強制 none） */
   --focus-ring-offset-forced: 0;
 
-  /* ---------- Ink scale（Wave 3：取代「brand-500 兼任 ink 重點」的散落用法） ---------- */
-  --ink-strong: var(--text-primary);   /* 印刷符號 § · ◆ 用這個、不用 brand-500 */
-  --ink-mid:    var(--text-secondary);
-  --ink-soft:   var(--text-tertiary);
-  /* Wave 30c 刪除 --ink-mark：與 --mark-fg 同值同語意、0 處實際使用、token 重複 */
+  /* W48：原 --ink-strong/mid/soft 純為 --text-primary/secondary/tertiary 的轉手
+     全 repo grep 0 引用、印刷符號 § · ◆ 改直接用 --text-primary（語意更清楚） */
 
   /* ---------- Wave 29c：brand-500 semantic alias（語意化、批次收斂用）
      之前 brand-500 在 components.css 散落 40+ 處、用途混雜（CTA / mark / hover / active）。
@@ -189,12 +183,8 @@
   --rule-active: var(--brand-500);  /* hover indicator / sidebar active / ChapterCard top 印記 */
   --cta-bg:      var(--brand-500);  /* CTA filled button background / Quiz score */
 
-  /* Wave 44 border audit：3 級 hairline weight alias（解決「單一強度 hairline 氾濫」問題）
-     新元件依場景選用、避免無語意全包邊：
-     - major:   章/Part 邊界、章首大儀式封頂（罕用、視覺最強）
-     - section: 章末序列、首頁段落、整體 framing 主用線（最常用）
-     - subtle:  卡片網格內部、表格 row（明顯弱於 section） */
-  --rule-major:   var(--rule-hairline);
+  /* W48：原 --rule-major 與 --rule-section 同值同語意、--rule-section 仍保留為「framing 主用線」
+     語意名；--rule-subtle = --rule-soft 已是兩個值的橋。--rule-major 刪除（0 引用）。 */
   --rule-section: var(--rule-hairline);
   --rule-subtle:  var(--rule-soft);
 }

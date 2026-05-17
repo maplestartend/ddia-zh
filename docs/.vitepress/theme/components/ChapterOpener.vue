@@ -42,11 +42,12 @@
 import { computed, onMounted } from 'vue'
 import { CHAPTERS, PREREQUISITES, PARTS, TOTAL_CHAPTERS, type Chapter } from '../../data/chapters'
 import { useProgress } from '../../composables/useProgress'
+import { useLastVisited } from '../../composables/useLastVisited'
 import ChapterFloatingProgress from './ChapterFloatingProgress.vue'
 
-// F3 lastVisited 紀錄：本元件在每章首掛載、記錄使用者最近進的章節，給 Dashboard
-// 用「繼續 · ChXX」顯示。比起原本「找下一個未讀章節」更誠實——使用者可能讀到中段就關掉。
-const LAST_VISITED_KEY = 'ddia-last-visited'
+// F3 lastVisited：每章首掛載寫入，給 Dashboard「繼續 · ChXX」用。
+// W48：走 useLastVisited composable（走 useStorage、跨元件 reactive）
+const lastVisited = useLastVisited()
 
 const props = defineProps<{
   chapterId?: string           // 自動模式：'ch05' / 'p0-os' 對映 chapters.ts
@@ -97,12 +98,7 @@ const progressBar = computed(() => {
 onMounted(() => {
   // 只在 chapter-id 自動模式記錄；手動模式（Part 概覽等）不算章節閱讀
   if (!props.chapterId) return
-  try {
-    localStorage.setItem(LAST_VISITED_KEY, JSON.stringify({
-      chapterId: props.chapterId,
-      at: Date.now()
-    }))
-  } catch { /* quota / 私密模式 ignore */ }
+  lastVisited.value = { chapterId: props.chapterId, at: Date.now() }
 })
 </script>
 

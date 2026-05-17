@@ -117,9 +117,6 @@ const checkedCount = computed(() => items.filter(i => checked.value[i.id]).lengt
   color: var(--mark-fg);
   margin-bottom: var(--space-2-5);
 }
-.ddia-self-assess-header :deep(.material-symbols-rounded) {
-  display: none;
-}
 .ddia-self-assess-header::before {
   content: "§";
   font-family: var(--font-display);
@@ -268,9 +265,6 @@ const checkedCount = computed(() => items.filter(i => checked.value[i.id]).lengt
   font-size: var(--type-body-mid);
   line-height: 1.75;
 }
-.ddia-self-assess-pass :deep(.material-symbols-rounded) {
-  display: none;
-}
 .ddia-self-assess-pass::before {
   content: "·";
   font-size: var(--type-h3);
@@ -301,9 +295,6 @@ const checkedCount = computed(() => items.filter(i => checked.value[i.id]).lengt
   color: var(--accent-500);
   margin-bottom: var(--space-2-5);
   letter-spacing: var(--ls-loose);
-}
-.ddia-self-assess-todo-head :deep(.material-symbols-rounded) {
-  display: none;
 }
 :global(.dark) .ddia-self-assess-todo-head {
   color: var(--accent-200);

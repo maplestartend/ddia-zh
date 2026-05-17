@@ -85,9 +85,6 @@ function onForgotten(chapterId: string) {
   color: var(--text-tertiary);
   margin-bottom: var(--space-3);
 }
-.ddia-review-eyebrow :deep(.material-symbols-rounded) {
-  display: none;
-}
 .ddia-review-empty {
   display: flex;
   align-items: baseline;
@@ -97,9 +94,6 @@ function onForgotten(chapterId: string) {
   font-family: var(--font-display);
   font-variation-settings: var(--fvar-italic-note);
   font-size: var(--type-body-tight);
-}
-.ddia-review-empty :deep(.material-symbols-rounded) {
-  display: none;
 }
 .ddia-review-empty::before {
   content: "·";
@@ -174,9 +168,6 @@ function onForgotten(chapterId: string) {
   color: var(--text-primary);
   cursor: pointer;
   transition: background 0.15s, color 0.15s;
-}
-.ddia-review-btn :deep(.material-symbols-rounded) {
-  display: none;
 }
 .ddia-review-btn:hover {
   background: var(--text-primary);

@@ -32,6 +32,16 @@ jobs:
           node-version: 22
           cache: npm
 
+      # W48：cache VitePress build artifacts — CI 從 ~90s 降到 ~30s（dev velocity 投資）
+      - name: Cache VitePress build
+        uses: actions/cache@v4
+        with:
+          path: |
+            docs/.vitepress/cache
+            node_modules/.vite
+          key: vitepress-${{ hashFiles('**/package-lock.json', 'docs/**/*.md', 'docs/.vitepress/**') }}
+          restore-keys: vitepress-
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
         with:
@@ -78,6 +88,22 @@ jobs:
           echo "## Lint: chapter sequence" >> "$GITHUB_STEP_SUMMARY"
           echo '```' >> "$GITHUB_STEP_SUMMARY"
           node scripts/lint-chapter-sequence.mjs --strict 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Lint tag-anchors (W48 —防 glossary 重排無聲 404)
+        continue-on-error: true
+        run: |
+          echo "## Lint: tag-anchors" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          npm run lint:tag-anchors 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Lint taiwan-terms (W46 — 對岸用語/簡體字)
+        continue-on-error: true
+        run: |
+          echo "## Lint: taiwan-terms" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          npm run lint:taiwan-terms 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
           echo '```' >> "$GITHUB_STEP_SUMMARY"
 
       - name: Build VitePress

@@ -18,27 +18,23 @@
 </template>
 
 <script setup lang="ts">
-// W43-6 Wave 43：章節頁專用 floating 進度 chip
-// - 自動依當前 URL 偵測是否在主課程章節頁（ch01-ch12）
-// - 捲動超過 280px（章首 ChapterOpener 已捲離畫面）才顯示
-// - 點擊跳「我的進度」頁
-// - 整套用 Teleport 到 body、避免被章節頁的 max-width container 截斷
+// W43：章節頁專用 floating 進度 chip — Teleport 到 body 避免被 max-width 截斷
+// W48：改用 VitePress useRoute() 取代 popstate + MutationObserver hack（reviewer #2 Vue Architect）
 import { computed, ref, onMounted, onUnmounted } from 'vue'
-import { withBase } from 'vitepress'
+import { useRoute, withBase } from 'vitepress'
 import { CHAPTERS, TOTAL_CHAPTERS } from '../../data/chapters'
 import { useProgress } from '../../composables/useProgress'
 
 const { doneCount } = useProgress()
+const route = useRoute()
 const mounted = ref(false)
 const show = ref(false)
-const currentPath = ref<string>('')
 
 const chapter = computed(() => {
   // 只對主課程 ch01-ch12 顯示；Part 0 / 工具頁不顯示
-  const m = currentPath.value.match(/\/part-[123]\/(ch\d{2})-/)
+  const m = route.path.match(/\/part-[123]\/(ch\d{2})-/)
   if (!m) return null
-  const id = m[1]
-  const idx = CHAPTERS.findIndex(c => c.id === id)
+  const idx = CHAPTERS.findIndex(c => c.id === m[1])
   if (idx < 0) return null
   return {
     idx: idx + 1,
@@ -51,29 +47,14 @@ function updateOnScroll() {
   show.value = window.scrollY > 280
 }
 
-function updatePath() {
-  currentPath.value = window.location.pathname
-}
-
 onMounted(() => {
   mounted.value = true
-  updatePath()
   updateOnScroll()
   window.addEventListener('scroll', updateOnScroll, { passive: true })
-  // SPA route change → 重抓 path（VitePress 不會重 mount 全頁、但 URL 變了）
-  window.addEventListener('popstate', updatePath)
-  // 用 MutationObserver 兜底（title 變化代表頁面切了）
-  if (typeof MutationObserver !== 'undefined') {
-    const ob = new MutationObserver(updatePath)
-    const titleEl = document.querySelector('title')
-    if (titleEl) ob.observe(titleEl, { childList: true })
-    onUnmounted(() => ob.disconnect())
-  }
 })
 
 onUnmounted(() => {
   window.removeEventListener('scroll', updateOnScroll)
-  window.removeEventListener('popstate', updatePath)
 })
 </script>
 

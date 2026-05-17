@@ -93,9 +93,6 @@ watch(content, () => {
   list-style: none;
   letter-spacing: var(--ls-tight);
 }
-.ddia-note-summary :deep(.material-symbols-rounded) {
-  display: none;
-}
 .ddia-note-summary::before {
   content: "§";
   font-family: var(--font-display);

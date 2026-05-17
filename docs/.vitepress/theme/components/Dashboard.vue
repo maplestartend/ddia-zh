@@ -1,12 +1,11 @@
 <template>
   <div>
-    <!-- mode="stats"（progress.md 用）：總是顯示 4 stat cards + 錯題本，跳過 fresh/complete/resume switching。
-         專屬給「我的學習進度」頁、那邊讀者就是來看數字的。 -->
-    <DashboardStats v-if="mode === 'stats'" />
+    <!-- W48：mode='stats' prop 已刪 — progress.md 改直接用 <DashboardStats />
+         Dashboard 現在純跑 isFresh / isComplete / resumeChapter 三態 switching -->
 
     <!-- 全新訪客：顯示書頁暖身段落（CTA 已在 hero 顯示、此處不再重複）
          W43-5 Wave 43：加 3 步「怎麼開始」mini guide、給「第一次來」讀者明確路徑 -->
-    <div v-else-if="isFresh" class="ddia-dashboard-welcome">
+    <div v-if="isFresh" class="ddia-dashboard-welcome">
       <div class="ddia-dashboard-welcome-eyebrow">扉頁 · 從這裡開始</div>
       <p class="ddia-dashboard-welcome-text">
         你還沒讀過任何章節。<br>
@@ -54,18 +53,14 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed } from 'vue'
 import { withBase } from 'vitepress'
 import DashboardStats from './DashboardStats.vue'
 import { useProgress } from '../../composables/useProgress'
+import { useLastVisited } from '../../composables/useLastVisited'
 import { CHAPTERS, PREREQUISITES, TOTAL_CHAPTERS } from '../../data/chapters'
 
-const props = withDefaults(defineProps<{
-  // mode='auto'（home 預設）：依 isFresh / isComplete / resumeChapter 決定畫面
-  // mode='stats'（progress.md 用）：總是顯示 4 stat cards + 錯題本
-  mode?: 'auto' | 'stats'
-}>(), { mode: 'auto' })
-
+// W48：mode prop 刪除 — progress.md 直接用 <DashboardStats />，Dashboard 純跑三態
 const { doneCount, quizCount, isDone } = useProgress()
 const totalChapters = TOTAL_CHAPTERS
 
@@ -86,19 +81,9 @@ const lastVisitedAgo = computed<string | null>(() => {
 const isFresh = computed(() => doneCount.value === 0 && quizCount.value === 0)
 const isComplete = computed(() => doneCount.value >= totalChapters)
 
-// F3：讀 ChapterOpener 寫入的 ddia-last-visited、用「繼續上次讀的章」優先於「下一個未讀」
-interface LastVisited { chapterId: string; at: number }
-const lastVisited = ref<LastVisited | null>(null)
-onMounted(() => {
-  try {
-    const raw = localStorage.getItem('ddia-last-visited')
-    if (!raw) return
-    const parsed = JSON.parse(raw)
-    if (parsed && typeof parsed.chapterId === 'string') {
-      lastVisited.value = parsed
-    }
-  } catch { /* ignore */ }
-})
+// F3：讀 ChapterOpener 寫入的 lastVisited、用「繼續上次讀的章」優先於「下一個未讀」
+// W48：走 useLastVisited composable（reactive、修 SPA 換章後 Dashboard 不更新的 bug）
+const lastVisited = useLastVisited()
 
 const allChaptersForResume = computed(() => [...CHAPTERS, ...PREREQUISITES])
 const resumeChapter = computed(() => {

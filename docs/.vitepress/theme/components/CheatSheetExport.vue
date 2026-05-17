@@ -242,9 +242,6 @@ function resetAll() {
   color: var(--text-tertiary);
   margin-bottom: var(--space-2-5);
 }
-.ddia-export-eyebrow :deep(.material-symbols-rounded) {
-  display: none;
-}
 .ddia-export-text {
   margin: 0 0 var(--space-3-5);
   font-family: var(--font-display);

@@ -18,7 +18,7 @@ export interface Chapter {
   readonly teaser?: string
 }
 
-export const CHAPTERS: readonly Chapter[] = [
+export const CHAPTERS = [
   // Part I
   { id: 'ch01', num: 'CH 01', part: 1,
     title: '可靠、可擴展、可維護的應用', shortTitle: 'Ch1 可靠、可擴展、可維護',
@@ -107,14 +107,17 @@ export const CHAPTERS: readonly Chapter[] = [
     link: '/part-3/ch12-future', readTime: 40,
     epigraph: '資料系統的未來不在更快的硬體、在更誠實的承諾。',
     epigraphSource: '本站章首引' }
-] as const
+] as const satisfies readonly Chapter[]
+
+// W48：從 as const 推導 literal union — TypeScript 編譯期擋下 chapter id 漂移
+export type ChapterId = typeof CHAPTERS[number]['id']
 
 export const TOTAL_CHAPTERS = CHAPTERS.length
 
 // Part 0 前置知識：選讀章節，不計入 12 章主進度。
 // 為什麼獨立成另一個陣列：CHAPTERS 是進度系統的 SSOT（Dashboard / TOTAL_CHAPTERS / quizIndex），
 // 把前置知識混進去會讓「整體進度」失真——這是補強而非主課程。
-export const PREREQUISITES: readonly Chapter[] = [
+export const PREREQUISITES = [
   { id: 'p0-basics', num: '0.0', part: 0,
     title: '三分鐘看懂後端世界', shortTitle: '0.0 三分鐘看懂後端',
     summary: '給沒寫過後端的人：一張全景圖 + 10 個最基本的詞',
@@ -147,7 +150,9 @@ export const PREREQUISITES: readonly Chapter[] = [
     title: '並行控制直覺', shortTitle: '0.7 並行控制直覺',
     summary: 'Race condition、lock、原子性、隔離級別 —— Ch7 / Ch9 銜接點',
     link: '/part-0/concurrency', readTime: 20 }
-] as const
+] as const satisfies readonly Chapter[]
+
+export type PrerequisiteId = typeof PREREQUISITES[number]['id']
 
 export const PARTS = {
   0: { title: 'Part 0 · 前置知識', icon: 'foundation',
@@ -158,7 +163,7 @@ export const PARTS = {
        desc: '跨機器的資料分布：複製、分區、交易、共識——分散式系統的核心難題' },
   3: { title: 'Part III · 衍生資料', icon: 'waves',
        desc: '批次與串流處理：從原始資料導出新資料的兩種典範' }
-} as const
+} as const satisfies Record<0 | 1 | 2 | 3, { title: string; icon: string; desc: string }>
 
 export function chaptersByPart(part: 0 | 1 | 2 | 3): readonly Chapter[] {
   if (part === 0) return PREREQUISITES

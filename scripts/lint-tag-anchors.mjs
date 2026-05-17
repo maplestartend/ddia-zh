@@ -23,10 +23,15 @@ const glossSrc = await readFile(GLOSSARY, 'utf8')
 // 抓 tagAnchors map 的 value（不關心 key、key 是中英 tag 名）
 //   形如 `'SLA': 'sla-slo',`
 const tagAnchorRe = /'[^']+'\s*:\s*'([^']+)'/g
-const mapStart = compSrc.indexOf('const tagAnchors')
+// W48：ChapterMeta 變數名從 tagAnchors 改 TAG_ANCHORS（as const satisfies）；兩種都接
+const mapStart = (() => {
+  const a = compSrc.indexOf('const TAG_ANCHORS')
+  if (a >= 0) return a
+  return compSrc.indexOf('const tagAnchors')
+})()
 const mapEnd = compSrc.indexOf('}', mapStart)
 if (mapStart < 0 || mapEnd < 0) {
-  console.error('✗ lint:tag-anchors — 找不到 ChapterMeta.vue 的 tagAnchors 宣告')
+  console.error('✗ lint:tag-anchors — 找不到 ChapterMeta.vue 的 TAG_ANCHORS / tagAnchors 宣告')
   process.exit(1)
 }
 const mapBlock = compSrc.slice(mapStart, mapEnd)

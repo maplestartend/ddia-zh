@@ -133,10 +133,6 @@ onMounted(async () => {
   color: var(--text-tertiary);
   margin-bottom: var(--space-3);
 }
-.ddia-chapter-loop-eyebrow :deep(.material-symbols-rounded) {
-  display: none;
-}
-
 /* 通關 pill：附在 eyebrow 旁、輕量無框、italic + small caps + 髮絲線分隔的 dinkus mark */
 .ddia-pass-pill {
   display: inline-flex;
@@ -157,9 +153,6 @@ onMounted(async () => {
 .ddia-pass-pill.is-passed {
   color: var(--mark-fg);
   border-left-color: var(--mark-fg);
-}
-.ddia-pass-pill :deep(.material-symbols-rounded) {
-  display: none;
 }
 .ddia-pass-pill::before {
   content: "·";
@@ -198,9 +191,6 @@ onMounted(async () => {
   text-align: left;
   cursor: pointer;
   transition: background 0.15s, color 0.15s;
-}
-.ddia-loop-btn :deep(.material-symbols-rounded) {
-  display: none;
 }
 .ddia-loop-btn:hover {
   background: var(--bg-surface);

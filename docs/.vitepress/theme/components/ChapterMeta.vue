@@ -49,9 +49,10 @@ defineProps<{
   deepReadRange?: string
 }>()
 
-// W46：常見 ChapterMeta tag → glossary anchor 對照表（anchor 須與 docs/glossary/index.md 實際 {#id} 對齊）
-// 加新 tag 時填一行、找不到時自動 fallback 純文字 badge
-const tagAnchors: Record<string, string> = {
+// W46：tag → glossary anchor 對照（對齊 docs/glossary/index.md {#id}）
+// W48：as const 給編譯期 key/value literal、anchor 正確性由 lint:tag-anchors guard
+// （glossary.ts 是 hover SSOT、glossary/index.md 是 anchor SSOT、兩者不完全一致）
+const TAG_ANCHORS = {
   'SLA': 'sla-slo',
   'SLO': 'sla-slo',
   'P99': 'percentile',
@@ -66,7 +67,9 @@ const tagAnchors: Record<string, string> = {
   'Saga': 'saga',
   'CAP': 'cap-theorem',
   'ACID': 'acid'
-}
+} as const
+
+const tagAnchors: Record<string, string | undefined> = TAG_ANCHORS
 </script>
 
 <style scoped>

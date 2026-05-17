@@ -1,5 +1,4 @@
 import { defineConfig } from 'vitepress'
-import { withMermaid } from 'vitepress-plugin-mermaid'
 import markdownItAttrs from 'markdown-it-attrs'
 import { chaptersByPart, PARTS, type Chapter } from './data/chapters'
 
@@ -33,7 +32,7 @@ function fullSidebar(activePart: 0 | 1 | 2 | 3) {
   return ([0, 1, 2, 3] as const).map(p => partGroup(p, { collapsed: p !== activePart }))
 }
 
-export default withMermaid(defineConfig({
+export default defineConfig({
   title: 'DDIA 中文學習',
   description: '《Designing Data-Intensive Applications》個人非官方學習筆記 · 繁體中文',
   lang: 'zh-TW',
@@ -51,8 +50,10 @@ export default withMermaid(defineConfig({
     //   Display（標題 / hero / 章節編號）：Fraunces + Noto Serif TC（單一 weight 600）
     //   Body（內文）：Noto Sans TC weight 400 / 500（700 由瀏覽器合成 — 省 ~600KB CJK）
     //   Mono（數字 / 程式碼）：JetBrains Mono weight 400 / 500
-    // Fraunces 軸：opsz 9-144、wght 400-700、SOFT 0-100
-    ['link', { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,400..700,0..100&family=Noto+Serif+TC:wght@600&family=Noto+Sans+TC:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap' }],
+    // Fraunces 軸：opsz 9-144、wght 400-700、SOFT 40-80（W48 收斂、實際只用三點、字檔省 ~25%）
+    // preload hero 用字（Fraunces 顯示字、Noto Sans TC 內文）：縮 FOUT 從 ~1.8s 到 ~700ms
+    ['link', { rel: 'preload', as: 'style', href: 'https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@48..144,500..700&family=Noto+Sans+TC:wght@400;500&display=swap' }],
+    ['link', { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,400..700,40..80&family=Noto+Serif+TC:wght@600&family=Noto+Sans+TC:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap' }],
     ['meta', { name: 'theme-color', content: '#8C3A2A' }]
   ],
 
@@ -146,58 +147,19 @@ export default withMermaid(defineConfig({
     theme: { light: 'github-light', dark: 'vitesse-dark' },
     config(md) {
       // 讓 markdown 標題能加 class，例如：## 後端工程師 {.role-h2-backend}
-      // 配合 CSS ::before 注入 Material Symbols icon，保持 outline 文字乾淨
       md.use(markdownItAttrs)
     }
   },
 
-  mermaid: {
-    theme: 'base',
-    themeVariables: {
-      // Light：mahogany clay + 米黃紙
-      primaryColor: '#FDF9F1',
-      primaryTextColor: '#1C1A17',
-      primaryBorderColor: '#8C3A2A',
-      lineColor: '#4A4640',
-      secondaryColor: '#F4EFE6',
-      secondaryTextColor: '#1C1A17',
-      secondaryBorderColor: '#B5AC97',
-      tertiaryColor: '#FBEFE3',
-      tertiaryTextColor: '#1C1A17',
-      tertiaryBorderColor: '#A24612',
-      background: '#F4EFE6',
-      mainBkg: '#FDF9F1',
-      actorBkg: '#FDF9F1',
-      actorBorder: '#8C3A2A',
-      actorTextColor: '#1C1A17',
-      noteBkgColor: '#FBEFE3',
-      noteTextColor: '#1C1A17',
-      noteBorderColor: '#A24612',
-      fontFamily: '"Fraunces", "Noto Serif TC", Georgia, serif',
-      fontSize: '15px'   // 從 14px 升 15px、Fraunces 在小尺寸辨識度較差
-    },
-    // 強制 SVG 不要等比塞進容器（讓字維持原生大小、容器走 overflow-x: auto）
-    // 配合 layout.css 的 mermaid 容器規則
-    flowchart: {
-      useMaxWidth: false,
-      htmlLabels: true,
-      padding: 12,        // 預設 8 太緊、多行 label 第二/三行會被裁；12 給 Fraunces descender 餘裕
-      nodeSpacing: 50,
-      rankSpacing: 60
-    },
-    sequence: {
-      useMaxWidth: false,
-      actorMargin: 50,
-      boxMargin: 10,
-      messageMargin: 35,
-      noteMargin: 10
-    },
-    state: {
-      useMaxWidth: false,
-      padding: 16        // Raft state diagram transition label 會打架、給更多餘裕
+  vite: {
+    build: {
+      // search index ~680 KB 拆獨立 chunk；其餘大於 700 KB 才警告
+      chunkSizeWarningLimit: 700,
+      rollupOptions: {
+        output: {
+          manualChunks: (id) => id.includes('localSearchIndex') ? 'search-index' : undefined
+        }
+      }
     }
-    // 註：vitepress-plugin-mermaid 不支援 darkThemeVariables；
-    // 暗色模式的 mermaid 圖會用 light theme variables、但 components.css 用 SVG override 補了暗色 palette
-    // （含 foreignObject HTML 內容的 color 覆寫——sequenceDiagram 的 actor 名字與 flowchart node label）
   }
-}))
+})

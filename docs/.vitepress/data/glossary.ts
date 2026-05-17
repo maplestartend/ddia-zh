@@ -17,7 +17,7 @@ export interface GlossaryEntry {
   readonly aliases?: readonly string[]  // 別名，例如 'p99' 也應指向 percentile
 }
 
-export const GLOSSARY: readonly GlossaryEntry[] = [
+export const GLOSSARY = [
   // ── 衡量指標素養（Part 0.2 重點，Ch1 直接用）──
   { term: 'throughput', slug: 'throughput', chinese: '吞吐量', english: 'Throughput',
     shortDef: '系統每秒能處理的請求或事件數量，單位常見 req/s、QPS、events/s。與 latency 是不同維度的指標。',
@@ -247,13 +247,19 @@ export const GLOSSARY: readonly GlossaryEntry[] = [
     shortDef: 'O(1) 平均存取的 KV 結構。記憶體內 KV store（Redis、Memcached）核心；磁碟上的 hash index（Bitcask）。' },
   { term: 'big-o', slug: 'big-o', chinese: '大 O 記號', english: 'Big-O Notation',
     shortDef: '描述演算法時間 / 空間複雜度的上界。O(1) 常數、O(log n) 二分查找、O(n log n) 排序、O(n²) 巢狀循環。' }
-] as const
+] as const satisfies readonly GlossaryEntry[]
+
+// W48：literal union — TypeScript 編譯期擋下 glossary slug / term 漂移
+export type GlossarySlug = typeof GLOSSARY[number]['slug']
+export type GlossaryTerm = typeof GLOSSARY[number]['term']
 
 // 為了 O(1) 查詢，建立 term → entry 的對照表
+// W48：satisfies 後 inferred type 是 union、aliases 在部分 entry 不存在；
+// 用 'aliases' in entry narrow 取代 optional chaining
 const GLOSSARY_INDEX = new Map<string, GlossaryEntry>()
 for (const entry of GLOSSARY) {
   GLOSSARY_INDEX.set(entry.term.toLowerCase(), entry)
-  if (entry.aliases) {
+  if ('aliases' in entry) {
     for (const alias of entry.aliases) {
       GLOSSARY_INDEX.set(alias.toLowerCase(), entry)
     }

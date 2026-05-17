@@ -4,7 +4,7 @@ title: 我的學習進度
 
 # 我的學習進度
 
-<Dashboard mode="stats" />
+<DashboardStats />
 
 ## 該複習的章節
 

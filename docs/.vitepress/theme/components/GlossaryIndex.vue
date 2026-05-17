@@ -100,9 +100,6 @@ function scrollToLetter(letter: string, e: MouseEvent) {
   letter-spacing: var(--ls-wide);
   text-transform: uppercase;
 }
-.ddia-glossary-index-label :deep(.material-symbols-rounded) {
-  display: none;
-}
 
 .ddia-glossary-index-link {
   display: inline-flex;
