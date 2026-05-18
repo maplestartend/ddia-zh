@@ -147,7 +147,9 @@ onUnmounted(() => {
   transform: translateY(6px);
 }
 
-@media (max-width: 1024px) {
+/* W52：原 max-width: 1024 把 1024 寬度也隱藏（CLAUDE.md 寫 ≥1024 才顯示、實際是 ≤1024 全藏含 1024）
+   改 max-width: 1023 — 1024 桌面寬度恰好顯示、≤1023 平板手機隱藏 */
+@media (max-width: 1023px) {
   .ddia-floating-progress { display: none; }
 }
 </style>

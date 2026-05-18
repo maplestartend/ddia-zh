@@ -26,6 +26,9 @@
   color: var(--text-primary) !important;
   position: relative;
   height: 100%;
+  /* W52：明確 cursor pointer（reviewer 標「靜態看起來像不可點」WCAG 2.5.8 affordance）
+     Visual 守則：**不加 lift shadow / 不換 brand color 標題**、只用 cursor + 預示 ::before opacity */
+  cursor: pointer;
 }
 
 .ddia-chapter-card:hover {
@@ -42,7 +45,9 @@
 }
 
 /* Editorial hover 標示：頂部出現 3px brand 印記（像 paperback chapter heading 標籤）
-   F4 改動：原本印記在左、視覺往左拉但讀者要往右進內文；改 top 後更像書本章節分隔 */
+   F4 改動：原本印記在左、視覺往左拉但讀者要往右進內文；改 top 後更像書本章節分隔
+   W52：opacity baseline 0 → 0.25 預示可點性（reviewer #5 指卡「看起來不像 link」、
+        Visual 守「不要 lift shadow」） — 給「總是有一點輕印記」+ hover 加深 */
 .ddia-chapter-card::before {
   content: "";
   position: absolute;
@@ -51,7 +56,7 @@
   top: 0;
   height: 3px;
   background: var(--rule-active);  /* Wave 30c：top 印記是 hover indicator、走 rule-active */
-  opacity: 0;
+  opacity: 0.25;
   transition: opacity 0.18s;
 }
 .ddia-chapter-card:hover::before,
@@ -66,7 +71,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: var(--space-1-5);
+  /* W52：6→10px (Visual #3 觀察 CH 編號 eyebrow 與標題距離過緊) */
+  margin-bottom: var(--space-2);
   padding-bottom: 0;
   border-bottom: 0;
 }

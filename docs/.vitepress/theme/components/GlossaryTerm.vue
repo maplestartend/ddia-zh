@@ -151,12 +151,13 @@ onUnmounted(() => {
 
 <style scoped>
 /* Editorial 詞彙連結：dotted underline + tooltip 書頁譯註樣式
-   P1-18：tooltip 改 teleport 到 body，anchor 不再需要 position: relative */
+   P1-18：tooltip 改 teleport 到 body，anchor 不再需要 position: relative
+   W52：dotted 從 1px 加到 2px（Reviewer #4 WCAG 1.4.1「不能單靠顏色區分」） — 守 Visual #3 反對「換深色」、改加寬而非換色 */
 .ddia-g {
   display: inline;
   color: inherit;
   text-decoration: none;
-  border-bottom: 1px dotted var(--accent-500);
+  border-bottom: 2px dotted var(--accent-500);
   cursor: help;
   padding-bottom: 1px;
   transition: background-color 0.15s ease, color 0.15s ease;

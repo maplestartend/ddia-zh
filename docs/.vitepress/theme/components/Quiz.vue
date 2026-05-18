@@ -89,7 +89,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, nextTick, onMounted } from 'vue'
 import Icon from './Icon.vue'
 import { useProgress } from '../../composables/useProgress'
 import { useReview } from '../../composables/useReview'
@@ -187,6 +187,16 @@ function submit() {
   if ((updated?.attemptCount ?? 1) === 1 && score / total < 0.8) {
     seedReview(props.chapterId)
   }
+  // W52 CLS guard：reveal 後每題下方插入 explanation、後續題目整體位移、用戶眼線從 Q3 變 Q5。
+  // 提交完自動 smooth scroll 回 Quiz 標頭、給用戶「重看自己作答結果」清楚錨點。
+  // 用 nextTick 等 DOM render 完 explanation 才捲、避免捲後位置仍跳。
+  nextTick(() => {
+    const quizHeader = document.querySelector(`.ddia-quiz-header`)
+    if (!quizHeader) return
+    const top = quizHeader.getBoundingClientRect().top + window.scrollY - 24
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    window.scrollTo({ top, behavior: prefersReduced ? 'auto' : 'smooth' })
+  })
 }
 
 /** 重新作答、保留首次答對率紀錄（適合複習場景） */

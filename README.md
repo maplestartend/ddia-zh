@@ -181,7 +181,7 @@ docs/
 
 - 進度與測驗紀錄都在 **localStorage**，換瀏覽器 / 清快取會遺失（沒有後端帳號）
 - 全文搜尋是 VitePress 內建 local search，CJK tokenizer 自訂在 [config.mts](docs/.vitepress/config.mts)
-- CI 跑 type-check + 11 個 lint + build；其中 base / dark-patch / chapter-sequence 三個 lint 是 BLOCKING（失敗擋部署）；W48 拔除 mermaid plugin 後 build time 從 ~14s 降到 ~6s、dist 從 8.2 MB 降到 5.5 MB；W50 進一步拔除 VP default 內建未用 Inter 字型（540 KB）、dist 降到 4.8 MB、woff2 從 642 KB 降到 228 KB
+- CI 跑 type-check + 11 個 lint + build + 24 unit test；其中 base / dark-patch / chapter-sequence 三個 lint 是 BLOCKING（失敗擋部署）；W48 拔除 mermaid plugin 後 build time 從 ~14s 降到 ~6s、dist 從 8.2 MB 降到 5.5 MB；W50 進一步拔除 VP default 內建未用 Inter 字型（540 KB）、dist 降到 4.8 MB、woff2 從 642 KB 降到 228 KB；W52 修 5 個 WCAG 違規 + 視覺 audit 共 10 項（v380 表格 reflow / ChapterMeta tap target / Quiz CLS / GlossaryTerm 色差 / chapter card 可點性）
 
 ## License
 

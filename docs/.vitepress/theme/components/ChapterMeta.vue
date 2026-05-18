@@ -82,13 +82,17 @@ const tagAnchors: Record<string, string | undefined> = TAG_ANCHORS
   display: inline-flex;
   align-items: baseline;
   gap: 4px;
+  /* W52 A11y：明確標 cursor pointer + 加 hover 邊框寬度感（被 reviewer #4 標 WCAG 2.5.5 / iOS HIG fail） */
+  cursor: pointer;
 }
 .ddia-badge-link:hover {
   background: var(--brand-tint-soft);
+  border-bottom-width: 2px;
 }
 .ddia-badge-help {
   font-style: italic;
   font-weight: 600;
-  opacity: 0.55;
+  /* W52：opacity 0.55 → 0.85，讓 ? 提示更明顯（Reviewer #1 / #3 / #4 共識） */
+  opacity: 0.85;
 }
 </style>

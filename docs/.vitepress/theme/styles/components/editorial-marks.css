@@ -94,6 +94,19 @@
   letter-spacing: var(--ls-loose);
 }
 
+/* W52 a11y：≤480px tag chip 之間 gap 不足造成 tap target 黏連（WCAG 2.5.5 + iOS HIG 44pt fail）
+   Visual 設計守則：不強制單行（保留印刷 metadata 慣例）、只擴 gap 給觸控餘裕 */
+@media (max-width: 480px) {
+  .ddia-meta {
+    gap: 12px var(--space-3);  /* 拉開列高（20→12 看起來反而緊密？實則 row gap 縮、tag 之間 column gap 拉開避免黏連）*/
+    padding: var(--space-3-5) 0;
+  }
+  .ddia-meta-item {
+    min-height: 32px;  /* tag chip 最小高度、保證 tap area */
+    align-items: center;
+  }
+}
+
 .ddia-meta-item {
   display: inline-flex;
   align-items: baseline;
@@ -133,11 +146,15 @@
   background: transparent;
 }
 
-/* ---------- Quiz：章末測驗（Editorial：書末練習題排版） ---------- */
+/* ---------- Quiz：章末測驗（Editorial：書末練習題排版） ----------
+   W52：加 `contain: layout` 避免 reveal 後子元素高度變化外溢、
+        + 每題 min-height 預留 explanation 空間，消「答完按下後題目位置整體下移」CLS
+        （reviewer #3 標 WCAG 2.4.11 Focus Not Obscured、Senior #2 建議 contain + min-height 二件套） */
 .ddia-quiz {
   background: transparent;
   border: 0;
   border-top: 1px solid var(--rule-hairline);
+  contain: layout;  /* W52 CLS guard */
   /* Wave 44 border audit：刪 border-bottom、章末序列由相鄰元件接 border-top */
   border-radius: 0;
   padding: 28px 0 var(--space-4);
